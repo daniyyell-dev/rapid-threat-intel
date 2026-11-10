@@ -12,6 +12,13 @@
 - `defender_xdr_indicators.csv` - Microsoft Defender XDR bulk import (block and audit)
 - `hunt.kql` - Defender XDR advanced hunting query
 
+## Indicators
+
+| Indicator | Type | Action | Confidence | Source |
+|---|---|---|---|---|
+| `178.83.226.215` | ipv4 | block | med | [sekoia.com](https://www.sekoia.com/blog/the-cold-chain-on-fire-unpatched-danfoss-controllers-exploited) |
+| `37.16.75.128` | ipv4 | block | med | [sekoia.com](https://www.sekoia.com/blog/the-cold-chain-on-fire-unpatched-danfoss-controllers-exploited) |
+
 ## Sources
 
-- https://www.sekoia.com/blog/the-cold-chain-on-fire-unpatched-danfoss-controllers-exploited
+- [sekoia.com](https://www.sekoia.com/blog/the-cold-chain-on-fire-unpatched-danfoss-controllers-exploited)
