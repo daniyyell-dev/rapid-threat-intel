@@ -14,7 +14,7 @@ BYOD is a ransomware and extortion group that launched in 2026 and runs a Tor da
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10_1346_BYOD-Ransomware-Vanderbilt-University-Attack/block_now.txt) (raw) | 1 high-confidence indicators to block now |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/9996_2026-11-10_BYOD-Ransomware-Vanderbilt-University-Attack/block_now.txt) (raw) | 1 high-confidence indicators to block now |
 | [`iocs.csv`](iocs.csv) | All 4 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 1 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |

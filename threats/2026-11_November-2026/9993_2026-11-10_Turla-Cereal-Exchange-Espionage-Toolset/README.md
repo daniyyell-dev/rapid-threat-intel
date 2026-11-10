@@ -14,7 +14,7 @@ ESET attributes Cereal, a previously undocumented modular .NET toolset, with hig
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10_1349_Turla-Cereal-Exchange-Espionage-Toolset/block_now.txt) (raw) | 18 high-confidence indicators to block now |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/9993_2026-11-10_Turla-Cereal-Exchange-Espionage-Toolset/block_now.txt) (raw) | 18 high-confidence indicators to block now |
 | [`iocs.csv`](iocs.csv) | All 26 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 18 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
