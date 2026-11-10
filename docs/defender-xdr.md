@@ -48,10 +48,15 @@ Custom detection rules run a query on a schedule and raise alerts. The shipped `
 Example for the domains of one threat:
 
 ```kusto
+// Author: Daniel Jeremiah - https://www.linkedin.com/in/daniel-jeremiah
+// Description: Device connection to a high-confidence domain from rapid-threat-intel
+// Reference: https://github.com/daniyyell-dev/rapid-threat-intel
+// Severity: High
 let Domains = dynamic(["tac.vpnla.org"]);
 DeviceNetworkEvents
 | where RemoteUrl has_any (Domains)
-| project Timestamp, DeviceId, DeviceName, ReportId, RemoteUrl, RemoteIP, InitiatingProcessFileName
+| extend Reference = "https://github.com/daniyyell-dev/rapid-threat-intel"
+| project Timestamp, DeviceId, DeviceName, ReportId, RemoteUrl, RemoteIP, InitiatingProcessFileName, Reference
 ```
 
 1. Run the query in **Advanced hunting** and check the results.
@@ -60,7 +65,7 @@ DeviceNetworkEvents
 4. Choose response actions, such as isolating the device, and the device scope.
 5. Review and select **Create**.
 
-A rule can raise at most 150 alerts per run, so tune the query to skip normal activity first. A rule can run as **Continuous (NRT)** when it queries a single supported table (such as `DeviceNetworkEvents`, `DeviceProcessEvents`, `DeviceFileEvents`, `EmailUrlInfo` or `UrlClickEvents`), uses only supported operators, has no `union`, `join` or `externaldata`, and contains no comment lines. The example above qualifies.
+A rule can raise at most 150 alerts per run, so tune the query to skip normal activity first. A rule can run as **Continuous (NRT)** when it queries a single supported table (such as `DeviceNetworkEvents`, `DeviceProcessEvents`, `DeviceFileEvents`, `EmailUrlInfo` or `UrlClickEvents`), uses only supported operators, has no `union`, `join` or `externaldata`, and contains no comment lines. The example above qualifies once you delete its four comment lines; the `Reference` column keeps the repository link on every alert.
 
 ## False positives
 
