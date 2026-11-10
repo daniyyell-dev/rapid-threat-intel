@@ -139,24 +139,13 @@ Full reference, including the Defender file and expiry: [docs/data-format.md](do
 
 ## Acknowledgements
 
-Indicators in this repository come from research published by the organisations below. Thank you for sharing your work openly. Inclusion does not imply endorsement.
+Thanks to the organisations whose published research these indicators come from. Inclusion does not imply endorsement.
 
-| Organisation | Type | Research credited |
-| --- | --- | --- |
-| [BleepingComputer](https://www.bleepingcomputer.com/) | Security news | [BYOD Ransomware and Extortion: Vanderbilt University Attack](threats/2026-11_November-2026/2026-11-09_BYOD-Ransomware-Vanderbilt-University-Attack/) |
-| [Corgea](https://corgea.com/) | Security research | [Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)](threats/2026-11_November-2026/2026-11-09_Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/) |
-| [ESET](https://www.eset.com/) | Security research | [Turla Cereal: Exchange Server Espionage Toolset](threats/2026-11_November-2026/2026-11-10_Turla-Cereal-Exchange-Espionage-Toolset/) |
-| [GreyNoise](https://www.greynoise.io/) | Security research | [SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant](threats/2026-11_November-2026/2026-11-08_SSHole-OpenSSH-CVE-2026-123158-Exploitation/) |
-| [Inforcer](https://www.inforcer.com/) | Security research | [MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants](threats/2026-11_November-2026/2026-11-09_MSP-Process-GDAP-Breach-Entra-Token-Abuse/) |
-| [ransomware.live](https://www.ransomware.live/) | Community tracker | [BYOD Ransomware and Extortion: Vanderbilt University Attack](threats/2026-11_November-2026/2026-11-09_BYOD-Ransomware-Vanderbilt-University-Attack/) |
-| [SANS ISC](https://isc.sans.edu/) | Security research | [SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant](threats/2026-11_November-2026/2026-11-08_SSHole-OpenSSH-CVE-2026-123158-Exploitation/) |
-| [Sekoia](https://www.sekoia.com/) | Security research | [APT29 Watering Holes Targeting iOS and Android with N-Day Exploits](threats/2026-11_November-2026/2026-11-04_APT29-Mobile-Watering-Hole-Exploit-Chains/) |
-| [Socket](https://socket.dev/) | Security research | [Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)](threats/2026-11_November-2026/2026-11-09_Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/) |
-| [The Hacker News](https://thehackernews.com/) | Security news | [Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)](threats/2026-11_November-2026/2026-11-09_Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/) |
-| [The Stack](https://www.thestack.technology/) | Security news | [MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants](threats/2026-11_November-2026/2026-11-09_MSP-Process-GDAP-Breach-Entra-Token-Abuse/) |
-| [Varonis](https://www.varonis.com/) | Security research | [NotC2: AWS-Native AI C2 Proof of Concept](threats/2026-11_November-2026/2026-11-06_NotC2-AWS-Native-AI-C2-Proof-of-Concept/) |
-| [WithSecure](https://www.withsecure.com/) | Security research | [Phexia: macOS ClickFix Stealer with Polygon C2](threats/2026-11_November-2026/2026-11-04_Phexia-macOS-ClickFix-Stealer-Polygon-C2/) |
-| [ZeroPath](https://zeropath.com/) | Security research | [FreeSWITCH CVE-2026-116779 SIP Command Injection Cryptominer Campaign](threats/2026-11_November-2026/2026-11-05_FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/) |
+| Type | Sources |
+| --- | --- |
+| **Security research** | [Corgea](https://corgea.com/) · [ESET](https://www.eset.com/) · [GreyNoise](https://www.greynoise.io/) · [Inforcer](https://www.inforcer.com/) · [SANS ISC](https://isc.sans.edu/) · [Sekoia](https://www.sekoia.com/) · [Socket](https://socket.dev/) · [Varonis](https://www.varonis.com/) · [WithSecure](https://www.withsecure.com/) · [ZeroPath](https://zeropath.com/) |
+| **Community tracker** | [ransomware.live](https://www.ransomware.live/) |
+| **Security news** | [BleepingComputer](https://www.bleepingcomputer.com/) · [The Hacker News](https://thehackernews.com/) · [The Stack](https://www.thestack.technology/) |
 
 ## Contributing
 
