@@ -12,6 +12,21 @@
 
 Curated, deduplicated indicators of compromise (IOCs) for current attacks, one folder per named threat. Every indicator comes from a published vendor, researcher or government report, has a one-line description, and links back to its source. Each threat ships ready-to-use files: a block list, a Microsoft Defender XDR import file and an advanced hunting query.
 
+## Why this exists
+
+Working in a high-intensity threat environment every day, there is rarely time to browse a dozen threat intel sites and dig through each report for the IOCs, artefacts and behavioural context that threat hunters and incident responders actually need to act on.
+
+Commercial threat intelligence is also expensive, and not every team or organisation can afford it.
+
+So this project does that work once, for everyone. It collects threats from many trusted sources, then:
+
+1. **Verifies** each indicator against its original published report
+2. **Cleans and deduplicates** it across sources
+3. **Aggregates** it per threat and in one combined set
+4. **Makes it actionable** with block lists, Defender XDR import files and ready-to-run hunt queries
+
+The result is one place where SOC analysts, threat hunters and incident responders can find what they need and act on it straight away.
+
 ## Quick start
 
 1. **Pick a threat** from [Latest threats](#latest-threats) and read its summary and recommended actions.
