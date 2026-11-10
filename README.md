@@ -16,6 +16,12 @@ Curated, deduplicated indicators of compromise (IOCs) for current attacks, one f
 > [!IMPORTANT]
 > This repository is updated every 2 hours, and only high-impact threat intelligence makes it in: if a threat is not exploitable or would not put a business at risk, it is left out.
 
+## Quick start
+
+1. **Block now.** Point your firewall, proxy or EDR at a [raw feed URL](#raw-feeds), or import [`defender_xdr_indicators.csv`](all/defender_xdr_indicators.csv) into Defender ([how](docs/defender-xdr.md#import-indicators)).
+2. **Hunt in Defender.** Paste [`live_feed_hunt.kql`](all/live_feed_hunt.kql) into Advanced hunting. It loads the latest indicators itself, so there is nothing to copy in ([guide](docs/defender-xdr.md#hunt-with-the-live-feed)).
+3. **Detect in Google SecOps.** Load the feeds into data tables and match them with YARA-L rules ([guide](docs/google-secops.md)).
+
 ## Why this exists
 
 Working in a high-intensity threat environment every day, there is rarely time to browse a dozen threat intel sites and dig through each report for the IOCs, artefacts and behavioural context that threat hunters and incident responders actually need to act on.
@@ -37,12 +43,6 @@ The result is one place where SOC analysts, threat hunters and incident responde
   <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.png">
   <img src="assets/how-it-works-light.png" alt="How it works: collect, filter for high impact and actionable, verify, clean and deduplicate, describe and map to MITRE, build files, quality checks, publish every 2 hours, expire after 90 days" width="100%">
 </picture>
-
-## Quick start
-
-1. **Pick a threat** from [Latest threats](#latest-threats) and read its summary and recommended actions.
-2. **Hunt first.** Run its `hunt.kql` in Defender XDR Advanced hunting to find past activity ([guide](docs/defender-xdr.md#run-a-hunt)).
-3. **Block.** Import `defender_xdr_indicators.csv` into Defender, or feed `block_now.txt` to your firewall ([Defender](docs/defender-xdr.md#import-indicators), [firewall and EDR](docs/firewall-and-edr.md)).
 
 ## Latest threats
 
@@ -81,7 +81,8 @@ rapid-threat-intel/
 │   ├── block_now.txt
 │   ├── block_now_<type>.txt                  one clean list per type for firewalls
 │   ├── iocs.csv
-│   └── defender_xdr_indicators.csv
+│   ├── defender_xdr_indicators.csv
+│   └── live_feed_hunt.kql                    Defender hunt that loads the live feeds
 └── docs/                                     how-to guides
 ```
 
@@ -94,15 +95,19 @@ rapid-threat-intel/
 | Google SecOps | [Data tables and YARA-L 2.0 rules](docs/google-secops.md) |
 | Anything else | [Data format reference](docs/data-format.md) |
 
-Per-type block lists, ready for external dynamic lists:
+### Raw feeds
 
-| File | Entries | Raw URL |
+Stable links that always serve the latest data. Use them as external dynamic lists or scheduled imports.
+
+| Feed | Use | Raw URL |
 |---|---|---|
-| `block_now_ipv4.txt` | 12 | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_ipv4.txt |
-| `block_now_domain.txt` | 36 | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_domain.txt |
-| `block_now_url.txt` | 12 | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_url.txt |
-| `block_now_sha256.txt` | 35 | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_sha256.txt |
-| `block_now_sha1.txt` | 19 | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_sha1.txt |
+| [`block_now_ipv4.txt`](all/block_now_ipv4.txt) | Firewall / EDR IP blocklist | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_ipv4.txt |
+| [`block_now_domain.txt`](all/block_now_domain.txt) | DNS / proxy domain blocklist | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_domain.txt |
+| [`block_now_url.txt`](all/block_now_url.txt) | Proxy / web filter URL blocklist | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_url.txt |
+| [`block_now_sha256.txt`](all/block_now_sha256.txt) | EDR SHA256 hash blocklist | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_sha256.txt |
+| [`block_now_sha1.txt`](all/block_now_sha1.txt) | EDR SHA1 hash blocklist | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_sha1.txt |
+| [`defender_xdr_indicators.csv`](all/defender_xdr_indicators.csv) | Defender XDR indicator import | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/defender_xdr_indicators.csv |
+| [`iocs.csv`](all/iocs.csv) | Every indicator with description and source, for a SIEM or TIP | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/iocs.csv |
 
 > [!WARNING]
 > Hunt before you block, and test file-hash blocks on one host first where a threat abuses legitimate file names. Defender IP indicators only cover outbound connections from endpoints, so block inbound attacker IPs at the firewall.

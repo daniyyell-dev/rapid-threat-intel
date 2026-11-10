@@ -1,0 +1,66 @@
+// Author: Daniel Jeremiah - https://www.linkedin.com/in/daniel-jeremiah
+// Description: Hunts the last 30 days for every high-confidence indicator in the rapid-threat-intel live block lists
+// Reference: https://github.com/daniyyell-dev/rapid-threat-intel
+// Severity: High
+// Loads the latest lists straight from the repository with externaldata, so there is nothing to paste or update.
+// Tables your tenant does not license are skipped (union isfuzzy=true).
+// Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context, FirstSeen, LastSeen, Hits.
+let Lookback = 30d;
+let FeedIPs = toscalar(externaldata(Indicator: string)
+    [@"https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_ipv4.txt"]
+    with (format="txt")
+    | extend Indicator = trim(@"\s+", Indicator)
+    | where isnotempty(Indicator) and Indicator !startswith "#"
+    | summarize make_set(Indicator));
+let FeedUrls = toscalar(externaldata(Indicator: string)
+    [@"https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_url.txt"]
+    with (format="txt")
+    | extend Indicator = trim(@"\s+", Indicator)
+    | where isnotempty(Indicator) and Indicator !startswith "#"
+    | summarize make_set(Indicator));
+let FeedDomains = toscalar(externaldata(Indicator: string)
+    [@"https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_domain.txt"]
+    with (format="txt")
+    | extend Indicator = tolower(trim(@"\s+", Indicator))
+    | where isnotempty(Indicator) and Indicator !startswith "#"
+    | summarize make_set(Indicator));
+let FeedHashes = toscalar(externaldata(Indicator: string)
+    [@"https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_sha256.txt",
+     @"https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_sha1.txt"]
+    with (format="txt")
+    | extend Indicator = tolower(trim(@"\s+", Indicator))
+    | where isnotempty(Indicator) and Indicator !startswith "#"
+    | summarize make_set(Indicator));
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (FeedIPs)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = strcat(ActionType, " ", InitiatingProcessFileName, " port ", RemotePort)),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where isnotempty(RemoteUrl) and (RemoteUrl has_any (FeedDomains) or RemoteUrl in~ (FeedUrls))
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = RemoteUrl, Context = strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP)),
+  (EmailUrlInfo
+    | where Timestamp > ago(Lookback)
+    | where UrlDomain has_any (FeedDomains) or Url in~ (FeedUrls)
+    | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = Url, Context = "URL in email"),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url has_any (FeedDomains) or Url in~ (FeedUrls)
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = Url, Context = strcat(ActionType, " ", Workload)),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (FeedHashes) or SHA1 in~ (FeedHashes)
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = iff(SHA256 in~ (FeedHashes), SHA256, SHA1), Context = strcat(ActionType, " ", FolderPath)),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (FeedHashes) or SHA1 in~ (FeedHashes)
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = iff(SHA256 in~ (FeedHashes), SHA256, SHA1), Context = strcat(FolderPath, " ", ProcessCommandLine)),
+  (EmailAttachmentInfo
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (FeedHashes)
+    | project Timestamp, SourceTable = "EmailAttachmentInfo", Entity = tostring(RecipientEmailAddress), Indicator = SHA256, Context = strcat(FileName, " from ", SenderFromAddress))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| extend Timestamp = LastSeen
+| project Timestamp, SourceTable, Entity, Indicator, Context, FirstSeen, LastSeen, Hits
+| order by LastSeen desc

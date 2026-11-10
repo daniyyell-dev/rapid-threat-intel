@@ -24,6 +24,27 @@ The query searches the last 30 days, the advanced hunting maximum, across endpoi
 > [!NOTE]
 > Leads that are not network or hash indicators, such as file names or URL paths seen only by the attacker's server, are listed as comments at the end of the query. Search for them manually.
 
+## Hunt with the live feed
+
+[`all/live_feed_hunt.kql`](../all/live_feed_hunt.kql) hunts every threat at once. It loads the current per-type block lists straight from this repository with `externaldata`, so there are no indicators to paste in and the query never goes out of date.
+
+1. Copy [`live_feed_hunt.kql`](../all/live_feed_hunt.kql) into a new **Advanced hunting** query tab.
+2. Select **Run query**.
+
+It searches the last 30 days of device network, file and process events, email URLs and attachments, and Safe Links clicks. Results have the same columns as each threat's `hunt.kql`: table, entity, indicator and context, with first seen, last seen and hit count.
+
+Each list is a plain text file with one indicator per line, read with `externaldata(Indicator: string)[...] with (format="txt")`. To load a CSV such as `iocs.csv` instead, declare every column and add `ignoreFirstRecord=true` to skip the header:
+
+```kusto
+externaldata(indicator: string, type: string, threat: string, confidence: string, recommended_action: string, source_url: string, description: string, notes: string)
+    [@"https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/iocs.csv"]
+    with (format="csv", ignoreFirstRecord=true)
+| where confidence == "high" and recommended_action == "block"
+```
+
+> [!NOTE]
+> `externaldata` works in advanced hunting and in scheduled custom detection rules, but not in **Continuous (NRT)** rules. The URL must be reachable without sign-in, which raw GitHub links are.
+
 ## Import indicators
 
 1. Download the threat's `defender_xdr_indicators.csv`.
@@ -83,3 +104,4 @@ Confirmed reports are reviewed and the indicator is downgraded to `Audit` or rem
 - [Manage indicators](https://learn.microsoft.com/en-us/defender-endpoint/indicator-manage)
 - [Indicators overview and limits](https://learn.microsoft.com/en-us/defender-endpoint/indicators-overview)
 - [Create custom detection rules](https://learn.microsoft.com/en-us/defender-xdr/custom-detection-rules)
+- [Advanced hunting best practices: ingest data from external sources](https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-best-practices#ingest-data-from-external-sources)
