@@ -129,10 +129,6 @@ Full reference, including the Defender file and expiry: [docs/data-format.md](do
 
 New indicators, corrections, false-positive reports and better detections are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), then open an [issue](https://github.com/daniyyell-dev/rapid-threat-intel/issues/new/choose) or a pull request. To report a security problem privately, see [SECURITY.md](SECURITY.md).
 
-## Author
-
-Maintained by **Daniel Jeremiah**: [LinkedIn](https://www.linkedin.com/in/daniel-jeremiah) · [daniyyell.com](https://daniyyell.com/)
-
 ## Disclaimer
 
 > [!NOTE]
