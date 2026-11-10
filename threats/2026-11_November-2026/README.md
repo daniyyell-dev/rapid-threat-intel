@@ -2,11 +2,12 @@
 
 [Back to index](../../README.md#latest-threats)
 
-9 threats, 273 indicators, 114 to block now. Newest first.
+10 threats, 431 indicators, 230 to block now. Newest first.
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
 | 2026-11-10 | [Turla Cereal: Exchange Server Espionage Toolset](2026-11-10_Turla-Cereal-Exchange-Espionage-Toolset/) | APT / espionage | 26 | 18 | Russia-aligned Turla .NET toolset turning Exchange servers into passive backdoors |
+| 2026-11-10 | [CopperDragon: China-Nexus Sparrow Framework Targeting Government and Telecoms](2026-11-10_CopperDragon-Sparrow-Framework-China-Nexus-Espionage/) | APT / espionage | 158 | 116 | China-nexus Sparrow malware supplier behind espionage against government and telecoms in 21 countries |
 | 2026-11-09 | [MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants](2026-11-09_MSP-Process-GDAP-Breach-Entra-Token-Abuse/) | Supply chain / identity | 57 | 1 | Stolen partner app secrets used for Graph token abuse in MSP customer tenants |
 | 2026-11-09 | [Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)](2026-11-09_Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/) | Supply chain / npm | 57 | 37 | Malicious npm and desktop releases dropping a backdoor with Ethereum-based C2 |
 | 2026-11-09 | [BYOD Ransomware and Extortion: Vanderbilt University Attack](2026-11-09_BYOD-Ransomware-Vanderbilt-University-Attack/) | Ransomware | 4 | 1 | New ransomware and extortion group claiming Vanderbilt University |
