@@ -14,7 +14,7 @@ Phexia is a modular macOS backdoor and infostealer sold to several criminal grou
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/9992_2026-11-10_Phexia-macOS-ClickFix-Stealer-Polygon-C2/block_now.txt) (raw) | 25 high-confidence indicators to block now |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10_Phexia-macOS-ClickFix-Stealer-Polygon-C2/block_now.txt) (raw) | 25 high-confidence indicators to block now |
 | [`iocs.csv`](iocs.csv) | All 48 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 27 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |

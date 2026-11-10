@@ -69,4 +69,4 @@ Every Defender indicator expires **90 days** after it was added. Re-import the l
 
 ## Folder names
 
-`threats/<YYYY-MM>_<Month-YYYY>/<NNNN>_<YYYY-MM-DD>_<Threat-Name>/`, for example `threats/2026-11_November-2026/9990_2026-11-10_CopperDragon-Sparrow-Framework-China-Nexus-Espionage/`. Each threat has a permanent entry number; the `NNNN` prefix is 10000 minus that number, so GitHub lists the newest first and existing folders do not change when a new threat is added. The date in the folder name is when the threat was added to the repository (Europe/London). The published date of the source report is in each threat README. Each month folder has a README listing its threats.
+`threats/<YYYY-MM>_<Month-YYYY>/<YYYY-MM-DD>_<Threat-Name>/`, for example `threats/2026-11_November-2026/2026-11-10_CopperDragon-Sparrow-Framework-China-Nexus-Espionage/`. The date in the folder name is when the threat was added to the repository (Europe/London). The published date of the source report is in each threat README. Each month folder has a README listing its threats, newest first.
