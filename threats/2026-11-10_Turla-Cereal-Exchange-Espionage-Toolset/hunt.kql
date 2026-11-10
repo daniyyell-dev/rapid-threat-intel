@@ -1,15 +1,34 @@
 // Turla Cereal: Exchange Server Espionage Toolset
-// Defender XDR advanced hunting - last 30 days
-let Urls = dynamic(["/owa/sdds/", "/AUTODISCOVER/MICROSOFT.EXCHANGE.PROXYSERVICE/", "/AUTODISCOVER/INTEGRATED/API/", "/AUTODISCOVER/PROXYSERVICE/", "/MICROSOFT-SERVER-ACTIVESYNC/INTEGRATED/API/"]);
-let Hashes = dynamic(["4a3c263977417fb6977b0e598c9e3bc5924f390c", "7742c6b0aaf114335cef7ebab11290cb18a0b8b3", "afe448dd95494cd14438f04f0c5f6b384664a3b7", "4a65040646e354303f067d47aa1c953d467f65cb", "d1e17520a2435edcdcc47f582381416fbdf75f94", "7ab784d0049890d9844aee7f214ba173e3cc23be", "5d80118b1ee974936322475f740ab3aeff70b8f3", "d51c58c2e95d4561848e0a5a8b9fb33c847c50a4", "5b94fe76ec4feb0b5cb6ea3bca4c48d2fe22597b", "1408a8f62b09a5ad0dff279b2878d8f59f70a330", "3d1a534ce0d0c293f62ece556cbc6d0728213104", "ad85fbf2cc879d4325bce1e6fb5f12ab59e3d387", "3ea03188dba8898d97e965732c1d6a68c5437edc", "3fba18af966deacf7ae09e4d4238952dd90a6d6f", "eb9ba1da5363f5d04e2f98673595fce93f39a78e", "0b4e4a1ce7fee91bfc62b2a2ec572c325642bb60", "a4e477ce257f2c635401ef554e05506c080967c0", "a5be8706032a0798fd63214a9f22efa6309355f5"]);
+// Microsoft Defender XDR advanced hunting query (last 30 days, the advanced hunting maximum).
+// Author: Daniel Jeremiah - https://www.linkedin.com/in/daniel-jeremiah
+// Source: https://github.com/daniyyell-dev/rapid-threat-intel
+// Tables your tenant does not license are skipped automatically (union isfuzzy=true).
+// Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context.
+let Lookback = 30d;
+let SHA1s = dynamic(["4a3c263977417fb6977b0e598c9e3bc5924f390c", "7742c6b0aaf114335cef7ebab11290cb18a0b8b3", "afe448dd95494cd14438f04f0c5f6b384664a3b7", "4a65040646e354303f067d47aa1c953d467f65cb", "d1e17520a2435edcdcc47f582381416fbdf75f94", "7ab784d0049890d9844aee7f214ba173e3cc23be", "5d80118b1ee974936322475f740ab3aeff70b8f3", "d51c58c2e95d4561848e0a5a8b9fb33c847c50a4", "5b94fe76ec4feb0b5cb6ea3bca4c48d2fe22597b", "1408a8f62b09a5ad0dff279b2878d8f59f70a330", "3d1a534ce0d0c293f62ece556cbc6d0728213104", "ad85fbf2cc879d4325bce1e6fb5f12ab59e3d387", "3ea03188dba8898d97e965732c1d6a68c5437edc", "3fba18af966deacf7ae09e4d4238952dd90a6d6f", "eb9ba1da5363f5d04e2f98673595fce93f39a78e", "0b4e4a1ce7fee91bfc62b2a2ec572c325642bb60", "a4e477ce257f2c635401ef554e05506c080967c0", "a5be8706032a0798fd63214a9f22efa6309355f5"]);
 union isfuzzy=true
-  (DeviceNetworkEvents | where Timestamp > ago(30d) | where RemoteUrl has_any (dynamic([])) or RemoteUrl in (Urls) | project Timestamp, Table="DeviceNetworkEvents", DeviceName, Indicator=RemoteUrl, InitiatingProcessFileName),
-  (DeviceFileEvents | where Timestamp > ago(30d) | where SHA256 in (Hashes) or SHA1 in (Hashes) | project Timestamp, Table="DeviceFileEvents", DeviceName, Indicator=FileName, InitiatingProcessFileName),
-  (DeviceProcessEvents | where Timestamp > ago(30d) | where SHA256 in (Hashes) or SHA1 in (Hashes) | project Timestamp, Table="DeviceProcessEvents", DeviceName, Indicator=FileName, InitiatingProcessFileName),
-  (DeviceImageLoadEvents | where Timestamp > ago(30d) | where SHA256 in (Hashes) or SHA1 in (Hashes) | project Timestamp, Table="DeviceImageLoadEvents", DeviceName, Indicator=FileName, InitiatingProcessFileName)
-| order by Timestamp desc
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA1 in~ (SHA1s)
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA1), Context = tostring(strcat(ActionType, " ", FolderPath))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA1 in~ (SHA1s)
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA1), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceImageLoadEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA1 in~ (SHA1s)
+    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA1), Context = tostring(strcat(FolderPath, " loaded by ", InitiatingProcessFileName)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc
 
-// Other hunt leads (filenames, paths, keys, strings) - search manually:
+// Other hunt leads (not network or hash indicators) - check manually:
+//   URL paths below are inbound requests to the attacker's implant; search IIS/W3C web logs or your SIEM, not DeviceNetworkEvents.
 //   [filename] iph.dat
 //   [filename] C:\Windows\System32\wbem\ncobjapi.dll
 //   [filename] C:\Windows\System32\wbem\wbemcomn.dll
+//   [url_path] /owa/sdds/
+//   [url_path] /AUTODISCOVER/MICROSOFT.EXCHANGE.PROXYSERVICE/
+//   [url_path] /AUTODISCOVER/INTEGRATED/API/
+//   [url_path] /AUTODISCOVER/PROXYSERVICE/
+//   [url_path] /MICROSOFT-SERVER-ACTIVESYNC/INTEGRATED/API/

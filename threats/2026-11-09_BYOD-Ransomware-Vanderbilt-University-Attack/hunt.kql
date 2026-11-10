@@ -1,11 +1,32 @@
 // BYOD Ransomware and Extortion: Vanderbilt University Attack
-// Defender XDR advanced hunting - last 30 days
+// Microsoft Defender XDR advanced hunting query (last 30 days, the advanced hunting maximum).
+// Author: Daniel Jeremiah - https://www.linkedin.com/in/daniel-jeremiah
+// Source: https://github.com/daniyyell-dev/rapid-threat-intel
+// Tables your tenant does not license are skipped automatically (union isfuzzy=true).
+// Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context.
+let Lookback = 30d;
 let Domains = dynamic(["byodxn5s7sua6oyyjj74rycgn6afncfckprt5ezskt3cni6lg3wdrgad.onion"]);
 union isfuzzy=true
-  (DeviceNetworkEvents | where Timestamp > ago(30d) | where RemoteUrl has_any (Domains) or RemoteUrl in (dynamic([])) | project Timestamp, Table="DeviceNetworkEvents", DeviceName, Indicator=RemoteUrl, InitiatingProcessFileName)
-| order by Timestamp desc
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (DeviceEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType == "DnsQueryResponse" and tostring(parse_json(AdditionalFields).DnsQueryString) has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(parse_json(AdditionalFields).DnsQueryString), Context = tostring(strcat("DNS ", InitiatingProcessFileName))),
+  (EmailUrlInfo
+    | where Timestamp > ago(Lookback)
+    | where UrlDomain has_any (Domains)
+    | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = tostring(Url), Context = tostring("URL in email")),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url has_any (Domains)
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc
 
-// Other hunt leads (filenames, paths, keys, strings) - search manually:
+// Other hunt leads (not network or hash indicators) - check manually:
 //   [filename] README_BYOD_31.txt
 //   [email] byod@onionmail.org
 //   [session_id] 05b18abb1c28e6ae8b12e2910197dba5e756c11c3a4046be50e0d356a815bc5d37

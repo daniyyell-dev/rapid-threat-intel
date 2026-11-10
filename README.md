@@ -31,6 +31,14 @@ _Last updated: 2026-11-10. Newest first; the date is when the main source report
 - Many attacker IPs sit in shared cloud or residential ranges and get reassigned. Defender indicators expire after 90 days.
 - Test file-hash blocks on one host first where a threat replaces legitimate system files.
 
+## Contributing
+
+Contributions are welcome: new indicators, corrections, false-positive reports, better hunt queries or detections (KQL, YARA-L, Sigma). See [CONTRIBUTING.md](CONTRIBUTING.md) for how to submit.
+
+## Author
+
+Maintained by [Daniel Jeremiah](https://www.linkedin.com/in/daniel-jeremiah) ([daniyyell.com](https://daniyyell.com/)).
+
 ## Disclaimer
 
 Provided as-is for defensive use. Verify before blocking in production.
