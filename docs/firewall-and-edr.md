@@ -23,7 +23,7 @@ These hold one value per line with no comments, and contain only `high` confiden
 To block just one threat, split its `block_now.txt`:
 
 ```bash
-URL="https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/<folder>/block_now.txt"
+URL="https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/<YYYY-MM>_<Month-YYYY>/<YYYY-MM-DD>_<Threat-Name>/block_now.txt"
 curl -fsSL "$URL" | grep -Ev '^(#|$)' > all.txt
 grep -E '^[0-9]{1,3}(\.[0-9]{1,3}){3}$' all.txt          > ipv4.txt
 grep -E '://' all.txt                                    > urls.txt

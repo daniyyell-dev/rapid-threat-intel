@@ -17,7 +17,7 @@ body:
     id: threat
     attributes:
       label: Threat folder
-      placeholder: "e.g. 2026-11-09_MSP-Process-GDAP-Breach-Entra-Token-Abuse"
+      placeholder: "e.g. threats/2026-11_November-2026/2026-11-09_MSP-Process-GDAP-Breach-Entra-Token-Abuse"
   - type: textarea
     id: impact
     attributes:

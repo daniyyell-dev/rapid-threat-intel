@@ -1,6 +1,6 @@
 # Danfoss Refrigeration Controller Attacks on European Supermarkets
 
-[Back to index](../../README.md#latest-threats)
+[Back to index](../../../README.md#latest-threats) · [November 2026](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
@@ -14,7 +14,7 @@ Between 11 and 13 October 2026, attacks on unpatched, internet-exposed Danfoss r
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11-10_Danfoss-Refrigeration-Controller-Attacks-Europe/block_now.txt) (raw) | 0 high-confidence indicators to block now |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10_Danfoss-Refrigeration-Controller-Attacks-Europe/block_now.txt) (raw) | 0 high-confidence indicators to block now |
 | [`iocs.csv`](iocs.csv) | All 2 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 2 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
@@ -43,7 +43,7 @@ Run this before blocking to find past activity.
 2. In the [Microsoft Defender portal](https://security.microsoft.com), go to **Hunting > Advanced hunting** and paste it into a new query tab.
 3. Select **Run query**. Results cover the last 30 days, one row per table, entity and indicator.
 
-Non-network leads such as file names or URL paths are listed as comments at the end of the query. More in the [Defender XDR guide](../../docs/defender-xdr.md).
+Non-network leads such as file names or URL paths are listed as comments at the end of the query. More in the [Defender XDR guide](../../../docs/defender-xdr.md).
 
 ## Sources
 
@@ -51,4 +51,4 @@ Non-network leads such as file names or URL paths are listed as comments at the 
 
 ---
 
-[Back to index](../../README.md#latest-threats)
+[Back to index](../../../README.md#latest-threats)

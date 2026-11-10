@@ -69,4 +69,4 @@ Every Defender indicator expires **90 days** after it was added. Re-import the l
 
 ## Folder names
 
-`threats/<YYYY-MM-DD>_<Threat-Name>/`, where the date is when the main source report was published.
+`threats/<YYYY-MM>_<Month-YYYY>/<YYYY-MM-DD>_<Threat-Name>/`, for example `threats/2026-11_November-2026/2026-11-10_Turla-Cereal-Exchange-Espionage-Toolset/`. Both dates come from when the main source report was published. Each month folder has a README listing its threats.
