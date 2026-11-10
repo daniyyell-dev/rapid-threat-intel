@@ -12,19 +12,6 @@
 
 Curated, deduplicated indicators of compromise (IOCs) for current attacks, one folder per named threat. Every indicator comes from a published vendor, researcher or government report, has a one-line description, and links back to its source. Each threat ships ready-to-use files: a block list, a Microsoft Defender XDR import file and an advanced hunting query.
 
-## Contents
-
-- [Quick start](#quick-start)
-- [Latest threats](#latest-threats)
-- [Repository structure](#repository-structure)
-- [How to use](#how-to-use)
-- [Confidence and actions](#confidence-and-actions)
-- [Data format](#data-format)
-- [Contributing](#contributing)
-- [Author](#author)
-- [Disclaimer](#disclaimer)
-- [Licence](#licence)
-
 ## Quick start
 
 1. **Pick a threat** from [Latest threats](#latest-threats) and read its summary and recommended actions.
