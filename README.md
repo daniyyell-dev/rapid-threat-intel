@@ -139,12 +139,7 @@ Full reference, including the Defender file and expiry: [docs/data-format.md](do
 
 ## Acknowledgements
 
-Indicators in this repository come from research published by the organisations below. Thank you for sharing your work openly. Logos are trademarks of their respective owners and are used only to credit the source; inclusion does not imply endorsement.
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/acknowledgements-dark.png">
-  <img src="assets/acknowledgements-light.png" alt="Logos of the organisations whose published research this repository draws indicators from" width="100%">
-</picture>
+Indicators in this repository come from research published by the organisations below. Thank you for sharing your work openly. Inclusion does not imply endorsement.
 
 [BleepingComputer](https://www.bleepingcomputer.com/), [Corgea](https://corgea.com/), [ESET](https://www.eset.com/), [GreyNoise](https://www.greynoise.io/), [Inforcer](https://www.inforcer.com/), [ransomware.live](https://www.ransomware.live/), [SANS ISC](https://isc.sans.edu/), [Sekoia](https://www.sekoia.com/), [Socket](https://socket.dev/), [The Hacker News](https://thehackernews.com/), [The Stack](https://www.thestack.technology/), [Varonis](https://www.varonis.com/), [WithSecure](https://www.withsecure.com/), [ZeroPath](https://zeropath.com/)
 
