@@ -31,6 +31,21 @@ So this project does that work once, for everyone. It collects threats from many
 
 The result is one place where SOC analysts, threat hunters and incident responders can find what they need and act on it straight away.
 
+## How it works
+
+```mermaid
+flowchart LR
+    A["Collect<br/>vendor reports, CERT<br/>advisories, IOC repos"] --> B{"High impact<br/>and actionable?"}
+    B -- No --> X["Skip"]
+    B -- Yes --> C["Verify<br/>against the<br/>original report"]
+    C --> D["Clean and<br/>deduplicate"]
+    D --> E["Describe<br/>and rate"]
+    E --> F["Build<br/>block lists, Defender<br/>import, hunt.kql"]
+    F --> G{"Quality<br/>checks"}
+    G -- Fail --> F
+    G -- Pass --> H["Publish<br/>every 2 hours"]
+```
+
 ## Quick start
 
 1. **Pick a threat** from [Latest threats](#latest-threats) and read its summary and recommended actions.
