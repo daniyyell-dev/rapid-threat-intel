@@ -4,7 +4,7 @@
 
 **Move fast with threat intel from different sources.**
 
-[![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-8-informational)](#latest-threats) ![IOCs](https://img.shields.io/badge/IOCs-225-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--10-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
+[![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-7-informational)](#latest-threats) ![IOCs](https://img.shields.io/badge/IOCs-223-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--10-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
 </div>
 
@@ -40,7 +40,6 @@ Grouped by month, newest first. The date is when the main source report was publ
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
 | 2026-11-10 | [Turla Cereal: Exchange Server Espionage Toolset](threats/2026-11_November-2026/2026-11-10_Turla-Cereal-Exchange-Espionage-Toolset/) | APT / espionage | 26 | 18 | Russia-aligned Turla .NET toolset turning Exchange servers into passive backdoors |
-| 2026-11-10 | [Danfoss Refrigeration Controller Attacks on European Supermarkets](threats/2026-11_November-2026/2026-11-10_Danfoss-Refrigeration-Controller-Attacks-Europe/) | ICS / OT | 2 | 0 | Attacks on exposed refrigeration controllers in European supermarkets |
 | 2026-11-09 | [MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants](threats/2026-11_November-2026/2026-11-09_MSP-Process-GDAP-Breach-Entra-Token-Abuse/) | Supply chain / identity | 57 | 1 | Stolen partner app secrets used for Graph token abuse in MSP customer tenants |
 | 2026-11-09 | [Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)](threats/2026-11_November-2026/2026-11-09_Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/) | Supply chain / npm | 57 | 37 | Malicious npm and desktop releases dropping a backdoor with Ethereum-based C2 |
 | 2026-11-09 | [BYOD Ransomware and Extortion: Vanderbilt University Attack](threats/2026-11_November-2026/2026-11-09_BYOD-Ransomware-Vanderbilt-University-Attack/) | Ransomware | 4 | 1 | New ransomware and extortion group claiming Vanderbilt University |
