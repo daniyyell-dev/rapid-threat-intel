@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.png">
-  <img src="assets/banner-light.png" alt="Rapid Threat Intel - Move fast with threat intel from different sources" width="70%">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.webp">
+  <img src="assets/banner-light.webp" alt="Rapid Threat Intel - Move fast with threat intel from different sources" width="70%">
 </picture>
 
 [![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-10-informational)](#latest-threats) ![IOCs](https://img.shields.io/badge/IOCs-431-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--10-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
