@@ -1,51 +1,50 @@
-# Contributing to Rapid Threat Intel
+# Contributing
 
-Thanks for helping defenders move faster. Contributions of every size are welcome, from a single indicator to a full new threat.
+Thanks for helping defenders move faster. Contributions of any size are welcome, from one indicator to a whole new threat.
 
-## What you can contribute
+## What to contribute
 
-- **New indicators** for a threat already listed, or a new threat entirely
-- **Corrections**: wrong type, wrong confidence, broken source link, typos
-- **False-positive reports**: an indicator that is shared or legitimate infrastructure and should not be blocked
-- **Detections**: improved `hunt.kql` queries, or YARA-L, Sigma and other rules for a threat
-- **Expired infrastructure**: indicators that have been taken down or reassigned
+- **New indicators** for a listed threat, or a new threat
+- **Corrections**: wrong type or confidence, broken source link, typos
+- **False positives**: shared or legitimate infrastructure that should not be blocked
+- **Detections**: better `hunt.kql` queries, or YARA-L, Sigma and other rules
+- **Expired infrastructure**: indicators that were taken down or reassigned
 
 ## Rules for indicators
 
-1. **Public source required.** Every indicator must link to a published vendor, researcher, CERT or government report. No private, leaked or unverifiable data.
-2. **Describe it.** Each indicator needs a one-line description of what it is (for example "SHA256 of the loader DLL dropped in %ProgramData%").
-3. **Set the action honestly.** Use `block` only for high-confidence, attacker-owned infrastructure. Shared cloud, CDN and residential IPs should be `alert` or `monitor`.
-4. **Defang in prose**, but keep raw values in the CSV columns so they can be imported.
+1. **Public source required.** Link a published vendor, researcher, CERT or government report. No private, leaked or unverifiable data.
+2. **Describe it.** One line on what the indicator is, for example "SHA256 of the loader DLL dropped in %ProgramData%".
+3. **Set the action honestly.** `block` only for high-confidence, attacker-owned infrastructure. Shared cloud, CDN and residential IPs are `alert` or `monitor`.
+4. **Raw values in CSV.** Defang in prose only, so files stay importable.
 5. **No personal data** about victims.
+
+Column definitions are in [docs/data-format.md](docs/data-format.md).
 
 ## How to submit
 
-### Option 1: open an issue (easiest)
+### Open an issue (easiest)
 
-Open an [issue](https://github.com/daniyyell-dev/rapid-threat-intel/issues/new) with:
+- [New indicators](https://github.com/daniyyell-dev/rapid-threat-intel/issues/new?template=new-indicators.yml)
+- [False positive](https://github.com/daniyyell-dev/rapid-threat-intel/issues/new?template=false-positive.yml)
 
-- Threat name and the source report link
-- The indicators (one per line) with type and a short description
-- Suggested action (`block`, `alert` or `monitor`) and confidence (`high`, `medium`, `low`)
+### Open a pull request
 
-### Option 2: pull request
+1. Fork the repository and create a branch, for example `add-<threat-name>`.
+2. **Existing threat:** add rows to `threats/<YYYY-MM-DD>_<Threat-Name>/iocs.csv` with the same columns.
+3. **New threat:** create `threats/<YYYY-MM-DD>_<Readable-Threat-Name>/`, dated by the main source report's publication, with at least `README.md` (summary and sources) and `iocs.csv`.
+4. If you edit `defender_xdr_indicators.csv`, keep Microsoft's bulk-import format.
+5. Open the pull request and complete the [checklist](.github/pull_request_template.md).
 
-1. Fork the repo and create a branch, e.g. `add-<threat-name>`.
-2. For an existing threat, add rows to `threats/<YYYY-MM-DD>_<Threat-Name>/iocs.csv` using the same columns: `indicator,type,threat,confidence,recommended_action,source_url,notes,description`.
-3. For a new threat, create a folder named `<YYYY-MM-DD>_<Readable-Threat-Name>` (date = when the main source report was published) with at least a `README.md` (summary, sources) and `iocs.csv`.
-4. Keep `defender_xdr_indicators.csv` in the Microsoft Defender XDR bulk-import format if you edit it.
-5. Open a pull request explaining what you added and linking the source.
+Accepted changes are merged into `all/` and the index in the main README.
 
-Accepted changes are merged into the combined files in `all/` and the index table in the main README.
+## False positives
 
-## Reporting a false positive
-
-If an indicator is blocking something legitimate, open an issue titled `False positive: <indicator>` with what it blocked and why it is benign. These are handled first.
+Use the [false-positive form](https://github.com/daniyyell-dev/rapid-threat-intel/issues/new?template=false-positive.yml). These are handled first. For anything sensitive, follow [SECURITY.md](SECURITY.md).
 
 ## Code of conduct
 
-Be respectful and constructive. This project is for defensive use only; do not submit offensive tooling or anything intended to harm others.
+Be respectful and constructive. This project is for defence only; do not submit offensive tooling or anything meant to harm others.
 
 ## Contact
 
-Daniel Jeremiah, [LinkedIn](https://www.linkedin.com/in/daniel-jeremiah)
+Daniel Jeremiah: [LinkedIn](https://www.linkedin.com/in/daniel-jeremiah) · [daniyyell.com](https://daniyyell.com/)

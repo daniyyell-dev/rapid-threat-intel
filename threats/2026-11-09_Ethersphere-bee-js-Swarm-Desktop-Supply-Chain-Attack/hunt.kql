@@ -2,7 +2,7 @@
 // Microsoft Defender XDR advanced hunting query (last 30 days, the advanced hunting maximum).
 // Author: Daniel Jeremiah - https://www.linkedin.com/in/daniel-jeremiah
 // Source: https://github.com/daniyyell-dev/rapid-threat-intel
-// Tables your tenant does not license are skipped automatically (union isfuzzy=true).
+// Tables your tenant does not license are skipped (union isfuzzy=true).
 // Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context.
 let Lookback = 30d;
 let IPs = dynamic(["193.57.9.155", "193.57.9.17", "178.16.54.222", "107.189.27.223", "107.189.27.46", "91.108.240.156", "107.189.16.215", "185.232.84.169"]);

@@ -1,0 +1,64 @@
+name: New indicators
+description: Submit indicators for a new or existing threat
+title: "New indicators: <threat name>"
+labels: ["indicators"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for contributing. Every indicator needs a public source. See [CONTRIBUTING.md](https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/CONTRIBUTING.md).
+  - type: input
+    id: threat
+    attributes:
+      label: Threat name
+      description: Existing threat folder, or a short name for a new threat
+      placeholder: "e.g. 2026-11-10_Turla-Cereal-Exchange-Espionage-Toolset"
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source report
+      description: Link to the published vendor, researcher, CERT or government report
+      placeholder: "https://"
+    validations:
+      required: true
+  - type: input
+    id: published
+    attributes:
+      label: Report publication date
+      placeholder: "YYYY-MM-DD"
+  - type: textarea
+    id: indicators
+    attributes:
+      label: Indicators
+      description: "One per line: indicator, type, short description. Raw values, not defanged."
+      placeholder: |
+        203.0.113.10, ipv4, C2 server for the loader
+        bad.example, domain, payload delivery domain
+      render: text
+    validations:
+      required: true
+  - type: dropdown
+    id: action
+    attributes:
+      label: Suggested action
+      options: ["block", "alert", "monitor"]
+    validations:
+      required: true
+  - type: dropdown
+    id: confidence
+    attributes:
+      label: Confidence
+      options: ["high", "med", "low"]
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: Every indicator appears in the linked public source
+          required: true
+        - label: No personal data about victims is included
+          required: true

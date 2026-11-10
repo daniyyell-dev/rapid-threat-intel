@@ -1,23 +1,33 @@
 # Danfoss Refrigeration Controller Attacks on European Supermarkets
 
+[Back to index](../../README.md#latest-threats)
+
+| Published | First added | Last updated | Category | Indicators | Block now |
+|---|---|---|---|---|---|
+| 2026-11-10 | 2026-11-10 | 2026-11-10 | ICS / OT | 2 | 0 |
+
 ## Summary
 
-Between 11 and 13 October 2026, attacks on unpatched, internet-exposed Danfoss refrigeration controllers hit hundreds of French supermarkets, including Intermarché and Coopérative U stores, causing food spoilage and business interruption; a second wave on the night of 1-2 November hit refrigeration systems in about a dozen European countries. Sekoia's Danfoss 800A honeypots recorded unauthenticated requests that enumerate units and an exploit that renames any user account, including the full-admin user ID 1, without authentication. On 9 November 2026 French authorities attributed the operation to the IRGC-linked Shahid Kaveh unit (CyberAv3ngers), but Sekoia did not formally tie the honeypot IPs below to the IRGC.
+Between 11 and 13 October 2026, attacks on unpatched, internet-exposed Danfoss refrigeration controllers hit hundreds of French supermarkets, including Intermarché and Coopérative U stores, causing food spoilage and business interruption; a second wave on the night of 1-2 November hit refrigeration systems in about a dozen European countries. Sekoia's Danfoss 800A honeypots recorded unauthenticated requests that enumerate units and an exploit that renames any user account, including the full-admin user ID 1, without authentication. On 9 November 2026 French authorities attributed the operation to the IRGC-linked Shahid Kaveh unit (CyberAv3ngers), but Sekoia did not formally tie the two honeypot IPs in this set to the IRGC.
 
-**Published:** 2026-11-10  
-**First added:** 2026-11-10  
-**Last updated:** 2026-11-10  
-**Category:** ICS / OT  
-**Indicators:** 2 (2 ipv4)  
-**Block now:** 0
+## At a glance
+
+| File | What it is |
+|---|---|
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11-10_Danfoss-Refrigeration-Controller-Attacks-Europe/block_now.txt) (raw) | 0 high-confidence indicators to block now |
+| [`iocs.csv`](iocs.csv) | All 2 indicators with description, confidence, action and source |
+| [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 2 rows for Defender XDR bulk import |
+| [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
+
+Indicators by type: 2 IPv4. See `iocs.csv` for full details and descriptions.
 
 ## MITRE ATT&CK
 
-Mapped from the behaviour described in the sources.
-
-- T1190 Exploit Public-Facing Application
-- T1098 Account Manipulation
-- ICS T0831 Manipulation of Control
+| ID | Technique |
+|---|---|
+| [T1190](https://attack.mitre.org/techniques/T1190/) | Exploit Public-Facing Application |
+| [T1098](https://attack.mitre.org/techniques/T1098/) | Account Manipulation |
+| [T0831](https://attack.mitre.org/techniques/T0831/) | Manipulation of Control |
 
 ## Recommended actions
 
@@ -25,20 +35,20 @@ Mapped from the behaviour described in the sources.
 2. Check controller user accounts, especially user ID 1, for unexpected renames.
 3. Block the two exploitation IPs at the perimeter.
 
-## Files
+## Hunt
 
-- `block_now.txt` - high-confidence indicators to block
-- `iocs.csv` - every indicator with description, confidence, action, source and notes
-- `defender_xdr_indicators.csv` - Microsoft Defender XDR bulk import (block and audit)
-- `hunt.kql` - Defender XDR advanced hunting query
+Run this before blocking to find past activity.
 
-## Indicators
+1. Open [`hunt.kql`](hunt.kql) and copy the query.
+2. In the [Microsoft Defender portal](https://security.microsoft.com), go to **Hunting > Advanced hunting** and paste it into a new query tab.
+3. Select **Run query**. Results cover the last 30 days, one row per table, entity and indicator.
 
-| Indicator | Type | Description | Action | Confidence | Source |
-|---|---|---|---|---|---|
-| `178.83.226.215` | ipv4 | Source of an unauthenticated user-rename exploit against a Danfoss 800A honeypot on 1 Nov 2026, during the second wave of attacks; Sekoia did not formally tie this IP to the IRGC. | block | med | [Sekoia TDR - The Cold Chain on Fire: unpatched Danfoss controllers exploited](https://www.sekoia.com/blog/the-cold-chain-on-fire-unpatched-danfoss-controllers-exploited) |
-| `37.16.75.128` | ipv4 | Source of an unauthenticated user-rename exploit against a Danfoss 800A honeypot on 1 Nov 2026, during the second wave of attacks; Sekoia did not formally tie this IP to the IRGC. | block | med | [Sekoia TDR - The Cold Chain on Fire: unpatched Danfoss controllers exploited](https://www.sekoia.com/blog/the-cold-chain-on-fire-unpatched-danfoss-controllers-exploited) |
+Non-network leads such as file names or URL paths are listed as comments at the end of the query. More in the [Defender XDR guide](../../docs/defender-xdr.md).
 
 ## Sources
 
 - [Sekoia TDR - The Cold Chain on Fire: unpatched Danfoss controllers exploited](https://www.sekoia.com/blog/the-cold-chain-on-fire-unpatched-danfoss-controllers-exploited)
+
+---
+
+[Back to index](../../README.md#latest-threats)

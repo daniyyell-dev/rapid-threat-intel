@@ -1,26 +1,36 @@
 # Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 
+[Back to index](../../README.md#latest-threats)
+
+| Published | First added | Last updated | Category | Indicators | Block now |
+|---|---|---|---|---|---|
+| 2026-11-09 | 2026-11-10 | 2026-11-10 | Supply chain / npm | 57 | 37 |
+
 ## Summary
 
 On 9 November 2026 an attacker abused Ethersphere's own GitHub release workflow to publish a malicious @ethersphere/bee-js 13.3.0 to npm and a trojanized Swarm Desktop 0.56.2 release on GitHub. Both carry a small loader that fetches and runs JavaScript from api.frameworkmetrics.xyz; later stages find their C2 through an Ethereum smart-contract dead drop shared with the SleepyDuck / EtherDuck campaign, steal Swarm wallet keys, and install the evjawbreaker backdoor on Linux and macOS or a rogue ScreenConnect client on Windows. npm removed 13.3.0 about 75 minutes after publication; the last clean bee-js version is 13.2.0.
 
-**Published:** 2026-11-09  
-**First added:** 2026-11-10  
-**Last updated:** 2026-11-10  
-**Category:** Supply chain / npm  
-**Indicators:** 57 (25 sha256, 9 url, 8 ipv4, 8 filename, 4 eth_address, 2 domain, 1 sha1)  
-**Block now:** 37
+## At a glance
+
+| File | What it is |
+|---|---|
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11-09_Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/block_now.txt) (raw) | 37 high-confidence indicators to block now |
+| [`iocs.csv`](iocs.csv) | All 57 indicators with description, confidence, action and source |
+| [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 41 rows for Defender XDR bulk import |
+| [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
+
+Indicators by type: 25 SHA256, 9 URL, 8 IPv4, 8 file name, 4 Ethereum address, 2 domain, 1 SHA1. See `iocs.csv` for full details and descriptions.
 
 ## MITRE ATT&CK
 
-Mapped from the behaviour described in the sources.
-
-- T1195.002 Compromise Software Supply Chain
-- T1102.001 Dead Drop Resolver
-- T1543.002 Systemd Service
-- T1543.001 Launch Agent
-- T1219 Remote Access Software
-- T1567.004 Exfiltration Over Webhook
+| ID | Technique |
+|---|---|
+| [T1195.002](https://attack.mitre.org/techniques/T1195/002/) | Compromise Software Supply Chain |
+| [T1102.001](https://attack.mitre.org/techniques/T1102/001/) | Dead Drop Resolver |
+| [T1543.002](https://attack.mitre.org/techniques/T1543/002/) | Systemd Service |
+| [T1543.001](https://attack.mitre.org/techniques/T1543/001/) | Launch Agent |
+| [T1219](https://attack.mitre.org/techniques/T1219/) | Remote Access Software |
+| [T1567.004](https://attack.mitre.org/techniques/T1567/004/) | Exfiltration Over Webhook |
 
 ## Recommended actions
 
@@ -29,77 +39,22 @@ Mapped from the behaviour described in the sources.
 3. On affected hosts look for ~/.solidity/, the solidity-langsupport persistence units and the rogue ScreenConnect service, then rebuild.
 4. Move any Swarm or Ethereum wallet funds to new keys and rotate npm, GitHub and CI secrets present on the host.
 
-## Files
+## Hunt
 
-- `block_now.txt` - high-confidence indicators to block
-- `iocs.csv` - every indicator with description, confidence, action, source and notes
-- `defender_xdr_indicators.csv` - Microsoft Defender XDR bulk import (block and audit)
-- `hunt.kql` - Defender XDR advanced hunting query
+Run this before blocking to find past activity.
 
-## Indicators
+1. Open [`hunt.kql`](hunt.kql) and copy the query.
+2. In the [Microsoft Defender portal](https://security.microsoft.com), go to **Hunting > Advanced hunting** and paste it into a new query tab.
+3. Select **Run query**. Results cover the last 30 days, one row per table, entity and indicator.
 
-| Indicator | Type | Description | Action | Confidence | Source |
-|---|---|---|---|---|---|
-| `frameworkmetrics.xyz` | domain | Parent domain of the stage-1/2 loader C2 used by the trojanized bee-js 13.3.0 and Swarm Desktop 0.56.2. | block | high | [Corgea - bee-js 13.3.0 and Swarm Desktop 0.56.2 hijacked to deploy evjawbreaker](https://corgea.com/research/ethersphere-bee-js-13-3-0-swarm-desktop-0-56-2-evjawbreaker-ethereum-c2-november-2026) |
-| `api.frameworkmetrics.xyz` | domain | Loader C2 host contacted by the bee-js 13.3.0 and Swarm Desktop 0.56.2 loader to fetch and run JavaScript (requests carry header X-Ethersphere: 1). | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `https://api.frameworkmetrics.xyz/v1/analytics` | url | Loader C2 endpoint /v1/analytics used for payload delivery, assets or exfiltration; covered by the domain block. | block | high | [Corgea - bee-js 13.3.0 and Swarm Desktop 0.56.2 hijacked to deploy evjawbreaker](https://corgea.com/research/ethersphere-bee-js-13-3-0-swarm-desktop-0-56-2-evjawbreaker-ethereum-c2-november-2026) |
-| `https://api.frameworkmetrics.xyz/v1/electron` | url | Loader C2 endpoint /v1/electron used for payload delivery, assets or exfiltration; covered by the domain block. | block | high | [Corgea - bee-js 13.3.0 and Swarm Desktop 0.56.2 hijacked to deploy evjawbreaker](https://corgea.com/research/ethersphere-bee-js-13-3-0-swarm-desktop-0-56-2-evjawbreaker-ethereum-c2-november-2026) |
-| `https://api.frameworkmetrics.xyz/v1/assets/` | url | Loader C2 endpoint /v1/assets/ used for payload delivery, assets or exfiltration; covered by the domain block. | block | high | [Corgea - bee-js 13.3.0 and Swarm Desktop 0.56.2 hijacked to deploy evjawbreaker](https://corgea.com/research/ethersphere-bee-js-13-3-0-swarm-desktop-0-56-2-evjawbreaker-ethereum-c2-november-2026) |
-| `https://api.frameworkmetrics.xyz/v1/swarm/report` | url | Loader C2 endpoint /v1/swarm/report used for payload delivery, assets or exfiltration; covered by the domain block. | block | high | [Corgea - bee-js 13.3.0 and Swarm Desktop 0.56.2 hijacked to deploy evjawbreaker](https://corgea.com/research/ethersphere-bee-js-13-3-0-swarm-desktop-0-56-2-evjawbreaker-ethereum-c2-november-2026) |
-| `193.57.9.155` | ipv4 | Current evjawbreaker TLS C2 hub on port 4912, resolved through the Ethereum dead-drop contract. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `193.57.9.17` | ipv4 | Historical evjawbreaker/SleepyDuck C2 hub on port 4912 tied to the same Ethereum contract; VPS hosting that may be reassigned. | block | med | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `178.16.54.222` | ipv4 | Historical evjawbreaker/SleepyDuck C2 hub on port 4912 tied to the same Ethereum contract; VPS hosting that may be reassigned. | block | med | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `107.189.27.223` | ipv4 | Historical evjawbreaker/SleepyDuck C2 hub on port 4912 tied to the same Ethereum contract; VPS hosting that may be reassigned. | block | med | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `107.189.27.46` | ipv4 | Historical evjawbreaker/SleepyDuck C2 hub on port 4912 tied to the same Ethereum contract; VPS hosting that may be reassigned. | block | med | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `91.108.240.156` | ipv4 | Historical evjawbreaker/SleepyDuck C2 hub on port 4912 tied to the same Ethereum contract; VPS hosting that may be reassigned. | block | med | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `107.189.16.215` | ipv4 | Historical evjawbreaker/SleepyDuck C2 hub on port 4912 tied to the same Ethereum contract; VPS hosting that may be reassigned. | block | med | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `http://107.189.27.46:3000/app.js` | url | Secondary payload URL parameter listed by Socket for the stage-2 loader. | block | med | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `185.232.84.169` | ipv4 | Rogue ScreenConnect relay (port 8041) used by the Windows stage-3 ScreenConnect client. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `https://webhook.site/fdc222d5-2e6c-4122-801d-93099f3fe827` | url | webhook.site collector that receives stolen data; block this exact URL only, webhook.site itself is a legitimate shared service. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `https://webhook.site/46358b99-9cff-4f14-97bc-4a436086e826` | url | webhook.site collector that receives stolen data; block this exact URL only, webhook.site itself is a legitimate shared service. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `https://webhook.site/c05b53d9-c3b6-4a90-94dc-b86a0a4e905f` | url | webhook.site collector that receives stolen data; block this exact URL only, webhook.site itself is a legitimate shared service. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `https://pastebin.com/raw/q1p9qH2w` | url | Pastebin raw paste listed by Socket as campaign infrastructure; block this URL only, not pastebin.com. | block | med | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `d01fdf241aa9e0a1ba6ebc19f8f667af1bf652745021c5050126cb7036f7ce58` | sha256 | SHA256 of the malicious bee-js-13.3.0.tgz npm tarball. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `ee2f762e9ed3fd89f106e0b80c2e923bf1aed9a280277d3d998a5902c4d9ec0f` | sha256 | SHA256 of scripts/generate-version.cjs, the postinstall loader added to bee-js 13.3.0. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `f81315968e679b48f6bdff1c9b928bb223230d07f44d7948412c2250c2a14deb` | sha256 | SHA256 of the trojanized dist/desktop/src/index.js inside app.asar, common to all Swarm Desktop 0.56.2 builds. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `92c6eb24f9910b3577d5939a8686f9bf6e52f1bdd5872bf96cab0132b4558025` | sha256 | SHA256 of the trojanized Swarm Desktop 0.56.2 app.asar (Linux). | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `e49afac84dbb6d5a5d101f87754575024b078d67a7ab9e767ff0f7b5b4368069` | sha256 | SHA256 of the trojanized Swarm Desktop 0.56.2 app.asar (macOS). | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `40a45d68aa49e9e6233c4eb6bb2eb2e92525deea5d17863f6910fc24b06ff20e` | sha256 | SHA256 of the trojanized Swarm Desktop 0.56.2 app.asar (Windows). | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `14f23342f4292ede4546070e0e3e1cacd06fa781a2937ac374d2b47dbaf77666` | sha256 | SHA256 of trojanized Swarm Desktop 0.56.2 package swarm-desktop_0.56.2_amd64.deb. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `23f2d944a0dfa60df493667428d9304cfc1961270b6c68f8d0f38df7fe0e2d31` | sha256 | SHA256 of trojanized Swarm Desktop 0.56.2 package swarm-desktop_0.56.2_arm64.deb. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `aed930fbf5993df4ce9bb5951a4092da8a28a12fb45a81ad9715c7b029606fd0` | sha256 | SHA256 of trojanized Swarm Desktop 0.56.2 package swarm-desktop-0.56.2-1.x86_64.rpm. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `e0304260dcf2f29d1b4690dc46e9ceb35d5554a79ea749cd913687288d6e228b` | sha256 | SHA256 of trojanized Swarm Desktop 0.56.2 package swarm-desktop-0.56.2-1.arm64.rpm. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `94df8933a57cb9962a312a79c079fd0d43706a45066cda1f1b2322f403ad9217` | sha256 | SHA256 of trojanized Swarm Desktop 0.56.2 package Swarm.Desktop-0.56.2-arm64.dmg. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `718ae6ac77e119568dff50a6409996bd649c8e9daf7c8a5616856ff1909a916f` | sha256 | SHA256 of trojanized Swarm Desktop 0.56.2 package Swarm.Desktop-darwin-arm64-0.56.2.zip. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `0ef1fbe5db17ec0ebd3bcac576f0f0f351a5ef5da67d5e45a9817e7a224acc5d` | sha256 | SHA256 of trojanized Swarm Desktop 0.56.2 package Swarm.Desktop-0.56.2.Setup.exe. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `ffd280b8ff519b647041b7453754bfd35d341bbd26bce02cb325c512c8976645` | sha256 | SHA256 of trojanized Swarm Desktop 0.56.2 package swarm-desktop-0.56.2-full.nupkg. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `6a37ce783e406f135ed8b60e0897e0e1146a9fa220c2e6c5ce4118fff967f395` | sha256 | SHA256 of trojanized Swarm Desktop 0.56.2 package Swarm.Desktop-win32-x64-0.56.2.zip. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `1f3a7afd2e43215f09f2a81063dc2796af556bae74aaf492fba2d66e5d65b14c` | sha256 | SHA256 of the stage-2 script for Linux fetched from the loader C2. | block | high | [Corgea - bee-js 13.3.0 and Swarm Desktop 0.56.2 hijacked to deploy evjawbreaker](https://corgea.com/research/ethersphere-bee-js-13-3-0-swarm-desktop-0-56-2-evjawbreaker-ethereum-c2-november-2026) |
-| `2496d74e6a913eba39c8537be31baeff9cf6ccdd8ee84a69475302815cfd4105` | sha256 | SHA256 of the stage-2 script for macOS fetched from the loader C2. | block | high | [Corgea - bee-js 13.3.0 and Swarm Desktop 0.56.2 hijacked to deploy evjawbreaker](https://corgea.com/research/ethersphere-bee-js-13-3-0-swarm-desktop-0-56-2-evjawbreaker-ethereum-c2-november-2026) |
-| `705b4aa2bc6fa35f8e6d448f3c6e193fac6027b9b5239e212e09732cc9fc0dba` | sha256 | SHA256 of the stage-2 script for Windows fetched from the loader C2. | block | high | [Corgea - bee-js 13.3.0 and Swarm Desktop 0.56.2 hijacked to deploy evjawbreaker](https://corgea.com/research/ethersphere-bee-js-13-3-0-swarm-desktop-0-56-2-evjawbreaker-ethereum-c2-november-2026) |
-| `735aba95e24f515a5cea4efea309f245952917d372b37b5fbea305986dbcd568` | sha256 | SHA256 of the stage-2 decoy file served by the loader C2. | block | high | [Corgea - bee-js 13.3.0 and Swarm Desktop 0.56.2 hijacked to deploy evjawbreaker](https://corgea.com/research/ethersphere-bee-js-13-3-0-swarm-desktop-0-56-2-evjawbreaker-ethereum-c2-november-2026) |
-| `9b73e7cd4e1425e770392549d8df46c706139ef476f4f7b9ac405165dc8d9696` | sha256 | SHA256 of the stage-3 evjawbreaker backdoor for linux_amd64. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `b601776817363b96295119f7221338a122d5247a35a77a64b04f286e1bbcc565` | sha256 | SHA256 of the stage-3 evjawbreaker backdoor for linux_arm64. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `80d2672e2599732d3c0ae2a4cd0d1e3fe4d555a60273ce33feb99db3f34d250f` | sha256 | SHA256 of the stage-3 evjawbreaker macOS backdoor (vendors disagree on whether this is the amd64 or arm64 build). | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `fae61f31f00988fdc5cc9e7272b51e08af2e245d81003237875415930fd27358` | sha256 | SHA256 of the stage-3 evjawbreaker macOS backdoor (vendors disagree on whether this is the amd64 or arm64 build). | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `37d14bff30762ca701e9c1f8bc6c57c065bb20ae3a2208cb7411a6530610f08e` | sha256 | SHA256 of stage-3 invoke.ps1, the Windows PowerShell stage. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `7527e86d70e7c9493db4356f1c3775380431b310000f2602c1e993cf435d01da` | sha256 | SHA256 of stage-3 app.msi, the rogue ScreenConnect client installer for Windows. | block | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `a205c8a5fed81e9a787645b2801f00be3db3348d` | sha1 | npm integrity SHA1 of the malicious @ethersphere/bee-js@13.3.0 tarball. | block | high | [Corgea - bee-js 13.3.0 and Swarm Desktop 0.56.2 hijacked to deploy evjawbreaker](https://corgea.com/research/ethersphere-bee-js-13-3-0-swarm-desktop-0-56-2-evjawbreaker-ethereum-c2-november-2026) |
-| `@ethersphere/bee-js@13.3.0` | filename | Malicious npm package version (GHSA-hh7j-5m3j-23pf) with a postinstall loader; the last clean version is 13.2.0. | alert | high | [The Hacker News - Hackers compromise Ethersphere's bee-js](https://thehackernews.com/2026/11/hackers-compromise-etherspheres-bee-js.html) |
-| `swarm-desktop 0.56.2` | filename | Trojanized Swarm Desktop GitHub release and auto-update; check installed versions. | alert | high | [The Hacker News - Hackers compromise Ethersphere's bee-js](https://thehackernews.com/2026/11/hackers-compromise-etherspheres-bee-js.html) |
-| `~/.solidity/` | filename | Linux/macOS implant directory holding the evjawbreaker binaries plus .run.py and .run.cjs. | alert | high | [The Hacker News - Hackers compromise Ethersphere's bee-js](https://thehackernews.com/2026/11/hackers-compromise-etherspheres-bee-js.html) |
-| `solidity-langsupport-runner.service` | filename | systemd user unit in ~/.config/systemd/user/ used for Linux persistence. | alert | high | [The Hacker News - Hackers compromise Ethersphere's bee-js](https://thehackernews.com/2026/11/hackers-compromise-etherspheres-bee-js.html) |
-| `com.solidity.langsupport.runner.plist` | filename | LaunchAgent in ~/Library/LaunchAgents used for macOS persistence. | alert | high | [The Hacker News - Hackers compromise Ethersphere's bee-js](https://thehackernews.com/2026/11/hackers-compromise-etherspheres-bee-js.html) |
-| `ScreenConnect Client (5cbe79c9c25524df)` | filename | Windows service name of the rogue ScreenConnect client installed by stage 3. | alert | high | [The Hacker News - Hackers compromise Ethersphere's bee-js](https://thehackernews.com/2026/11/hackers-compromise-etherspheres-bee-js.html) |
-| `%TEMP%\.stuffed-*` | filename | Windows staging path used by the stage-2 loader. | alert | high | [Corgea - bee-js 13.3.0 and Swarm Desktop 0.56.2 hijacked to deploy evjawbreaker](https://corgea.com/research/ethersphere-bee-js-13-3-0-swarm-desktop-0-56-2-evjawbreaker-ethereum-c2-november-2026) |
-| `%LOCALAPPDATA%\.<32-hex-guid>\app.msi` | filename | Drop location of the rogue ScreenConnect MSI on Windows. | alert | high | [Corgea - bee-js 13.3.0 and Swarm Desktop 0.56.2 hijacked to deploy evjawbreaker](https://corgea.com/research/ethersphere-bee-js-13-3-0-swarm-desktop-0-56-2-evjawbreaker-ethereum-c2-november-2026) |
-| `0xf8a900Db50b3331be6B768bA460BB59f3E40C344` | eth_address | Ethereum C2 dead-drop contract 1, shared with the SleepyDuck/EtherDuck campaign; hunt for eth_call to it from non-crypto hosts. | monitor | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `0x6a82595EEea0f4FDFB3aE13A2687BcbBE626e94B` | eth_address | Ethereum C2 dead-drop contract 2; hunt for eth_call to it from non-crypto hosts. | monitor | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `0xFd3fc58bcbd8ccc77b6000201438eDfc636E7cA7` | eth_address | Operator wallet 1 that controls the C2 dead-drop contract. | monitor | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
-| `0xA7B15A2B5F6992DC3BabB946375d6895fF1171BF` | eth_address | Operator wallet 2 that controls the C2 dead-drop contract. | monitor | high | [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise) |
+Non-network leads such as file names or URL paths are listed as comments at the end of the query. More in the [Defender XDR guide](../../docs/defender-xdr.md).
 
 ## Sources
 
 - [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise)
 - [Corgea - bee-js 13.3.0 and Swarm Desktop 0.56.2 hijacked to deploy evjawbreaker](https://corgea.com/research/ethersphere-bee-js-13-3-0-swarm-desktop-0-56-2-evjawbreaker-ethereum-c2-november-2026)
 - [The Hacker News - Hackers compromise Ethersphere's bee-js](https://thehackernews.com/2026/11/hackers-compromise-etherspheres-bee-js.html)
+
+---
+
+[Back to index](../../README.md#latest-threats)
