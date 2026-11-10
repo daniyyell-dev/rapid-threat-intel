@@ -1,8 +1,6 @@
 <div align="center">
 
-# Rapid Threat Intel
-
-**Move fast with threat intel from different sources.**
+<img src="assets/banner.png" alt="Rapid Threat Intel - Move fast with threat intel from different sources" width="100%">
 
 [![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-7-informational)](#latest-threats) ![IOCs](https://img.shields.io/badge/IOCs-223-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--10-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
