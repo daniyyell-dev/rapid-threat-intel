@@ -1,6 +1,6 @@
 # All high-confidence indicators to block. Updated 2026-11-10.
 
-## Turla (FSB) - Cereal Exchange espionage toolset
+## 2026-11-10 Turla Cereal: Exchange Server Espionage Toolset
 4a3c263977417fb6977b0e598c9e3bc5924f390c
 7742c6b0aaf114335cef7ebab11290cb18a0b8b3
 afe448dd95494cd14438f04f0c5f6b384664a3b7
@@ -20,10 +20,10 @@ eb9ba1da5363f5d04e2f98673595fce93f39a78e
 a4e477ce257f2c635401ef554e05506c080967c0
 a5be8706032a0798fd63214a9f22efa6309355f5
 
-## MSP Process breach - Entra GDAP token abuse
+## 2026-11-09 MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants
 172.169.63.30
 
-## Ethersphere bee-js 13.3.0 / Swarm Desktop 0.56.2 supply chain
+## 2026-11-09 Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 frameworkmetrics.xyz
 api.frameworkmetrics.xyz
 https://api.frameworkmetrics.xyz/v1/analytics
@@ -62,7 +62,10 @@ fae61f31f00988fdc5cc9e7272b51e08af2e245d81003237875415930fd27358
 7527e86d70e7c9493db4356f1c3775380431b310000f2602c1e993cf435d01da
 a205c8a5fed81e9a787645b2801f00be3db3348d
 
-## SSHole - OpenSSH CVE-2026-123158 exploitation
+## 2026-11-09 BYOD Ransomware and Extortion: Vanderbilt University Attack
+byodxn5s7sua6oyyjj74rycgn6afncfckprt5ezskt3cni6lg3wdrgad.onion
+
+## 2026-11-08 SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant
 20.255.63.133
 20.2.81.241
 209.248.50.17
@@ -74,10 +77,7 @@ a205c8a5fed81e9a787645b2801f00be3db3348d
 tac.vpnla.org
 55e6384f6d1648be9b48fb899e46623e9c05eb0df2cbf95f6701680d4e7cbc2a
 
-## BYOD ransomware / extortion
-byodxn5s7sua6oyyjj74rycgn6afncfckprt5ezskt3cni6lg3wdrgad.onion
-
-## APT29 (SVR) - mobile watering holes
+## 2026-11-04 APT29 Watering Holes Targeting iOS and Android with N-Day Exploits
 theowo.club
 america250.holiday
 adsprism-stat.com

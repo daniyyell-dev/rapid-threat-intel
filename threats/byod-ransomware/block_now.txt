@@ -1,5 +1,0 @@
-# BYOD ransomware / extortion
-# High-confidence indicators to block. Updated 2026-11-10.
-
-## domain (1)
-byodxn5s7sua6oyyjj74rycgn6afncfckprt5ezskt3cni6lg3wdrgad.onion

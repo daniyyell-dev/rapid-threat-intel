@@ -1,0 +1,9 @@
+// Danfoss Refrigeration Controller Attacks on European Supermarkets
+// Defender XDR advanced hunting - last 30 days
+let IPs = dynamic(["178.83.226.215", "37.16.75.128"]);
+union isfuzzy=true
+  (DeviceNetworkEvents | where Timestamp > ago(30d) | where RemoteIP in (IPs) | project Timestamp, Table="DeviceNetworkEvents", DeviceName, Indicator=RemoteIP, InitiatingProcessFileName),
+  (DeviceLogonEvents | where Timestamp > ago(30d) | where RemoteIP in (IPs) | project Timestamp, Table="DeviceLogonEvents", DeviceName, Indicator=RemoteIP, InitiatingProcessFileName),
+  (AADSignInEventsBeta | where Timestamp > ago(30d) | where IPAddress in (IPs) | project Timestamp, Table="AADSignInEventsBeta", DeviceName=AccountUpn, Indicator=IPAddress, InitiatingProcessFileName=Application),
+  (AADSpnSignInEventsBeta | where Timestamp > ago(30d) | where IPAddress in (IPs) | project Timestamp, Table="AADSpnSignInEventsBeta", DeviceName=ServicePrincipalName, Indicator=IPAddress, InitiatingProcessFileName=Application)
+| order by Timestamp desc

@@ -1,0 +1,11 @@
+// BYOD Ransomware and Extortion: Vanderbilt University Attack
+// Defender XDR advanced hunting - last 30 days
+let Domains = dynamic(["byodxn5s7sua6oyyjj74rycgn6afncfckprt5ezskt3cni6lg3wdrgad.onion"]);
+union isfuzzy=true
+  (DeviceNetworkEvents | where Timestamp > ago(30d) | where RemoteUrl has_any (Domains) or RemoteUrl in (dynamic([])) | project Timestamp, Table="DeviceNetworkEvents", DeviceName, Indicator=RemoteUrl, InitiatingProcessFileName)
+| order by Timestamp desc
+
+// Other hunt leads (filenames, paths, keys, strings) - search manually:
+//   [filename] README_BYOD_31.txt
+//   [email] byod@onionmail.org
+//   [session_id] 05b18abb1c28e6ae8b12e2910197dba5e756c11c3a4046be50e0d356a815bc5d37

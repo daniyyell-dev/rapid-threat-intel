@@ -1,0 +1,2 @@
+# Danfoss Refrigeration Controller Attacks on European Supermarkets
+# Published 2026-11-10. High-confidence indicators to block. Updated 2026-11-10.

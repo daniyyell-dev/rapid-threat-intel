@@ -1,2 +1,0 @@
-# Danfoss refrigeration controller attacks (Europe)
-# High-confidence indicators to block. Updated 2026-11-10.

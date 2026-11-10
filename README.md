@@ -2,27 +2,27 @@
 
 Move fast with threat intel from different sources.
 
-Deduplicated indicators of compromise (IOCs), organised by named threat, collected only from published vendor and researcher reports. Every indicator links back to its source.
+Deduplicated indicators of compromise (IOCs), organised by named threat, collected only from published vendor and researcher reports. Every indicator has a description and links back to its source.
 
 ## Threats
 
-_Last updated: 2026-11-10_
+_Last updated: 2026-11-10. Newest first; the date is when the main source report was published._
 
-| Threat | Category | Indicators | Block now |
-|---|---|---|---|
-| [MSP Process breach - Entra GDAP token abuse](threats/msp-process-gdap-entra-token-abuse/) | Supply chain / identity | 57 | 1 |
-| [Ethersphere bee-js 13.3.0 / Swarm Desktop 0.56.2 supply chain](threats/ethersphere-bee-js-swarm-desktop-supply-chain/) | Supply chain / npm | 57 | 37 |
-| [SSHole - OpenSSH CVE-2026-123158 exploitation](threats/sshole-openssh-cve-2026-123158/) | Exploitation / botnet | 40 | 10 |
-| [APT29 (SVR) - mobile watering holes](threats/apt29-mobile-watering-holes/) | APT / espionage | 27 | 22 |
-| [Turla (FSB) - Cereal Exchange espionage toolset](threats/turla-cereal-exchange/) | APT / espionage | 26 | 18 |
-| [FreeSWITCH CVE-2026-116779 cryptominer campaign](threats/freeswitch-cve-2026-116779-cryptominer/) | Exploitation / cryptomining | 12 | 0 |
-| [BYOD ransomware / extortion](threats/byod-ransomware/) | Ransomware | 4 | 1 |
-| [Danfoss refrigeration controller attacks (Europe)](threats/danfoss-refrigeration-controller-attacks/) | ICS / OT | 2 | 0 |
+| Date | Threat | Category | IOCs | Block now |
+|---|---|---|---|---|
+| 2026-11-10 | [Turla Cereal: Exchange Server Espionage Toolset](threats/2026-11-10_Turla-Cereal-Exchange-Espionage-Toolset/) | APT / espionage | 26 | 18 |
+| 2026-11-10 | [Danfoss Refrigeration Controller Attacks on European Supermarkets](threats/2026-11-10_Danfoss-Refrigeration-Controller-Attacks-Europe/) | ICS / OT | 2 | 0 |
+| 2026-11-09 | [MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants](threats/2026-11-09_MSP-Process-GDAP-Breach-Entra-Token-Abuse/) | Supply chain / identity | 57 | 1 |
+| 2026-11-09 | [Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)](threats/2026-11-09_Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/) | Supply chain / npm | 57 | 37 |
+| 2026-11-09 | [BYOD Ransomware and Extortion: Vanderbilt University Attack](threats/2026-11-09_BYOD-Ransomware-Vanderbilt-University-Attack/) | Ransomware | 4 | 1 |
+| 2026-11-08 | [SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant](threats/2026-11-08_SSHole-OpenSSH-CVE-2026-123158-Exploitation/) | Exploitation / Linux | 40 | 10 |
+| 2026-11-05 | [FreeSWITCH CVE-2026-116779 SIP Command Injection Cryptominer Campaign](threats/2026-11-05_FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/) | Exploitation / cryptomining | 12 | 0 |
+| 2026-11-04 | [APT29 Watering Holes Targeting iOS and Android with N-Day Exploits](threats/2026-11-04_APT29-Mobile-Watering-Hole-Exploit-Chains/) | APT / espionage | 27 | 22 |
 
 ## Layout
 
-- `threats/<threat-name>/` - one folder per attack or campaign: `README.md`, `block_now.txt`, `iocs.csv`, `defender_xdr_indicators.csv`, `hunt.kql`
-- `all/` - every threat combined (`block_now.txt`, `iocs.csv`, `defender_xdr_indicators.csv`)
+- `threats/<YYYY-MM-DD>_<Threat-Name>/` - one folder per attack or campaign: `README.md` (summary, actions, indicator table), `block_now.txt`, `iocs.csv`, `defender_xdr_indicators.csv`, `hunt.kql`
+- `all/` - every threat combined in one place, so you can import or block everything at once (`block_now.txt`, `iocs.csv`, `defender_xdr_indicators.csv`)
 
 ## Using it
 
