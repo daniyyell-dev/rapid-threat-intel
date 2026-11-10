@@ -1,0 +1,89 @@
+// Phexia: macOS ClickFix Stealer with Polygon C2
+// Microsoft Defender XDR advanced hunting query (last 30 days, the advanced hunting maximum).
+// Author: Daniel Jeremiah - https://www.linkedin.com/in/daniel-jeremiah
+// Source: https://github.com/daniyyell-dev/rapid-threat-intel
+// Tables your tenant does not license are skipped (union isfuzzy=true).
+// Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context.
+let Lookback = 30d;
+let IPs = dynamic(["62.60.226.50"]);
+let Domains = dynamic(["hf98x4d.site", "apdhlhs3.xyz", "j9af4sr.guru", "67sixcebeh.surf", "stv4ec5.shop", "vg5sgxv.lol", "d9mjs.sbs", "jse8x92s.me", "couhe79.xyz", "xzttyt.xyz", "secdarvin2026.icu", "oreshnik.top", "svo-zv.pro", "dhsbdgs.icu", "hackersteersman.digital", "coeuzgoq.bahisbiz.com", "kefavkd.nextbahis.sex", "d9j.everunningshoes.com", "nox.usa-synadentix.com", "zwa8.meritbethizligir.com", "355uz90z.bolnhurstrally.site", "7ulk.irvinaurus.fit", "pool.hashvault.sh", "pool.supportxmr.com", "62.60.226.50"]);
+let Urls = dynamic(["https://coeuzgoq.bahisbiz.com//update.sh", "http://62.60.226.50/upload.php"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " port ", RemotePort))),
+  (DeviceLogonEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceLogonEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", LogonType, " ", AccountName))),
+  (EntraIdSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSignInEvents", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (AADSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSignInEventsBeta", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (EntraIdSpnSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSpnSignInEvents", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (AADSpnSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSpnSignInEventsBeta", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(AccountDisplayName), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ActionType))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (DeviceEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType == "DnsQueryResponse" and tostring(parse_json(AdditionalFields).DnsQueryString) has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(parse_json(AdditionalFields).DnsQueryString), Context = tostring(strcat("DNS ", InitiatingProcessFileName))),
+  (EmailUrlInfo
+    | where Timestamp > ago(Lookback)
+    | where UrlDomain has_any (Domains) or Url has_any (Urls)
+    | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = tostring(Url), Context = tostring("URL in email")),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url has_any (Domains) or Url has_any (Urls)
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where ProcessCommandLine has "dscl . authonly" or ProcessCommandLine has "security find-generic-password" or ProcessCommandLine has "tccutil reset All" or (ProcessCommandLine has "base64 -d" and ProcessCommandLine has "osascript") or (ProcessCommandLine has "eth_call" and ProcessCommandLine has_any ("0xA3a603F8a454a9c905b4c579Bb72628F7C15C2A0", "0x3445fB8Df432320251f611e691fe6B0C6664C960", "0x2686ecea")) or (FileName in~ ("curl", "osascript", "bash", "zsh") and ProcessCommandLine has_any ("update.sh", "script.sh", "clear-cache.sh", "Terminal.sh", "upload.php", "/tmp/updstat.txt", "/tmp/rigupdater", "/tmp/applecomlistupdate", "tempFolderC"))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc
+
+// Other hunt leads (not network or hash indicators) - check manually:
+//   [eth_address] 0xA3a603F8a454a9c905b4c579Bb72628F7C15C2A0
+//   [eth_address] 0x3445fB8Df432320251f611e691fe6B0C6664C960
+//   [function_selector] 0x2686ecea
+//   [other] polygon.drpc.org
+//   [other] polygon.publicnode.com
+//   [other] polygon-mainnet.gateway.tatum.io
+//   [other] tenderly.rpc.polygon.community
+//   [xmr_address] 4ApYm7Cp1QKHYd34eWHTLMR9JwGxEiPkP5GYNbD7UaGUBsAE31oRt8zbCiz7yV6BbHa5mZUGYxeMRbihPXxo9o3vNWJxx2L
+//   [xmr_address] 82hSZSZNcbCdWd3ESkMDnC5cegaJnFhcG8PUBkMPof5mEdMDCF8cLcE1QuW4h82ggwi4qtfnRwMEgZPKQEnogkvmLFuRLFv
+//   [filename] update.sh
+//   [filename] script.sh
+//   [filename] clear-cache.sh
+//   [filename] Terminal.sh
+//   [filename] ~/Library/LaunchAgents/com.<16 lowercase letters>.plist
+//   [filename] ~/Library/LaunchAgents/com.Apple.<16 lowercase letters>.plist
+//   [filename] ~/.passphrase
+//   [filename] ~/.txid
+//   [filename] ~/tempFolderC/
+//   [filename] /tmp/updstat.txt
+//   [filename] /tmp/rigupdater/
+//   [filename] /tmp/applecomlistupdate/
+
+// Behavioural hunt notes:
+//   Terminal-associated curl piped to bash, followed by osascript and LaunchAgent creation, is the ClickFix execution chain.
+//   Polygon RPC lookups from osascript (polygon.drpc.org and the other published endpoints) are suspicious; those hosts are legitimate and must not be blocked.
+//   curl POST bodies containing txid= and init, connect, task, bmodule, smodule, lmodule, ledger or shell, or a body of only check, are Phexia C2 patterns.

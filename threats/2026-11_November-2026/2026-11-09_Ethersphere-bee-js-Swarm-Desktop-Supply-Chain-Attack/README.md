@@ -19,7 +19,7 @@ On 9 November 2026 an attacker abused Ethersphere's own GitHub release workflow 
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 41 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
 
-Indicators by type: 25 SHA256, 9 URL, 8 IPv4, 8 file name, 4 Ethereum address, 2 domain, 1 SHA1. See `iocs.csv` for full details and descriptions.
+Indicators by type: 25 SHA256, 9 URL, 8 IPv4, 8 file name, 4 Ethereum/Polygon address, 2 domain, 1 SHA1. See `iocs.csv` for full details and descriptions.
 
 ## MITRE ATT&CK
 

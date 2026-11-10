@@ -1,0 +1,33 @@
+# Phexia: macOS ClickFix Stealer with Polygon C2
+# Published 2026-11-04. High-confidence indicators to block. Updated 2026-11-10.
+
+## ipv4 (1)
+62.60.226.50
+
+## domain (22)
+hf98x4d.site
+apdhlhs3.xyz
+j9af4sr.guru
+67sixcebeh.surf
+stv4ec5.shop
+vg5sgxv.lol
+d9mjs.sbs
+jse8x92s.me
+couhe79.xyz
+xzttyt.xyz
+secdarvin2026.icu
+oreshnik.top
+svo-zv.pro
+dhsbdgs.icu
+hackersteersman.digital
+coeuzgoq.bahisbiz.com
+kefavkd.nextbahis.sex
+d9j.everunningshoes.com
+nox.usa-synadentix.com
+zwa8.meritbethizligir.com
+355uz90z.bolnhurstrally.site
+7ulk.irvinaurus.fit
+
+## url (2)
+https://coeuzgoq.bahisbiz.com//update.sh
+http://62.60.226.50/upload.php

@@ -1,0 +1,15 @@
+// NotC2: AWS-Native AI C2 Proof of Concept
+// Microsoft Defender XDR advanced hunting query (last 30 days, the advanced hunting maximum).
+// Author: Daniel Jeremiah - https://www.linkedin.com/in/daniel-jeremiah
+// Source: https://github.com/daniyyell-dev/rapid-threat-intel
+
+// Other hunt leads (not network or hash indicators) - check manually:
+//   [other] NotC2
+//   [other] execute_aws_operation
+
+// Behavioural hunt notes:
+//   No network or hash indicators were published. Hunt in AWS CloudTrail and Bedrock model-invocation logs, not in Defender device tables.
+//   Look for new or unexpected SQS-to-Lambda event source mappings (lambda:CreateEventSourceMapping).
+//   Look for Bedrock InvokeModel or Converse calls from a Lambda execution role that has not previously used Bedrock, especially if that role also starts calling unrelated AWS APIs.
+//   Look for SNS HTTP or HTTPS subscriptions to external endpoints created by a Lambda execution role.
+//   Correlate an unexpected SQS message, a Lambda invocation, Bedrock activity, downstream AWS API calls and an SNS publish to an external subscriber in a short window.

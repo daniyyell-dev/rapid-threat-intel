@@ -8,3 +8,5 @@ https://webhook.site/c05b53d9-c3b6-4a90-94dc-b86a0a4e905f
 https://ad.starx-net.com:8881/telemetry/v12
 https://static.flux-telemetry.com/module/5b4c8fea5cbcee273e8d830f52-temfp.js
 https://edge-ord.clouds-stacks.com/module/5b4c8fea5cbcee273e8d830f52-temfp.js
+https://coeuzgoq.bahisbiz.com//update.sh
+http://62.60.226.50/upload.php

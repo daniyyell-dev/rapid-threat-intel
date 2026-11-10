@@ -35,7 +35,7 @@
 | `sha256`, `sha1` | File hash |
 | `filename` | File name or path, used for hunting only |
 | `email` | Attacker contact address |
-| `eth_address`, `ssh_pubkey`, `session_id` | Other attacker identifiers, used for hunting only |
+| `eth_address`, `ssh_pubkey`, `session_id`, `function_selector`, `xmr_address`, `other` | Other attacker identifiers, used for hunting only |
 
 ### Confidence and action
 

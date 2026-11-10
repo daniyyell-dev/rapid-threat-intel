@@ -5,7 +5,7 @@
   <img src="assets/banner-light.png" alt="Rapid Threat Intel - Move fast with threat intel from different sources" width="30%">
 </picture>
 
-[![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-7-informational)](#latest-threats) ![IOCs](https://img.shields.io/badge/IOCs-223-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--10-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
+[![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-9-informational)](#latest-threats) ![IOCs](https://img.shields.io/badge/IOCs-273-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--10-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
 </div>
 
@@ -39,11 +39,12 @@ flowchart LR
     B -- No --> X["Skip"]
     B -- Yes --> C["Verify<br/>against the<br/>original report"]
     C --> D["Clean and<br/>deduplicate"]
-    D --> E["Describe<br/>and rate"]
+    D --> E["Describe, rate<br/>and map to MITRE"]
     E --> F["Build<br/>block lists, Defender<br/>import, hunt.kql"]
     F --> G{"Quality<br/>checks"}
     G -- Fail --> F
     G -- Pass --> H["Publish<br/>every 2 hours"]
+    H --> I["Expire<br/>indicators after<br/>90 days"]
 ```
 
 ## Quick start
@@ -65,10 +66,12 @@ Grouped by month, newest first. The date is when the main source report was publ
 | 2026-11-09 | [Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)](threats/2026-11_November-2026/2026-11-09_Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/) | Supply chain / npm | 57 | 37 | Malicious npm and desktop releases dropping a backdoor with Ethereum-based C2 |
 | 2026-11-09 | [BYOD Ransomware and Extortion: Vanderbilt University Attack](threats/2026-11_November-2026/2026-11-09_BYOD-Ransomware-Vanderbilt-University-Attack/) | Ransomware | 4 | 1 | New ransomware and extortion group claiming Vanderbilt University |
 | 2026-11-08 | [SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant](threats/2026-11_November-2026/2026-11-08_SSHole-OpenSSH-CVE-2026-123158-Exploitation/) | Exploitation / Linux | 40 | 10 | Password bypass on musl-based OpenSSH exploited to gain root and drop an implant |
+| 2026-11-06 | [NotC2: AWS-Native AI C2 Proof of Concept](threats/2026-11_November-2026/2026-11-06_NotC2-AWS-Native-AI-C2-Proof-of-Concept/) | Cloud / C2 | 2 | 0 | Proof-of-concept C2 built on AWS SQS, Lambda, SNS and Bedrock, with no network IOCs to block |
 | 2026-11-05 | [FreeSWITCH CVE-2026-116779 SIP Command Injection Cryptominer Campaign](threats/2026-11_November-2026/2026-11-05_FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/) | Exploitation / cryptomining | 12 | 0 | SIP MESSAGE command injection used to install a cryptominer |
+| 2026-11-04 | [Phexia: macOS ClickFix Stealer with Polygon C2](threats/2026-11_November-2026/2026-11-04_Phexia-macOS-ClickFix-Stealer-Polygon-C2/) | Malware / macOS | 48 | 25 | macOS ClickFix backdoor and stealer that resolves C2 from a Polygon smart contract |
 | 2026-11-04 | [APT29 Watering Holes Targeting iOS and Android with N-Day Exploits](threats/2026-11_November-2026/2026-11-04_APT29-Mobile-Watering-Hole-Exploit-Chains/) | APT / espionage | 27 | 22 | Watering holes serving n-day exploit chains to iOS and Android visitors |
 
-To block everything at once, use [`all/`](all/): 89 high-confidence block indicators across all threats.
+To block everything at once, use [`all/`](all/): 114 high-confidence block indicators across all threats.
 
 ## Repository structure
 
@@ -104,9 +107,9 @@ Per-type block lists, ready for external dynamic lists:
 
 | File | Entries | Raw URL |
 |---|---|---|
-| `block_now_ipv4.txt` | 11 | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_ipv4.txt |
-| `block_now_domain.txt` | 14 | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_domain.txt |
-| `block_now_url.txt` | 10 | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_url.txt |
+| `block_now_ipv4.txt` | 12 | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_ipv4.txt |
+| `block_now_domain.txt` | 36 | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_domain.txt |
+| `block_now_url.txt` | 12 | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_url.txt |
 | `block_now_sha256.txt` | 35 | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_sha256.txt |
 | `block_now_sha1.txt` | 19 | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_sha1.txt |
 
