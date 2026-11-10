@@ -4,7 +4,7 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-09 | 2026-11-10 | 2026-11-10 | Supply chain / identity | 57 | 1 |
+| 2026-11-09 | 2026-11-10 13:43 | 2026-11-10 | Supply chain / identity | 57 | 1 |
 
 ## Summary
 
@@ -14,7 +14,7 @@ On 7 November 2026 MSP Process, a GDAP tooling vendor serving over 1,000 MSPs, t
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-09_MSP-Process-GDAP-Breach-Entra-Token-Abuse/block_now.txt) (raw) | 1 high-confidence indicators to block now |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10_1348_MSP-Process-GDAP-Breach-Entra-Token-Abuse/block_now.txt) (raw) | 1 high-confidence indicators to block now |
 | [`iocs.csv`](iocs.csv) | All 57 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 56 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |

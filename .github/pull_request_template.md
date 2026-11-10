@@ -4,7 +4,7 @@
 
 ## Threat
 
-<!-- Folder path, e.g. threats/2026-11_November-2026/2026-11-10_Turla-Cereal-Exchange-Espionage-Toolset, or the new folder you created -->
+<!-- Folder path, e.g. threats/2026-11_November-2026/2026-11-10_1349_Turla-Cereal-Exchange-Espionage-Toolset, or the new folder you created -->
 
 ## Sources
 

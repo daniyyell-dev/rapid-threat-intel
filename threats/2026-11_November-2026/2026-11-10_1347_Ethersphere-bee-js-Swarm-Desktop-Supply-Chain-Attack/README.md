@@ -4,7 +4,7 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-09 | 2026-11-10 | 2026-11-10 | Supply chain / npm | 57 | 37 |
+| 2026-11-09 | 2026-11-10 13:43 | 2026-11-10 | Supply chain / npm | 57 | 37 |
 
 ## Summary
 
@@ -14,7 +14,7 @@ On 9 November 2026 an attacker abused Ethersphere's own GitHub release workflow 
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-09_Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/block_now.txt) (raw) | 37 high-confidence indicators to block now |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10_1347_Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/block_now.txt) (raw) | 37 high-confidence indicators to block now |
 | [`iocs.csv`](iocs.csv) | All 57 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 41 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |

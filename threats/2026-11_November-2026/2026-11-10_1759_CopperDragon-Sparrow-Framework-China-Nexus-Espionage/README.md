@@ -4,7 +4,7 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-10 | 2026-11-10 | 2026-11-10 | APT / espionage | 158 | 116 |
+| 2026-11-10 | 2026-11-10 17:59 | 2026-11-10 | APT / espionage | 158 | 116 |
 
 ## Summary
 
@@ -17,7 +17,7 @@ Check Point Research tracks CopperDragon as a possible supplier of malware and i
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10_CopperDragon-Sparrow-Framework-China-Nexus-Espionage/block_now.txt) (raw) | 116 high-confidence indicators to block now |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10_1759_CopperDragon-Sparrow-Framework-China-Nexus-Espionage/block_now.txt) (raw) | 116 high-confidence indicators to block now |
 | [`iocs.csv`](iocs.csv) | All 158 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 158 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |

@@ -4,7 +4,7 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-06 | 2026-11-10 | 2026-11-10 | Cloud / C2 | 2 | 0 |
+| 2026-11-06 | 2026-11-10 15:14 | 2026-11-10 | Cloud / C2 | 2 | 0 |
 
 ## Summary
 
@@ -17,7 +17,7 @@ NotC2 is a proof-of-concept command-and-control framework published by Varonis T
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-06_NotC2-AWS-Native-AI-C2-Proof-of-Concept/block_now.txt) (raw) | None yet: no indicator is high-confidence enough to block, so use the files below to hunt |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10_1515_NotC2-AWS-Native-AI-C2-Proof-of-Concept/block_now.txt) (raw) | None yet: no indicator is high-confidence enough to block, so use the files below to hunt |
 | [`iocs.csv`](iocs.csv) | All 2 indicators with description, confidence, action and source |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
 
