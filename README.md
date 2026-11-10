@@ -14,7 +14,7 @@
 Curated, deduplicated indicators of compromise (IOCs) for current attacks, one folder per named threat. Every indicator comes from a published vendor, researcher or government report, has a one-line description, and links back to its source. Each threat ships ready-to-use files: a block list, a Microsoft Defender XDR import file and an advanced hunting query.
 
 > [!IMPORTANT]
-> **Updated every 2 hours.** Only high-impact threat intel passes. If a threat is not exploitable or won't put a business at risk, it is not included.
+> This repository is updated every 2 hours, and only high-impact threat intelligence makes it in: if a threat is not exploitable or would not put a business at risk, it is left out.
 
 ## Why this exists
 
