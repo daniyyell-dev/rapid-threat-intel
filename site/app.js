@@ -607,45 +607,59 @@
     if (!isFinite(n) || n < 0) return null;
     return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
+  var regionNames = null;
+  try { regionNames = new Intl.DisplayNames(["en-GB"], { type: "region" }); } catch (e) {}
+  function countryName(code, name) {
+    if (name && name.toUpperCase() !== code) return name;
+    try { return (regionNames && regionNames.of(code)) || code; } catch (e) { return code; }
+  }
+  function flagImg(code, name) {
+    var cc = String(code || "").toLowerCase();
+    var ok = /^[a-z]{2}$/.test(cc);
+    var img = h("img", { class: "visits-flag", src: ok ? "img/flags/" + cc + ".svg" : "img/flags/globe.svg",
+      width: "20", height: "15", alt: name, title: name, loading: "lazy", decoding: "async" });
+    img.addEventListener("error", function onErr() {
+      img.removeEventListener("error", onErr);
+      img.src = "img/flags/globe.svg";
+    });
+    return img;
+  }
   function loadVisitors() {
     var box = $("visits");
     if (!box) return;
-    function reveal() { box.hidden = false; }
-    fetch("https://daniyyell.goatcounter.com/counter/TOTAL.json")
-      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(function (d) {
-        var n = d && d.count;
-        if (n == null || n === "") return;
-        $("visits-total-n").textContent = String(n);
-        $("visits-total").hidden = false;
-        reveal();
-      })
-      .catch(function () {});
     fetch("stats.json", { cache: "no-cache" })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (d) {
         if (!d) return;
-        if (d.last24h != null) {
-          var n = fmtVisitors(d.last24h);
-          if (n != null) {
-            $("visits-24h-n").textContent = n;
-            $("visits-24h").hidden = false;
-            reveal();
-          }
+        var day = Math.max(0, Math.floor(Number(d.last24h)) || 0);
+        var all = Math.max(Math.floor(Number(d.total)) || 0, day);
+        var shown = false;
+        if (d.total != null || d.last24h != null) {
+          $("visits-total-n").textContent = fmtVisitors(all);
+          $("visits-total").hidden = false;
+          $("visits-24h-n").textContent = fmtVisitors(day);
+          $("visits-24h").hidden = false;
+          shown = true;
         }
-        var geo = $("visits-geo"), ok = 0;
-        clear(geo);
+        var geo = clear($("visits-geo")), rows = [];
         (d.top_countries || []).forEach(function (c) {
-          if (ok >= 5 || !c || !c.code || c.count == null) return;
-          var n = fmtVisitors(c.count);
-          if (n == null) return;
-          ok += 1;
-          geo.appendChild(h("li", null,
-            h("span", { class: "visits-cc", text: String(c.code).toUpperCase() }),
-            h("span", { class: "visits-cn", text: c.name || c.code }),
-            h("span", { class: "visits-cv", text: n })));
+          var n = c && Math.floor(Number(c.count));
+          if (rows.length >= 5 || !c || !c.code || !isFinite(n) || n < 0) return;
+          rows.push({ code: String(c.code).toUpperCase(), name: countryName(String(c.code).toUpperCase(), c.name), n: n });
         });
-        if (ok) { geo.hidden = false; reveal(); }
+        var base = Math.max(all, rows.reduce(function (t, r) { return t + r.n; }, 0)) || 1;
+        rows.forEach(function (r) {
+          var pct = Math.max(2, Math.min(100, Math.round(r.n / base * 100)));
+          var fill = h("span", { class: "visits-bar-f" });
+          fill.style.setProperty("width", pct + "%");
+          geo.appendChild(h("li", null,
+            flagImg(r.code, r.name),
+            h("span", { class: "visits-cn", text: r.name }),
+            h("span", { class: "visits-cv", text: fmtVisitors(r.n) }),
+            h("span", { class: "visits-bar", "aria-hidden": "true" }, fill)));
+        });
+        if (rows.length) { $("visits-geo-wrap").hidden = false; shown = true; }
+        if (shown) box.hidden = false;
       })
       .catch(function () {});
   }

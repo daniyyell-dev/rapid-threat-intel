@@ -207,7 +207,7 @@ Released under the [MIT Licence](LICENSE).
 <a href="https://prynoid.com/"><picture><source media="(prefers-color-scheme: dark)" srcset="site/img/sponsors/prynoid.webp"><img src="site/img/sponsors/prynoid-light.webp" alt="Prynoid" height="32"></picture></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://phishcore.io/"><img src="site/img/sponsors/phishcore.png" alt="PhishCore" height="28"></a>
 </p>
 
-<p><a href="https://buymeacoffee.com/daniyyell" target="_blank" rel="noopener"><img src="assets/bmc-logo.png" alt="" width="22" height="22" align="absmiddle"></a>&nbsp;<a href="https://buymeacoffee.com/daniyyell" target="_blank" rel="noopener">Buy me a coffee</a></p>
+<p><a href="https://buymeacoffee.com/daniyyell" target="_blank" rel="noopener"><img src="assets/bmc-button.png" alt="Buy me a coffee" height="42"></a></p>
 
 ## Limitations
 

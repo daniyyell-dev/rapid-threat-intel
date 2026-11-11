@@ -12,7 +12,7 @@
 <link rel="icon" href="data:,">
 <link rel="preload" href="img/logo-wordmark.webp" as="image" type="image/webp">
 <link rel="preload" href="fonts/roboto-700-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="style.css?v=34dde0fb">
+<link rel="stylesheet" href="style.css?v=e4272eca">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -144,7 +144,10 @@
             <dd id="visits-24h-n"></dd>
           </div>
         </dl>
-        <ol class="visits-geo" id="visits-geo" hidden aria-label="Top countries"></ol>
+        <div class="visits-geo-wrap" id="visits-geo-wrap" hidden>
+          <h3 class="visits-sub" id="visits-geo-h">Top countries</h3>
+          <ol class="visits-geo" id="visits-geo" aria-labelledby="visits-geo-h"></ol>
+        </div>
       </div>
     </section>
   </div>
@@ -163,7 +166,7 @@
   </div>
 </footer>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script src="app.js?v=0144ab1e"></script>
+<script src="app.js?v=647b8b94"></script>
 <script data-goatcounter="https://daniyyell.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
