@@ -39,7 +39,7 @@
   <div id="home">
     <section class="brief" aria-labelledby="title">
       <div class="brief-l">
-        <p class="eyebrow"><span class="tag">TLP:CLEAR</span> Curated for banking, insurance, finance, the UK and critical systems</p>
+        <p class="eyebrow"><span class="tag">TLP:CLEAR</span><span class="eb-t">Curated for banking, insurance, finance, the UK and critical systems</span></p>
         <h1 id="title">High-impact threat intelligence and IOCs, researched and ready&nbsp;to&nbsp;deploy</h1>
         <div class="caution" role="note" aria-labelledby="caution-h">
           <p class="caution-h" id="caution-h"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8.9 1.5a1 1 0 0 0-1.8 0L.6 13.5A1 1 0 0 0 1.5 15h13a1 1 0 0 0 .9-1.5ZM8 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 5Zm0 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/></svg>Caution</p>
@@ -51,14 +51,17 @@
         <source srcset="img/banner-static.webp" media="(prefers-reduced-motion: reduce)">
         <img src="img/banner.webp" width="400" height="372" alt="" decoding="async">
       </picture>
+      </div>
+    </section>
+
+    <div class="strip">
       <dl class="ledger" id="stats" aria-live="polite">
         <div class="cell sk"><dt>Threats</dt><dd>&nbsp;</dd></div>
         <div class="cell sk"><dt>Indicators</dt><dd>&nbsp;</dd></div>
         <div class="cell sk"><dt>Block now</dt><dd>&nbsp;</dd></div>
         <div class="cell sk"><dt>Last updated</dt><dd>&nbsp;</dd></div>
       </dl>
-      </div>
-    </section>
+    </div>
 
     <section class="check" aria-labelledby="search-h">
       <div class="sec-h"><h2 id="search-h"><span class="idx">01</span>Check an indicator</h2><p class="hint">Defanged input is fine. Press <kbd>/</kbd> to focus.</p></div>
@@ -73,22 +76,24 @@
 
     <div class="console">
       <aside class="rail" aria-label="Filters and combined files">
-        <section class="rail-box" aria-labelledby="filter-h">
-          <h2 id="filter-h" class="rail-h">Filter</h2>
+        <details class="rail-box filt" open>
+          <summary class="rail-h"><h2 id="filter-h">Filter</h2><span class="f-on" id="f-on"></span></summary>
+          <div class="filt-in">
           <label class="field"><span>Category</span><select id="f-cat"><option value="">All categories</option></select></label>
           <label class="field"><span>Indicator type</span><select id="f-type"><option value="">All types</option></select></label>
           <label class="field"><span>Country or region</span><select id="f-country"><option value="">All countries</option></select></label>
           <label class="field"><span>Sector</span><select id="f-sector"><option value="">All sectors</option></select></label>
           <label class="field"><span>Date added</span><select id="f-date"><option value="">All dates</option></select></label>
           <button type="button" id="f-reset" class="link-btn">Reset filters</button>
-        </section>
-        <section class="rail-box geo" aria-labelledby="geo-h">
-          <h2 id="geo-h" class="rail-h">Countries affected</h2>
+          </div>
+        </details>
+        <details class="rail-box geo" open>
+          <summary class="rail-h"><h2 id="geo-h">Countries affected</h2></summary>
           <p class="rail-p">Threats per country, as named in the sources. Select one to filter the feed.</p>
           <ol id="geo-list" class="geo-list"></ol>
           <p id="geo-regions" class="geo-regions"></p>
-        </section>
-        <section class="rail-box" aria-labelledby="all-h">
+        </details>
+        <section class="rail-box files" aria-labelledby="all-h">
           <h2 id="all-h" class="rail-h">Combined files</h2>
           <p class="rail-p">Every threat in one place. These URLs always serve the latest data, so you can point a firewall, proxy, EDR or SIEM at them.</p>
           <ul id="all-files" class="dl-list"></ul>

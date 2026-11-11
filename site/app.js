@@ -266,6 +266,8 @@
     var c = $("f-cat").value, ty = $("f-type").value, d = $("f-date").value, gk = $("f-country").value, sc = $("f-sector").value;
     [["f-cat", c], ["f-type", ty], ["f-date", d], ["f-country", gk], ["f-sector", sc]].forEach(function (x) { $(x[0]).classList.toggle("on", !!x[1]); });
     $("f-reset").disabled = !(c || ty || d || gk || sc);
+    var nOn = [c, ty, d, gk, sc].filter(Boolean).length;
+    $("f-on").textContent = nOn ? nOn + " active" : "";
     Array.prototype.forEach.call(document.querySelectorAll(".geo-btn"), function (b) {
       var on = b.getAttribute("data-k") === gk;
       b.classList.toggle("on", on); b.setAttribute("aria-pressed", on ? "true" : "false");
@@ -426,6 +428,9 @@
   function init(data) {
     DATA = data;
     DATA.threats.forEach(function (t) { t.indicators.forEach(function (ind) { ALL_IND.push({ ind: ind, threat: t }); }); });
+    if (window.matchMedia && window.matchMedia("(max-width: 720px)").matches) {
+      Array.prototype.forEach.call(document.querySelectorAll("details.rail-box"), function (x) { x.open = false; });
+    }
     renderStats();
     fillFilters();
     renderFeed();
