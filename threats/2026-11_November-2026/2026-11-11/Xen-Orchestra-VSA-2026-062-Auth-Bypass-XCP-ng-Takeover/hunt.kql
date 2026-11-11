@@ -1,0 +1,60 @@
+// Xen Orchestra Authentication Bypass (VSA-2026-062) Exploited to Take Over XCP-ng Hosts
+// Microsoft Defender XDR advanced hunting query (last 30 days, the advanced hunting maximum).
+// Author: Daniel Jeremiah - https://www.linkedin.com/in/daniel-jeremiah
+// Source: https://github.com/daniyyell-dev/rapid-threat-intel
+// Tables your tenant does not license are skipped (union isfuzzy=true).
+// Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context.
+let Lookback = 30d;
+let IPs = dynamic(["91.211.251.112", "193.148.56.72", "37.221.208.216", "45.66.35.11", "64.65.0.120", "64.65.62.160", "89.47.51.90", "92.60.37.247"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " port ", RemotePort))),
+  (DeviceLogonEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceLogonEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", LogonType, " ", AccountName))),
+  (EntraIdSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSignInEvents", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (AADSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSignInEventsBeta", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (EntraIdSpnSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSpnSignInEvents", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (AADSpnSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSpnSignInEventsBeta", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(AccountDisplayName), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ActionType))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where ProcessCommandLine has_any ("zz-ustar", "/.ustar5", "/.ustar6", "pivot2", "authenticationToken=j:") or (ProcessCommandLine has "hvm_serial" and ProcessCommandLine has "file")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc
+
+// Other hunt leads (not network or hash indicators) - check manually:
+//   [other] ustar3rqxgnskzgnwkgpofgtvxevm6cx3lxdbwt4mndtveqyaohid.onion
+//   [other] authenticationToken=j:{}
+//   [other] authenticationToken=j:%7B%7D
+//   [other] pivot2
+//   [other] hvm_serial: file
+//   [filename] /etc/cron.d/zz-ustar
+//   [filename] /etc/cron.d/zz-ustar2
+//   [filename] /.ustar5
+//   [filename] /.ustar6
+
+// Behavioural hunt notes:
+//   Xen Orchestra does not log the bypass, so search reverse-proxy, WAF and web server logs (for example the cookie field in W3C logs, or RequestURL and RequestContext in CommonSecurityLog) for authenticationToken=j:{} and authenticationToken=j:%7B%7D in requests to the Xen Orchestra console.
+//   Requests to /rest/v0/users/me/authentication_tokens from unfamiliar addresses suggest token harvesting after the bypass.
+//   XCP-ng hosts rarely run Defender, so check them directly: xe vm-list params=name-label,platform | grep -B1 'hvm_serial: file', zgrep -- '-serial file:' /var/log/xensource.log*, and ls -la /etc/ld.so.preload /.ustar* /etc/cron.d/zz-ustar*.
+//   Six of the listed addresses are public Tor relays (one is the dizum directory authority), so a hit there means a host used Tor; any Tor traffic from Xen Orchestra or an XCP-ng host is worth investigating.

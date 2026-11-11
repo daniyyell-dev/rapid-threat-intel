@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-11 07:54",
- "threat_count": 13,
- "indicator_count": 468,
- "block_now_count": 258,
+ "last_updated": "2026-11-11 10:05",
+ "threat_count": 14,
+ "indicator_count": 485,
+ "block_now_count": 260,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -74,6 +74,292 @@
   }
  ],
  "threats": [
+  {
+   "id": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover",
+   "folder": "threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover",
+   "name": "Xen Orchestra Authentication Bypass (VSA-2026-062) Exploited to Take Over XCP-ng Hosts",
+   "short": "Xen Orchestra VSA-2026-062 exploitation",
+   "category": "Exploitation / hypervisor management",
+   "published": "2026-11-10",
+   "entry_date": "2026-11-11 10:05",
+   "last_updated": "2026-11-11",
+   "seq": 14,
+   "headline": "Cookie-based auth bypass in the Xen Orchestra console exploited to take over XCP-ng hosts as root",
+   "summary": "Vates reports active exploitation of VSA-2026-062, a critical authentication bypass in Xen Orchestra, the web console that manages XCP-ng virtualisation pools. A request carrying the cookie authenticationToken=j:{} (or its URL-encoded form, j:%7B%7D) makes Xen Orchestra treat the value as an empty object, return the first stored token and log the sender in as that token's owner, usually an administrator; the /rest/v0/users/me/authentication_tokens route then hands back reusable login tokens. From there an attacker can run code on managed pools and take over XCP-ng hosts as root. The threat actor operated initially from 91.211.251.112:8001 and a Tor onion service on port 3333, ran a VM named pivot2, configured VMs with a file-backed serial port and planted /etc/cron.d/zz-ustar, /etc/cron.d/zz-ustar2, /.ustar5 and /.ustar6 on hosts. Xen Orchestra does not log the bypass. Six of the eight addresses Vates lists for blocking are public Tor relays, including a Tor directory authority, so they are marked alert rather than block. The flaw has no CVE yet; it is fixed in Xen Orchestra 6.9.2 (stable) and 6.10.1 (latest), and was discovered by TDC NET Security.",
+   "caveat": null,
+   "targets": {
+    "countries": [],
+    "regions": [],
+    "sectors": [],
+    "note": "Vates confirms active exploitation of internet-reachable Xen Orchestra instances but does not name countries, sectors or victims.",
+    "source": {
+     "url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "label": "Vates – VSA-2026-062: Empty-object login token",
+     "name": "Vates"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1550.001",
+     "name": "Application Access Token",
+     "url": "https://attack.mitre.org/techniques/T1550/001/"
+    },
+    {
+     "id": "T1564.006",
+     "name": "Run Virtual Instance",
+     "url": "https://attack.mitre.org/techniques/T1564/006/"
+    },
+    {
+     "id": "T1053.003",
+     "name": "Cron",
+     "url": "https://attack.mitre.org/techniques/T1053/003/"
+    },
+    {
+     "id": "T1090.003",
+     "name": "Multi-hop Proxy",
+     "url": "https://attack.mitre.org/techniques/T1090/003/"
+    },
+    {
+     "id": "T1571",
+     "name": "Non-Standard Port",
+     "url": "https://attack.mitre.org/techniques/T1571/"
+    }
+   ],
+   "recommended_actions": [
+    "Update Xen Orchestra to 6.9.2 (stable) or 6.10.1 (latest), or xo-server to 5.211.2 or 5.213.1, and keep the console on a dedicated management network that is not reachable from the internet.",
+    "Block 91.211.251.112 and 193.148.56.72 in both directions, block Tor from management networks, and search 30 days of firewall and proxy logs for these addresses and the six Tor relays.",
+    "Add a WAF or reverse-proxy rule for authenticationToken=j:{} and authenticationToken=j:%7B%7D, and search proxy and web server logs for both patterns, because Xen Orchestra does not log the bypass.",
+    "On every XCP-ng host, look for a VM named pivot2, VMs with hvm_serial: file, '-serial file:' in /var/log/xensource.log*, and /etc/cron.d/zz-ustar*, /.ustar5, /.ustar6 and /etc/ld.so.preload. If compromised, reinstall and rotate every Vates VMS secret, including backup remotes, the pool secret, root and user passwords, OTP secrets and mail settings."
+   ],
+   "sources": [
+    {
+     "url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "label": "Vates – VSA-2026-062: Empty-object login token",
+     "name": "Vates"
+    },
+    {
+     "url": "https://thehackernews.com/2026/11/hackers-exploit-critical-xen-orchestra.html",
+     "label": "The Hacker News – Hackers Exploit Critical Xen Orchestra Auth Bypass Flaw to Gain Admin Access",
+     "name": "The Hacker News"
+    }
+   ],
+   "indicator_count": 17,
+   "block_now_count": 2,
+   "hunt_count": 15,
+   "hunt_counts": {
+    "alert": 14,
+    "monitor": 1
+   },
+   "indicator_counts": {
+    "ipv4": 8,
+    "other": 5,
+    "filename": 4
+   },
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/block_now.txt",
+     "download": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/defender_xdr_indicators.csv",
+     "download": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/hunt.kql",
+     "download": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover_hunt.kql"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/iocs.csv",
+     "download": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover",
+   "indicators": [
+    {
+     "value": "91.211.251.112",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Initial command-and-control server of the threat actor exploiting Xen Orchestra VSA-2026-062, reached on port 8001; Vates recommends blocking it in both directions.",
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_label": "Vates – VSA-2026-062: Empty-object login token",
+     "source_name": "Vates"
+    },
+    {
+     "value": "193.148.56.72",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Threat actor address on the Vates block list for the Xen Orchestra VSA-2026-062 campaign; block it in both directions.",
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_label": "Vates – VSA-2026-062: Empty-object login token",
+     "source_name": "Vates"
+    },
+    {
+     "value": "37.221.208.216",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Public Tor relay that Vates lists for blocking in the Xen Orchestra VSA-2026-062 campaign, whose C2 runs over Tor. A hit shows Tor use, not an attacker-owned server; alert on it and block Tor as a whole on management networks.",
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_label": "Vates – VSA-2026-062: Empty-object login token",
+     "source_name": "Vates"
+    },
+    {
+     "value": "45.66.35.11",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Tor directory authority (dizum) that Vates lists for blocking in the Xen Orchestra VSA-2026-062 campaign. Every Tor client contacts directory authorities, so a hit shows Tor use, not an attacker-owned server; alert on it and block Tor as a whole on management networks.",
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_label": "Vates – VSA-2026-062: Empty-object login token",
+     "source_name": "Vates"
+    },
+    {
+     "value": "64.65.0.120",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Public Tor relay that Vates lists for blocking in the Xen Orchestra VSA-2026-062 campaign, whose C2 runs over Tor. A hit shows Tor use, not an attacker-owned server; alert on it and block Tor as a whole on management networks.",
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_label": "Vates – VSA-2026-062: Empty-object login token",
+     "source_name": "Vates"
+    },
+    {
+     "value": "64.65.62.160",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Public Tor relay that Vates lists for blocking in the Xen Orchestra VSA-2026-062 campaign, whose C2 runs over Tor. A hit shows Tor use, not an attacker-owned server; alert on it and block Tor as a whole on management networks.",
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_label": "Vates – VSA-2026-062: Empty-object login token",
+     "source_name": "Vates"
+    },
+    {
+     "value": "89.47.51.90",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Public Tor relay that Vates lists for blocking in the Xen Orchestra VSA-2026-062 campaign, whose C2 runs over Tor. A hit shows Tor use, not an attacker-owned server; alert on it and block Tor as a whole on management networks.",
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_label": "Vates – VSA-2026-062: Empty-object login token",
+     "source_name": "Vates"
+    },
+    {
+     "value": "92.60.37.247",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Public Tor relay that Vates lists for blocking in the Xen Orchestra VSA-2026-062 campaign, whose C2 runs over Tor. A hit shows Tor use, not an attacker-owned server; alert on it and block Tor as a whole on management networks.",
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_label": "Vates – VSA-2026-062: Empty-object login token",
+     "source_name": "Vates"
+    },
+    {
+     "value": "ustar3rqxgnskzgnwkgpofgtvxevm6cx3lxdbwt4mndtveqyaohid.onion",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Tor onion service the threat actor used for command and control on port 3333. It cannot be blocked by DNS; block Tor traffic from management networks instead.",
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_label": "Vates – VSA-2026-062: Empty-object login token",
+     "source_name": "Vates"
+    },
+    {
+     "value": "authenticationToken=j:{}",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Exploit cookie for VSA-2026-062: Xen Orchestra parses it as an empty object and logs the sender in as the owner of the first stored token. Search proxy, WAF and web server logs, as Xen Orchestra does not log it.",
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_label": "Vates – VSA-2026-062: Empty-object login token",
+     "source_name": "Vates"
+    },
+    {
+     "value": "authenticationToken=j:%7B%7D",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "URL-encoded form of the VSA-2026-062 exploit cookie. Search proxy, WAF and web server logs for it.",
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_label": "Vates – VSA-2026-062: Empty-object login token",
+     "source_name": "Vates"
+    },
+    {
+     "value": "pivot2",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Name of the VM the threat actor ran on compromised Xen Orchestra and XCP-ng pools.",
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_label": "Vates – VSA-2026-062: Empty-object login token",
+     "source_name": "Vates"
+    },
+    {
+     "value": "hvm_serial: file",
+     "type": "other",
+     "confidence": "med",
+     "recommended_action": "monitor",
+     "description": "VM platform setting that sends a VM's serial port to a file on the XCP-ng host; Vates lists VMs configured this way as a sign of this campaign.",
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_label": "Vates – VSA-2026-062: Empty-object login token",
+     "source_name": "Vates"
+    },
+    {
+     "value": "/etc/cron.d/zz-ustar",
+     "type": "filename",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Cron file the threat actor planted on XCP-ng hosts.",
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_label": "Vates – VSA-2026-062: Empty-object login token",
+     "source_name": "Vates"
+    },
+    {
+     "value": "/etc/cron.d/zz-ustar2",
+     "type": "filename",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Second cron file the threat actor planted on XCP-ng hosts.",
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_label": "Vates – VSA-2026-062: Empty-object login token",
+     "source_name": "Vates"
+    },
+    {
+     "value": "/.ustar5",
+     "type": "filename",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "File the threat actor dropped in the root directory of XCP-ng hosts.",
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_label": "Vates – VSA-2026-062: Empty-object login token",
+     "source_name": "Vates"
+    },
+    {
+     "value": "/.ustar6",
+     "type": "filename",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Second file the threat actor dropped in the root directory of XCP-ng hosts.",
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_label": "Vates – VSA-2026-062: Empty-object login token",
+     "source_name": "Vates"
+    }
+   ]
+  },
   {
    "id": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware",
    "folder": "threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware",

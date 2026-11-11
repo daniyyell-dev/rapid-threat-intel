@@ -1,5 +1,9 @@
 # All high-confidence indicators to block. Updated 2026-11-11.
 
+## 2026-11-10 Xen Orchestra Authentication Bypass (VSA-2026-062) Exploited to Take Over XCP-ng Hosts
+91.211.251.112
+193.148.56.72
+
 ## 2026-11-10 GhostFrame: ESXi Hypervisor Implant Linked to Settra Ransomware (TAG-218)
 45.158.196.81
 45.158.196.141

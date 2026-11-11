@@ -7,7 +7,7 @@
 
 **High-impact threat intelligence and IOCs, researched and ready to deploy**
 
-[![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-13-informational)](#latest-threats) ![IOCs](https://img.shields.io/badge/IOCs-468-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--11-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
+[![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-14-informational)](#latest-threats) ![IOCs](https://img.shields.io/badge/IOCs-485-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--11-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
 </div>
 
@@ -63,6 +63,7 @@ Grouped by the month and day they were added, newest first. The date column is w
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
+| 2026-11-10 | [Xen Orchestra Authentication Bypass (VSA-2026-062) Exploited to Take Over XCP-ng Hosts](threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/) | Exploitation / hypervisor management | 17 | 2 | Cookie-based auth bypass in the Xen Orchestra console exploited to take over XCP-ng hosts as root |
 | 2026-11-10 | [GhostFrame: ESXi Hypervisor Implant Linked to Settra Ransomware (TAG-218)](threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/) | Ransomware / hypervisor | 4 | 4 | ESXi hypervisor implant used by a Settra-linked group after VPN appliance intrusions in the US and Europe |
 | 2026-11-06 | [Storm-3358 ARTEX Agentic Intrusions Against the Financial Sector](threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/) | Financially motivated intrusion / financial sector | 8 | 8 | Agentic AI framework used to exploit web apps at banks and drop WISP, vshell and AdaptixC2 RATs |
 
@@ -82,7 +83,7 @@ Grouped by the month and day they were added, newest first. The date column is w
 | 2026-11-05 | [FreeSWITCH CVE-2026-116779 SIP Command Injection Cryptominer Campaign](threats/2026-11_November-2026/2026-11-10/FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/) | Exploitation / cryptomining | 12 | 0 | SIP MESSAGE command injection used to install a cryptominer |
 | 2026-11-04 | [APT29 Watering Holes Targeting iOS and Android with N-Day Exploits](threats/2026-11_November-2026/2026-11-10/APT29-Mobile-Watering-Hole-Exploit-Chains/) | APT / espionage | 27 | 22 | Watering holes serving n-day exploit chains to iOS and Android visitors |
 
-To block everything at once, use [`all/`](all/): 258 high-confidence block indicators across all threats.
+To block everything at once, use [`all/`](all/): 260 high-confidence block indicators across all threats.
 
 ## How to use
 
@@ -175,7 +176,7 @@ Thanks to the organisations whose published research these indicators come from.
 
 | Type | Sources |
 | --- | --- |
-| **Security research** | [Check Point Research](https://research.checkpoint.com/) · [Corgea](https://corgea.com/) · [ESET](https://www.eset.com/) · [GreyNoise](https://www.greynoise.io/) · [Huntress](https://www.huntress.com/) · [Inforcer](https://www.inforcer.com/) · [Microsoft Threat Intelligence](https://www.microsoft.com/en-us/security/blog/) · [Recorded Future](https://www.recordedfuture.com/research) · [SANS ISC](https://isc.sans.edu/) · [Sekoia](https://www.sekoia.com/) · [Socket](https://socket.dev/) · [Varonis](https://www.varonis.com/) · [WithSecure](https://www.withsecure.com/) · [ZeroPath](https://zeropath.com/) |
+| **Security research** | [Check Point Research](https://research.checkpoint.com/) · [Corgea](https://corgea.com/) · [ESET](https://www.eset.com/) · [GreyNoise](https://www.greynoise.io/) · [Huntress](https://www.huntress.com/) · [Inforcer](https://www.inforcer.com/) · [Microsoft Threat Intelligence](https://www.microsoft.com/en-us/security/blog/) · [Recorded Future](https://www.recordedfuture.com/research) · [SANS ISC](https://isc.sans.edu/) · [Sekoia](https://www.sekoia.com/) · [Socket](https://socket.dev/) · [Varonis](https://www.varonis.com/) · [Vates](https://vates.tech/) · [WithSecure](https://www.withsecure.com/) · [ZeroPath](https://zeropath.com/) |
 | **Community tracker** | [ransomware.live](https://www.ransomware.live/) |
 | **Security news** | [BleepingComputer](https://www.bleepingcomputer.com/) · [The Hacker News](https://thehackernews.com/) · [The Stack](https://www.thestack.technology/) |
 | **Also monitored** | [Mandiant / Google Threat Intelligence](https://cloud.google.com/security/mandiant) · [Unit 42](https://unit42.paloaltonetworks.com/) · [Cisco Talos](https://blog.talosintelligence.com/) · [Kaspersky Securelist](https://securelist.com/) · [SentinelLabs](https://www.sentinelone.com/labs/) · [Proofpoint](https://www.proofpoint.com/us/blog/threat-insight) · [Trend Micro](https://www.trendmicro.com/en_us/research.html) · [Sophos X-Ops](https://www.sophos.com/) · [CrowdStrike](https://www.crowdstrike.com/en-us/blog/) · [Volexity](https://www.volexity.com/blog/) · [Elastic Security Labs](https://www.elastic.co/security-labs) · [Rapid7](https://www.rapid7.com/blog/) · [Arctic Wolf](https://arcticwolf.com/resources/blog/) · [The DFIR Report](https://thedfirreport.com/) · [Wiz](https://www.wiz.io/blog) · [Aikido](https://www.aikido.dev/blog) · [StepSecurity](https://www.stepsecurity.io/blog) · [CrowdSec](https://www.crowdsec.net/) · [watchTowr](https://labs.watchtowr.com/) · [VulnCheck](https://www.vulncheck.com/kev) · [Bitdefender](https://www.bitdefender.com/) · [Zscaler ThreatLabz](https://www.zscaler.com/blogs/security-research) · [Datadog Security Labs](https://securitylabs.datadoghq.com/) · [JPCERT/CC](https://blogs.jpcert.or.jp/en/) · [FortiGuard Labs](https://www.fortinet.com/blog/threat-research) · [Group-IB](https://www.group-ib.com/blog/) · [Symantec](https://www.security.com/threat-intelligence) · [abuse.ch](https://abuse.ch/) · [Censys](https://censys.com/blog/) · [CISA](https://www.cisa.gov/) · [NCSC UK](https://www.ncsc.gov.uk/) · [CERT-EU](https://cert.europa.eu/) · [CERT-FR](https://www.cert.ssi.gouv.fr/) · [ENISA](https://www.enisa.europa.eu/) · [FBI IC3](https://www.ic3.gov/) · [ACSC](https://www.cyber.gov.au/) · [FS-ISAC](https://www.fsisac.com/) · [The Record](https://therecord.media/) · [SecurityWeek](https://www.securityweek.com/) |

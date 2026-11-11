@@ -1,0 +1,6 @@
+# Xen Orchestra Authentication Bypass (VSA-2026-062) Exploited to Take Over XCP-ng Hosts
+# Published 2026-11-10. High-confidence indicators to block. Updated 2026-11-11.
+
+## ipv4 (2)
+91.211.251.112
+193.148.56.72
