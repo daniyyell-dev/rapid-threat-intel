@@ -70,7 +70,7 @@ Indicators by type: 80 domains, 7 URLs, 2 other, 1 SHA256. See `iocs.csv` for fu
 3. **Alert** · Unexpected Microsoft Entra ID device-code sign-ins\
    Look for: Unexpected Microsoft Entra ID device-code sign-ins, especially shortly after a password-protected contract, invoice or proposal email\
    Why it matters: SkyW4lker does not steal a password or bypass MFA. The victim completes a genuine Microsoft device-code sign-in, and the attacker's backend receives the issued token.\
-   Log source: Entra ID / Microsoft 365 sign-in logs\
+   Log source: Entra ID sign-in logs (authentication protocol: device code)\
    Source: [ANY.RUN](https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/)
 
 4. **Hunt** · Landing paths matching //it[A-Za-z0-9]{32}us or the earlier...\

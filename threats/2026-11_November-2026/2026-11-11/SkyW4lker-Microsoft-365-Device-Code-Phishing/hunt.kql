@@ -57,14 +57,6 @@ union isfuzzy=true
     | where Timestamp > ago(Lookback)
     | where RemoteUrl has_any ("/assets/js/client_geo.js", "/assets/js/endpoint.js", "/assets/js/url_helper.js")
     | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
-  (AADSignInEventsBeta
-    | where Timestamp > ago(Lookback)
-    | where ClientAppUsed has "Device Code" or AuthenticationProtocol has "deviceCode" or AuthenticationProtocol has "device code"
-    | project Timestamp, SourceTable = "AADSignInEventsBeta", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ClientAppUsed, " ", ErrorCode, " ", ResourceDisplayName))),
-  (EntraIdSignInEvents
-    | where Timestamp > ago(Lookback)
-    | where ClientAppUsed has "Device Code" or AuthenticationProtocol has "deviceCode" or AuthenticationProtocol has "device code"
-    | project Timestamp, SourceTable = "EntraIdSignInEvents", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ClientAppUsed, " ", ErrorCode))),
   (EmailUrlInfo
     | where Timestamp > ago(Lookback)
     | where Url matches regex @"/(it|zt)[A-Za-z0-9]{32}(us|op)"

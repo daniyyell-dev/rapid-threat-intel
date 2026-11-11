@@ -241,16 +241,14 @@
     },
     {
      "artefact": "Unexpected Microsoft Entra ID device-code sign-ins, especially shortly after a password-protected contract, invoice or proposal email",
-     "log_source": "Entra ID / Microsoft 365 sign-in logs",
+     "log_source": "Entra ID sign-in logs (authentication protocol: device code)",
      "why": "SkyW4lker does not steal a password or bypass MFA. The victim completes a genuine Microsoft device-code sign-in, and the attacker's backend receives the issued token.",
      "action": "alert",
-     "has_query": true,
+     "has_query": false,
      "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
      "source_name": "ANY.RUN",
      "title": "Unexpected Microsoft Entra ID device-code sign-ins",
-     "queries": [
-      "KQL"
-     ]
+     "queries": []
     },
     {
      "artefact": "Landing paths matching //it[A-Za-z0-9]{32}us or the earlier //zt[A-Za-z0-9]{32}op, including links that end with ? or ??",
