@@ -371,7 +371,7 @@
         h("span", { class: "hq-file", text: q.name }), h("span", { class: "sep", "aria-hidden": "true", text: " \u00b7 " }), h("span", { text: HOWTO[q.platform] || "" })));
       panel.appendChild(qActions(q, "Download"));
       panel.appendChild(h("pre", { class: "hq-code", tabindex: "0", "aria-label": q.name + " preview" }, code));
-      panel.appendChild(h("p", { class: "hq-hint", text: "Dimmed lines are comments. Copy and Download give the file exactly as published." }));
+      panel.appendChild(h("p", { class: "hq-hint", text: "These queries can return false positives. Know your environment, check what is normal for you, and confirm a hit is really malicious before acting. Copy and Download give the file exactly as published." }));
       qText(q).then(function (x) { renderCode(code, x, q.language); }, function () { code.textContent = "Preview unavailable here. Use Download to get " + q.name + "."; });
       if (q.alt) {
         panel.appendChild(h("div", { class: "hq-alt" }, h("p", null, h("b", { text: q.alt.label }), h("span", { class: "sep", "aria-hidden": "true", text: " \u00b7 " }),
