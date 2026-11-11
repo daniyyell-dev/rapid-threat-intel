@@ -727,3 +727,35 @@ h1 { font: 700 clamp(34px, 3.9vw, 52px)/1.05 var(--sans); letter-spacing: -.022e
   .tagline-sub { margin-top: 12px; font-size: 16px; }
   .caution { margin-top: 24px; }
 }
+
+/* Indicator table: indicator column shrinks to its value, Copy sits beside it, description takes the rest */
+.tbl-wrap table { table-layout: auto; }
+td.ind { width: 1%; }
+td.ind .ioc { gap: 8px; align-items: center; }
+td.ind .ioc code { flex: none; width: max-content; max-width: 33ch; overflow-wrap: anywhere; word-break: normal; }
+td.ind .copy { padding: 3px 7px; font-size: 11.5px; }
+.tbl-wrap tbody td:nth-child(2), .tbl-wrap tbody td:nth-child(3), .tbl-wrap tbody td:nth-child(4),
+.tbl-wrap thead th:nth-child(2), .tbl-wrap thead th:nth-child(3), .tbl-wrap thead th:nth-child(4) { width: 1%; white-space: nowrap; }
+.tbl-wrap thead th, .tbl-wrap tbody td { padding-left: 14px; padding-right: 14px; }
+@media (max-width: 1080px) {
+  td.ind .ioc code { max-width: 22ch; }
+}
+@media (max-width: 720px) {
+  td.ind { width: auto; }
+  td.ind .ioc { align-items: flex-start; }
+  td.ind .ioc code { width: auto; max-width: none; flex: 0 1 auto; overflow-wrap: anywhere; }
+  .tbl-wrap tbody td { width: auto; padding: 0; }
+}
+
+/* Lighter hero: badge, tagline, subline, caution */
+.meta { margin: 0 0 16px; }
+h1 { font-size: clamp(26px, 2.5vw, 36px); line-height: 1.12; letter-spacing: -.015em; max-width: 22em; }
+.tagline-sub { margin-top: 10px; font-size: 16px; }
+.caution { margin-top: 28px; }
+.brief { padding-top: clamp(32px, 4.5vw, 56px); padding-bottom: 40px; }
+@media (max-width: 720px) {
+  .meta { margin-bottom: 12px; }
+  h1 { font-size: 26px; line-height: 1.15; }
+  .tagline-sub { font-size: 15px; margin-top: 8px; }
+  .caution { margin-top: 20px; }
+}
