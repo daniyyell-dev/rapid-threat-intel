@@ -557,3 +557,6 @@ td.none { text-align: center; padding: 32px; color: var(--ink-3); font-size: 14p
 
 /* Subline under the main heading */
 .tagline-sub { margin: 10px 0 0; font: 400 15px/1.5 var(--sans); color: var(--ink-3); }
+
+/* Buy Me a Coffee: official yellow logo, kept in colour (no hover tint) */
+.foot-links .ico-bmc { width: 16px; height: 16px; margin-top: 2px; border-radius: 4px; }
