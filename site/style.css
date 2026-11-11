@@ -792,3 +792,22 @@ h1.tagline span:nth-child(3) { animation-delay: 1s; }
 /* The hero itself only fades (no rise), so the curtain lines never move vertically */
 .brief { animation: sub-in .5s ease both; }
 @media (prefers-reduced-motion: reduce) { .brief { animation: none; } }
+
+/* Safety notice: a clear red danger alert on the neutral page */
+.caution { padding: 16px 20px 16px 18px; background: rgba(220, 38, 38, .10); border: 1px solid rgba(239, 68, 68, .55); border-left: 4px solid #ef4444; border-radius: 0 6px 6px 0; box-shadow: 0 0 0 1px rgba(239, 68, 68, .06), 0 12px 32px -22px rgba(239, 68, 68, .55); }
+.caution-h { gap: 10px; font: 700 16px/1.35 var(--sans); color: #fff1f1; }
+.caution-h .caution-ico { flex: none; width: 22px; height: 22px; color: #ef4444; }
+.caution-l { margin-top: 10px; padding-left: 32px; color: #e4dcdf; }
+.caution-l li::marker { color: #f87171; }
+.caution-l a { color: #ff8fb3; text-decoration-color: rgba(255, 143, 179, .6); }
+.caution-l a:hover { color: #ffc2d6; }
+.caution-more { margin-left: 32px; color: #c9bfc3; }
+.caution-more summary { color: #fca5a5; text-decoration-color: rgba(252, 165, 165, .5); }
+.caution-more summary:hover { color: #fecaca; }
+.caution-more summary::marker { color: #f87171; }
+@media (max-width: 720px) {
+  .caution { padding: 14px 14px 14px 14px; }
+  .caution-l, .caution-more { padding-left: 0; margin-left: 0; }
+  .caution-l { padding-left: 20px; }
+  .caution-more { margin-left: 20px; }
+}
