@@ -435,7 +435,42 @@
     return h("dl", { class: "r-tg" }, hasGeo ? h("div", null, h("dt", { text: !shown.length ? "Regions" : "Countries" }), h("dd", null, geo)) : null,
       hasSec ? h("div", null, h("dt", { text: "Sectors" }), h("dd", null, sec)) : null);
   }
-  function renderFeed() {
+  /* Live feed pages: 20 threats per page, kept in the URL as #page=N (page 1 has no hash). */
+  var PER_PAGE = 20, PAGE = 1;
+  function pageItems(cur, last) {
+    if (last <= 7) return Array.apply(null, Array(last)).map(function (_, i) { return i + 1; });
+    var out = [1], a = Math.max(2, cur - 1), b = Math.min(last - 1, cur + 1);
+    if (cur <= 3) { a = 2; b = 4; } else if (cur >= last - 2) { a = last - 3; b = last - 1; }
+    if (a > 2) out.push(0);
+    for (var i = a; i <= b; i++) out.push(i);
+    if (b < last - 1) out.push(0);
+    out.push(last);
+    return out;
+  }
+  function pager(total) {
+    var el = $("feed-pager"), last = Math.ceil(total / PER_PAGE);
+    clear(el);
+    el.hidden = last <= 1;
+    if (last <= 1) return;
+    var from = (PAGE - 1) * PER_PAGE + 1, to = Math.min(total, PAGE * PER_PAGE);
+    function step(label, n, cls, aria) {
+      return n ? h("a", { class: "pg-btn " + cls, href: "#page=" + n, rel: cls === "pg-prev" ? "prev" : "next", "aria-label": aria }, label)
+               : h("span", { class: "pg-btn " + cls, "aria-disabled": "true", "aria-label": aria }, label);
+    }
+    var ol = h("ol", { class: "pg-list" });
+    pageItems(PAGE, last).forEach(function (n) {
+      ol.appendChild(h("li", null, n === 0 ? h("span", { class: "pg-gap", "aria-hidden": "true", text: "\u2026" }) :
+        n === PAGE ? h("a", { class: "pg-num on", href: "#page=" + n, "aria-current": "page", "aria-label": "Page " + n }, String(n)) :
+        h("a", { class: "pg-num", href: "#page=" + n, "aria-label": "Page " + n }, String(n))));
+    });
+    add(el, [h("p", { class: "pg-info", text: "Showing " + from + "\u2013" + to + " of " + total + " threats" }),
+      h("div", { class: "pg-ctl" }, step("\u2039 Previous", PAGE > 1 ? PAGE - 1 : 0, "pg-prev", "Previous page"), ol, step("Next \u203a", PAGE < last ? PAGE + 1 : 0, "pg-next", "Next page"))]);
+  }
+  function renderFeed(keepPage) {
+    if (keepPage !== true && PAGE !== 1) {
+      PAGE = 1;
+      if (/^#page=/.test(location.hash)) history.replaceState(null, "", location.pathname + location.search);
+    }
     var c = $("f-cat").value, ty = $("f-type").value, d = $("f-date").value, gk = $("f-country").value, sc = $("f-sector").value;
     [["f-cat", c], ["f-type", ty], ["f-date", d], ["f-country", gk], ["f-sector", sc]].forEach(function (x) { $(x[0]).classList.toggle("on", !!x[1]); });
     $("f-reset").disabled = !(c || ty || d || gk || sc);
@@ -457,7 +492,10 @@
       f.appendChild(h("li", { class: "empty-state" }, h("b", null, "No threats match"), "Try another date, country or sector, or a different indicator type.",
         h("div", null, h("button", { type: "button", class: "link-btn", onclick: resetFilters }, "Reset filters"))));
     }
-    list.forEach(function (t) { f.appendChild(row(t, newest)); });
+    var last = Math.max(1, Math.ceil(list.length / PER_PAGE));
+    if (PAGE > last) PAGE = last;
+    list.slice((PAGE - 1) * PER_PAGE, PAGE * PER_PAGE).forEach(function (t) { f.appendChild(row(t, newest)); });
+    pager(list.length);
   }
   function renderAllFiles() {
     var el = $("all-files");
@@ -604,6 +642,12 @@
     }
     document.title = "Rapid Threat Intel \u2013 AI threat intel, IOCs and hunting queries";
     detail.hidden = true; home.hidden = false;
+    var pm = /^page=(\d+)$/.exec(hash), want = pm ? Math.max(1, parseInt(pm[1], 10)) : 1;
+    if (DATA && want !== PAGE) {
+      PAGE = want; renderFeed(true);
+      /* after the browser restores its own scroll on back/forward */
+      setTimeout(function () { $("feed-h").scrollIntoView({ block: "start" }); }, 0);
+    }
     if (hash.indexOf("search/") === 0) {
       var q = decodeURIComponent(hash.slice(7));
       $("q").value = q;
