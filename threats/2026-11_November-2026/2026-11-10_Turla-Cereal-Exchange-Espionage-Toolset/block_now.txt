@@ -1,5 +1,5 @@
 # Turla Cereal: Exchange Server Espionage Toolset
-# Published 2026-11-10. High-confidence indicators to block. Updated 2026-11-10.
+# Published 2026-11-10. High-confidence indicators to block. Updated 2026-11-11.
 
 ## sha1 (18)
 4a3c263977417fb6977b0e598c9e3bc5924f390c

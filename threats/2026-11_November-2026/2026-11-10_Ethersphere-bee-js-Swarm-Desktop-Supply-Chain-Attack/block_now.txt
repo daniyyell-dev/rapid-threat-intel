@@ -1,5 +1,5 @@
 # Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
-# Published 2026-11-09. High-confidence indicators to block. Updated 2026-11-10.
+# Published 2026-11-09. High-confidence indicators to block. Updated 2026-11-11.
 
 ## ipv4 (2)
 193.57.9.155

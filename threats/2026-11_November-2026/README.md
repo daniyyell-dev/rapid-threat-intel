@@ -2,10 +2,11 @@
 
 [Back to index](../../README.md#latest-threats)
 
-11 threats, 456 indicators, 246 to block now. Newest first.
+12 threats, 464 indicators, 254 to block now. Newest first.
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
+| 2026-11-06 | [Storm-3358 ARTEX Agentic Intrusions Against the Financial Sector](2026-11-11_Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/) | Financially motivated intrusion / financial sector | 8 | 8 | Agentic AI framework used to exploit web apps at banks and drop WISP, vshell and AdaptixC2 RATs |
 | 2026-11-09 | [AhsayCBS Backup Server Exploitation: Webshells, Cryptominer and Python Implant](2026-11-10_AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant/) | Exploitation / backup server | 25 | 16 | Backup server auth bypass and RCE used to plant webshells, a cryptominer and a Python implant |
 | 2026-11-10 | [CopperDragon: China-Nexus Sparrow Framework Targeting Government and Telecoms](2026-11-10_CopperDragon-Sparrow-Framework-China-Nexus-Espionage/) | APT / espionage | 158 | 116 | China-nexus Sparrow malware supplier behind espionage against government and telecoms in 21 countries |
 | 2026-11-06 | [NotC2: AWS-Native AI C2 Proof of Concept](2026-11-10_NotC2-AWS-Native-AI-C2-Proof-of-Concept/) | Cloud / C2 | 2 | 0 | Proof-of-concept C2 built on AWS SQS, Lambda, SNS and Bedrock, with no network IOCs to block |

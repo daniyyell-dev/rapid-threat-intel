@@ -1,5 +1,5 @@
 # Phexia: macOS ClickFix Stealer with Polygon C2
-# Published 2026-11-04. High-confidence indicators to block. Updated 2026-11-10.
+# Published 2026-11-04. High-confidence indicators to block. Updated 2026-11-11.
 
 ## ipv4 (1)
 62.60.226.50

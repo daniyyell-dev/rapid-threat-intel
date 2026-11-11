@@ -4,7 +4,7 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-10 | 2026-11-10 13:43 | 2026-11-10 | APT / espionage | 26 | 18 |
+| 2026-11-10 | 2026-11-10 13:43 | 2026-11-11 | APT / espionage | 26 | 18 |
 
 ## Summary
 

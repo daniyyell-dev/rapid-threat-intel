@@ -4,7 +4,7 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-09 | 2026-11-10 13:43 | 2026-11-10 | Supply chain / identity | 57 | 1 |
+| 2026-11-09 | 2026-11-10 13:43 | 2026-11-11 | Supply chain / identity | 57 | 1 |
 
 ## Summary
 

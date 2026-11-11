@@ -4,7 +4,7 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-04 | 2026-11-10 15:14 | 2026-11-10 | Malware / macOS | 48 | 25 |
+| 2026-11-04 | 2026-11-10 15:14 | 2026-11-11 | Malware / macOS | 48 | 25 |
 
 ## Summary
 

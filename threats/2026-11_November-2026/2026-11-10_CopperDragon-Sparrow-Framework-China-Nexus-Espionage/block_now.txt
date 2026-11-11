@@ -1,5 +1,5 @@
 # CopperDragon: China-Nexus Sparrow Framework Targeting Government and Telecoms
-# Published 2026-11-10. High-confidence indicators to block. Updated 2026-11-10.
+# Published 2026-11-10. High-confidence indicators to block. Updated 2026-11-11.
 
 ## ipv4 (53)
 135.136.135.54

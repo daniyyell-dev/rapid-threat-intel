@@ -5,7 +5,7 @@
   <img src="assets/banner-light.webp" alt="Rapid Threat Intel - Move fast with threat intel from different sources" width="70%">
 </picture>
 
-[![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-11-informational)](#latest-threats) ![IOCs](https://img.shields.io/badge/IOCs-456-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--10-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
+[![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-12-informational)](#latest-threats) ![IOCs](https://img.shields.io/badge/IOCs-464-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--11-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
 </div>
 
@@ -46,12 +46,13 @@ The result is one place where SOC analysts, threat hunters and incident responde
 
 ## Latest threats
 
-Grouped by the month they were added, newest first. The date column is when the main source report was published. Last updated 2026-11-10.
+Grouped by the month they were added, newest first. The date column is when the main source report was published. Last updated 2026-11-11.
 
 ### [November 2026](threats/2026-11_November-2026/)
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
+| 2026-11-06 | [Storm-3358 ARTEX Agentic Intrusions Against the Financial Sector](threats/2026-11_November-2026/2026-11-11_Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/) | Financially motivated intrusion / financial sector | 8 | 8 | Agentic AI framework used to exploit web apps at banks and drop WISP, vshell and AdaptixC2 RATs |
 | 2026-11-09 | [AhsayCBS Backup Server Exploitation: Webshells, Cryptominer and Python Implant](threats/2026-11_November-2026/2026-11-10_AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant/) | Exploitation / backup server | 25 | 16 | Backup server auth bypass and RCE used to plant webshells, a cryptominer and a Python implant |
 | 2026-11-10 | [CopperDragon: China-Nexus Sparrow Framework Targeting Government and Telecoms](threats/2026-11_November-2026/2026-11-10_CopperDragon-Sparrow-Framework-China-Nexus-Espionage/) | APT / espionage | 158 | 116 | China-nexus Sparrow malware supplier behind espionage against government and telecoms in 21 countries |
 | 2026-11-06 | [NotC2: AWS-Native AI C2 Proof of Concept](threats/2026-11_November-2026/2026-11-10_NotC2-AWS-Native-AI-C2-Proof-of-Concept/) | Cloud / C2 | 2 | 0 | Proof-of-concept C2 built on AWS SQS, Lambda, SNS and Bedrock, with no network IOCs to block |
@@ -64,7 +65,7 @@ Grouped by the month they were added, newest first. The date column is when the 
 | 2026-11-05 | [FreeSWITCH CVE-2026-116779 SIP Command Injection Cryptominer Campaign](threats/2026-11_November-2026/2026-11-10_FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/) | Exploitation / cryptomining | 12 | 0 | SIP MESSAGE command injection used to install a cryptominer |
 | 2026-11-04 | [APT29 Watering Holes Targeting iOS and Android with N-Day Exploits](threats/2026-11_November-2026/2026-11-10_APT29-Mobile-Watering-Hole-Exploit-Chains/) | APT / espionage | 27 | 22 | Watering holes serving n-day exploit chains to iOS and Android visitors |
 
-To block everything at once, use [`all/`](all/): 246 high-confidence block indicators across all threats.
+To block everything at once, use [`all/`](all/): 254 high-confidence block indicators across all threats.
 
 ## Repository structure
 
@@ -150,10 +151,10 @@ Thanks to the organisations whose published research these indicators come from.
 
 | Type | Sources |
 | --- | --- |
-| **Security research** | [Check Point Research](https://research.checkpoint.com/) · [Corgea](https://corgea.com/) · [ESET](https://www.eset.com/) · [GreyNoise](https://www.greynoise.io/) · [Huntress](https://www.huntress.com/) · [Inforcer](https://www.inforcer.com/) · [SANS ISC](https://isc.sans.edu/) · [Sekoia](https://www.sekoia.com/) · [Socket](https://socket.dev/) · [Varonis](https://www.varonis.com/) · [WithSecure](https://www.withsecure.com/) · [ZeroPath](https://zeropath.com/) |
+| **Security research** | [Check Point Research](https://research.checkpoint.com/) · [Corgea](https://corgea.com/) · [ESET](https://www.eset.com/) · [GreyNoise](https://www.greynoise.io/) · [Huntress](https://www.huntress.com/) · [Inforcer](https://www.inforcer.com/) · [Microsoft Threat Intelligence](https://www.microsoft.com/en-us/security/blog/) · [SANS ISC](https://isc.sans.edu/) · [Sekoia](https://www.sekoia.com/) · [Socket](https://socket.dev/) · [Varonis](https://www.varonis.com/) · [WithSecure](https://www.withsecure.com/) · [ZeroPath](https://zeropath.com/) |
 | **Community tracker** | [ransomware.live](https://www.ransomware.live/) |
 | **Security news** | [BleepingComputer](https://www.bleepingcomputer.com/) · [The Hacker News](https://thehackernews.com/) · [The Stack](https://www.thestack.technology/) |
-| **Also monitored** | [Mandiant / Google Threat Intelligence](https://cloud.google.com/security/mandiant) · [Microsoft Threat Intelligence](https://www.microsoft.com/en-us/security/blog/) · [Unit 42](https://unit42.paloaltonetworks.com/) · [Cisco Talos](https://blog.talosintelligence.com/) · [Kaspersky Securelist](https://securelist.com/) · [SentinelLabs](https://www.sentinelone.com/labs/) · [Proofpoint](https://www.proofpoint.com/us/blog/threat-insight) · [Recorded Future](https://www.recordedfuture.com/research) · [Trend Micro](https://www.trendmicro.com/en_us/research.html) · [Sophos X-Ops](https://www.sophos.com/) · [CrowdStrike](https://www.crowdstrike.com/en-us/blog/) · [Volexity](https://www.volexity.com/blog/) · [Elastic Security Labs](https://www.elastic.co/security-labs) · [Rapid7](https://www.rapid7.com/blog/) · [Arctic Wolf](https://arcticwolf.com/resources/blog/) · [The DFIR Report](https://thedfirreport.com/) · [Wiz](https://www.wiz.io/blog) · [Aikido](https://www.aikido.dev/blog) · [StepSecurity](https://www.stepsecurity.io/blog) · [CrowdSec](https://www.crowdsec.net/) · [watchTowr](https://labs.watchtowr.com/) · [VulnCheck](https://www.vulncheck.com/kev) · [Bitdefender](https://www.bitdefender.com/) · [Zscaler ThreatLabz](https://www.zscaler.com/blogs/security-research) · [Datadog Security Labs](https://securitylabs.datadoghq.com/) · [JPCERT/CC](https://blogs.jpcert.or.jp/en/) · [FortiGuard Labs](https://www.fortinet.com/blog/threat-research) · [Group-IB](https://www.group-ib.com/blog/) · [Symantec](https://www.security.com/threat-intelligence) · [abuse.ch](https://abuse.ch/) · [Censys](https://censys.com/blog/) · [CISA](https://www.cisa.gov/) · [NCSC UK](https://www.ncsc.gov.uk/) · [CERT-EU](https://cert.europa.eu/) · [CERT-FR](https://www.cert.ssi.gouv.fr/) · [ENISA](https://www.enisa.europa.eu/) · [FBI IC3](https://www.ic3.gov/) · [ACSC](https://www.cyber.gov.au/) · [FS-ISAC](https://www.fsisac.com/) · [The Record](https://therecord.media/) · [SecurityWeek](https://www.securityweek.com/) |
+| **Also monitored** | [Mandiant / Google Threat Intelligence](https://cloud.google.com/security/mandiant) · [Unit 42](https://unit42.paloaltonetworks.com/) · [Cisco Talos](https://blog.talosintelligence.com/) · [Kaspersky Securelist](https://securelist.com/) · [SentinelLabs](https://www.sentinelone.com/labs/) · [Proofpoint](https://www.proofpoint.com/us/blog/threat-insight) · [Recorded Future](https://www.recordedfuture.com/research) · [Trend Micro](https://www.trendmicro.com/en_us/research.html) · [Sophos X-Ops](https://www.sophos.com/) · [CrowdStrike](https://www.crowdstrike.com/en-us/blog/) · [Volexity](https://www.volexity.com/blog/) · [Elastic Security Labs](https://www.elastic.co/security-labs) · [Rapid7](https://www.rapid7.com/blog/) · [Arctic Wolf](https://arcticwolf.com/resources/blog/) · [The DFIR Report](https://thedfirreport.com/) · [Wiz](https://www.wiz.io/blog) · [Aikido](https://www.aikido.dev/blog) · [StepSecurity](https://www.stepsecurity.io/blog) · [CrowdSec](https://www.crowdsec.net/) · [watchTowr](https://labs.watchtowr.com/) · [VulnCheck](https://www.vulncheck.com/kev) · [Bitdefender](https://www.bitdefender.com/) · [Zscaler ThreatLabz](https://www.zscaler.com/blogs/security-research) · [Datadog Security Labs](https://securitylabs.datadoghq.com/) · [JPCERT/CC](https://blogs.jpcert.or.jp/en/) · [FortiGuard Labs](https://www.fortinet.com/blog/threat-research) · [Group-IB](https://www.group-ib.com/blog/) · [Symantec](https://www.security.com/threat-intelligence) · [abuse.ch](https://abuse.ch/) · [Censys](https://censys.com/blog/) · [CISA](https://www.cisa.gov/) · [NCSC UK](https://www.ncsc.gov.uk/) · [CERT-EU](https://cert.europa.eu/) · [CERT-FR](https://www.cert.ssi.gouv.fr/) · [ENISA](https://www.enisa.europa.eu/) · [FBI IC3](https://www.ic3.gov/) · [ACSC](https://www.cyber.gov.au/) · [FS-ISAC](https://www.fsisac.com/) · [The Record](https://therecord.media/) · [SecurityWeek](https://www.securityweek.com/) |
 
 ## Contributing
 

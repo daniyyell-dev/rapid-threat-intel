@@ -4,7 +4,7 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-06 | 2026-11-10 15:14 | 2026-11-10 | Cloud / C2 | 2 | 0 |
+| 2026-11-06 | 2026-11-10 15:14 | 2026-11-11 | Cloud / C2 | 2 | 0 |
 
 ## Summary
 

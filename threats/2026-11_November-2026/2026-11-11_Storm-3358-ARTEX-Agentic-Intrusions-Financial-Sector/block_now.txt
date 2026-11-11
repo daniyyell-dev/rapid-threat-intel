@@ -1,0 +1,12 @@
+# Storm-3358 ARTEX Agentic Intrusions Against the Financial Sector
+# Published 2026-11-06. High-confidence indicators to block. Updated 2026-11-11.
+
+## ipv4 (8)
+199.19.95.66
+199.19.95.67
+199.19.95.68
+91.92.240.238
+85.11.168.45
+85.11.167.52
+178.16.54.129
+31.77.229.35
