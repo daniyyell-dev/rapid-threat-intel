@@ -49,11 +49,12 @@ kbd { font-size: 12px; padding: 0 5px; border: 1px solid var(--line-2); border-r
 /* Top bar, as the masthead on daniyyell.com */
 .bar { position: sticky; top: 0; z-index: 20; background: rgba(20, 16, 16, .94); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--line-2); }
 .bar-in { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gut); height: 60px; display: flex; align-items: center; gap: 24px; }
-.mark { display: flex; align-items: baseline; gap: 12px; text-decoration: none; white-space: nowrap; color: var(--ink); }
+.mark { display: flex; align-items: center; gap: 10px; text-decoration: none; white-space: nowrap; color: var(--ink); }
 .mark:hover { color: var(--ink); }
-.mark-sq { display: none; }
-.mark-t { font: 700 20px/1 var(--sans); }
-.mark-s { font: 700 13px/1 var(--sans); color: var(--ink-2); }
+/* Brand mark: the burst and wordmark cut from the repo banner (assets/banner-dark.png) */
+.mark-i { display: block; width: 34px; height: 34px; margin-left: -4px; }
+.mark-w { display: block; width: auto; height: 21px; }
+.mark-s { font: 700 13px/1 var(--sans); color: var(--ink-2); padding-left: 12px; border-left: 1px solid var(--line-2); align-self: center; line-height: 21px; }
 .pulse { margin: 0; display: flex; align-items: center; gap: 8px; font: 400 13px/1 var(--sans); color: var(--ink-2); white-space: nowrap; }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--pink); animation: ping 2.4s var(--ease) infinite; }
 @keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(242, 19, 104, .5); } 70%, 100% { box-shadow: 0 0 0 7px rgba(242, 19, 104, 0); } }
@@ -73,6 +74,9 @@ h1 { font: 700 clamp(32px, 4.4vw, 52px)/1.1 var(--sans); max-width: 15em; text-w
 .caution p:last-child { margin: 0; font-size: 14.5px; color: var(--ink-2); line-height: 1.6; }
 .caution strong { color: var(--ink); }
 
+.brief-r { min-width: 0; }
+.banner { display: block; margin: 0 0 18px; }
+.banner img { display: block; width: 100%; height: auto; max-width: 380px; margin: 0 auto; }
 .ledger { margin: 0; display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line-2); }
 .cell { padding: 16px 18px; border-right: 1px solid var(--line-2); border-bottom: 1px solid var(--line-2); min-width: 0; }
 .cell:nth-child(2n) { border-right: 0; }
@@ -270,6 +274,7 @@ td.none { text-align: center; padding: 36px; color: var(--ink-3); font-size: 15p
 /* Responsive */
 @media (max-width: 1080px) {
   .brief { grid-template-columns: 1fr; }
+  .banner { display: none; }
   .ledger { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .cell { border-bottom: 0; }
   .cell:nth-child(2n) { border-right: 1px solid var(--line-2); }
@@ -289,7 +294,9 @@ td.none { text-align: center; padding: 36px; color: var(--ink-3); font-size: 15p
   body { font-size: 15.5px; }
   .bar-in { gap: 12px; height: 56px; }
   .mark-s, .bar-nav, .pl { display: none; }
-  .mark-t { font-size: 18px; }
+  .mark { gap: 7px; }
+  .mark-i { width: 28px; height: 28px; }
+  .mark-w { height: 15px; }
   .pulse { margin-left: auto; font-size: 12.5px; }
   .brief { padding-top: 28px; padding-bottom: 28px; }
   h1 { font-size: 32px; }

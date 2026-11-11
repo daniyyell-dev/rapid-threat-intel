@@ -271,7 +271,7 @@ The repository, the dashboard and `feed.json` are updated about every 2 hours, a
 
 ## Publishing and self-hosting
 
-The dashboard is the `site/` folder on `main`: `index.html`, `style.css`, `app.js`, `feed.json`, the `fonts/` folder (self-hosted Roboto and Roboto Mono, SIL Open Font License, licences in `fonts/OFL-Roboto.txt` and `fonts/OFL-RobotoMono.txt`) and `.nojekyll`. Publish that folder as the GitHub Pages site root (for example with GitHub Actions, or by using the branch and folder your Pages settings serve). The page loads `feed.json` from the same folder, so keep those files together.
+The dashboard is the `site/` folder on `main`: `index.html`, `style.css`, `app.js`, `feed.json`, the `fonts/` folder (self-hosted Roboto and Roboto Mono, SIL Open Font License, licences in `fonts/OFL-Roboto.txt` and `fonts/OFL-RobotoMono.txt`), the `img/` folder (the project logo and banner, cut and resized from `assets/banner-dark.png` and `assets/banner-dark.webp`) and `.nojekyll`. Publish that folder as the GitHub Pages site root (for example with GitHub Actions, or by using the branch and folder your Pages settings serve). The page loads `feed.json` from the same folder, so keep those files together.
 
 > **Live URL:** https://daniyyell-dev.github.io/rapid-threat-intel/
 
