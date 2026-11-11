@@ -663,3 +663,13 @@ tbody tr:last-child td { border-bottom: 0; }
 @media (max-width: 1080px) and (min-width: 721px) {
   .geo-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; }
 }
+
+/* Hero art: animated in every mode; caption as real text */
+.banner { margin: 0; max-width: 320px; margin-left: auto; }
+.banner img { max-width: 100%; margin: 0; }
+.banner-cap { margin: 4px 0 0; text-align: center; font: 400 13px/1.4 var(--sans); color: #c9c9cf; text-wrap: balance; }
+@media (max-width: 860px) {
+  .brief-r { display: block; }
+  .brief { row-gap: 8px; }
+  .banner { margin: 0 auto; max-width: 220px; }
+}
