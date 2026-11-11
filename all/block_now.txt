@@ -1,5 +1,11 @@
 # All high-confidence indicators to block. Updated 2026-11-11.
 
+## 2026-11-10 GhostFrame: ESXi Hypervisor Implant Linked to Settra Ransomware (TAG-218)
+45.158.196.81
+45.158.196.141
+193.5.65.114
+a05eae6d07b82e2e5451a72266f21fbaf76486ef4920a820988de93e15353a10
+
 ## 2026-11-06 Storm-3358 ARTEX Agentic Intrusions Against the Financial Sector
 199.19.95.66
 199.19.95.67

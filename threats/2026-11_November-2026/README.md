@@ -2,12 +2,13 @@
 
 [Back to index](../../README.md#latest-threats)
 
-12 threats, 464 indicators, 254 to block now. Newest first.
+13 threats, 468 indicators, 258 to block now. Newest first.
 
 ### [2026-11-11](2026-11-11/)
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
+| 2026-11-10 | [GhostFrame: ESXi Hypervisor Implant Linked to Settra Ransomware (TAG-218)](2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/) | Ransomware / hypervisor | 4 | 4 | ESXi hypervisor implant used by a Settra-linked group after VPN appliance intrusions in the US and Europe |
 | 2026-11-06 | [Storm-3358 ARTEX Agentic Intrusions Against the Financial Sector](2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/) | Financially motivated intrusion / financial sector | 8 | 8 | Agentic AI framework used to exploit web apps at banks and drop WISP, vshell and AdaptixC2 RATs |
 
 ### [2026-11-10](2026-11-10/)

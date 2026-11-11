@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-11 03:52",
- "threat_count": 12,
- "indicator_count": 464,
- "block_now_count": 254,
+ "last_updated": "2026-11-11 07:54",
+ "threat_count": 13,
+ "indicator_count": 468,
+ "block_now_count": 258,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -74,6 +74,167 @@
   }
  ],
  "threats": [
+  {
+   "id": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware",
+   "folder": "threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware",
+   "name": "GhostFrame: ESXi Hypervisor Implant Linked to Settra Ransomware (TAG-218)",
+   "short": "GhostFrame ESXi implant (TAG-218)",
+   "category": "Ransomware / hypervisor",
+   "published": "2026-11-10",
+   "entry_date": "2026-11-11 07:54",
+   "last_updated": "2026-11-11",
+   "seq": 13,
+   "headline": "ESXi hypervisor implant used by a Settra-linked group after VPN appliance intrusions in the US and Europe",
+   "summary": "Recorded Future's Insikt Group reports GhostFrame, a previously undocumented command-and-control and post-exploitation framework for compromised VMware ESXi hosts, used by TAG-218, a group whose activity overlaps with Settra ransomware. Between late August and October 2026 TAG-218 servers targeted VPN appliances in the US and Europe, mainly SonicWall, Palo Alto Networks and Fortinet, and four of the targeted organisations later appeared on the Settra leak site. GhostFrame needs existing root access on the hypervisor: its implant, vmhostd-core, runs from a datastore, persists through /etc/rc.local.d/local.sh, keeps disabling the ESXi firewall and unsigned-binary protection, and masquerades as vmhostd. Operators can list, power off and snapshot VMs, relay VNC sessions, tunnel the ESXi Host Client, pivot with the gfsox SOCKS5 proxy, and harvest Windows credentials from VM memory, disks and datastores with sdkmon and VMkatz. The implant tries six C2 ports at once (53, 2222, 3389, 4444, 8443 and 9443), which gives a distinctive network pattern.",
+   "caveat": null,
+   "targets": {
+    "countries": [
+     {
+      "code": "US",
+      "name": "United States"
+     }
+    ],
+    "regions": [
+     "Europe"
+    ],
+    "sectors": [],
+    "note": "VPN appliances of organisations in the US and Europe targeted between late August and October 2026; sectors not stated.",
+    "source": {
+     "url": "https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware",
+     "label": "Recorded Future Insikt Group - GhostFrame: A new ESXi Implant Linked to Settra Ransomware"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1133",
+     "name": "External Remote Services",
+     "url": "https://attack.mitre.org/techniques/T1133/"
+    },
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1037",
+     "name": "Boot or Logon Initialization Scripts",
+     "url": "https://attack.mitre.org/techniques/T1037/"
+    },
+    {
+     "id": "T1562.004",
+     "name": "Disable or Modify System Firewall",
+     "url": "https://attack.mitre.org/techniques/T1562/004/"
+    },
+    {
+     "id": "T1036",
+     "name": "Masquerading",
+     "url": "https://attack.mitre.org/techniques/T1036/"
+    },
+    {
+     "id": "T1090",
+     "name": "Proxy",
+     "url": "https://attack.mitre.org/techniques/T1090/"
+    },
+    {
+     "id": "T1003",
+     "name": "OS Credential Dumping",
+     "url": "https://attack.mitre.org/techniques/T1003/"
+    },
+    {
+     "id": "T1219",
+     "name": "Remote Access Software",
+     "url": "https://attack.mitre.org/techniques/T1219/"
+    },
+    {
+     "id": "T1486",
+     "name": "Data Encrypted for Impact",
+     "url": "https://attack.mitre.org/techniques/T1486/"
+    }
+   ],
+   "recommended_actions": [
+    "Block the two GhostFrame C2 addresses and the MeshCentral server, and search 30 days of firewall and proxy logs for connections from ESXi management addresses and VPN appliances to them.",
+    "Alert when one host opens near-simultaneous connections to the same external IP on ports 53, 2222, 3389, 4444, 8443 and 9443.",
+    "On every ESXi host, check /etc/rc.local.d/local.sh and /opt for vmhostd-core, confirm the firewall is enabled and execInstalledOnly is set, and look for unexpected snapshots or VNC enabled on VMs.",
+    "Patch and review SonicWall, Palo Alto Networks and Fortinet VPN appliances, keep ESXi management off the internet and rotate credentials for accounts on VMs hosted on an affected hypervisor."
+   ],
+   "sources": [
+    {
+     "url": "https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware",
+     "label": "Recorded Future Insikt Group - GhostFrame: A new ESXi Implant Linked to Settra Ransomware"
+    }
+   ],
+   "indicator_count": 4,
+   "block_now_count": 4,
+   "indicator_counts": {
+    "ipv4": 3,
+    "sha256": 1
+   },
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/block_now.txt",
+     "download": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/defender_xdr_indicators.csv",
+     "download": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/hunt.kql",
+     "download": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware_hunt.kql"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/iocs.csv",
+     "download": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware",
+   "indicators": [
+    {
+     "value": "45.158.196.81",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "GhostFrame C2 server used by TAG-218 to control implants on compromised VMware ESXi hosts.",
+     "source_url": "https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware",
+     "source_label": "Recorded Future Insikt Group - GhostFrame: A new ESXi Implant Linked to Settra Ransomware"
+    },
+    {
+     "value": "45.158.196.141",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Second GhostFrame C2 server tied to TAG-218 infrastructure that receives ESXi implant connections.",
+     "source_url": "https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware",
+     "source_label": "Recorded Future Insikt Group - GhostFrame: A new ESXi Implant Linked to Settra Ransomware"
+    },
+    {
+     "value": "193.5.65.114",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "MeshCentral remote management server used by TAG-218 for persistence, previously tied to Settra ransomware intrusions; a victim Fortinet VPN appliance beaconed to it on 12 Oct 2026.",
+     "source_url": "https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware",
+     "source_label": "Recorded Future Insikt Group - GhostFrame: A new ESXi Implant Linked to Settra Ransomware"
+    },
+    {
+     "value": "a05eae6d07b82e2e5451a72266f21fbaf76486ef4920a820988de93e15353a10",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA-256 of the GhostFrame implant analysed by Insikt Group (ELF binary deployed on ESXi as vmhostd-core).",
+     "source_url": "https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware",
+     "source_label": "Recorded Future Insikt Group - GhostFrame: A new ESXi Implant Linked to Settra Ransomware"
+    }
+   ]
+  },
   {
    "id": "Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector",
    "folder": "threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector",
