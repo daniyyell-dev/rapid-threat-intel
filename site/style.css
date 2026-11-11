@@ -769,12 +769,18 @@ h1.tagline span { display: block; }
 h1.tagline { font-size: clamp(24px, 1.95vw, 28px); line-height: 1.22; letter-spacing: -.01em; }
 .tagline + .tagline-sub { margin-top: 10px; font-size: 15px; }
 .meta { margin-bottom: 14px; }
-@keyframes line-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-h1.tagline span { animation: line-in .6s var(--ease) both; }
-h1.tagline span:nth-child(1) { animation-delay: .15s; }
-h1.tagline span:nth-child(2) { animation-delay: .65s; }
-h1.tagline span:nth-child(3) { animation-delay: 1.15s; }
-.tagline + .tagline-sub { animation: line-in .6s var(--ease) 1.65s both; }
+/* Curtain reveal: each line is unveiled left to right behind a soft feathered edge, overlapping, then the subline fades in */
+@keyframes curtain { from { -webkit-mask-position: 100% 0; mask-position: 100% 0; } to { -webkit-mask-position: 0 0; mask-position: 0 0; } }
+@keyframes sub-in { from { opacity: 0; } to { opacity: 1; } }
+h1.tagline span { width: fit-content; padding-right: .15em; margin-right: -.15em;
+  -webkit-mask-image: linear-gradient(90deg, #000 40%, transparent 60%); mask-image: linear-gradient(90deg, #000 40%, transparent 60%);
+  -webkit-mask-size: 250% 100%; mask-size: 250% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-position: 0 0; mask-position: 0 0;
+  animation: curtain 1s cubic-bezier(.65, 0, .35, 1) both; }
+h1.tagline span:nth-child(1) { animation-delay: .2s; }
+h1.tagline span:nth-child(2) { animation-delay: .6s; }
+h1.tagline span:nth-child(3) { animation-delay: 1s; }
+.tagline + .tagline-sub { animation: sub-in .8s ease 1.8s both; }
 @media (max-width: 720px) {
   h1.tagline { font-size: 22px; line-height: 1.25; }
   .tagline + .tagline-sub { margin-top: 8px; font-size: 14.5px; }
@@ -783,3 +789,6 @@ h1.tagline span:nth-child(3) { animation-delay: 1.15s; }
 @media (prefers-reduced-motion: reduce) {
   h1.tagline span, .tagline + .tagline-sub { animation: none; }
 }
+/* The hero itself only fades (no rise), so the curtain lines never move vertically */
+.brief { animation: sub-in .5s ease both; }
+@media (prefers-reduced-motion: reduce) { .brief { animation: none; } }
