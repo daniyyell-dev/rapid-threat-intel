@@ -759,3 +759,27 @@ h1 { font-size: clamp(26px, 2.5vw, 36px); line-height: 1.12; letter-spacing: -.0
   .tagline-sub { font-size: 15px; margin-top: 8px; }
   .caution { margin-top: 20px; }
 }
+
+/* Tagline: three lines on every screen */
+h1.tagline { max-width: none; text-wrap: initial; line-height: 1.16; }
+h1.tagline span { display: block; }
+@media (max-width: 720px) { h1.tagline { line-height: 1.18; } }
+
+/* Tagline: smaller, and the three lines rise in one after another, then the subline. Plays once; content is visible without it. */
+h1.tagline { font-size: clamp(24px, 1.95vw, 28px); line-height: 1.22; letter-spacing: -.01em; }
+.tagline + .tagline-sub { margin-top: 10px; font-size: 15px; }
+.meta { margin-bottom: 14px; }
+@keyframes line-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+h1.tagline span { animation: line-in .6s var(--ease) both; }
+h1.tagline span:nth-child(1) { animation-delay: .15s; }
+h1.tagline span:nth-child(2) { animation-delay: .65s; }
+h1.tagline span:nth-child(3) { animation-delay: 1.15s; }
+.tagline + .tagline-sub { animation: line-in .6s var(--ease) 1.65s both; }
+@media (max-width: 720px) {
+  h1.tagline { font-size: 22px; line-height: 1.25; }
+  .tagline + .tagline-sub { margin-top: 8px; font-size: 14.5px; }
+  .meta { margin-bottom: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  h1.tagline span, .tagline + .tagline-sub { animation: none; }
+}
