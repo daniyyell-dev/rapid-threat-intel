@@ -50,6 +50,8 @@ The detail view has:
 - **Summary** — the research write-up
 - **Affected countries and sectors** — the countries named in the sources (two-letter ISO code and name), any regions such as *Latin America* or *Global*, the targeted sectors, a one-line note on scope and the source it came from. Anything the sources do not state is shown as *Not stated in the sources*.
 - **Recommended actions** — an ordered list
+- **Behaviours to hunt** — when the threat has published behaviours (indicators of attack): what to look for, which logs, why it matters, *Alert* or *Hunt*, and which queries include it. Behaviours are leads, not confirmed indicators, and are never block-list entries.
+- **Hunt** — one tab per platform (*Defender XDR*, *Splunk*, *Google SecOps*) with a preview of that threat's query, a **Copy** button and a **Download** link. The Splunk tab also offers the raw-search version for data not mapped to CIM. The preview is fetched from the repository when its tab opens; tabs can be switched with the arrow keys.
 - **MITRE ATT&CK** — techniques linking to [attack.mitre.org](https://attack.mitre.org/)
 - **Sources** — the published reports
 - **Indicators** — a table of every indicator, with a text filter and a type filter. On a narrow screen the rows stack as cards. Columns are indicator, type, confidence, action, and description with source.
@@ -110,10 +112,14 @@ Each download link fetches the file from `raw.githubusercontent.com` and saves i
 | `defender_xdr_indicators.csv` | Microsoft Defender XDR bulk import for every threat |
 | `iocs.csv` | Every indicator with description and source, for a SIEM or TIP |
 | `live_feed_hunt.kql` | Defender advanced hunting query that loads the live lists itself |
+| `live_feed_hunt.spl` | Splunk hunt over the CIM data models using the `rti_iocs.csv` lookup |
+| `live_feed.yaral` | Google SecOps YARA-L 2.0 rule using data tables |
+| `splunk_rti_iocs.csv` | Block-now indicators as a Splunk lookup (`indicator,type,threat`) |
+| `splunk_macros.conf` | Example `rti_*` macros for `hunt_raw.spl` |
 
 Stable raw URLs follow `https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/<file>`.
 
-**Per-threat files**, in order: `block_now.txt` (always), `defender_xdr_indicators.csv` (when the threat has rows Defender can import), `hunt.kql` (when a query exists), and `iocs.csv` (always). A threat with no network or hash indicators, such as a behaviour-only proof of concept, has no Defender import file.
+**Per-threat files**, in order: `block_now.txt` (always), `defender_xdr_indicators.csv` (when the threat has rows Defender can import), `hunt.kql`, `hunt.spl`, `hunt_raw.spl` and `hunt.yaral` (when a query exists), and `iocs.csv` (always). A threat with no network or hash indicators, such as a behaviour-only proof of concept, has no Defender import file.
 
 Formats, confidence values and the 90-day Defender expiry are in [Data format](data-format.md).
 
@@ -173,6 +179,10 @@ The dashboard loads [`site/feed.json`](../site/feed.json) from the same folder a
 | `files` | array | Per-threat downloads (see file objects) | |
 | `repo_url` | string | GitHub folder URL | `"https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector"` |
 | `indicators` | array | Indicator objects | |
+| `ioa_count` | integer | Behaviours (indicators of attack) published for this threat | `11` |
+| `ioa_note` | string or null | The note shown above the behaviours | `"Behaviours are leads, not confirmed indicators..."` |
+| `ioas` | array | `{artefact, log_source, why, action, has_query, queries, source_url, source_name}`; `action` is `alert` or `hunt`, `queries` lists `KQL`, `SPL` and `YARA-L` where the behaviour is in that query | |
+| `queries` | array | One object per hunting query, in tab order: `platform` (`Defender XDR`, `Splunk` or `Google SecOps`), `language`, `name`, `url` (raw file), `download` (suggested file name) and, for Splunk, `alt` with the raw-search version | `{"platform": "Splunk", "language": "SPL", "name": "hunt.spl", "url": "https://raw.githubusercontent.com/...", "download": "<id>_hunt.spl", "alt": {...}}` |
 
 ### Target objects (`threats[].targets`)
 
@@ -261,7 +271,9 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/daniyyell-dev/rapid-th
 
 **Microsoft Defender XDR.** Download `defender_xdr_indicators.csv` (combined or per threat). In the [Defender portal](https://security.microsoft.com) go to **Settings > Endpoints > Indicators**, select the tab for the indicator type, then **Import**. Only 500 indicators can be uploaded per batch. To hunt, paste `live_feed_hunt.kql` (every threat) or a threat's `hunt.kql` into **Hunting > Advanced hunting** and run it. The live-feed query loads the current per-type lists with `externaldata`, so it does not need to be edited when the feed changes. Step-by-step: [Microsoft Defender XDR](defender-xdr.md).
 
-**Google Security Operations.** Load the per-type `block_now_*.txt` files into data tables (one value per line, no comments) and match UDM events with YARA-L 2.0 rules. The JSON feed is useful where you want descriptions and sources as well as values; the plain lists are the direct import path. Step-by-step: [Google SecOps](google-secops.md).
+**Google Security Operations.** Load the per-type `block_now_*.txt` files into data tables (one value per line, no comments) and match UDM events with `live_feed.yaral`, or paste a threat's `hunt.yaral` into the Rules Editor. The JSON feed is useful where you want descriptions and sources as well as values; the plain lists are the direct import path. Step-by-step: [Google SecOps](google-secops.md).
+
+**Splunk.** Run a threat's `hunt.spl` (CIM data models) or `hunt_raw.spl` (raw events through the `rti_*` macros), or load `splunk_rti_iocs.csv` as the `rti_iocs.csv` lookup and run `live_feed_hunt.spl` for every threat. Step-by-step: [Splunk](splunk.md).
 
 For firewalls, proxies and EDR lists, see [Firewalls and EDR](firewall-and-edr.md).
 

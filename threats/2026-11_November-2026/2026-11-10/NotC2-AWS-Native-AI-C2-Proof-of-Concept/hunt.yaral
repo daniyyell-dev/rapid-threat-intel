@@ -1,0 +1,112 @@
+// NotC2: AWS-Native AI C2 Proof of Concept
+// Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
+// Google SecOps (YARA-L 2.0) detection rule over UDM events. Author: daniyyell-dev.
+// https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/NotC2-AWS-Native-AI-C2-Proof-of-Concept
+// Paste into Detection > Rules & Detections > Rules Editor, then run a Retrohunt over at least the last 30 days
+// before enabling it live. The indicators below are live and malicious: do not browse to them.
+// Groups hits per principal host per hour (events without a hostname are kept as one group).
+// Behaviours: 3 alert behaviour(s) with a clean UDM mapping are part of this rule; the rest are listed as leads at the end.
+// Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.
+// Behaviours are for hunting and alerting only; never block on them.
+rule rti_notc2_aws_native_ai_c2_proof_of_concept {
+  meta:
+    author = "daniyyell-dev"
+    description = "Matches UDM events against the published alert behaviours for NotC2: AWS-Native AI C2 Proof of Concept"
+    threat = "NotC2: AWS-Native AI C2 Proof of Concept"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/NotC2-AWS-Native-AI-C2-Proof-of-Concept"
+    source_1 = "https://www.varonis.com/blog/notc2-ai-powered-c2-channel"
+    mitre_attack_technique = "T1059.009, T1078.004, T1102, T1567"
+    false_positives = "Behaviour matches are leads and can be legitimate admin or automation activity; compare with your own baseline"
+    yara_version = "YL2.0"
+    severity = "Medium"
+    priority = "Medium"
+    tlp = "CLEAR"
+    published = "2026-11-06"
+    rule_version = "1.0"
+
+  events:
+    (
+      // Behaviour 1 (Alert): SNS subscription to an external HTTP(S) endpoint by a Lambda role
+      //   Note: the rule matches every SNS Subscribe; check the protocol and endpoint in the raw event
+      ($e.metadata.log_type = "AWS_CLOUDTRAIL" and $e.metadata.product_event_type = "Subscribe") or
+      // Behaviour 4 (Alert): New SQS-to-Lambda trigger
+      //   Note: the rule matches every CreateEventSourceMapping; check for an SQS queue ARN in the raw event
+      ($e.metadata.log_type = "AWS_CLOUDTRAIL" and $e.metadata.product_event_type = /^CreateEventSourceMapping/) or
+      // Behaviour 6 (Alert): AWS resources named NotC2
+      ($e.metadata.log_type = "AWS_CLOUDTRAIL" and $e.target.resource.name = /notc2/ nocase) or
+      ($e.metadata.event_type = "PROCESS_LAUNCH" and $e.target.process.command_line = /notc2/ nocase)
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(60)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}
+
+// Behaviours not in the rule above. Hunt them in UDM search or the named logs.
+// Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting. Behaviours are for hunting and alerting only; never block on them.
+//
+//   Behaviour 2 (Hunt): SNS subscription confirmed for a new external endpoint
+//       Look for: SNS ConfirmSubscription for a new external HTTP or HTTPS endpoint
+//       Log source: CloudTrail management events (sns.amazonaws.com)
+//       UDM search: metadata.log_type = "AWS_CLOUDTRAIL" AND metadata.product_event_type = "ConfirmSubscription"
+//
+//   Behaviour 3 (Hunt): SNS topic created by a Lambda role
+//       Look for: SNS CreateTopic called by a Lambda execution role
+//       Log source: CloudTrail management events (sns.amazonaws.com)
+//       UDM search: metadata.log_type = "AWS_CLOUDTRAIL" AND metadata.product_event_type = "CreateTopic"
+//
+//   Behaviour 5 (Alert): Queue, function and trigger created by one identity within an hour
+//       Look for: One identity calling sqs:CreateQueue, lambda:CreateFunction and lambda:CreateEventSourceMapping within an hour
+//       Log source: CloudTrail management events
+//       No rule written: needs three different events by one identity (a multi-event rule); run it as a separate rule if you want it live
+//
+//   Behaviour 7 (Hunt): First Bedrock use by a Lambda role
+//       Look for: Bedrock InvokeModel, Converse or ConverseStream from a Lambda execution role that has not used Bedrock in the previous 30 days
+//       Log source: CloudTrail management events (bedrock.amazonaws.com)
+//       UDM search: metadata.log_type = "AWS_CLOUDTRAIL" AND metadata.product_event_type = /^(InvokeModel|Converse)/
+//
+//   Behaviour 8 (Hunt): Lambda role calling Bedrock and discovery APIs together
+//       Look for: The same Lambda role calling Bedrock and broad discovery APIs (ec2 DescribeInstances, dynamodb ListTables, rds DescribeDBInstances, lambda ListFunctions, s3 ListBuckets) in the same hour
+//       Log source: CloudTrail management events
+//       No rule written: needs Bedrock and discovery calls by one role in the same hour
+//
+//   Behaviour 9 (Alert): Bedrock function named execute_aws_operation
+//       Look for: A Bedrock tool definition named execute_aws_operation, or prompts starting with "ai:"
+//       Log source: Bedrock model invocation logs (CloudWatch Logs or S3); not in CloudTrail
+//       No rule written: Bedrock model invocation logs (prompt and tool content) are not parsed into UDM fields by default
+//
+//   Behaviour 10 (Hunt): Lambda logs relaying commands through SNS
+//       Look for: Lambda log lines "SNS message body:" followed by Command:, Target:, Exit Code:, Output: and Error: fields, or functions configured with SNS_TOPIC_ARN or SNS_TOPIC_NAME
+//       Log source: Lambda CloudWatch Logs and function configuration
+//       No rule written: Lambda function log text is not mapped to a UDM field; search the raw CloudWatch logs
+//
+//   Behaviour 11 (Hunt): Full SQS to Lambda to Bedrock to SNS command chain
+//       Look for: An SQS message from an unexpected source, then a Lambda run, Bedrock calls, other AWS API calls and an SNS publish to an external subscriber within minutes, all on the same queue, function and topic
+//       Log source: CloudTrail data events (SQS, Lambda, SNS), SNS delivery-status logs, Bedrock invocation logs
+//       No rule written: needs CloudTrail data events for SQS, Lambda and SNS correlated over minutes on one request chain; review the chain by hand from any hit above
+
+// Hunt leads and notes (not network or hash indicators), check manually in UDM search:
+//   [other] NotC2
+//   [other] execute_aws_operation
+//   Look for new or unexpected SQS-to-Lambda event source mappings (lambda:CreateEventSourceMapping).
+//   Look for Bedrock InvokeModel or Converse calls from a Lambda execution role that has not previously used Bedrock, especially if that role also starts calling unrelated AWS APIs.
+//   Look for SNS HTTP or HTTPS subscriptions to external endpoints created by a Lambda execution role.
+//   Correlate an unexpected SQS message, a Lambda invocation, Bedrock activity, downstream AWS API calls and an SNS publish to an external subscriber in a short window.

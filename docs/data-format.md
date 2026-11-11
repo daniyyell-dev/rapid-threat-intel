@@ -11,6 +11,10 @@
 | `all/block_now_<type>.txt` | Text | One type per file, one value per line, no comments |
 | `defender_xdr_indicators.csv` | CSV | Microsoft Defender XDR bulk-import format |
 | `hunt.kql` | KQL | Defender XDR advanced hunting query |
+| `hunt.spl` | SPL | Splunk hunt over the CIM data models |
+| `hunt_raw.spl` | SPL | Splunk hunt over raw events, through the macros in `all/splunk_macros.conf` |
+| `hunt.yaral` | YARA-L 2.0 | Google SecOps detection rule |
+| `all/splunk_rti_iocs.csv` | CSV | Block-now indicators as a Splunk lookup (`indicator,type,threat`) |
 
 ## iocs.csv
 

@@ -1,0 +1,75 @@
+// Storm-3358 ARTEX Agentic Intrusions Against the Financial Sector
+// Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
+// Google SecOps (YARA-L 2.0) detection rule over UDM events. Author: daniyyell-dev.
+// https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector
+// Paste into Detection > Rules & Detections > Rules Editor, then run a Retrohunt over at least the last 30 days
+// before enabling it live. The indicators below are live and malicious: do not browse to them.
+// Groups hits per principal host per hour (events without a hostname are kept as one group).
+// Behaviours: 1 alert behaviour(s) with a clean UDM mapping are part of this rule; the rest are listed as leads at the end.
+// Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.
+// Behaviours are for hunting and alerting only; never block on them.
+rule rti_storm_3358_artex_agentic_intrusions_financial_sector {
+  meta:
+    author = "daniyyell-dev"
+    description = "Matches UDM events against the published indicators and alert behaviours for Storm-3358 ARTEX Agentic Intrusions Against the Financial Sector"
+    threat = "Storm-3358 ARTEX Agentic Intrusions Against the Financial Sector"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector"
+    source_1 = "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/"
+    mitre_attack_technique = "T1053.003, T1059.004, T1105, T1110, T1190, T1219, T1505.003, T1595"
+    false_positives = "Low for high-confidence indicators; shared hosting, CDN or cloud IPs and scanner IPs can match benign traffic. Behaviour matches are leads and can be legitimate admin or automation activity; compare with your own baseline"
+    yara_version = "YL2.0"
+    severity = "High"
+    priority = "High"
+    tlp = "CLEAR"
+    published = "2026-11-06"
+    rule_version = "1.0"
+
+  events:
+    (
+      $e.principal.ip = /^(?:199\.19\.95\.66|199\.19\.95\.67|199\.19\.95\.68|91\.92\.240\.238|85\.11\.168\.45|85\.11\.167\.52|178\.16\.54\.129|31\.77\.229\.35)$/ or
+      $e.target.ip = /^(?:199\.19\.95\.66|199\.19\.95\.67|199\.19\.95\.68|91\.92\.240\.238|85\.11\.168\.45|85\.11\.167\.52|178\.16\.54\.129|31\.77\.229\.35)$/ or
+      $e.network.dns.answers.data = /^(?:199\.19\.95\.66|199\.19\.95\.67|199\.19\.95\.68|91\.92\.240\.238|85\.11\.168\.45|85\.11\.167\.52|178\.16\.54\.129|31\.77\.229\.35)$/ or
+      // Behaviour 1 (Alert): Web server starting a downloader or shell
+      ($e.metadata.event_type = "PROCESS_LAUNCH" and $e.principal.process.file.full_path = /(^|[\\\/])(w3wp\.exe|httpd|apache2|nginx|php-fpm|php|java|node|tomcat)$/ nocase and
+        $e.target.process.file.full_path = /(^|[\\\/])(curl|curl\.exe|wget|nc|ncat|netcat|sh|bash|cmd\.exe|powershell\.exe)$/ nocase)
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}
+
+// Behaviours not in the rule above. Hunt them in UDM search or the named logs.
+// Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting. Behaviours are for hunting and alerting only; never block on them.
+//
+//   Behaviour 2 (Hunt): Rapid scanning with default scanner user agents
+//       Look for: Bursts of many varied requests from one source in minutes, with default tool user agents (Nmap, curl, wget, Python HTTP clients, headless Chromium or Playwright)
+//       Log source: Web server, WAF and reverse-proxy logs
+//       UDM search: network.http.user_agent = /nmap|python-requests|python-urllib|aiohttp|httpx|headlesschrome|playwright/ nocase
+//
+//   Behaviour 3 (Hunt): New cron jobs and temp-folder binaries on web hosts
+//       Look for: New cron jobs, and new binaries run from temporary or world-writable folders, on web hosts
+//       Log source: EDR process and file events
+//       UDM search: target.process.file.full_path = /^\/(tmp|var\/tmp|dev\/shm)\// OR target.file.full_path = /^\/(etc\/cron\.d|var\/spool\/cron)\//
+
+// Hunt leads and notes (not network or hash indicators), check manually in UDM search:
+//   A web-serving process (w3wp.exe, httpd, nginx, php-fpm, java, node) launching curl, wget or netcat is how the ARTEX agents delivered the WISP, vshell and AdaptixC2 RATs.
+//   Connections from inside your network to the WISP or C2 addresses suggest an implant; inbound hits from ARTEX servers mean probing or exploitation attempts.

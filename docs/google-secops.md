@@ -2,12 +2,34 @@
 
 [Back to index](../README.md#how-to-use)
 
-Load the block lists into Google SecOps, then match UDM events against them with YARA-L 2.0 rules.
+Each threat folder has a ready YARA-L 2.0 rule, `hunt.yaral`. To match every threat at once, load the block lists into data tables and use [`all/live_feed.yaral`](../all/live_feed.yaral) or the example rules below.
+
+## Run a threat's rule
+
+1. Open the threat's `hunt.yaral` and copy it.
+2. Go to **Detection > Rules & Detections > Rules Editor**, create a new rule and paste it.
+3. Run a **Retrohunt** over at least the last 30 days to find past activity.
+4. If the results look right, turn on live mode and alerting.
+
+The rule matches the threat's IP addresses, domains, URLs and file hashes across the common UDM fields (principal and target IPs, DNS questions and answers, target hostname and URL, and file and process hashes). It groups hits per host per hour; events with no hostname are kept as one group. Leads that are not network or hash indicators are listed as comments at the end of the file.
+
+A URL indicator only matches that URL, not every page on its host, because many URLs sit on shared services such as paste sites or webhook hosts.
+
+## Behaviours
+
+Where a threat has behaviours (indicators of attack), alert behaviours with a clean UDM mapping are added to the same rule: process launches (`principal.process` and `target.process`), file writes (`target.file.full_path`) and AWS CloudTrail events (`metadata.log_type = "AWS_CLOUDTRAIL"` with `metadata.product_event_type`). Hunt behaviours, and behaviours that need several events or fields that are not in UDM, are listed as comments at the end of the file, with a UDM search where one applies.
+
+> [!IMPORTANT]
+> Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting. Use them to hunt and alert, never to block.
+
+## Live-feed rule
+
+[`all/live_feed.yaral`](../all/live_feed.yaral) matches every high-confidence indicator in the feed. It reads five data tables: create the three described in step 1 below, plus `rti_block_url` (column `url`, from `block_now_url.txt`) and `rti_block_sha1` (column `sha1`, from `block_now_sha1.txt`). It uses all 10 list checks a rule allows.
 
 > [!NOTE]
 > Google is replacing reference lists with data tables; legacy reference lists retire in July 2027. Both work today and use the same `%name` syntax in rules. New setups should use data tables.
 
-## 1. Load the indicators
+## Load the indicators into data tables
 
 Use the per-type files in [`all/`](../all/), which hold one value per line with no comments: `block_now_ipv4.txt`, `block_now_domain.txt`, `block_now_url.txt`, `block_now_sha256.txt` and `block_now_sha1.txt`.
 
@@ -16,7 +38,7 @@ Use the per-type files in [`all/`](../all/), which hold one value per line with 
 1. Go to **Investigation > Data Tables** and select **Create**.
 2. Name it, for example `rti_block_ipv4`, and paste a header line (`ip`) followed by the contents of `block_now_ipv4.txt`.
 3. Set the column type to **string** and select **Save**.
-4. Repeat for domains (`rti_block_domain`, column `domain`) and SHA256 (`rti_block_sha256`, column `sha256`).
+4. Repeat for domains (`rti_block_domain`, column `domain`) and SHA256 (`rti_block_sha256`, column `sha256`). For the live-feed rule, also add URLs (`rti_block_url`, column `url`) and SHA1 (`rti_block_sha1`, column `sha1`).
 
 **Reference list (legacy)**
 
@@ -25,7 +47,7 @@ Use the per-type files in [`all/`](../all/), which hold one value per line with 
 
 String lists match exactly and are case-sensitive, so `www.example.com` does not match `example.com`. The domain and hash rules lowercase the event value first; the lists are already lowercase. To match subdomains, use a regex list.
 
-## 2. Example rules
+## Example rules
 
 Each rule matches one field against one list. The examples use data tables; for a reference list, replace `%rti_block_ipv4.ip` with `%rti_block_ipv4`.
 

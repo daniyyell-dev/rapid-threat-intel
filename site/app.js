@@ -101,9 +101,9 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { t.classList.remove("show"); }, 1800);
   }
-  function copyText(text, btn) {
+  function copyText(text, btn, msg) {
     function done(ok) {
-      toast(ok ? "Copied the real value" : "Copy failed");
+      toast(ok ? (msg || "Copied the real value") : "Copy failed");
       if (ok && btn) {
         btn.textContent = "Copied"; btn.classList.add("done");
         setTimeout(function () { btn.textContent = "Copy"; btn.classList.remove("done"); }, 1400);
@@ -138,6 +138,9 @@
     var ext = (f.name.split(".").pop() || "").toLowerCase();
     var a = h("a", { class: "dl" + (primary ? " primary" : ""), href: f.url, rel: "noopener noreferrer", target: "_blank", title: "Download " + (f.download || f.name) },
       h("b", { text: f.label }), h("small", { text: f.note || f.name }), h("span", { class: "ext", "aria-hidden": "true", text: ext }));
+    return saveOnClick(a, f);
+  }
+  function saveOnClick(a, f) {
     a.addEventListener("click", function (e) {
       if (!window.fetch || !window.URL || !URL.createObjectURL) return;
       e.preventDefault();
@@ -242,6 +245,113 @@
     renderFeed();
     $("feed-h").scrollIntoView({ block: "start" });
   }
+  /* Behaviours (IOAs): shown first on the feed card when a threat has no network or hash indicators. */
+  var NET_TYPES = ["ipv4", "domain", "url", "sha256", "sha1"];
+  function behaviourFirst(t) {
+    return !!t.ioa_count && !NET_TYPES.some(function (k) { return t.indicator_counts[k]; });
+  }
+  function ioaSection(t) {
+    if (!t.ioas || !t.ioas.length) return null;
+    var multi = t.ioas.some(function (x) { return x.source_url; }) && t.sources.length > 1;
+    function line(label, body, cls) { return h("p", { class: "ioa-line" + (cls ? " " + cls : "") }, h("span", { class: "ioa-lab", text: label }), body); }
+    return h("section", { class: "blk-sec ioa-sec", id: "ioa-sec", "aria-labelledby": "ioa-h" },
+      h("h2", { id: "ioa-h" }, "Behaviours to hunt", h("span", { text: String(t.ioas.length) })),
+      h("p", { class: "ioa-note", role: "note" }, t.ioa_note || ""),
+      h("ol", { class: "ioa-list" }, t.ioas.map(function (x, i) {
+        var qs = x.queries && x.queries.length ? x.queries : (x.has_query ? ["KQL"] : []);
+        return h("li", null,
+          h("span", { class: "ioa-n", "aria-hidden": "true", text: String(i + 1) }),
+          h("div", { class: "ioa-body" },
+            h("h3", { class: "ioa-title" }, actionPill(x.action), h("span", { class: "sr", text: ": " }), h("span", { text: x.title || x.artefact })),
+            line("Look for", x.artefact, "ioa-art"),
+            line("Why it matters", [x.why, multi && x.source_url ? [" ", extLink(x.source_url, x.source_name || x.source_url)] : null], "ioa-why"),
+            line("Log source", x.log_source),
+            line("Queries", qs.length ? qs.join(" \u00b7 ") : "None yet: check by hand", qs.length ? "ioa-qs" : "ioa-qs none")));
+      })));
+  }
+  /* Hunt: one tab per platform; the query text is fetched from the repository when its tab opens. */
+  var QTEXT = {};
+  var HOWTO = {
+    "Defender XDR": "Defender portal > Hunting > Advanced hunting. Paste and run; it covers the last 30 days.",
+    "Splunk": "Search & Reporting. Set the time picker to the last 30 days or more, paste and run. Reads the CIM data models.",
+    "Google SecOps": "Detection > Rules & Detections > Rules Editor. Paste, run a Retrohunt over 30 days, then turn on live mode."
+  };
+  function qText(q) {
+    if (QTEXT[q.url]) return QTEXT[q.url];
+    QTEXT[q.url] = fetch(q.url, { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); });
+    QTEXT[q.url].catch(function () { delete QTEXT[q.url]; });
+    return QTEXT[q.url];
+  }
+  function qActions(q, label) {
+    var c = h("button", { type: "button", class: "hq-btn", "aria-label": "Copy " + q.name }, "Copy " + q.name);
+    c.addEventListener("click", function () {
+      qText(q).then(function (x) {
+        copyText(x, null, "Copied " + q.name);
+        c.textContent = "Copied"; c.classList.add("done");
+        setTimeout(function () { c.textContent = "Copy " + q.name; c.classList.remove("done"); }, 1400);
+      }, function () { toast("Could not load " + q.name + ". Use Download."); });
+    });
+    var d = saveOnClick(h("a", { class: "hq-btn", href: q.url, rel: "noopener noreferrer", target: "_blank", "aria-label": "Download " + q.name }, "Download " + q.name), q);
+    return h("div", { class: "hq-act" }, c, h("span", { class: "sep", "aria-hidden": "true", text: "\u00b7" }), d);
+  }
+  /* Preview: comment lines are dimmed so the query itself stands out. The copied text is the file, unchanged. */
+  function renderCode(code, text, lang) {
+    clear(code);
+    var spl = /^SPL/.test(lang), inBlock = false;
+    text.replace(/\n$/, "").split("\n").forEach(function (ln, i) {
+      var isC;
+      if (spl) {
+        var ticks = (ln.match(/```/g) || []).length;
+        isC = inBlock || ticks > 0;
+        if (ticks % 2 === 1) inBlock = !inBlock;
+      } else isC = /^\s*\/\//.test(ln);
+      if (i) code.appendChild(document.createTextNode("\n"));
+      code.appendChild(isC ? h("span", { class: "c", text: ln }) : document.createTextNode(ln));
+    });
+  }
+  function huntSection(t) {
+    var qs = (t.queries || []).filter(function (q) { return q && q.url; });
+    if (!qs.length) return null;
+    var tabs = h("div", { class: "hq-tabs", role: "tablist", "aria-label": "Hunting query platform" });
+    var panel = h("div", { class: "hq-panel", role: "tabpanel", id: "hq-panel", tabindex: "0" });
+    var btns = [];
+    function show(i, focus) {
+      var q = qs[i];
+      btns.forEach(function (b, j) { b.setAttribute("aria-selected", j === i ? "true" : "false"); b.tabIndex = j === i ? 0 : -1; });
+      if (focus) btns[i].focus();
+      panel.setAttribute("aria-labelledby", btns[i].id);
+      var code = h("code", { text: "Loading " + q.name + "\u2026" });
+      clear(panel);
+      panel.appendChild(h("p", { class: "hq-meta" }, h("span", { class: "hq-lang", text: q.language }), h("span", { class: "sep", "aria-hidden": "true", text: " \u00b7 " }),
+        h("span", { class: "hq-file", text: q.name }), h("span", { class: "sep", "aria-hidden": "true", text: " \u00b7 " }), h("span", { text: HOWTO[q.platform] || "" })));
+      panel.appendChild(qActions(q, "Download"));
+      panel.appendChild(h("pre", { class: "hq-code", tabindex: "0", "aria-label": q.name + " preview" }, code));
+      panel.appendChild(h("p", { class: "hq-hint", text: "Dimmed lines are comments. Copy and Download give the file exactly as published." }));
+      qText(q).then(function (x) { renderCode(code, x, q.language); }, function () { code.textContent = "Preview unavailable here. Use Download to get " + q.name + "."; });
+      if (q.alt) {
+        panel.appendChild(h("div", { class: "hq-alt" }, h("p", null, h("b", { text: q.alt.label }), h("span", { class: "sep", "aria-hidden": "true", text: " \u00b7 " }),
+          h("span", { class: "hq-file", text: q.alt.name }), " uses the rti_* macros from ", extLink(DATA.repository + "/blob/main/all/splunk_macros.conf", "splunk_macros.conf"), "."),
+          qActions(q.alt, "Download")));
+      }
+    }
+    qs.forEach(function (q, i) {
+      var b = h("button", { type: "button", role: "tab", id: "hq-tab-" + i, class: "hq-tab p-" + q.platform.toLowerCase().replace(/[^a-z]+/g, "-"), "aria-controls": "hq-panel" }, q.platform);
+      b.addEventListener("click", function () { show(i); });
+      b.addEventListener("keydown", function (e) {
+        var k = e.key, n = null;
+        if (k === "ArrowRight") n = (i + 1) % qs.length; else if (k === "ArrowLeft") n = (i - 1 + qs.length) % qs.length;
+        else if (k === "Home") n = 0; else if (k === "End") n = qs.length - 1;
+        if (n !== null) { e.preventDefault(); show(n, true); }
+      });
+      btns.push(b); tabs.appendChild(b);
+    });
+    show(0);
+    return h("section", { class: "blk-sec hunt-sec", id: "hunt-sec", "aria-labelledby": "hq-h" },
+      h("h2", { id: "hq-h" }, "Hunt", h("span", { text: plural(qs.length, "platform") })),
+      h("p", { class: "hq-intro" }, "The same hunt for each platform: " + (behaviourFirst(t) ? "the behaviours that map cleanly to log fields, with the rest as comments" : "the indicators" + (t.ioa_count ? " and the behaviours that map cleanly to log fields" : "")) +
+        ". Run it before you block to find past activity." + (t.ioa_count ? " Behaviour hits are leads, not proof." : "")),
+      tabs, panel);
+  }
   function row(t, newest) {
     var types = typesOf(t);
     var comp = h("div", { class: "comp", "aria-hidden": "true" });
@@ -262,10 +372,12 @@
         h("div", { class: "r-meta" }, h("span", { text: "Published " + fmtDay(t.published) + (t.last_updated && t.last_updated !== t.entry_date.split(" ")[0] ? " \u00b7 updated " + fmtDay(t.last_updated) : "") }),
           srcLine(t.sources, "r-src"))),
       h("div", { class: "r-side" },
-        h("div", { class: "r-num" }, h("b", { text: String(t.indicator_count) }), h("span", null, t.block_now_count ? h("span", { class: "blk", text: t.block_now_count + " block now" }) : "none to block")),
-        comp,
-        h("div", { class: "legend" }, shown.map(function (k) { return h("span", { class: "t-" + k, text: typeLabel(k) + " " + t.indicator_counts[k] }); }),
-          more > 0 ? h("span", { text: "+" + more + " more" }) : null))));
+        behaviourFirst(t) ? h("div", { class: "r-num ioa-num" }, h("b", { text: String(t.ioa_count) }), h("span", { class: "hunt", text: (t.ioa_count === 1 ? "behaviour" : "behaviours") + " to hunt" }))
+          : h("div", { class: "r-num" }, h("b", { text: String(t.indicator_count) }), h("span", null, t.block_now_count ? h("span", { class: "blk", text: t.block_now_count + " block now" }) : "none to block")),
+        behaviourFirst(t) ? null : comp,
+        h("div", { class: "legend" }, behaviourFirst(t) ? h("span", { text: plural(t.indicator_count, "other indicator") }) : shown.map(function (k) { return h("span", { class: "t-" + k, text: typeLabel(k) + " " + t.indicator_counts[k] }); }),
+          !behaviourFirst(t) && more > 0 ? h("span", { text: "+" + more + " more" }) : null,
+          !behaviourFirst(t) && t.ioa_count ? h("span", { class: "ioa-leg", text: "Behaviours " + t.ioa_count }) : null))));
   }
   function targetLine(t) {
     var g = tg(t), shown = g.countries.slice(0, 4), more = g.countries.length - shown.length;
@@ -381,9 +493,14 @@
       h("span", { class: "sep", "aria-hidden": "true", text: " \u00b7 " }),
       hunt ? h("span", { class: "hunt" }, h("b", { text: String(hunt) }), " to hunt") : h("span", { class: "dim", text: "Nothing to hunt" }),
       h("span", { class: "sep", "aria-hidden": "true", text: " \u00b7 " }),
+      t.ioa_count ? [h("span", { class: "ioa-c" }, h("b", { text: String(t.ioa_count) }), (t.ioa_count === 1 ? " behaviour" : " behaviours") + " to hunt"), h("span", { class: "sep", "aria-hidden": "true", text: " \u00b7 " })] : null,
       h("button", { type: "button", class: "link-btn", onclick: function () { $("ind-h").scrollIntoView({ block: "start" }); } }, "See " + plural(t.indicator_count, "indicator")));
     main.appendChild(sec("What to do", h("div", null, todo,
       t.recommended_actions.length ? h("ol", { class: "steps" }, t.recommended_actions.map(function (a) { return h("li", { text: a }); })) : null)));
+    var ioa = ioaSection(t);
+    if (ioa) main.appendChild(ioa);
+    var hq = huntSection(t);
+    if (hq) main.appendChild(hq);
     main.appendChild(targetSection(t));
     main.appendChild(srcLine(t.sources, "srcline det-src"));
     if (t.summary) main.appendChild(sec("Background", h("div", { class: "prose" }, h("p", { text: t.summary }))));

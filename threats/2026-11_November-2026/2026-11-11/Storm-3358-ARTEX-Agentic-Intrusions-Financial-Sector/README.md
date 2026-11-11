@@ -26,6 +26,9 @@ Microsoft Threat Intelligence reports that Storm-3358, a financially motivated, 
 | [`iocs.csv`](iocs.csv) | All 8 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 8 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
+| [`hunt.spl`](hunt.spl) | Splunk hunt over the CIM data models |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk hunt for data not mapped to CIM ([macros](../../../../all/splunk_macros.conf)) |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps YARA-L 2.0 detection rule |
 
 Indicators by type: 8 IPv4. See `iocs.csv` for full details and descriptions.
 
@@ -49,15 +52,42 @@ Indicators by type: 8 IPv4. See `iocs.csv` for full details and descriptions.
 3. Hunt for web server processes spawning a shell, curl, wget or nc, new binaries run from temp or world-writable paths, and new cron entries on web hosts.
 4. Watch for bursts of rapid, retried requests with default tool user agents (Nmap, curl, python-requests, headless Chromium) against public web applications.
 
+## Behaviours to hunt
+
+> Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.
+
+1. **Alert** · Web server starting a downloader or shell\
+   Look for: A web server process starting curl, wget, nc, ncat, netcat or a shell\
+   Why it matters: Microsoft saw ARTEX agents use curl and netcat to download the WISP, vshell and AdaptixC2 RATs after exploiting upload and SSRF flaws.\
+   Log source: EDR process events on internet-facing web servers\
+   Source: [Microsoft](https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/)
+
+2. **Hunt** · Rapid scanning with default scanner user agents\
+   Look for: Bursts of many varied requests from one source in minutes, with default tool user agents (Nmap, curl, wget, Python HTTP clients, headless Chromium or Playwright)\
+   Why it matters: Microsoft describes agentic scanning as a wide variety of requests in a short time, with retries at machine speed. The agent changes user agents quickly, so use this to alert, not to block.\
+   Log source: Web server, WAF and reverse-proxy logs\
+   Source: [Microsoft](https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/)
+
+3. **Hunt** · New cron jobs and temp-folder binaries on web hosts\
+   Look for: New cron jobs, and new binaries run from temporary or world-writable folders, on web hosts\
+   Why it matters: Microsoft lists suspicious cron job creation and processes launched from world-writable directories among the detections for this activity.\
+   Log source: EDR process and file events\
+   Source: [Microsoft](https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/)
+
+Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed as comments in those files. Use behaviours to hunt and alert, never to block.
+
 ## Hunt
 
-Run this before blocking to find past activity.
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
 
-1. Open [`hunt.kql`](hunt.kql) and copy the query.
-2. In the [Microsoft Defender portal](https://security.microsoft.com), go to **Hunting > Advanced hunting** and paste it into a new query tab.
-3. Select **Run query**. Results cover the last 30 days, one row per table, entity and indicator.
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
 
-Non-network leads such as file names or URL paths are listed as comments at the end of the query. See the [Defender XDR guide](../../../../docs/defender-xdr.md) for more.
+Leads that are not network or hash indicators, and behaviours with no clean field mapping, are listed as comments at the end of each file. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

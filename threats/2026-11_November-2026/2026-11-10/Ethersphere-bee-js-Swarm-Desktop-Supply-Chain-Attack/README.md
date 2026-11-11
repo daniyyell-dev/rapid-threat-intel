@@ -25,6 +25,9 @@ On 9 November 2026 an attacker abused Ethersphere's own GitHub release workflow 
 | [`iocs.csv`](iocs.csv) | All 57 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 41 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
+| [`hunt.spl`](hunt.spl) | Splunk hunt over the CIM data models |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk hunt for data not mapped to CIM ([macros](../../../../all/splunk_macros.conf)) |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps YARA-L 2.0 detection rule |
 
 Indicators by type: 25 SHA256, 9 URLs, 8 IPv4, 8 file names, 4 Ethereum/Polygon addresses, 2 domains, 1 SHA1. See `iocs.csv` for full details and descriptions.
 
@@ -48,13 +51,16 @@ Indicators by type: 25 SHA256, 9 URLs, 8 IPv4, 8 file names, 4 Ethereum/Polygon 
 
 ## Hunt
 
-Run this before blocking to find past activity.
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
 
-1. Open [`hunt.kql`](hunt.kql) and copy the query.
-2. In the [Microsoft Defender portal](https://security.microsoft.com), go to **Hunting > Advanced hunting** and paste it into a new query tab.
-3. Select **Run query**. Results cover the last 30 days, one row per table, entity and indicator.
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
 
-Non-network leads such as file names or URL paths are listed as comments at the end of the query. See the [Defender XDR guide](../../../../docs/defender-xdr.md) for more.
+Leads that are not network or hash indicators, and behaviours with no clean field mapping, are listed as comments at the end of each file. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

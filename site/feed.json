@@ -71,6 +71,34 @@
    "note": "loads the lists itself",
    "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/live_feed_hunt.kql",
    "download": "live_feed_hunt.kql"
+  },
+  {
+   "name": "live_feed_hunt.spl",
+   "label": "Live-feed hunting query (Splunk)",
+   "note": "uses the splunk_rti_iocs.csv lookup",
+   "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/live_feed_hunt.spl",
+   "download": "live_feed_hunt.spl"
+  },
+  {
+   "name": "live_feed.yaral",
+   "label": "Live-feed rule (Google SecOps)",
+   "note": "uses reference lists",
+   "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/live_feed.yaral",
+   "download": "live_feed.yaral"
+  },
+  {
+   "name": "splunk_rti_iocs.csv",
+   "label": "Splunk lookup",
+   "note": "block-now indicators",
+   "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/splunk_rti_iocs.csv",
+   "download": "splunk_rti_iocs.csv"
+  },
+  {
+   "name": "splunk_macros.conf",
+   "label": "Splunk macros",
+   "note": "for data not mapped to CIM",
+   "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/splunk_macros.conf",
+   "download": "splunk_macros.conf"
   }
  ],
  "threats": [
@@ -183,6 +211,88 @@
     "domain": 1,
     "filename": 1
    },
+   "ioas": [
+    {
+     "artefact": "mc mirror (MinIO Client) copying a bucket to a remote destination you do not own",
+     "log_source": "Linux process events, MinIO audit logs",
+     "why": "Azazel mirrored a victim's object storage to his staging server continuously with retry logic; CloudSEK published a Sigma rule for it.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files",
+     "source_name": "CloudSEK",
+     "title": "Object storage mirrored out with the MinIO client",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Bulk reads of GitLab CI/CD variables, project exports or repository clones by a token from an unfamiliar address",
+     "log_source": "GitLab audit events and API logs",
+     "why": "Every non-AI victim was reached through secrets harvested from GitLab CI/CD variables and repository history using glato, nord-stream, gitlab-secrets, gitlab-watchman and gitleaks.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files",
+     "source_name": "CloudSEK",
+     "title": "Bulk reads of GitLab CI/CD secrets",
+     "queries": []
+    },
+    {
+     "artefact": "Ransom notes written to /etc/motd, the sshd_config Banner, the PostgreSQL cluster_name, the pgAdmin login template, a GitLab README or a new GitLab issue",
+     "log_source": "Linux file integrity monitoring, GitLab audit events, PostgreSQL logs",
+     "why": "Azazel's va.py checked notes on eight surfaces across six hosts, including ATTENTION_SENSITIVE_INFORMATION.txt in the root and ubuntu home directories.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files",
+     "source_name": "CloudSEK",
+     "title": "Ransom notes planted on server surfaces",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "PostgreSQL process killed and its data directory deleted shortly after large pg_dump or scp transfers",
+     "log_source": "Linux process events, PostgreSQL logs",
+     "why": "After exfiltrating a government-linked financial registry, Azazel ran a script that killed the live PostgreSQL process and deleted the production data directory.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files",
+     "source_name": "CloudSEK",
+     "title": "PostgreSQL killed and wiped after exfiltration",
+     "queries": []
+    },
+    {
+     "artefact": "MCP server listening beyond loopback, or MCP initialize requests from clients named internet-census-mcp-scanner or hermes",
+     "log_source": "MCP server logs, reverse proxy logs, network listeners",
+     "why": "Azazel ran commands through an MCP exec_in_session tool and scanned the internet for exposed MCP ports.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files",
+     "source_name": "CloudSEK",
+     "title": "Exposed MCP server or MCP scanner clients",
+     "queries": [
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Large uploads from servers to MEGA (mega-cmd-server) or HTTP POSTs to port 9999 on unfamiliar hosts",
+     "log_source": "Firewall, proxy and NetFlow logs, EDR network events",
+     "why": "Stolen data went from victims to the C2 box by HTTP POST to port 9999, then to MEGA via mega-cmd-server.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files",
+     "source_name": "CloudSEK",
+     "title": "Large uploads to MEGA or to port 9999",
+     "queries": [
+      "SPL"
+     ]
+    }
+   ],
+   "ioa_count": 6,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
    "files": [
     {
      "name": "block_now.txt",
@@ -201,6 +311,25 @@
      "label": "Hunting query (KQL)",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/hunt.kql",
      "download": "Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/hunt.spl",
+     "download": "Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/hunt_raw.spl",
+     "download": "Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/hunt.yaral",
+     "download": "Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft_hunt.yaral"
     },
     {
      "name": "iocs.csv",
@@ -301,6 +430,35 @@
      "source_label": "CloudSEK – Caught in 4K: The Gentlemen Files",
      "source_name": "CloudSEK"
     }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/hunt.kql",
+     "download": "Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/hunt.spl",
+     "download": "Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/hunt_raw.spl",
+      "download": "Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/hunt.yaral",
+     "download": "Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft_hunt.yaral"
+    }
    ]
   },
   {
@@ -389,6 +547,68 @@
     "other": 5,
     "filename": 4
    },
+   "ioas": [
+    {
+     "artefact": "HTTP requests to Xen Orchestra with the cookie authenticationToken=j:{} or authenticationToken=j:%7B%7D",
+     "log_source": "Reverse-proxy, WAF or packet capture in front of Xen Orchestra",
+     "why": "This is the bypass itself, and Xen Orchestra does not log it. Other encodings can evade a naive regex.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_name": "Vates",
+     "title": "Auth-bypass cookie sent to Xen Orchestra",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Requests to /rest/v0/users/me/authentication_tokens from unfamiliar addresses",
+     "log_source": "Reverse-proxy and web logs",
+     "why": "After the bypass this route returns reusable login tokens.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_name": "Vates",
+     "title": "Login-token harvesting requests",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "A VM named pivot2, VMs with hvm_serial: file, or '-serial file:' in /var/log/xensource.log",
+     "log_source": "XCP-ng hosts (xe vm-list, xensource.log), syslog",
+     "why": "Vates lists these as signs of the attacker's foothold VM on compromised pools.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_name": "Vates",
+     "title": "Attacker foothold VM on XCP-ng",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Files /etc/cron.d/zz-ustar, /etc/cron.d/zz-ustar2, /.ustar5, /.ustar6, or a new /etc/ld.so.preload",
+     "log_source": "XCP-ng host file checks, EDR file events",
+     "why": "Persistence files planted by this actor on XCP-ng hosts.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/",
+     "source_name": "Vates",
+     "title": "Persistence files on XCP-ng hosts",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    }
+   ],
+   "ioa_count": 4,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
    "files": [
     {
      "name": "block_now.txt",
@@ -407,6 +627,25 @@
      "label": "Hunting query (KQL)",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/hunt.kql",
      "download": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/hunt.spl",
+     "download": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/hunt_raw.spl",
+     "download": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/hunt.yaral",
+     "download": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover_hunt.yaral"
     },
     {
      "name": "iocs.csv",
@@ -587,6 +826,35 @@
      "source_label": "Vates – VSA-2026-062: Empty-object login token",
      "source_name": "Vates"
     }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/hunt.kql",
+     "download": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/hunt.spl",
+     "download": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/hunt_raw.spl",
+      "download": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/hunt.yaral",
+     "download": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover_hunt.yaral"
+    }
    ]
   },
   {
@@ -688,6 +956,65 @@
     "ipv4": 3,
     "sha256": 1
    },
+   "ioas": [
+    {
+     "artefact": "One host opening near-simultaneous TCP connections to the same external IP on ports 53, 2222, 3389, 4444, 8443 and 9443, retried every 5 to 12 seconds",
+     "log_source": "Firewall, NetFlow or EDR network events from ESXi management addresses",
+     "why": "GhostFrame tries all six ports at once and keeps the first that answers. The pattern survives C2 rotation.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware",
+     "source_name": "Recorded Future",
+     "title": "One host trying six C2 ports at once",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Changes to /etc/rc.local.d/local.sh, a file at /opt/vmhostd-core, or a process named vmhostd (not vmware-hostd)",
+     "log_source": "ESXi shell.log and syslog, host file checks",
+     "why": "GhostFrame persists by copying itself to /opt/vmhostd-core and editing local.sh, then disguises its process name as vmhostd.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware",
+     "source_name": "Recorded Future",
+     "title": "GhostFrame persistence on ESXi",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "The ESXi firewall being disabled (esxcli network firewall set --enabled false) or execInstalledOnly set to 0, again and again",
+     "log_source": "ESXi shell.log, hostd.log and syslog",
+     "why": "The implant re-disables both controls about every five seconds. Re-enabling them is not enough; find the persistence.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware",
+     "source_name": "Recorded Future",
+     "title": "ESXi firewall disabled again and again",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "VNC enabled on VMs, unexpected snapshots or power changes, and the ESXi Host Client reached through an unusual tunnel",
+     "log_source": "ESXi and vCenter events",
+     "why": "GhostFrame operators snapshot VMs to harvest credentials with VMkatz and relay VNC sessions to the guests.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware",
+     "source_name": "Recorded Future",
+     "title": "VNC, snapshot and tunnel activity on ESXi",
+     "queries": []
+    }
+   ],
+   "ioa_count": 4,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
    "files": [
     {
      "name": "block_now.txt",
@@ -706,6 +1033,25 @@
      "label": "Hunting query (KQL)",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/hunt.kql",
      "download": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/hunt.spl",
+     "download": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/hunt_raw.spl",
+     "download": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/hunt.yaral",
+     "download": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware_hunt.yaral"
     },
     {
      "name": "iocs.csv",
@@ -755,6 +1101,35 @@
      "source_url": "https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware",
      "source_label": "Recorded Future Insikt Group – GhostFrame: A new ESXi Implant Linked to Settra Ransomware",
      "source_name": "Recorded Future"
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/hunt.kql",
+     "download": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/hunt.spl",
+     "download": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/hunt_raw.spl",
+      "download": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/hunt.yaral",
+     "download": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware_hunt.yaral"
     }
    ]
   },
@@ -849,6 +1224,52 @@
    "indicator_counts": {
     "ipv4": 8
    },
+   "ioas": [
+    {
+     "artefact": "A web server process starting curl, wget, nc, ncat, netcat or a shell",
+     "log_source": "EDR process events on internet-facing web servers",
+     "why": "Microsoft saw ARTEX agents use curl and netcat to download the WISP, vshell and AdaptixC2 RATs after exploiting upload and SSRF flaws.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/",
+     "source_name": "Microsoft",
+     "title": "Web server starting a downloader or shell",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Bursts of many varied requests from one source in minutes, with default tool user agents (Nmap, curl, wget, Python HTTP clients, headless Chromium or Playwright)",
+     "log_source": "Web server, WAF and reverse-proxy logs",
+     "why": "Microsoft describes agentic scanning as a wide variety of requests in a short time, with retries at machine speed. The agent changes user agents quickly, so use this to alert, not to block.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/",
+     "source_name": "Microsoft",
+     "title": "Rapid scanning with default scanner user agents",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "New cron jobs, and new binaries run from temporary or world-writable folders, on web hosts",
+     "log_source": "EDR process and file events",
+     "why": "Microsoft lists suspicious cron job creation and processes launched from world-writable directories among the detections for this activity.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/",
+     "source_name": "Microsoft",
+     "title": "New cron jobs and temp-folder binaries on web hosts",
+     "queries": [
+      "SPL"
+     ]
+    }
+   ],
+   "ioa_count": 3,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
    "files": [
     {
      "name": "block_now.txt",
@@ -867,6 +1288,25 @@
      "label": "Hunting query (KQL)",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/hunt.kql",
      "download": "Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/hunt.spl",
+     "download": "Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/hunt_raw.spl",
+     "download": "Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/hunt.yaral",
+     "download": "Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector_hunt.yaral"
     },
     {
      "name": "iocs.csv",
@@ -956,6 +1396,35 @@
      "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/",
      "source_label": "Microsoft Threat Intelligence – ARTEX abuse expands as cybercriminals target financial sector",
      "source_name": "Microsoft"
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/hunt.kql",
+     "download": "Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/hunt.spl",
+     "download": "Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/hunt_raw.spl",
+      "download": "Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/hunt.yaral",
+     "download": "Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector_hunt.yaral"
     }
    ]
   },
@@ -1057,6 +1526,9 @@
     "url": 1,
     "xmr_address": 1
    },
+   "ioas": [],
+   "ioa_count": 0,
+   "ioa_note": null,
    "files": [
     {
      "name": "block_now.txt",
@@ -1075,6 +1547,25 @@
      "label": "Hunting query (KQL)",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant/hunt.kql",
      "download": "AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant/hunt.spl",
+     "download": "AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant/hunt_raw.spl",
+     "download": "AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant/hunt.yaral",
+     "download": "AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant_hunt.yaral"
     },
     {
      "name": "iocs.csv",
@@ -1335,6 +1826,35 @@
      "source_label": "Huntress – Inside an AhsayCBS Intrusion: Hidden Webshells, a CryptoMiner, and a C2 Implant",
      "source_name": "Huntress"
     }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant/hunt.kql",
+     "download": "AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant/hunt.spl",
+     "download": "AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant/hunt_raw.spl",
+      "download": "AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant/hunt.yaral",
+     "download": "AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant_hunt.yaral"
+    }
    ]
   },
   {
@@ -1475,6 +1995,9 @@
     "sha256": 51,
     "domain": 14
    },
+   "ioas": [],
+   "ioa_count": 0,
+   "ioa_note": null,
    "files": [
     {
      "name": "block_now.txt",
@@ -1493,6 +2016,25 @@
      "label": "Hunting query (KQL)",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/CopperDragon-Sparrow-Framework-China-Nexus-Espionage/hunt.kql",
      "download": "CopperDragon-Sparrow-Framework-China-Nexus-Espionage_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/CopperDragon-Sparrow-Framework-China-Nexus-Espionage/hunt.spl",
+     "download": "CopperDragon-Sparrow-Framework-China-Nexus-Espionage_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/CopperDragon-Sparrow-Framework-China-Nexus-Espionage/hunt_raw.spl",
+     "download": "CopperDragon-Sparrow-Framework-China-Nexus-Espionage_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/CopperDragon-Sparrow-Framework-China-Nexus-Espionage/hunt.yaral",
+     "download": "CopperDragon-Sparrow-Framework-China-Nexus-Espionage_hunt.yaral"
     },
     {
      "name": "iocs.csv",
@@ -3083,6 +3625,35 @@
      "source_label": "Check Point Research – Not All That Glitters Is Gold: Tracking CopperDragon's Sparrow Framework Around the Globe",
      "source_name": "Check Point Research"
     }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/CopperDragon-Sparrow-Framework-China-Nexus-Espionage/hunt.kql",
+     "download": "CopperDragon-Sparrow-Framework-China-Nexus-Espionage_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/CopperDragon-Sparrow-Framework-China-Nexus-Espionage/hunt.spl",
+     "download": "CopperDragon-Sparrow-Framework-China-Nexus-Espionage_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/CopperDragon-Sparrow-Framework-China-Nexus-Espionage/hunt_raw.spl",
+      "download": "CopperDragon-Sparrow-Framework-China-Nexus-Espionage_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/CopperDragon-Sparrow-Framework-China-Nexus-Espionage/hunt.yaral",
+     "download": "CopperDragon-Sparrow-Framework-China-Nexus-Espionage_hunt.yaral"
+    }
    ]
   },
   {
@@ -3153,6 +3724,162 @@
    "indicator_counts": {
     "other": 2
    },
+   "ioas": [
+    {
+     "artefact": "SNS Subscribe with protocol http or https, made by a Lambda execution role (assumed-role session, often with exec-env/AWS_Lambda in the user agent)",
+     "log_source": "CloudTrail management events (sns.amazonaws.com), or CloudAppEvents with the AWS connector",
+     "why": "This is how NotC2 sends command output to the operator's server. Lambda functions rarely create new external subscriptions at runtime.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.varonis.com/blog/notc2-ai-powered-c2-channel",
+     "source_name": "Varonis",
+     "title": "SNS subscription to an external HTTP(S) endpoint by a Lambda role",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "SNS ConfirmSubscription for a new external HTTP or HTTPS endpoint",
+     "log_source": "CloudTrail management events (sns.amazonaws.com)",
+     "why": "NotC2 only receives results once the operator's endpoint confirms the subscription. The source address of the confirmation can point to the receiving server, so record it as a lead.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.varonis.com/blog/notc2-ai-powered-c2-channel",
+     "source_name": "Varonis",
+     "title": "SNS subscription confirmed for a new external endpoint",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "SNS CreateTopic called by a Lambda execution role",
+     "log_source": "CloudTrail management events (sns.amazonaws.com)",
+     "why": "The NotC2 function creates or resolves its results topic at runtime (create_topic). Application functions usually publish to topics that already exist.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.varonis.com/blog/notc2-ai-powered-c2-channel",
+     "source_name": "Varonis",
+     "title": "SNS topic created by a Lambda role",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "New SQS-to-Lambda event source mapping (CreateEventSourceMapping with an SQS queue ARN)",
+     "log_source": "CloudTrail management events (lambda.amazonaws.com)",
+     "why": "The mapping is what makes each queued command run the function automatically. New mappings on new or unused queues and functions are unusual outside deployments.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.varonis.com/blog/notc2-ai-powered-c2-channel",
+     "source_name": "Varonis",
+     "title": "New SQS-to-Lambda trigger",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "One identity calling sqs:CreateQueue, lambda:CreateFunction and lambda:CreateEventSourceMapping within an hour",
+     "log_source": "CloudTrail management events",
+     "why": "These are the minimum deployment steps Varonis lists for NotC2 when a suitable Lambda role already exists (iam:PassRole is a permission check, not a separate event).",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.varonis.com/blog/notc2-ai-powered-c2-channel",
+     "source_name": "Varonis",
+     "title": "Queue, function and trigger created by one identity within an hour",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "SQS queue named NotC2-Commands, or queue, function or topic names containing NotC2",
+     "log_source": "CloudTrail management events (sqs CreateQueue requestParameters.queueName), AWS CLI command lines on endpoints",
+     "why": "NotC2-Commands is the command queue name in Varonis's published screenshots (created with aws sqs create-queue --queue-name NotC2-Commands). The name is trivial to change, so a miss means little.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.varonis.com/blog/notc2-ai-powered-c2-channel",
+     "source_name": "Varonis",
+     "title": "AWS resources named NotC2",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Bedrock InvokeModel, Converse or ConverseStream from a Lambda execution role that has not used Bedrock in the previous 30 days",
+     "log_source": "CloudTrail management events (bedrock.amazonaws.com)",
+     "why": "Bedrock is NotC2's command interpreter. Varonis calls out a sudden rise in Converse or InvokeModel calls from a Lambda role, especially one new to Bedrock.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.varonis.com/blog/notc2-ai-powered-c2-channel",
+     "source_name": "Varonis",
+     "title": "First Bedrock use by a Lambda role",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "The same Lambda role calling Bedrock and broad discovery APIs (ec2 DescribeInstances, dynamodb ListTables, rds DescribeDBInstances, lambda ListFunctions, s3 ListBuckets) in the same hour",
+     "log_source": "CloudTrail management events",
+     "why": "Varonis shows NotC2 using Bedrock to enumerate EC2, DynamoDB, databases and Lambda functions; Bedrock use plus unrelated APIs from one role strengthens the signal.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.varonis.com/blog/notc2-ai-powered-c2-channel",
+     "source_name": "Varonis",
+     "title": "Lambda role calling Bedrock and discovery APIs together",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "A Bedrock tool definition named execute_aws_operation, or prompts starting with \"ai:\"",
+     "log_source": "Bedrock model invocation logs (CloudWatch Logs or S3); not in CloudTrail",
+     "why": "NotC2 passes every AWS action through one generic tool, execute_aws_operation, with service, operation, parameters and region fields. Only model invocation logging records the request body.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://www.varonis.com/blog/notc2-ai-powered-c2-channel",
+     "source_name": "Varonis",
+     "title": "Bedrock function named execute_aws_operation",
+     "queries": [
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Lambda log lines \"SNS message body:\" followed by Command:, Target:, Exit Code:, Output: and Error: fields, or functions configured with SNS_TOPIC_ARN or SNS_TOPIC_NAME",
+     "log_source": "Lambda CloudWatch Logs and function configuration",
+     "why": "These strings appear in the NotC2 code shown in Varonis's screenshots (the results message format and the topic lookup). Default names are easy to change, so treat a match as a strong lead and a miss as no proof.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://www.varonis.com/blog/notc2-ai-powered-c2-channel",
+     "source_name": "Varonis",
+     "title": "Lambda logs relaying commands through SNS",
+     "queries": [
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "An SQS message from an unexpected source, then a Lambda run, Bedrock calls, other AWS API calls and an SNS publish to an external subscriber within minutes, all on the same queue, function and topic",
+     "log_source": "CloudTrail data events (SQS, Lambda, SNS), SNS delivery-status logs, Bedrock invocation logs",
+     "why": "Each event is normal on its own; Varonis says the sequence is the C2 loop. Data events are not logged by default and must be enabled first.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://www.varonis.com/blog/notc2-ai-powered-c2-channel",
+     "source_name": "Varonis",
+     "title": "Full SQS to Lambda to Bedrock to SNS command chain",
+     "queries": []
+    }
+   ],
+   "ioa_count": 11,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
    "files": [
     {
      "name": "block_now.txt",
@@ -3165,6 +3892,25 @@
      "label": "Hunting query (KQL)",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/NotC2-AWS-Native-AI-C2-Proof-of-Concept/hunt.kql",
      "download": "NotC2-AWS-Native-AI-C2-Proof-of-Concept_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/NotC2-AWS-Native-AI-C2-Proof-of-Concept/hunt.spl",
+     "download": "NotC2-AWS-Native-AI-C2-Proof-of-Concept_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/NotC2-AWS-Native-AI-C2-Proof-of-Concept/hunt_raw.spl",
+     "download": "NotC2-AWS-Native-AI-C2-Proof-of-Concept_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/NotC2-AWS-Native-AI-C2-Proof-of-Concept/hunt.yaral",
+     "download": "NotC2-AWS-Native-AI-C2-Proof-of-Concept_hunt.yaral"
     },
     {
      "name": "iocs.csv",
@@ -3194,6 +3940,35 @@
      "source_url": "https://www.varonis.com/blog/notc2-ai-powered-c2-channel",
      "source_label": "Varonis – NotC2: How We Built an AI-Powered C2 Channel With AWS Services",
      "source_name": "Varonis"
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/NotC2-AWS-Native-AI-C2-Proof-of-Concept/hunt.kql",
+     "download": "NotC2-AWS-Native-AI-C2-Proof-of-Concept_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/NotC2-AWS-Native-AI-C2-Proof-of-Concept/hunt.spl",
+     "download": "NotC2-AWS-Native-AI-C2-Proof-of-Concept_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/NotC2-AWS-Native-AI-C2-Proof-of-Concept/hunt_raw.spl",
+      "download": "NotC2-AWS-Native-AI-C2-Proof-of-Concept_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/NotC2-AWS-Native-AI-C2-Proof-of-Concept/hunt.yaral",
+     "download": "NotC2-AWS-Native-AI-C2-Proof-of-Concept_hunt.yaral"
     }
    ]
   },
@@ -3288,6 +4063,9 @@
     "function_selector": 1,
     "ipv4": 1
    },
+   "ioas": [],
+   "ioa_count": 0,
+   "ioa_note": null,
    "files": [
     {
      "name": "block_now.txt",
@@ -3306,6 +4084,25 @@
      "label": "Hunting query (KQL)",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Phexia-macOS-ClickFix-Stealer-Polygon-C2/hunt.kql",
      "download": "Phexia-macOS-ClickFix-Stealer-Polygon-C2_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Phexia-macOS-ClickFix-Stealer-Polygon-C2/hunt.spl",
+     "download": "Phexia-macOS-ClickFix-Stealer-Polygon-C2_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Phexia-macOS-ClickFix-Stealer-Polygon-C2/hunt_raw.spl",
+     "download": "Phexia-macOS-ClickFix-Stealer-Polygon-C2_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Phexia-macOS-ClickFix-Stealer-Polygon-C2/hunt.yaral",
+     "download": "Phexia-macOS-ClickFix-Stealer-Polygon-C2_hunt.yaral"
     },
     {
      "name": "iocs.csv",
@@ -3796,6 +4593,35 @@
      "source_label": "WithSecure – Inside Phexia: A macOS malware delivered through ClickFix",
      "source_name": "WithSecure"
     }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Phexia-macOS-ClickFix-Stealer-Polygon-C2/hunt.kql",
+     "download": "Phexia-macOS-ClickFix-Stealer-Polygon-C2_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Phexia-macOS-ClickFix-Stealer-Polygon-C2/hunt.spl",
+     "download": "Phexia-macOS-ClickFix-Stealer-Polygon-C2_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Phexia-macOS-ClickFix-Stealer-Polygon-C2/hunt_raw.spl",
+      "download": "Phexia-macOS-ClickFix-Stealer-Polygon-C2_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Phexia-macOS-ClickFix-Stealer-Polygon-C2/hunt.yaral",
+     "download": "Phexia-macOS-ClickFix-Stealer-Polygon-C2_hunt.yaral"
+    }
    ]
   },
   {
@@ -3889,6 +4715,9 @@
     "url": 5,
     "filename": 3
    },
+   "ioas": [],
+   "ioa_count": 0,
+   "ioa_note": null,
    "files": [
     {
      "name": "block_now.txt",
@@ -3907,6 +4736,25 @@
      "label": "Hunting query (KQL)",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset/hunt.kql",
      "download": "Turla-Cereal-Exchange-Espionage-Toolset_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset/hunt.spl",
+     "download": "Turla-Cereal-Exchange-Espionage-Toolset_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset/hunt_raw.spl",
+     "download": "Turla-Cereal-Exchange-Espionage-Toolset_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset/hunt.yaral",
+     "download": "Turla-Cereal-Exchange-Espionage-Toolset_hunt.yaral"
     },
     {
      "name": "iocs.csv",
@@ -4177,6 +5025,35 @@
      "source_label": "ESET – Turla Cereal white paper (PDF)",
      "source_name": "ESET"
     }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset/hunt.kql",
+     "download": "Turla-Cereal-Exchange-Espionage-Toolset_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset/hunt.spl",
+     "download": "Turla-Cereal-Exchange-Espionage-Toolset_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset/hunt_raw.spl",
+      "download": "Turla-Cereal-Exchange-Espionage-Toolset_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset/hunt.yaral",
+     "download": "Turla-Cereal-Exchange-Espionage-Toolset_hunt.yaral"
+    }
    ]
   },
   {
@@ -4257,6 +5134,71 @@
    "indicator_counts": {
     "ipv4": 57
    },
+   "ioas": [
+    {
+     "artefact": "Service principal sign-ins for the app connected to MSP Process from any address other than 64.236.54.139, from 09:56 UTC on 7 November 2026",
+     "log_source": "Entra service principal sign-in logs, in the MSP's own tenant where the app is registered",
+     "why": "MSP Process says to treat any other address as suspicious. The stolen secrets were used to get Microsoft Graph tokens without a user sign-in.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.inforcer.com/insights/when-a-gdap-vendor-is-breached-check-your-own-tenant",
+     "source_name": "Inforcer",
+     "title": "App sign-ins from outside the MSP Process address",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "One address using several partner app secrets within seconds, first failing (invalid client secret, missing service principal) and succeeding about an hour later",
+     "log_source": "Entra service principal sign-in logs",
+     "why": "Inforcer saw this scripted pattern from 172.169.63.30 between 10:28 and 11:31 UTC on 7 November. The address is shared Azure space, so the pattern matters more than the IP.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://www.inforcer.com/insights/when-a-gdap-vendor-is-breached-check-your-own-tenant",
+     "source_name": "Inforcer",
+     "title": "One address trying several partner app secrets",
+     "queries": []
+    },
+    {
+     "artefact": "Non-interactive user sign-ins with the connecting admin's refresh token from an address other than 64.236.54.139",
+     "log_source": "Entra non-interactive user sign-in logs",
+     "why": "Stolen refresh tokens show up here. Inforcer found the attempts failed where the token had expired through inactivity.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://www.inforcer.com/insights/when-a-gdap-vendor-is-breached-check-your-own-tenant",
+     "source_name": "Inforcer",
+     "title": "Admin refresh token used from another address",
+     "queries": []
+    },
+    {
+     "artefact": "New app credentials, app role assignments, new users or GDAP security-group membership changes initiated by the MSP Process app since 6 November 2026",
+     "log_source": "Entra audit logs",
+     "why": "The app permissions MSP Process asked for (AppRoleAssignment.ReadWrite.All, Application.ReadWrite.All, Directory.ReadWrite.All) allow exactly these changes.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.inforcer.com/insights/when-a-gdap-vendor-is-breached-check-your-own-tenant",
+     "source_name": "Inforcer",
+     "title": "Tenant changes made by the MSP Process app",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Microsoft Graph requests made with the app's tokens from an address other than 64.236.54.139",
+     "log_source": "Microsoft Graph activity logs (only if already enabled on 7 November)",
+     "why": "Sign-in and audit logs cannot show what a token read; Graph activity logs can, and UniqueTokenIdentifier links a sign-in to its Graph requests.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://www.inforcer.com/insights/when-a-gdap-vendor-is-breached-check-your-own-tenant",
+     "source_name": "Inforcer",
+     "title": "Graph requests with the app's tokens from another address",
+     "queries": []
+    }
+   ],
+   "ioa_count": 5,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
    "files": [
     {
      "name": "block_now.txt",
@@ -4275,6 +5217,25 @@
      "label": "Hunting query (KQL)",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse/hunt.kql",
      "download": "MSP-Process-GDAP-Breach-Entra-Token-Abuse_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse/hunt.spl",
+     "download": "MSP-Process-GDAP-Breach-Entra-Token-Abuse_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse/hunt_raw.spl",
+     "download": "MSP-Process-GDAP-Breach-Entra-Token-Abuse_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse/hunt.yaral",
+     "download": "MSP-Process-GDAP-Breach-Entra-Token-Abuse_hunt.yaral"
     },
     {
      "name": "iocs.csv",
@@ -4855,6 +5816,35 @@
      "source_label": "The Stack – MSP software firm hacked, customer Entra environments getting pwned (Huntress IOCs)",
      "source_name": "The Stack"
     }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse/hunt.kql",
+     "download": "MSP-Process-GDAP-Breach-Entra-Token-Abuse_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse/hunt.spl",
+     "download": "MSP-Process-GDAP-Breach-Entra-Token-Abuse_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse/hunt_raw.spl",
+      "download": "MSP-Process-GDAP-Breach-Entra-Token-Abuse_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse/hunt.yaral",
+     "download": "MSP-Process-GDAP-Breach-Entra-Token-Abuse_hunt.yaral"
+    }
    ]
   },
   {
@@ -4955,6 +5945,9 @@
     "domain": 2,
     "sha1": 1
    },
+   "ioas": [],
+   "ioa_count": 0,
+   "ioa_note": null,
    "files": [
     {
      "name": "block_now.txt",
@@ -4973,6 +5966,25 @@
      "label": "Hunting query (KQL)",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/hunt.kql",
      "download": "Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/hunt.spl",
+     "download": "Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/hunt_raw.spl",
+     "download": "Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/hunt.yaral",
+     "download": "Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack_hunt.yaral"
     },
     {
      "name": "iocs.csv",
@@ -5553,6 +6565,35 @@
      "source_label": "Socket – Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor",
      "source_name": "Socket"
     }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/hunt.kql",
+     "download": "Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/hunt.spl",
+     "download": "Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/hunt_raw.spl",
+      "download": "Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/hunt.yaral",
+     "download": "Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack_hunt.yaral"
+    }
    ]
   },
   {
@@ -5655,6 +6696,62 @@
     "other": 1,
     "session_id": 1
    },
+   "ioas": [
+    {
+     "artefact": "Ransom notes named README_BYOD_<number>.txt created on many hosts or shares in a short time",
+     "log_source": "EDR file events, file server auditing",
+     "why": "BleepingComputer saw the note README_BYOD_31.txt on a victim screen; a burst of these files means encryption is under way.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.bleepingcomputer.com/news/security/vanderbilt-university-hit-in-byod-ransomware-attack-data-theft-claimed/",
+     "source_name": "BleepingComputer",
+     "title": "README_BYOD ransom notes",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Many files renamed to the .byod extension on one device or share within minutes",
+     "log_source": "EDR file events, file server auditing",
+     "why": "Vanderbilt staff saw every file on their computers become .byod files after the ransom warning appeared.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://nashvillebanner.com/2026/11/09/vanderbilt-university-cyberattack-byod/",
+     "source_name": "Nashville Banner",
+     "title": "Mass renames to the .byod extension",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "A \"system update\" notice and a message about deleting old files shortly before encryption",
+     "log_source": "Group Policy and scheduled task changes, software deployment logs, EDR process events",
+     "why": "Staff described a system update prompt, then a file deletion message, then the ransom warning; this points to delivery through an internal management channel (an inference, not confirmed by Vanderbilt).",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://nashvillebanner.com/2026/11/09/vanderbilt-university-cyberattack-byod/",
+     "source_name": "Nashville Banner",
+     "title": "Fake system update shortly before encryption",
+     "queries": []
+    },
+    {
+     "artefact": "Cloud storage notices of file deletions by administrators who did not touch the files",
+     "log_source": "Box admin events, OneDrive and SharePoint audit (FileDeleted, FileRenamed)",
+     "why": "Vanderbilt faculty received Box notices that administrators had deleted files they had not accessed.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://nashvillebanner.com/2026/11/09/vanderbilt-university-cyberattack-byod/",
+     "source_name": "Nashville Banner",
+     "title": "Cloud file deletions by administrators who did not make them",
+     "queries": []
+    }
+   ],
+   "ioa_count": 4,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
    "files": [
     {
      "name": "block_now.txt",
@@ -5673,6 +6770,25 @@
      "label": "Hunting query (KQL)",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/BYOD-Ransomware-Vanderbilt-University-Attack/hunt.kql",
      "download": "BYOD-Ransomware-Vanderbilt-University-Attack_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/BYOD-Ransomware-Vanderbilt-University-Attack/hunt.spl",
+     "download": "BYOD-Ransomware-Vanderbilt-University-Attack_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/BYOD-Ransomware-Vanderbilt-University-Attack/hunt_raw.spl",
+     "download": "BYOD-Ransomware-Vanderbilt-University-Attack_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/BYOD-Ransomware-Vanderbilt-University-Attack/hunt.yaral",
+     "download": "BYOD-Ransomware-Vanderbilt-University-Attack_hunt.yaral"
     },
     {
      "name": "iocs.csv",
@@ -5732,6 +6848,35 @@
      "source_url": "https://nashvillebanner.com/2026/11/09/vanderbilt-university-cyberattack-byod/",
      "source_label": "Nashville Banner – Cybersecurity breach impacts Vanderbilt University",
      "source_name": "Nashville Banner"
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/BYOD-Ransomware-Vanderbilt-University-Attack/hunt.kql",
+     "download": "BYOD-Ransomware-Vanderbilt-University-Attack_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/BYOD-Ransomware-Vanderbilt-University-Attack/hunt.spl",
+     "download": "BYOD-Ransomware-Vanderbilt-University-Attack_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/BYOD-Ransomware-Vanderbilt-University-Attack/hunt_raw.spl",
+      "download": "BYOD-Ransomware-Vanderbilt-University-Attack_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/BYOD-Ransomware-Vanderbilt-University-Attack/hunt.yaral",
+     "download": "BYOD-Ransomware-Vanderbilt-University-Attack_hunt.yaral"
     }
    ]
   },
@@ -5820,6 +6965,9 @@
     "ssh_pubkey": 2,
     "domain": 1
    },
+   "ioas": [],
+   "ioa_count": 0,
+   "ioa_note": null,
    "files": [
     {
      "name": "block_now.txt",
@@ -5838,6 +6986,25 @@
      "label": "Hunting query (KQL)",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/SSHole-OpenSSH-CVE-2026-123158-Exploitation/hunt.kql",
      "download": "SSHole-OpenSSH-CVE-2026-123158-Exploitation_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/SSHole-OpenSSH-CVE-2026-123158-Exploitation/hunt.spl",
+     "download": "SSHole-OpenSSH-CVE-2026-123158-Exploitation_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/SSHole-OpenSSH-CVE-2026-123158-Exploitation/hunt_raw.spl",
+     "download": "SSHole-OpenSSH-CVE-2026-123158-Exploitation_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/SSHole-OpenSSH-CVE-2026-123158-Exploitation/hunt.yaral",
+     "download": "SSHole-OpenSSH-CVE-2026-123158-Exploitation_hunt.yaral"
     },
     {
      "name": "iocs.csv",
@@ -6248,6 +7415,35 @@
      "source_label": "GreyNoise – SSHole live activity report",
      "source_name": "GreyNoise"
     }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/SSHole-OpenSSH-CVE-2026-123158-Exploitation/hunt.kql",
+     "download": "SSHole-OpenSSH-CVE-2026-123158-Exploitation_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/SSHole-OpenSSH-CVE-2026-123158-Exploitation/hunt.spl",
+     "download": "SSHole-OpenSSH-CVE-2026-123158-Exploitation_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/SSHole-OpenSSH-CVE-2026-123158-Exploitation/hunt_raw.spl",
+      "download": "SSHole-OpenSSH-CVE-2026-123158-Exploitation_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/SSHole-OpenSSH-CVE-2026-123158-Exploitation/hunt.yaral",
+     "download": "SSHole-OpenSSH-CVE-2026-123158-Exploitation_hunt.yaral"
+    }
    ]
   },
   {
@@ -6328,6 +7524,86 @@
     "domain": 3,
     "ipv4": 3
    },
+   "ioas": [
+    {
+     "artefact": "SIP MESSAGE whose Request-URI or To user starts with api+ (any case), usually followed by a URL-encoded command such as system%20",
+     "log_source": "IDS, packet capture or SBC logs on UDP and TCP 5060-5091",
+     "why": "api+ selects the command-running chat proto. Match the selector, not shell keywords, because the command is percent-encoded. TLS hides it from network sensors.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://zeropath.com/blog/cve-2026-116779-freeswitch-sip-message-api-command-injection",
+     "source_name": "ZeroPath",
+     "title": "SIP MESSAGE carrying an api+ command",
+     "queries": []
+    },
+    {
+     "artefact": "FreeSWITCH log lines \"Processing text message\" with a destination containing api+, or on patched servers \"rejected a MESSAGE ... addressed to the 'api' chat proto\"",
+     "log_source": "FreeSWITCH logs, or syslog forwarded to your SIEM",
+     "why": "Unpatched servers log the exploit before running it; 1.11.3 and later log each blocked attempt with the source address and command.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://zeropath.com/blog/cve-2026-116779-freeswitch-sip-message-api-command-injection",
+     "source_name": "ZeroPath",
+     "title": "FreeSWITCH logs showing api+ text messages",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "The freeswitch process or its service account starting bash, sh, curl or cat, including bash /dev/tcp/<ip>/<port> callbacks",
+     "log_source": "EDR process events or auditd",
+     "why": "Commands run as the FreeSWITCH user, which rarely starts shells. The forum-recovered exploit used a bash /dev/tcp connectivity check.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://zeropath.com/blog/cve-2026-116779-freeswitch-sip-message-api-command-injection",
+     "source_name": "ZeroPath",
+     "title": "FreeSWITCH starting a shell or downloader",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "An every-minute www-data crontab entry running /var/tmp/.khp, files .khp, .khp_ts, .rguard, ksmd, idle or javab in /var/tmp, and a javab.service unit",
+     "log_source": "Host checks (crontab -u www-data -l), EDR file events",
+     "why": "Community-reported miner persistence from this campaign; the script also kills rival miners and deletes logs.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://zeropath.com/blog/cve-2026-116779-freeswitch-sip-message-api-command-injection",
+     "source_name": "ZeroPath",
+     "title": "Miner persistence in /var/tmp and the www-data crontab",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "enable-chat-api-proto set to true on a SIP profile",
+     "log_source": "Configuration management or file integrity monitoring of sip_profiles",
+     "why": "Setting it reopens the path that 1.11.3 closes by default.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://zeropath.com/blog/cve-2026-116779-freeswitch-sip-message-api-command-injection",
+     "source_name": "ZeroPath",
+     "title": "Chat API protocol enabled on a SIP profile",
+     "queries": []
+    },
+    {
+     "artefact": "Missing or truncated FreeSWITCH logs",
+     "log_source": "Log retention and integrity checks",
+     "why": "Attacker cron jobs were reported deleting logs, so gaps are a warning sign in themselves.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://zeropath.com/blog/cve-2026-116779-freeswitch-sip-message-api-command-injection",
+     "source_name": "ZeroPath",
+     "title": "Missing or truncated FreeSWITCH logs",
+     "queries": []
+    }
+   ],
+   "ioa_count": 6,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
    "files": [
     {
      "name": "block_now.txt",
@@ -6346,6 +7622,25 @@
      "label": "Hunting query (KQL)",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/hunt.kql",
      "download": "FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/hunt.spl",
+     "download": "FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/hunt_raw.spl",
+     "download": "FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/hunt.yaral",
+     "download": "FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign_hunt.yaral"
     },
     {
      "name": "iocs.csv",
@@ -6476,6 +7771,35 @@
      "source_label": "ZeroPath – FreeSWITCH CVE-2026-116779 SIP MESSAGE to API command injection",
      "source_name": "ZeroPath"
     }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/hunt.kql",
+     "download": "FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/hunt.spl",
+     "download": "FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/hunt_raw.spl",
+      "download": "FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/hunt.yaral",
+     "download": "FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign_hunt.yaral"
+    }
    ]
   },
   {
@@ -6575,6 +7899,9 @@
     "ipv4": 3,
     "filename": 1
    },
+   "ioas": [],
+   "ioa_count": 0,
+   "ioa_note": null,
    "files": [
     {
      "name": "block_now.txt",
@@ -6593,6 +7920,25 @@
      "label": "Hunting query (KQL)",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/APT29-Mobile-Watering-Hole-Exploit-Chains/hunt.kql",
      "download": "APT29-Mobile-Watering-Hole-Exploit-Chains_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/APT29-Mobile-Watering-Hole-Exploit-Chains/hunt.spl",
+     "download": "APT29-Mobile-Watering-Hole-Exploit-Chains_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/APT29-Mobile-Watering-Hole-Exploit-Chains/hunt_raw.spl",
+     "download": "APT29-Mobile-Watering-Hole-Exploit-Chains_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/APT29-Mobile-Watering-Hole-Exploit-Chains/hunt.yaral",
+     "download": "APT29-Mobile-Watering-Hole-Exploit-Chains_hunt.yaral"
     },
     {
      "name": "iocs.csv",
@@ -6872,6 +8218,35 @@
      "source_url": "https://www.sekoia.com/blog/poisoned-source-apt29-watering-holes-targets-mobile-devices-with-n-day-exploits",
      "source_label": "Sekoia TDR – Poisoned Source: APT29 watering holes target mobile devices with n-day exploits",
      "source_name": "Sekoia"
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/APT29-Mobile-Watering-Hole-Exploit-Chains/hunt.kql",
+     "download": "APT29-Mobile-Watering-Hole-Exploit-Chains_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/APT29-Mobile-Watering-Hole-Exploit-Chains/hunt.spl",
+     "download": "APT29-Mobile-Watering-Hole-Exploit-Chains_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/APT29-Mobile-Watering-Hole-Exploit-Chains/hunt_raw.spl",
+      "download": "APT29-Mobile-Watering-Hole-Exploit-Chains_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/APT29-Mobile-Watering-Hole-Exploit-Chains/hunt.yaral",
+     "download": "APT29-Mobile-Watering-Hole-Exploit-Chains_hunt.yaral"
     }
    ]
   }

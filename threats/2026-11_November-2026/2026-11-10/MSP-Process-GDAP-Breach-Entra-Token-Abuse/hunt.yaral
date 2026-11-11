@@ -1,0 +1,82 @@
+// MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants
+// Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
+// Google SecOps (YARA-L 2.0) detection rule over UDM events. Author: daniyyell-dev.
+// https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse
+// Paste into Detection > Rules & Detections > Rules Editor, then run a Retrohunt over at least the last 30 days
+// before enabling it live. The indicators below are live and malicious: do not browse to them.
+// Groups hits per principal host per hour (events without a hostname are kept as one group).
+// 17 of the 57 indicators are low-confidence (alert only); expect scanner noise on internet-facing hosts.
+// Behaviours: 0 alert behaviour(s) with a clean UDM mapping are part of this rule; the rest are listed as leads at the end.
+// Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.
+// Behaviours are for hunting and alerting only; never block on them.
+rule rti_msp_process_gdap_breach_entra_token_abuse {
+  meta:
+    author = "daniyyell-dev"
+    description = "Matches UDM events against the published indicators for MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants"
+    threat = "MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse"
+    source_1 = "https://www.inforcer.com/insights/when-a-gdap-vendor-is-breached-check-your-own-tenant"
+    source_2 = "https://www.thestack.technology/msp-software-firm-hacked-with-customer-entra-environments-now-getting-pwned/"
+    mitre_attack_technique = "T1078.004, T1110.003, T1199, T1550.001"
+    false_positives = "Low for high-confidence indicators; shared hosting, CDN or cloud IPs and scanner IPs can match benign traffic"
+    yara_version = "YL2.0"
+    severity = "High"
+    priority = "High"
+    tlp = "CLEAR"
+    published = "2026-11-09"
+    rule_version = "1.0"
+
+  events:
+    (
+      $e.principal.ip = /^(?:172\.169\.63\.30|64\.236\.54\.139|172\.169\.207\.227|172\.169\.187\.35|172\.169\.63\.29|172\.169\.63\.35|172\.169\.29\.166|172\.169\.58\.181|172\.169\.206\.55|172\.168\.41\.166|172\.168\.117\.170|172\.168\.253\.63|64\.236\.112\.134|64\.236\.112\.237|64\.236\.112\.251|64\.236\.112\.221|64\.236\.112\.120|64\.236\.112\.111|64\.236\.113\.15|64\.236\.113\.23|64\.236\.113\.32|52\.230\.237\.27|52\.230\.237\.16|52\.230\.237\.18|52\.230\.237\.21|52\.230\.237\.13|52\.230\.237\.9|52\.228\.167\.149|52\.228\.167\.121|52\.154\.255\.0|40\.89\.240\.243|40\.89\.240\.113|40\.83\.16\.22|13\.89\.111\.197|20\.84\.171\.92|130\.131\.144\.244|135\.233\.107\.143|172\.215\.180\.155|143\.198\.68\.206|187\.15\.92\.123|178\.61\.224\.154|46\.148\.159\.8|109\.171\.38\.144|213\.5\.16\.40|91\.210\.236\.74|202\.44\.193\.79|24\.220\.57\.81|188\.137\.78\.112|188\.25\.140\.193|193\.188\.198\.233|46\.151\.219\.60|178\.205\.170\.18|188\.137\.76\.53|213\.226\.214\.89|177\.52\.113\.45|46\.253\.235\.237|138\.118\.86\.78)$/ or
+      $e.target.ip = /^(?:172\.169\.63\.30|64\.236\.54\.139|172\.169\.207\.227|172\.169\.187\.35|172\.169\.63\.29|172\.169\.63\.35|172\.169\.29\.166|172\.169\.58\.181|172\.169\.206\.55|172\.168\.41\.166|172\.168\.117\.170|172\.168\.253\.63|64\.236\.112\.134|64\.236\.112\.237|64\.236\.112\.251|64\.236\.112\.221|64\.236\.112\.120|64\.236\.112\.111|64\.236\.113\.15|64\.236\.113\.23|64\.236\.113\.32|52\.230\.237\.27|52\.230\.237\.16|52\.230\.237\.18|52\.230\.237\.21|52\.230\.237\.13|52\.230\.237\.9|52\.228\.167\.149|52\.228\.167\.121|52\.154\.255\.0|40\.89\.240\.243|40\.89\.240\.113|40\.83\.16\.22|13\.89\.111\.197|20\.84\.171\.92|130\.131\.144\.244|135\.233\.107\.143|172\.215\.180\.155|143\.198\.68\.206|187\.15\.92\.123|178\.61\.224\.154|46\.148\.159\.8|109\.171\.38\.144|213\.5\.16\.40|91\.210\.236\.74|202\.44\.193\.79|24\.220\.57\.81|188\.137\.78\.112|188\.25\.140\.193|193\.188\.198\.233|46\.151\.219\.60|178\.205\.170\.18|188\.137\.76\.53|213\.226\.214\.89|177\.52\.113\.45|46\.253\.235\.237|138\.118\.86\.78)$/ or
+      $e.network.dns.answers.data = /^(?:172\.169\.63\.30|64\.236\.54\.139|172\.169\.207\.227|172\.169\.187\.35|172\.169\.63\.29|172\.169\.63\.35|172\.169\.29\.166|172\.169\.58\.181|172\.169\.206\.55|172\.168\.41\.166|172\.168\.117\.170|172\.168\.253\.63|64\.236\.112\.134|64\.236\.112\.237|64\.236\.112\.251|64\.236\.112\.221|64\.236\.112\.120|64\.236\.112\.111|64\.236\.113\.15|64\.236\.113\.23|64\.236\.113\.32|52\.230\.237\.27|52\.230\.237\.16|52\.230\.237\.18|52\.230\.237\.21|52\.230\.237\.13|52\.230\.237\.9|52\.228\.167\.149|52\.228\.167\.121|52\.154\.255\.0|40\.89\.240\.243|40\.89\.240\.113|40\.83\.16\.22|13\.89\.111\.197|20\.84\.171\.92|130\.131\.144\.244|135\.233\.107\.143|172\.215\.180\.155|143\.198\.68\.206|187\.15\.92\.123|178\.61\.224\.154|46\.148\.159\.8|109\.171\.38\.144|213\.5\.16\.40|91\.210\.236\.74|202\.44\.193\.79|24\.220\.57\.81|188\.137\.78\.112|188\.25\.140\.193|193\.188\.198\.233|46\.151\.219\.60|178\.205\.170\.18|188\.137\.76\.53|213\.226\.214\.89|177\.52\.113\.45|46\.253\.235\.237|138\.118\.86\.78)$/
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}
+
+// Behaviours not in the rule above. Hunt them in UDM search or the named logs.
+// Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting. Behaviours are for hunting and alerting only; never block on them.
+//
+//   Behaviour 1 (Alert): App sign-ins from outside the MSP Process address
+//       Look for: Service principal sign-ins for the app connected to MSP Process from any address other than 64.236.54.139, from 09:56 UTC on 7 November 2026
+//       Log source: Entra service principal sign-in logs, in the MSP's own tenant where the app is registered
+//       No rule written: Entra service principal sign-in fields vary by Google SecOps parser version; use UDM search on principal.ip and the app name
+//
+//   Behaviour 2 (Hunt): One address trying several partner app secrets
+//       Look for: One address using several partner app secrets within seconds, first failing (invalid client secret, missing service principal) and succeeding about an hour later
+//       Log source: Entra service principal sign-in logs
+//       No rule written: needs the partner's list of app secrets and failure codes per tenant; group your Entra service principal sign-ins by IP address and count distinct apps
+//
+//   Behaviour 3 (Alert): Admin refresh token used from another address
+//       Look for: Non-interactive user sign-ins with the connecting admin's refresh token from an address other than 64.236.54.139
+//       Log source: Entra non-interactive user sign-in logs
+//       No rule written: depends on which admin account connected the app in your tenant; filter non-interactive sign-ins for that account not from 64.236.54.139
+//
+//   Behaviour 4 (Alert): Tenant changes made by the MSP Process app
+//       Look for: New app credentials, app role assignments, new users or GDAP security-group membership changes initiated by the MSP Process app since 6 November 2026
+//       Log source: Entra audit logs
+//       No rule written: Entra audit initiator fields vary by parser version; use UDM search
+//
+//   Behaviour 5 (Hunt): Graph requests with the app's tokens from another address
+//       Look for: Microsoft Graph requests made with the app's tokens from an address other than 64.236.54.139
+//       Log source: Microsoft Graph activity logs (only if already enabled on 7 November)
+//       No rule written: Microsoft Graph activity logs are only available if they were enabled before 7 November; filter them for the app ID and IP addresses other than 64.236.54.139

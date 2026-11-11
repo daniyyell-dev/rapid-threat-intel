@@ -6,8 +6,9 @@
 // Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context.
 let Lookback = 30d;
 let IPs = dynamic(["62.60.226.50"]);
-let Domains = dynamic(["hf98x4d.site", "apdhlhs3.xyz", "j9af4sr.guru", "67sixcebeh.surf", "stv4ec5.shop", "vg5sgxv.lol", "d9mjs.sbs", "jse8x92s.me", "couhe79.xyz", "xzttyt.xyz", "secdarvin2026.icu", "oreshnik.top", "svo-zv.pro", "dhsbdgs.icu", "hackersteersman.digital", "coeuzgoq.bahisbiz.com", "kefavkd.nextbahis.sex", "d9j.everunningshoes.com", "nox.usa-synadentix.com", "zwa8.meritbethizligir.com", "355uz90z.bolnhurstrally.site", "7ulk.irvinaurus.fit", "pool.hashvault.sh", "pool.supportxmr.com", "62.60.226.50"]);
+let Domains = dynamic(["hf98x4d.site", "apdhlhs3.xyz", "j9af4sr.guru", "67sixcebeh.surf", "stv4ec5.shop", "vg5sgxv.lol", "d9mjs.sbs", "jse8x92s.me", "couhe79.xyz", "xzttyt.xyz", "secdarvin2026.icu", "oreshnik.top", "svo-zv.pro", "dhsbdgs.icu", "hackersteersman.digital", "coeuzgoq.bahisbiz.com", "kefavkd.nextbahis.sex", "d9j.everunningshoes.com", "nox.usa-synadentix.com", "zwa8.meritbethizligir.com", "355uz90z.bolnhurstrally.site", "7ulk.irvinaurus.fit", "pool.hashvault.sh", "pool.supportxmr.com"]);
 let Urls = dynamic(["https://coeuzgoq.bahisbiz.com//update.sh", "http://62.60.226.50/upload.php"]);
+let UrlKeys = dynamic(["coeuzgoq.bahisbiz.com//update.sh", "62.60.226.50/upload.php"]);
 union isfuzzy=true
   (DeviceNetworkEvents
     | where Timestamp > ago(Lookback)
@@ -45,13 +46,17 @@ union isfuzzy=true
     | where Timestamp > ago(Lookback)
     | where ActionType == "DnsQueryResponse" and tostring(parse_json(AdditionalFields).DnsQueryString) has_any (Domains)
     | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(parse_json(AdditionalFields).DnsQueryString), Context = tostring(strcat("DNS ", InitiatingProcessFileName))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (UrlKeys)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
   (EmailUrlInfo
     | where Timestamp > ago(Lookback)
-    | where UrlDomain has_any (Domains) or Url has_any (Urls)
+    | where UrlDomain has_any (Domains) or Url has_any (UrlKeys)
     | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = tostring(Url), Context = tostring("URL in email")),
   (UrlClickEvents
     | where Timestamp > ago(Lookback)
-    | where Url has_any (Domains) or Url has_any (Urls)
+    | where Url has_any (Domains) or Url has_any (UrlKeys)
     | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
   (DeviceProcessEvents
     | where Timestamp > ago(Lookback)

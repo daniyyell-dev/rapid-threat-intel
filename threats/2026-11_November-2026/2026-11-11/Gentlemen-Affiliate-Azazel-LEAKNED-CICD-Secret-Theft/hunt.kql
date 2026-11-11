@@ -4,6 +4,8 @@
 // Source: https://github.com/daniyyell-dev/rapid-threat-intel
 // Tables your tenant does not license are skipped (union isfuzzy=true).
 // Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context.
+// Behaviour branches read DeviceFileEvents, DeviceProcessEvents.
+// Behaviours are leads, not confirmed indicators: compare any hit against your own baseline before acting.
 let Lookback = 30d;
 let IPs = dynamic(["23.236.169.183", "162.220.163.26", "66.179.30.155", "141.95.252.30", "66.203.124.135"]);
 let Domains = dynamic(["forgitlab.com"]);
@@ -55,7 +57,15 @@ union isfuzzy=true
   (DeviceProcessEvents
     | where Timestamp > ago(Lookback)
     | where (FileName =~ "mc" and ProcessCommandLine has "mirror") or ProcessCommandLine has_any ("mega-cmd-server", "glato", "nord-stream", "gitlab-watchman", "gitlab-secrets", "penelope.py", "jasypt_decrypt_all", "ATTENTION_SENSITIVE_INFORMATION")
-    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine)))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "mc" and ProcessCommandLine has "mirror" and not(ProcessCommandLine has "localhost")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "ATTENTION_SENSITIVE_INFORMATION.txt"
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(ActionType, " ", FolderPath, " by ", InitiatingProcessFileName)))
 | summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
 | order by LastSeen desc
 

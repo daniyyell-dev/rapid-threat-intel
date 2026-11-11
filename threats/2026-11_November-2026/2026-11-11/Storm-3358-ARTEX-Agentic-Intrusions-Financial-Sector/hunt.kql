@@ -4,6 +4,8 @@
 // Source: https://github.com/daniyyell-dev/rapid-threat-intel
 // Tables your tenant does not license are skipped (union isfuzzy=true).
 // Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context.
+// Behaviour branches read DeviceProcessEvents, W3CIISLog. W3CIISLog needs Microsoft Sentinel connected to the Defender portal.
+// Behaviours are leads, not confirmed indicators: compare any hit against your own baseline before acting.
 let Lookback = 30d;
 let IPs = dynamic(["199.19.95.66", "199.19.95.67", "199.19.95.68", "91.92.240.238", "85.11.168.45", "85.11.167.52", "178.16.54.129", "31.77.229.35"]);
 union isfuzzy=true
@@ -38,7 +40,17 @@ union isfuzzy=true
   (DeviceProcessEvents
     | where Timestamp > ago(Lookback)
     | where (FileName in~ ("curl", "curl.exe", "wget", "nc", "ncat", "netcat") and ProcessCommandLine has_any ("199.19.95.66", "199.19.95.67", "199.19.95.68", "91.92.240.238", "85.11.168.45", "85.11.167.52", "178.16.54.129", "31.77.229.35")) or ProcessCommandLine has_any ("vshell", "AdaptixC2")
-    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine)))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where InitiatingProcessFileName in~ ("w3wp.exe", "httpd", "apache2", "nginx", "php-fpm", "php", "java", "node", "tomcat") and FileName in~ ("curl", "curl.exe", "wget", "nc", "ncat", "netcat", "sh", "bash", "cmd.exe", "powershell.exe")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(InitiatingProcessFileName, " > ", ProcessCommandLine))),
+  (W3CIISLog
+    | where TimeGenerated > ago(Lookback)
+    | where csUserAgent has_any ("Nmap", "curl/", "Wget", "python-requests", "python-urllib", "aiohttp", "httpx", "HeadlessChrome", "Playwright")
+    | summarize Timestamp = max(TimeGenerated), Requests = count(), Paths = dcount(csUriStem), Agents = make_set(csUserAgent, 3) by cIP, Computer, Window = bin(TimeGenerated, 5m)
+    | where Requests >= 100 and Paths >= 20
+    | project Timestamp, SourceTable = "W3CIISLog", Entity = Computer, Indicator = cIP, Context = strcat(Requests, " requests, ", Paths, " paths in 5m; ", strcat_array(Agents, " | ")))
 | summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
 | order by LastSeen desc
 

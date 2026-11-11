@@ -4,6 +4,8 @@
 // Source: https://github.com/daniyyell-dev/rapid-threat-intel
 // Tables your tenant does not license are skipped (union isfuzzy=true).
 // Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context.
+// Behaviour branches read CommonSecurityLog, DeviceFileEvents, Syslog. CommonSecurityLog, Syslog need Microsoft Sentinel connected to the Defender portal.
+// Behaviours are leads, not confirmed indicators: compare any hit against your own baseline before acting.
 let Lookback = 30d;
 let IPs = dynamic(["91.211.251.112", "193.148.56.72", "37.221.208.216", "45.66.35.11", "64.65.0.120", "64.65.62.160", "89.47.51.90", "92.60.37.247"]);
 union isfuzzy=true
@@ -38,7 +40,23 @@ union isfuzzy=true
   (DeviceProcessEvents
     | where Timestamp > ago(Lookback)
     | where ProcessCommandLine has_any ("zz-ustar", "/.ustar5", "/.ustar6", "pivot2", "authenticationToken=j:") or (ProcessCommandLine has "hvm_serial" and ProcessCommandLine has "file")
-    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine)))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (CommonSecurityLog
+    | where TimeGenerated > ago(Lookback)
+    | where AdditionalExtensions has "authenticationToken=j:" or RequestURL has "authenticationToken=j:" or RequestContext has "authenticationToken=j:"
+    | project Timestamp = TimeGenerated, SourceTable = "CommonSecurityLog", Entity = tostring(DeviceName), Indicator = tostring(SourceIP), Context = tostring(strcat(RequestURL, " ", RequestContext))),
+  (CommonSecurityLog
+    | where TimeGenerated > ago(Lookback)
+    | where RequestURL has "/rest/v0/users/me/authentication_tokens"
+    | project Timestamp = TimeGenerated, SourceTable = "CommonSecurityLog", Entity = tostring(DeviceName), Indicator = tostring(SourceIP), Context = tostring(RequestURL)),
+  (Syslog
+    | where TimeGenerated > ago(Lookback)
+    | where SyslogMessage has "-serial file:" or SyslogMessage has "pivot2" or SyslogMessage has "hvm_serial"
+    | project Timestamp = TimeGenerated, SourceTable = "Syslog", Entity = tostring(Computer), Indicator = tostring(ProcessName), Context = tostring(SyslogMessage)),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FolderPath has_any ("/etc/cron.d/zz-ustar", "/.ustar5", "/.ustar6") or FolderPath == "/etc/ld.so.preload"
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " by ", InitiatingProcessFileName)))
 | summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
 | order by LastSeen desc
 

@@ -26,6 +26,9 @@ Recorded Future's Insikt Group reports GhostFrame, a previously undocumented com
 | [`iocs.csv`](iocs.csv) | All 4 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 4 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
+| [`hunt.spl`](hunt.spl) | Splunk hunt over the CIM data models |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk hunt for data not mapped to CIM ([macros](../../../../all/splunk_macros.conf)) |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps YARA-L 2.0 detection rule |
 
 Indicators by type: 3 IPv4, 1 SHA256. See `iocs.csv` for full details and descriptions.
 
@@ -50,15 +53,48 @@ Indicators by type: 3 IPv4, 1 SHA256. See `iocs.csv` for full details and descri
 3. On every ESXi host, check /etc/rc.local.d/local.sh and /opt for vmhostd-core, confirm the firewall is enabled and execInstalledOnly is set, and look for unexpected snapshots or VNC enabled on VMs.
 4. Patch and review SonicWall, Palo Alto Networks and Fortinet VPN appliances, keep ESXi management off the internet and rotate credentials for accounts on VMs hosted on an affected hypervisor.
 
+## Behaviours to hunt
+
+> Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.
+
+1. **Alert** · One host trying six C2 ports at once\
+   Look for: One host opening near-simultaneous TCP connections to the same external IP on ports 53, 2222, 3389, 4444, 8443 and 9443, retried every 5 to 12 seconds\
+   Why it matters: GhostFrame tries all six ports at once and keeps the first that answers. The pattern survives C2 rotation.\
+   Log source: Firewall, NetFlow or EDR network events from ESXi management addresses\
+   Source: [Recorded Future](https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware)
+
+2. **Alert** · GhostFrame persistence on ESXi\
+   Look for: Changes to /etc/rc.local.d/local.sh, a file at /opt/vmhostd-core, or a process named vmhostd (not vmware-hostd)\
+   Why it matters: GhostFrame persists by copying itself to /opt/vmhostd-core and editing local.sh, then disguises its process name as vmhostd.\
+   Log source: ESXi shell.log and syslog, host file checks\
+   Source: [Recorded Future](https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware)
+
+3. **Alert** · ESXi firewall disabled again and again\
+   Look for: The ESXi firewall being disabled (esxcli network firewall set --enabled false) or execInstalledOnly set to 0, again and again\
+   Why it matters: The implant re-disables both controls about every five seconds. Re-enabling them is not enough; find the persistence.\
+   Log source: ESXi shell.log, hostd.log and syslog\
+   Source: [Recorded Future](https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware)
+
+4. **Hunt** · VNC, snapshot and tunnel activity on ESXi\
+   Look for: VNC enabled on VMs, unexpected snapshots or power changes, and the ESXi Host Client reached through an unusual tunnel\
+   Why it matters: GhostFrame operators snapshot VMs to harvest credentials with VMkatz and relay VNC sessions to the guests.\
+   Log source: ESXi and vCenter events\
+   Source: [Recorded Future](https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware)
+
+Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed as comments in those files. Use behaviours to hunt and alert, never to block.
+
 ## Hunt
 
-Run this before blocking to find past activity.
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
 
-1. Open [`hunt.kql`](hunt.kql) and copy the query.
-2. In the [Microsoft Defender portal](https://security.microsoft.com), go to **Hunting > Advanced hunting** and paste it into a new query tab.
-3. Select **Run query**. Results cover the last 30 days, one row per table, entity and indicator.
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
 
-Non-network leads such as file names or URL paths are listed as comments at the end of the query. See the [Defender XDR guide](../../../../docs/defender-xdr.md) for more.
+Leads that are not network or hash indicators, and behaviours with no clean field mapping, are listed as comments at the end of each file. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

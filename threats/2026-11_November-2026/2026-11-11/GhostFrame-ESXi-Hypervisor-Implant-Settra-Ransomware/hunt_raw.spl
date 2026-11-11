@@ -1,0 +1,97 @@
+``` GhostFrame: ESXi Hypervisor Implant Linked to Settra Ransomware (TAG-218)
+    Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
+    Splunk hunt over raw events, for data not mapped to CIM. Author: daniyyell-dev. https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware
+    Sources: https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware
+    Define the rti_network, rti_dns, rti_web and rti_endpoint macros once (example: all/splunk_macros.conf).
+    Each macro takes one argument, a list of search terms used to pre-filter the raw events, and must only use
+    streaming commands (search, eval, rename, rex, fields, spath) so it can run inside multisearch.
+    Set the time picker to at least the last 30 days. The indicators below are live and malicious.
+    Output: first_seen, last_seen, ioc, ioc_type, data_model, host, user, src, dest, detail, count
+
+    Behaviours (indicators of attack) are extra sections below, with ioc_type "behaviour (alert)" or "behaviour (hunt)".
+    Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.
+    Behaviours are for hunting and alerting only; never block on them.
+    Sections that read raw logs use index=*: replace it with your own index names to make them faster. ```
+| multisearch
+  [ search `rti_network(45.158.196.81 OR 45.158.196.141 OR 193.5.65.114)`
+    | search dest_ip IN ("45.158.196.81", "45.158.196.141", "193.5.65.114")
+    | eval data_model="network", ioc_type="ipv4", ioc=dest_ip, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_network(45.158.196.81 OR 45.158.196.141 OR 193.5.65.114)`
+    | search src_ip IN ("45.158.196.81", "45.158.196.141", "193.5.65.114")
+    | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_endpoint(a05eae6d07b82e2e5451a72266f21fbaf76486ef4920a820988de93e15353a10)`
+    | search file_hash IN ("*a05eae6d07b82e2e5451a72266f21fbaf76486ef4920a820988de93e15353a10*") OR process_hash IN ("*a05eae6d07b82e2e5451a72266f21fbaf76486ef4920a820988de93e15353a10*") OR parent_process_hash IN ("*a05eae6d07b82e2e5451a72266f21fbaf76486ef4920a820988de93e15353a10*")
+    | eval matched=file_hash." ".process_hash." ".parent_process_hash
+    | rex field=matched "(?i)(?<ioc>a05eae6d07b82e2e5451a72266f21fbaf76486ef4920a820988de93e15353a10)"
+    | eval data_model="endpoint", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, detail=coalesce(process, file_path)
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+``` Behaviour 1 (Alert): One host trying six C2 ports at once
+    Look for: One host opening near-simultaneous TCP connections to the same external IP on ports 53, 2222, 3389, 4444, 8443 and 9443, retried every 5 to 12 seconds
+    Log source: Firewall, NetFlow or EDR network events from ESXi management addresses
+    Lead, not proof: compare any hit with your own baseline before acting. ```
+| append [
+    search `rti_network(53 OR 2222 OR 3389 OR 4444 OR 8443 OR 9443)`
+    | search dest_port IN (53, 2222, 3389, 4444, 8443, 9443)
+    | bin _time span=30s
+    | stats count min(_time) AS first_seen max(_time) AS last_seen dc(dest_port) AS ports values(dest_port) AS port_list BY src_ip dest_ip _time
+    | where ports>=4
+    | stats sum(count) AS count min(first_seen) AS first_seen max(last_seen) AS last_seen values(port_list) AS port_list BY src_ip dest_ip
+    | eval host=src_ip, user="-", src=src_ip, dest=dest_ip, detail="ports ".mvjoin(port_list, ",")." to one address within 30s", data_model="network"
+    | fields - src_ip dest_ip port_list
+    | eval ioc="One host trying six C2 ports at once", ioc_type="behaviour (alert)"
+]
+
+``` Behaviour 2 (Alert): GhostFrame persistence on ESXi
+    Look for: Changes to /etc/rc.local.d/local.sh, a file at /opt/vmhostd-core, or a process named vmhostd (not vmware-hostd)
+    Log source: ESXi shell.log and syslog, host file checks
+    Lead, not proof: compare any hit with your own baseline before acting. ```
+| append [
+    search index=* ("vmhostd-core" OR "rc.local.d/local.sh" OR "auto-backup.sh")
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="ESXi logs"
+    | eval ioc="GhostFrame persistence on ESXi", ioc_type="behaviour (alert)"
+]
+| append [
+    search `rti_endpoint(vmhostd)`
+    | where match(process_name, "(?i)(^|[\\/])(vmhostd)$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="GhostFrame persistence on ESXi", ioc_type="behaviour (alert)"
+]
+
+``` Behaviour 3 (Alert): ESXi firewall disabled again and again
+    Look for: The ESXi firewall being disabled (esxcli network firewall set --enabled false) or execInstalledOnly set to 0, again and again
+    Log source: ESXi shell.log, hostd.log and syslog
+    Lead, not proof: compare any hit with your own baseline before acting. ```
+| append [
+    search index=* (("firewall" "--enabled false") OR ("execInstalledOnly" 0))
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="ESXi logs"
+    | eval ioc="ESXi firewall disabled again and again", ioc_type="behaviour (alert)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count
+
+``` Behaviours to check by hand (no reliable Splunk field mapping, so no search is written):
+
+    Behaviour 4 (Hunt): VNC, snapshot and tunnel activity on ESXi
+        Look for: VNC enabled on VMs, unexpected snapshots or power changes, and the ESXi Host Client reached through an unusual tunnel
+        Log source: ESXi and vCenter events
+        Why no search: vCenter and ESXi event names for VNC settings, snapshots and power changes vary by version; review them against your change records
+
+    Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting. Behaviours are for hunting and alerting only; never block on them. ```
+``` Behavioural hunt notes:
+    On ESXi, a modified /etc/rc.local.d/local.sh that runs esxcli network firewall set --enabled false or sets execInstalledOnly to 0 is GhostFrame persistence.
+    Settra ransomware intrusions used MeshAgent for persistence; an unexpected MeshAgent install on a server is worth checking. ```

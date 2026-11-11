@@ -251,6 +251,7 @@ option, optgroup { background: var(--raise); color: var(--ink); }
 .pill.block { color: var(--block); font-weight: 700; }
 .pill.alert { color: var(--alert); font-weight: 700; }
 .pill.monitor { color: var(--monitor); font-weight: 700; }
+.pill.hunt { color: var(--monitor); font-weight: 700; }
 .conf { display: inline-flex; align-items: center; gap: 7px; font: 400 13px/1 var(--sans); color: var(--ink-2); white-space: nowrap; }
 .conf i { display: inline-flex; gap: 2px; }
 .conf i::before, .conf i::after, .conf i b { content: ""; display: block; width: 4px; height: 10px; background: var(--line-2); }
@@ -258,7 +259,7 @@ option, optgroup { background: var(--raise); color: var(--ink); }
 .conf.med i::before, .conf.med i b { background: var(--ink-2); }
 .conf.high i::before, .conf.high i b, .conf.high i::after { background: var(--ink); }
 .ty { font: 500 13px/1.3 var(--sans); color: var(--c, var(--ink-2)); white-space: nowrap; }
-.pill.block, .pill.alert, .pill.monitor, .conf { text-transform: capitalize; }
+.pill.block, .pill.alert, .pill.monitor, .pill.hunt, .conf { text-transform: capitalize; }
 
 /* Detail */
 .det { padding-top: 24px; padding-bottom: 24px; animation: rise .3s var(--ease); }
@@ -492,3 +493,67 @@ td.none { text-align: center; padding: 32px; color: var(--ink-3); font-size: 14p
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
   .dot { box-shadow: none; }
 }
+
+/* Behaviours to hunt (IOAs) */
+.r-num .hunt { color: var(--monitor); font-weight: 500; }
+.legend .ioa-leg { color: var(--monitor); }
+.todo .ioa-c { color: var(--monitor); }
+
+/* Hunt: query tabs per platform. Text labels only, no filled boxes. */
+.hq-intro { margin: 0 0 12px; font-size: 14px; line-height: 1.55; color: var(--ink-3); max-width: 72ch; }
+.hq-tabs { display: flex; flex-wrap: wrap; gap: 4px 24px; border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+.hq-tab { background: none; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; padding: 8px 0; font: 500 14px/1.2 var(--sans); color: var(--ink-3); transition: color .15s, border-color .15s; }
+.hq-tab:hover { color: var(--ink); }
+.hq-tab[aria-selected="true"] { font-weight: 700; }
+.hq-tab.p-defender-xdr[aria-selected="true"] { color: var(--monitor); border-bottom-color: var(--monitor); }
+.hq-tab.p-splunk[aria-selected="true"] { color: var(--ok); border-bottom-color: var(--ok); }
+.hq-tab.p-google-secops[aria-selected="true"] { color: var(--alert); border-bottom-color: var(--alert); }
+.hq-tab:focus-visible, .hq-panel:focus-visible, .hq-code:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
+.hq-meta { margin: 0 0 8px; font: 400 13px/1.45 var(--sans); color: var(--ink-3); }
+.hq-lang { font: 700 13px/1 var(--mono); color: var(--ink); }
+.hq-file { font: 400 12px/1 var(--mono); color: var(--ink-2); }
+.hq-alt { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.hq-alt p { margin: 0 0 8px; font-size: 13px; line-height: 1.5; color: var(--ink-3); }
+.hq-alt b { color: var(--ink-2); font-weight: 500; }
+@media (max-width: 720px) {
+  .hq-tabs { gap: 4px 16px; }
+  .hq-tab { font-size: 13px; }
+}
+
+/* Behaviours: numbered items, label first, labelled detail lines. */
+.blk-sec { scroll-margin-top: 80px; }
+.ioa-note { margin: 0 0 20px; padding: 2px 0 2px 12px; border-left: 2px solid var(--pink); font-size: 14px; line-height: 1.55; color: var(--ink-2); max-width: 72ch; }
+.ioa-list { list-style: none; margin: 0; padding: 0; }
+.ioa-list > li { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 0 12px; padding: 20px 0; border-top: 1px solid var(--line); }
+.ioa-list > li:first-child { border-top: 0; padding-top: 4px; }
+.ioa-list > li:last-child { padding-bottom: 0; }
+.ioa-n { font: 500 15px/1.4 var(--mono); color: var(--ink-3); text-align: right; padding-top: 1px; }
+.ioa-title { margin: 0 0 8px; font: 500 16px/1.4 var(--sans); color: var(--ink); overflow-wrap: anywhere; }
+.ioa-title .pill { margin-right: 8px; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
+.ioa-line { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 0 12px; margin: 4px 0 0; font-size: 14px; line-height: 1.55; color: var(--ink-2); max-width: 78ch; overflow-wrap: anywhere; }
+.ioa-lab { display: block; padding-top: 2px; font: 500 12px/1.55 var(--sans); color: var(--ink-3); text-transform: uppercase; letter-spacing: .04em; }
+.ioa-qs { font-family: var(--mono); font-size: 13px; color: var(--ink); }
+.ioa-qs .ioa-lab { font-family: var(--sans); }
+.ioa-qs.none { font-family: var(--sans); color: var(--ink-3); }
+
+/* Hunt preview and actions */
+.hq-act { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin: 0 0 12px; }
+.hq-act .sep { color: var(--ink-3); }
+.hq-btn { background: none; border: 0; padding: 4px 0; color: var(--pink-text); font: 500 14px/1.2 var(--sans); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; transition: color .15s; }
+.hq-btn:hover { color: #f87aa9; }
+.hq-btn.done { color: var(--ok); }
+.hq-btn.busy { animation: blink .8s steps(2) infinite; }
+.hq-code { margin: 0; max-height: 440px; overflow: auto; padding: 12px 14px; border: 1px solid var(--line-2); border-radius: 3px; font: 400 12.5px/1.6 var(--mono); color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere; tab-size: 4; -webkit-overflow-scrolling: touch; }
+.hq-code code { font: inherit; color: inherit; }
+.hq-code .c { color: var(--ink-3); }
+.hq-hint { margin: 6px 0 0; font-size: 12px; line-height: 1.5; color: var(--ink-3); }
+@media (max-width: 720px) {
+  .ioa-list > li { grid-template-columns: 22px minmax(0, 1fr); gap: 0 8px; padding: 16px 0; }
+  .ioa-line { display: block; }
+  .ioa-lab { padding-top: 0; }
+  .ioa-title { font-size: 15px; }
+  .hq-code { max-height: 360px; padding: 10px; font-size: 11.5px; }
+}
+
+/* Subline under the main heading */
+.tagline-sub { margin: 10px 0 0; font: 400 15px/1.5 var(--sans); color: var(--ink-3); }

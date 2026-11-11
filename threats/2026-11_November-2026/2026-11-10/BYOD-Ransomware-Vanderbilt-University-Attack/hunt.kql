@@ -4,6 +4,8 @@
 // Source: https://github.com/daniyyell-dev/rapid-threat-intel
 // Tables your tenant does not license are skipped (union isfuzzy=true).
 // Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context.
+// Behaviour branches read DeviceFileEvents.
+// Behaviours are leads, not confirmed indicators: compare any hit against your own baseline before acting.
 let Lookback = 30d;
 let Domains = dynamic(["byodxn5s7sua6oyyjj74rycgn6afncfckprt5ezskt3cni6lg3wdrgad.onion"]);
 union isfuzzy=true
@@ -22,7 +24,15 @@ union isfuzzy=true
   (UrlClickEvents
     | where Timestamp > ago(Lookback)
     | where Url has_any (Domains)
-    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload)))
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName startswith "README_BYOD_" and FileName endswith ".txt"
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(ActionType, " ", FolderPath, " by ", InitiatingProcessFileName))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType in ("FileRenamed", "FileCreated") and FileName endswith ".byod"
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(ActionType, " ", FolderPath, " by ", InitiatingProcessFileName)))
 | summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
 | order by LastSeen desc
 

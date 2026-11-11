@@ -5,7 +5,8 @@
   <img src="assets/banner-light.webp" alt="Rapid Threat Intel – Move fast with threat intel from different sources" width="70%">
 </picture>
 
-**High-impact threat intelligence and IOCs, researched and ready to deploy**
+**Agentic AI collects it, analysts verify it, the community acts on it.**<br>
+<sub>From defenders, for defenders.</sub>
 
 [![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-15-informational)](#latest-threats) ![IOCs](https://img.shields.io/badge/IOCs-495-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--11-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
@@ -51,7 +52,8 @@ The result is one place where SOC analysts, threat hunters and incident responde
 
 1. **Block now.** Point your firewall, proxy or EDR at a [raw feed URL](#raw-feeds), or import [`defender_xdr_indicators.csv`](all/defender_xdr_indicators.csv) into Defender ([how](docs/defender-xdr.md#import-indicators)).
 2. **Hunt in Defender.** Paste [`live_feed_hunt.kql`](all/live_feed_hunt.kql) into Advanced hunting. It loads the latest indicators itself, so there is nothing to copy in ([guide](docs/defender-xdr.md#hunt-with-the-live-feed)).
-3. **Detect in Google SecOps.** Load the feeds into data tables and match them with YARA-L rules ([guide](docs/google-secops.md)).
+3. **Hunt in Splunk.** Load [`splunk_rti_iocs.csv`](all/splunk_rti_iocs.csv) as a lookup and run [`live_feed_hunt.spl`](all/live_feed_hunt.spl) ([guide](docs/splunk.md)).
+4. **Detect in Google SecOps.** Load the feeds into data tables and run [`live_feed.yaral`](all/live_feed.yaral) ([guide](docs/google-secops.md)).
 
 ## Latest threats
 
@@ -93,7 +95,8 @@ To block everything at once, use [`all/`](all/): 263 high-confidence block indic
 | Live feed dashboard | [Browse threats, check an indicator, download files](docs/dashboard.md) |
 | Microsoft Defender XDR | [Import indicators, run hunts, create detection rules](docs/defender-xdr.md) |
 | Firewalls and EDR | [Use block lists as external dynamic lists](docs/firewall-and-edr.md) |
-| Google SecOps | [Data tables and YARA-L 2.0 rules](docs/google-secops.md) |
+| Splunk | [Run hunts over CIM or raw data, live-feed lookup](docs/splunk.md) |
+| Google SecOps | [Per-threat YARA-L 2.0 rules, data tables, live-feed rule](docs/google-secops.md) |
 | Anything else | [Data format reference](docs/data-format.md) |
 
 ### Raw feeds
@@ -127,13 +130,20 @@ rapid-threat-intel/
 │               ├── block_now.txt             high-confidence indicators to block
 │               ├── iocs.csv                  every indicator with description and source
 │               ├── defender_xdr_indicators.csv   Defender XDR bulk import
-│               └── hunt.kql                  Defender XDR advanced hunting query
+│               ├── hunt.kql                  Defender XDR advanced hunting query
+│               ├── hunt.spl                  Splunk hunt (CIM data models)
+│               ├── hunt_raw.spl              Splunk hunt for data not mapped to CIM
+│               └── hunt.yaral                Google SecOps YARA-L 2.0 rule
 ├── all/                                      every threat combined
 │   ├── block_now.txt
 │   ├── block_now_<type>.txt                  one clean list per type for firewalls
 │   ├── iocs.csv
 │   ├── defender_xdr_indicators.csv
-│   └── live_feed_hunt.kql                    Defender hunt that loads the live feeds
+│   ├── live_feed_hunt.kql                    Defender hunt that loads the live feeds
+│   ├── live_feed_hunt.spl                    Splunk hunt using the splunk_rti_iocs.csv lookup
+│   ├── live_feed.yaral                       Google SecOps rule using reference lists
+│   ├── splunk_rti_iocs.csv                   block-now indicators as a Splunk lookup
+│   └── splunk_macros.conf                    rti_* macros for hunt_raw.spl
 └── docs/                                     how-to guides
 ```
 

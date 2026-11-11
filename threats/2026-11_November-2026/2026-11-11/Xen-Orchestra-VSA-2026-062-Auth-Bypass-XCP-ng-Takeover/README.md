@@ -25,6 +25,9 @@ Vates reports active exploitation of VSA-2026-062, a critical authentication byp
 | [`iocs.csv`](iocs.csv) | All 17 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 8 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
+| [`hunt.spl`](hunt.spl) | Splunk hunt over the CIM data models |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk hunt for data not mapped to CIM ([macros](../../../../all/splunk_macros.conf)) |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps YARA-L 2.0 detection rule |
 
 Indicators by type: 8 IPv4, 5 other, 4 file names. See `iocs.csv` for full details and descriptions.
 
@@ -46,15 +49,48 @@ Indicators by type: 8 IPv4, 5 other, 4 file names. See `iocs.csv` for full detai
 3. Add a WAF or reverse-proxy rule for authenticationToken=j:{} and authenticationToken=j:%7B%7D, and search proxy and web server logs for both patterns, because Xen Orchestra does not log the bypass.
 4. On every XCP-ng host, look for a VM named pivot2, VMs with hvm_serial: file, '-serial file:' in /var/log/xensource.log*, and /etc/cron.d/zz-ustar*, /.ustar5, /.ustar6 and /etc/ld.so.preload. If compromised, reinstall and rotate every Vates VMS secret, including backup remotes, the pool secret, root and user passwords, OTP secrets and mail settings.
 
+## Behaviours to hunt
+
+> Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.
+
+1. **Alert** · Auth-bypass cookie sent to Xen Orchestra\
+   Look for: HTTP requests to Xen Orchestra with the cookie authenticationToken=j:{} or authenticationToken=j:%7B%7D\
+   Why it matters: This is the bypass itself, and Xen Orchestra does not log it. Other encodings can evade a naive regex.\
+   Log source: Reverse-proxy, WAF or packet capture in front of Xen Orchestra\
+   Source: [Vates](https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/)
+
+2. **Hunt** · Login-token harvesting requests\
+   Look for: Requests to /rest/v0/users/me/authentication_tokens from unfamiliar addresses\
+   Why it matters: After the bypass this route returns reusable login tokens.\
+   Log source: Reverse-proxy and web logs\
+   Source: [Vates](https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/)
+
+3. **Alert** · Attacker foothold VM on XCP-ng\
+   Look for: A VM named pivot2, VMs with hvm_serial: file, or '-serial file:' in /var/log/xensource.log\
+   Why it matters: Vates lists these as signs of the attacker's foothold VM on compromised pools.\
+   Log source: XCP-ng hosts (xe vm-list, xensource.log), syslog\
+   Source: [Vates](https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/)
+
+4. **Alert** · Persistence files on XCP-ng hosts\
+   Look for: Files /etc/cron.d/zz-ustar, /etc/cron.d/zz-ustar2, /.ustar5, /.ustar6, or a new /etc/ld.so.preload\
+   Why it matters: Persistence files planted by this actor on XCP-ng hosts.\
+   Log source: XCP-ng host file checks, EDR file events\
+   Source: [Vates](https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/)
+
+Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed as comments in those files. Use behaviours to hunt and alert, never to block.
+
 ## Hunt
 
-Run this before blocking to find past activity.
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
 
-1. Open [`hunt.kql`](hunt.kql) and copy the query.
-2. In the [Microsoft Defender portal](https://security.microsoft.com), go to **Hunting > Advanced hunting** and paste it into a new query tab.
-3. Select **Run query**. Results cover the last 30 days, one row per table, entity and indicator.
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
 
-Non-network leads such as file names or URL paths are listed as comments at the end of the query. See the [Defender XDR guide](../../../../docs/defender-xdr.md) for more.
+Leads that are not network or hash indicators, and behaviours with no clean field mapping, are listed as comments at the end of each file. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

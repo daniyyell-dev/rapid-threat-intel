@@ -1,0 +1,63 @@
+// Turla Cereal: Exchange Server Espionage Toolset
+// Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
+// Google SecOps (YARA-L 2.0) detection rule over UDM events. Author: daniyyell-dev.
+// https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset
+// Paste into Detection > Rules & Detections > Rules Editor, then run a Retrohunt over at least the last 30 days
+// before enabling it live. The indicators below are live and malicious: do not browse to them.
+// Groups hits per principal host per hour (events without a hostname are kept as one group).
+rule rti_turla_cereal_exchange_espionage_toolset {
+  meta:
+    author = "daniyyell-dev"
+    description = "Matches UDM events against the published indicators for Turla Cereal: Exchange Server Espionage Toolset"
+    threat = "Turla Cereal: Exchange Server Espionage Toolset"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset"
+    source_1 = "https://web-assets.esetstatic.com/wls/en/papers/white-papers/turla-cereal-tricks.pdf"
+    mitre_attack_technique = "T1055, T1114, T1505, T1574.001, T1620"
+    false_positives = "Low for high-confidence indicators; shared hosting, CDN or cloud IPs and scanner IPs can match benign traffic"
+    yara_version = "YL2.0"
+    severity = "High"
+    priority = "High"
+    tlp = "CLEAR"
+    published = "2026-11-10"
+    rule_version = "1.0"
+
+  events:
+    (
+      $e.target.file.sha1 = /^(?:4a3c263977417fb6977b0e598c9e3bc5924f390c|7742c6b0aaf114335cef7ebab11290cb18a0b8b3|afe448dd95494cd14438f04f0c5f6b384664a3b7|4a65040646e354303f067d47aa1c953d467f65cb|d1e17520a2435edcdcc47f582381416fbdf75f94|7ab784d0049890d9844aee7f214ba173e3cc23be|5d80118b1ee974936322475f740ab3aeff70b8f3|d51c58c2e95d4561848e0a5a8b9fb33c847c50a4|5b94fe76ec4feb0b5cb6ea3bca4c48d2fe22597b|1408a8f62b09a5ad0dff279b2878d8f59f70a330|3d1a534ce0d0c293f62ece556cbc6d0728213104|ad85fbf2cc879d4325bce1e6fb5f12ab59e3d387|3ea03188dba8898d97e965732c1d6a68c5437edc|3fba18af966deacf7ae09e4d4238952dd90a6d6f|eb9ba1da5363f5d04e2f98673595fce93f39a78e|0b4e4a1ce7fee91bfc62b2a2ec572c325642bb60|a4e477ce257f2c635401ef554e05506c080967c0|a5be8706032a0798fd63214a9f22efa6309355f5)$/ nocase or
+      $e.target.process.file.sha1 = /^(?:4a3c263977417fb6977b0e598c9e3bc5924f390c|7742c6b0aaf114335cef7ebab11290cb18a0b8b3|afe448dd95494cd14438f04f0c5f6b384664a3b7|4a65040646e354303f067d47aa1c953d467f65cb|d1e17520a2435edcdcc47f582381416fbdf75f94|7ab784d0049890d9844aee7f214ba173e3cc23be|5d80118b1ee974936322475f740ab3aeff70b8f3|d51c58c2e95d4561848e0a5a8b9fb33c847c50a4|5b94fe76ec4feb0b5cb6ea3bca4c48d2fe22597b|1408a8f62b09a5ad0dff279b2878d8f59f70a330|3d1a534ce0d0c293f62ece556cbc6d0728213104|ad85fbf2cc879d4325bce1e6fb5f12ab59e3d387|3ea03188dba8898d97e965732c1d6a68c5437edc|3fba18af966deacf7ae09e4d4238952dd90a6d6f|eb9ba1da5363f5d04e2f98673595fce93f39a78e|0b4e4a1ce7fee91bfc62b2a2ec572c325642bb60|a4e477ce257f2c635401ef554e05506c080967c0|a5be8706032a0798fd63214a9f22efa6309355f5)$/ nocase or
+      $e.principal.process.file.sha1 = /^(?:4a3c263977417fb6977b0e598c9e3bc5924f390c|7742c6b0aaf114335cef7ebab11290cb18a0b8b3|afe448dd95494cd14438f04f0c5f6b384664a3b7|4a65040646e354303f067d47aa1c953d467f65cb|d1e17520a2435edcdcc47f582381416fbdf75f94|7ab784d0049890d9844aee7f214ba173e3cc23be|5d80118b1ee974936322475f740ab3aeff70b8f3|d51c58c2e95d4561848e0a5a8b9fb33c847c50a4|5b94fe76ec4feb0b5cb6ea3bca4c48d2fe22597b|1408a8f62b09a5ad0dff279b2878d8f59f70a330|3d1a534ce0d0c293f62ece556cbc6d0728213104|ad85fbf2cc879d4325bce1e6fb5f12ab59e3d387|3ea03188dba8898d97e965732c1d6a68c5437edc|3fba18af966deacf7ae09e4d4238952dd90a6d6f|eb9ba1da5363f5d04e2f98673595fce93f39a78e|0b4e4a1ce7fee91bfc62b2a2ec572c325642bb60|a4e477ce257f2c635401ef554e05506c080967c0|a5be8706032a0798fd63214a9f22efa6309355f5)$/ nocase or
+      $e.principal.process.parent_process.file.sha1 = /^(?:4a3c263977417fb6977b0e598c9e3bc5924f390c|7742c6b0aaf114335cef7ebab11290cb18a0b8b3|afe448dd95494cd14438f04f0c5f6b384664a3b7|4a65040646e354303f067d47aa1c953d467f65cb|d1e17520a2435edcdcc47f582381416fbdf75f94|7ab784d0049890d9844aee7f214ba173e3cc23be|5d80118b1ee974936322475f740ab3aeff70b8f3|d51c58c2e95d4561848e0a5a8b9fb33c847c50a4|5b94fe76ec4feb0b5cb6ea3bca4c48d2fe22597b|1408a8f62b09a5ad0dff279b2878d8f59f70a330|3d1a534ce0d0c293f62ece556cbc6d0728213104|ad85fbf2cc879d4325bce1e6fb5f12ab59e3d387|3ea03188dba8898d97e965732c1d6a68c5437edc|3fba18af966deacf7ae09e4d4238952dd90a6d6f|eb9ba1da5363f5d04e2f98673595fce93f39a78e|0b4e4a1ce7fee91bfc62b2a2ec572c325642bb60|a4e477ce257f2c635401ef554e05506c080967c0|a5be8706032a0798fd63214a9f22efa6309355f5)$/ nocase
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $file_sha1 = array_distinct($e.target.file.sha1)
+    $process_sha1 = array_distinct($e.target.process.file.sha1)
+    $process_path = array_distinct($e.target.process.file.full_path)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}
+
+// Hunt leads and notes (not network or hash indicators), check manually in UDM search:
+//   [filename] iph.dat
+//   [filename] C:\Windows\System32\wbem\ncobjapi.dll
+//   [filename] C:\Windows\System32\wbem\wbemcomn.dll
+//   [url_path] /owa/sdds/
+//   [url_path] /AUTODISCOVER/MICROSOFT.EXCHANGE.PROXYSERVICE/
+//   [url_path] /AUTODISCOVER/INTEGRATED/API/
+//   [url_path] /AUTODISCOVER/PROXYSERVICE/
+//   [url_path] /MICROSOFT-SERVER-ACTIVESYNC/INTEGRATED/API/

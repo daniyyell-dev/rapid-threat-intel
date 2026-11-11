@@ -1,0 +1,85 @@
+// BYOD Ransomware and Extortion: Vanderbilt University Attack
+// Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
+// Google SecOps (YARA-L 2.0) detection rule over UDM events. Author: daniyyell-dev.
+// https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/BYOD-Ransomware-Vanderbilt-University-Attack
+// Paste into Detection > Rules & Detections > Rules Editor, then run a Retrohunt over at least the last 30 days
+// before enabling it live. The indicators below are live and malicious: do not browse to them.
+// Groups hits per principal host per hour (events without a hostname are kept as one group).
+// Behaviours: 2 alert behaviour(s) with a clean UDM mapping are part of this rule; the rest are listed as leads at the end.
+// Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.
+// Behaviours are for hunting and alerting only; never block on them.
+rule rti_byod_ransomware_vanderbilt_university_attack {
+  meta:
+    author = "daniyyell-dev"
+    description = "Matches UDM events against the published indicators and alert behaviours for BYOD Ransomware and Extortion: Vanderbilt University Attack"
+    threat = "BYOD Ransomware and Extortion: Vanderbilt University Attack"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/BYOD-Ransomware-Vanderbilt-University-Attack"
+    source_1 = "https://www.bleepingcomputer.com/news/security/vanderbilt-university-hit-in-byod-ransomware-attack-data-theft-claimed/"
+    source_2 = "https://www.ransomware.live/group/BYOD"
+    source_3 = "https://nashvillebanner.com/2026/11/09/vanderbilt-university-cyberattack-byod/"
+    mitre_attack_technique = "T1486, T1657"
+    false_positives = "Low for high-confidence indicators; shared hosting, CDN or cloud IPs and scanner IPs can match benign traffic. Behaviour matches are leads and can be legitimate admin or automation activity; compare with your own baseline"
+    yara_version = "YL2.0"
+    severity = "High"
+    priority = "High"
+    tlp = "CLEAR"
+    published = "2026-11-09"
+    rule_version = "1.0"
+
+  events:
+    (
+      $e.network.dns.questions.name = /(?:^|\.)(?:byodxn5s7sua6oyyjj74rycgn6afncfckprt5ezskt3cni6lg3wdrgad\.onion)\.?$/ nocase or
+      $e.target.hostname = /(?:^|\.)(?:byodxn5s7sua6oyyjj74rycgn6afncfckprt5ezskt3cni6lg3wdrgad\.onion)\.?$/ nocase or
+      $e.target.domain.name = /(?:^|\.)(?:byodxn5s7sua6oyyjj74rycgn6afncfckprt5ezskt3cni6lg3wdrgad\.onion)\.?$/ nocase or
+      re.regex($e.target.url, `^(?:[a-z][a-z0-9+.-]*://)?(?:[^/?#]*@)?(?:(?:[^/?#@]*\.)?(?:byodxn5s7sua6oyyjj74rycgn6afncfckprt5ezskt3cni6lg3wdrgad\.onion)(?::\d+)?(?:[/?#]|$))`) nocase or
+      // Behaviour 1 (Alert): README_BYOD ransom notes
+      (($e.metadata.event_type = "FILE_CREATION" or $e.metadata.event_type = "FILE_MODIFICATION" or $e.metadata.event_type = "FILE_MOVE") and $e.target.file.full_path = /README_BYOD_[0-9]+\.txt$/ nocase) or
+      // Behaviour 2 (Alert): Mass renames to the .byod extension
+      (($e.metadata.event_type = "FILE_CREATION" or $e.metadata.event_type = "FILE_MODIFICATION" or $e.metadata.event_type = "FILE_MOVE") and $e.target.file.full_path = /.+\.byod$/ nocase)
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+    $dns_query = array_distinct($e.network.dns.questions.name)
+    $target_hostname = array_distinct($e.target.hostname)
+    $target_url = array_distinct($e.target.url)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}
+
+// Behaviours not in the rule above. Hunt them in UDM search or the named logs.
+// Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting. Behaviours are for hunting and alerting only; never block on them.
+//
+//   Behaviour 3 (Hunt): Fake system update shortly before encryption
+//       Look for: A "system update" notice and a message about deleting old files shortly before encryption
+//       Log source: Group Policy and scheduled task changes, software deployment logs, EDR process events
+//       No rule written: no fixed artefact was published; review Group Policy, scheduled task and software deployment changes in the hours before encryption
+//
+//   Behaviour 4 (Alert): Cloud file deletions by administrators who did not make them
+//       Look for: Cloud storage notices of file deletions by administrators who did not touch the files
+//       Log source: Box admin events, OneDrive and SharePoint audit (FileDeleted, FileRenamed)
+//       No rule written: depends on which administrators normally delete files; review Box admin events and OneDrive or SharePoint FileDeleted by admin accounts against that baseline
+
+// Hunt leads and notes (not network or hash indicators), check manually in UDM search:
+//   [filename] README_BYOD_31.txt
+//   [email] byod@onionmail.org
+//   [session_id] 05b18abb1c28e6ae8b12e2910197dba5e756c11c3a4046be50e0d356a815bc5d37
+//   [other] .byod
+//   Check OneDrive, SharePoint and Box audit logs for one account deleting or renaming hundreds of files in a short time.

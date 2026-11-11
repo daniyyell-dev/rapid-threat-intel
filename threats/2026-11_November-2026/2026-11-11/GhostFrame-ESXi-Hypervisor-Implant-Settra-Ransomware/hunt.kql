@@ -4,6 +4,8 @@
 // Source: https://github.com/daniyyell-dev/rapid-threat-intel
 // Tables your tenant does not license are skipped (union isfuzzy=true).
 // Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context.
+// Behaviour branches read CommonSecurityLog, DeviceNetworkEvents, Syslog. CommonSecurityLog, Syslog need Microsoft Sentinel connected to the Defender portal.
+// Behaviours are leads, not confirmed indicators: compare any hit against your own baseline before acting.
 let Lookback = 30d;
 let IPs = dynamic(["45.158.196.81", "45.158.196.141", "193.5.65.114"]);
 let SHA256s = dynamic(["a05eae6d07b82e2e5451a72266f21fbaf76486ef4920a820988de93e15353a10"]);
@@ -55,7 +57,27 @@ union isfuzzy=true
   (DeviceProcessEvents
     | where Timestamp > ago(Lookback)
     | where ProcessCommandLine has_any ("vmhostd-core", "gfsox", "sdkmon", "VMkatz", "vmkatz") or (FileName =~ "meshagent.exe" and ProcessCommandLine has "193.5.65.114")
-    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine)))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemotePort in (53, 2222, 3389, 4444, 8443, 9443) and ActionType in ("ConnectionAttempt", "ConnectionSuccess", "ConnectionFailed")
+    | summarize Timestamp = max(Timestamp), Ports = make_set(RemotePort) by DeviceName, RemoteIP, Window = bin(Timestamp, 30s)
+    | where array_length(Ports) >= 4
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = DeviceName, Indicator = RemoteIP, Context = strcat("Ports ", strcat_array(Ports, ","), " within 30s")),
+  (CommonSecurityLog
+    | where TimeGenerated > ago(Lookback)
+    | where DestinationPort in (53, 2222, 3389, 4444, 8443, 9443)
+    | summarize Timestamp = max(TimeGenerated), Ports = make_set(DestinationPort) by SourceIP, DestinationIP, Window = bin(TimeGenerated, 30s)
+    | where array_length(Ports) >= 4
+    | project Timestamp, SourceTable = "CommonSecurityLog", Entity = SourceIP, Indicator = DestinationIP, Context = strcat("Ports ", strcat_array(Ports, ","), " within 30s")),
+  (Syslog
+    | where TimeGenerated > ago(Lookback)
+    | where SyslogMessage has_any ("vmhostd-core", "rc.local.d/local.sh", "auto-backup.sh")
+    | project Timestamp = TimeGenerated, SourceTable = "Syslog", Entity = tostring(Computer), Indicator = tostring(ProcessName), Context = tostring(SyslogMessage)),
+  (Syslog
+    | where TimeGenerated > ago(Lookback)
+    | where (SyslogMessage has "firewall" and SyslogMessage has "--enabled false") or (SyslogMessage has "execInstalledOnly" and SyslogMessage has "0")
+    | project Timestamp = TimeGenerated, SourceTable = "Syslog", Entity = tostring(Computer), Indicator = tostring(ProcessName), Context = tostring(SyslogMessage))
 | summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
 | order by LastSeen desc
 

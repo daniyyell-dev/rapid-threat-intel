@@ -1,0 +1,89 @@
+``` Storm-3358 ARTEX Agentic Intrusions Against the Financial Sector
+    Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
+    Splunk hunt, CIM data models (tstats). Author: daniyyell-dev. https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector
+    Sources: https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/
+    Published 2026-11-06. Set the time picker to at least the last 30 days, or back to the earliest activity in the sources.
+    The indicators below are live and malicious: do not browse to them.
+    Needs these CIM data models populated: Network_Traffic, Endpoint, Web. A model with no data simply returns nothing.
+    summariesonly=false also reads events the acceleration has not summarised yet. If these data models are
+    accelerated, summariesonly=true is much faster but only sees the summary range.
+    No CIM? Use hunt_raw.spl with the rti_* macros from all/splunk_macros.conf.
+    Output: first_seen, last_seen, ioc, ioc_type, data_model, host, user, src, dest, detail, count
+
+    Behaviours (indicators of attack) are extra sections below, with ioc_type "behaviour (alert)" or "behaviour (hunt)".
+    Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.
+    Behaviours are for hunting and alerting only; never block on them. ```
+| tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+    FROM datamodel=Network_Traffic.All_Traffic
+    WHERE All_Traffic.dest_ip IN ("199.19.95.66", "199.19.95.67", "199.19.95.68", "91.92.240.238", "85.11.168.45", "85.11.167.52", "178.16.54.129", "31.77.229.35")
+    BY All_Traffic.src_ip All_Traffic.dest_ip All_Traffic.dest_port All_Traffic.action All_Traffic.dvc All_Traffic.user
+| rename "All_Traffic.*" AS *
+| eval data_model="Network_Traffic", ioc_type="ipv4", ioc=dest_ip, host=dvc, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Network_Traffic.All_Traffic
+        WHERE All_Traffic.src_ip IN ("199.19.95.66", "199.19.95.67", "199.19.95.68", "91.92.240.238", "85.11.168.45", "85.11.167.52", "178.16.54.129", "31.77.229.35")
+        BY All_Traffic.src_ip All_Traffic.dest_ip All_Traffic.dest_port All_Traffic.action All_Traffic.dvc All_Traffic.user
+    | rename "All_Traffic.*" AS *
+    | eval data_model="Network_Traffic", ioc_type="ipv4", ioc=src_ip, host=dvc, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+]
+
+``` Behaviour 1 (Alert): Web server starting a downloader or shell
+    Look for: A web server process starting curl, wget, nc, ncat, netcat or a shell
+    Log source: EDR process events on internet-facing web servers
+    Lead, not proof: compare any hit with your own baseline before acting. ```
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.parent_process_name IN ("w3wp.exe", "httpd", "apache2", "nginx", "php-fpm", "php", "java", "node", "tomcat") Processes.process_name IN ("curl", "curl.exe", "wget", "nc", "ncat", "netcat", "sh", "bash", "cmd.exe", "powershell.exe")
+        BY Processes.dest Processes.user Processes.parent_process_name Processes.process_name Processes.process
+    | rename "Processes.*" AS *
+    | eval host=dest, src="-", detail=parent_process_name." > ".process, data_model="Endpoint.Processes"
+    | eval ioc="Web server starting a downloader or shell", ioc_type="behaviour (alert)"
+]
+
+``` Behaviour 2 (Hunt): Rapid scanning with default scanner user agents
+    Look for: Bursts of many varied requests from one source in minutes, with default tool user agents (Nmap, curl, wget, Python HTTP clients, headless Chromium or Playwright)
+    Log source: Web server, WAF and reverse-proxy logs
+    Lead, not proof: compare any hit with your own baseline before acting. ```
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen dc(Web.url) AS paths values(Web.http_user_agent) AS agents
+        FROM datamodel=Web.Web
+        WHERE Web.http_user_agent IN ("*Nmap*", "curl/*", "Wget*", "python-requests*", "Python-urllib*", "*aiohttp*", "*httpx*", "*HeadlessChrome*", "*Playwright*")
+        BY Web.src Web.dest _time span=5m
+    | rename "Web.*" AS *
+    | where count>=100 AND paths>=20
+    | eval host=dest, user="-", detail=count." requests, ".paths." paths in 5m; ".mvjoin(mvindex(agents, 0, 2), " | "), data_model="Web"
+    | fields - paths agents _time
+    | eval ioc="Rapid scanning with default scanner user agents", ioc_type="behaviour (hunt)"
+]
+
+``` Behaviour 3 (Hunt): New cron jobs and temp-folder binaries on web hosts
+    Look for: New cron jobs, and new binaries run from temporary or world-writable folders, on web hosts
+    Log source: EDR process and file events
+    Lead, not proof: compare any hit with your own baseline before acting. ```
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.process_path IN ("/tmp/*", "/var/tmp/*", "/dev/shm/*")
+        BY Processes.dest Processes.user Processes.parent_process_name Processes.process_name Processes.process
+    | rename "Processes.*" AS *
+    | eval host=dest, src="-", detail="run from a temp folder: ".process, data_model="Endpoint.Processes"
+    | eval ioc="New cron jobs and temp-folder binaries on web hosts", ioc_type="behaviour (hunt)"
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Filesystem
+        WHERE Filesystem.file_path IN ("/etc/cron.d/*", "/var/spool/cron/*", "/etc/crontab") Filesystem.action IN ("created", "modified")
+        BY Filesystem.dest Filesystem.user Filesystem.file_path Filesystem.file_name Filesystem.action
+    | rename "Filesystem.*" AS *
+    | eval host=dest, src="-", detail="file ".action." ".file_path, data_model="Endpoint.Filesystem"
+    | eval ioc="New cron jobs and temp-folder binaries on web hosts", ioc_type="behaviour (hunt)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count
+
+``` Behavioural hunt notes:
+    A web-serving process (w3wp.exe, httpd, nginx, php-fpm, java, node) launching curl, wget or netcat is how the ARTEX agents delivered the WISP, vshell and AdaptixC2 RATs.
+    Connections from inside your network to the WISP or C2 addresses suggest an implant; inbound hits from ARTEX servers mean probing or exploitation attempts. ```

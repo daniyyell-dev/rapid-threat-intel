@@ -25,6 +25,9 @@ CloudSEK traced an exposed open directory and storage server to Azazel, a Russia
 | [`iocs.csv`](iocs.csv) | All 9 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 6 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
+| [`hunt.spl`](hunt.spl) | Splunk hunt over the CIM data models |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk hunt for data not mapped to CIM ([macros](../../../../all/splunk_macros.conf)) |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps YARA-L 2.0 detection rule |
 
 Indicators by type: 5 IPv4, 2 other, 1 domain, 1 file name. See `iocs.csv` for full details and descriptions.
 
@@ -49,15 +52,60 @@ Indicators by type: 5 IPv4, 2 other, 1 domain, 1 file name. See `iocs.csv` for f
 3. Search Linux servers for ATTENTION_SENSITIVE_INFORMATION.txt in the root and ubuntu home directories, and for changes to /etc/motd, the sshd_config Banner setting, the PostgreSQL cluster_name and the pgAdmin login template; also check GitLab for README edits or issues opened with a pipeline token.
 4. Alert on mc mirror, aws s3 sync, pg_dump or mega-cmd-server runs to destinations you do not own, keep any MCP server bound to loopback with an approved client allowlist, and alert on MCP clients named internet-census-mcp-scanner.
 
+## Behaviours to hunt
+
+> Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.
+
+1. **Alert** · Object storage mirrored out with the MinIO client\
+   Look for: mc mirror (MinIO Client) copying a bucket to a remote destination you do not own\
+   Why it matters: Azazel mirrored a victim's object storage to his staging server continuously with retry logic; CloudSEK published a Sigma rule for it.\
+   Log source: Linux process events, MinIO audit logs\
+   Source: [CloudSEK](https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files)
+
+2. **Hunt** · Bulk reads of GitLab CI/CD secrets\
+   Look for: Bulk reads of GitLab CI/CD variables, project exports or repository clones by a token from an unfamiliar address\
+   Why it matters: Every non-AI victim was reached through secrets harvested from GitLab CI/CD variables and repository history using glato, nord-stream, gitlab-secrets, gitlab-watchman and gitleaks.\
+   Log source: GitLab audit events and API logs\
+   Source: [CloudSEK](https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files)
+
+3. **Alert** · Ransom notes planted on server surfaces\
+   Look for: Ransom notes written to /etc/motd, the sshd_config Banner, the PostgreSQL cluster_name, the pgAdmin login template, a GitLab README or a new GitLab issue\
+   Why it matters: Azazel's va.py checked notes on eight surfaces across six hosts, including ATTENTION_SENSITIVE_INFORMATION.txt in the root and ubuntu home directories.\
+   Log source: Linux file integrity monitoring, GitLab audit events, PostgreSQL logs\
+   Source: [CloudSEK](https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files)
+
+4. **Alert** · PostgreSQL killed and wiped after exfiltration\
+   Look for: PostgreSQL process killed and its data directory deleted shortly after large pg_dump or scp transfers\
+   Why it matters: After exfiltrating a government-linked financial registry, Azazel ran a script that killed the live PostgreSQL process and deleted the production data directory.\
+   Log source: Linux process events, PostgreSQL logs\
+   Source: [CloudSEK](https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files)
+
+5. **Hunt** · Exposed MCP server or MCP scanner clients\
+   Look for: MCP server listening beyond loopback, or MCP initialize requests from clients named internet-census-mcp-scanner or hermes\
+   Why it matters: Azazel ran commands through an MCP exec_in_session tool and scanned the internet for exposed MCP ports.\
+   Log source: MCP server logs, reverse proxy logs, network listeners\
+   Source: [CloudSEK](https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files)
+
+6. **Hunt** · Large uploads to MEGA or to port 9999\
+   Look for: Large uploads from servers to MEGA (mega-cmd-server) or HTTP POSTs to port 9999 on unfamiliar hosts\
+   Why it matters: Stolen data went from victims to the C2 box by HTTP POST to port 9999, then to MEGA via mega-cmd-server.\
+   Log source: Firewall, proxy and NetFlow logs, EDR network events\
+   Source: [CloudSEK](https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files)
+
+Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed as comments in those files. Use behaviours to hunt and alert, never to block.
+
 ## Hunt
 
-Run this before blocking to find past activity.
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
 
-1. Open [`hunt.kql`](hunt.kql) and copy the query.
-2. In the [Microsoft Defender portal](https://security.microsoft.com), go to **Hunting > Advanced hunting** and paste it into a new query tab.
-3. Select **Run query**. Results cover the last 30 days, one row per table, entity and indicator.
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
 
-Non-network leads such as file names or URL paths are listed as comments at the end of the query. See the [Defender XDR guide](../../../../docs/defender-xdr.md) for more.
+Leads that are not network or hash indicators, and behaviours with no clean field mapping, are listed as comments at the end of each file. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

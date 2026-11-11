@@ -1,0 +1,83 @@
+// Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
+// Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
+// Google SecOps (YARA-L 2.0) detection rule over UDM events. Author: daniyyell-dev.
+// https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack
+// Paste into Detection > Rules & Detections > Rules Editor, then run a Retrohunt over at least the last 30 days
+// before enabling it live. The indicators below are live and malicious: do not browse to them.
+// Groups hits per principal host per hour (events without a hostname are kept as one group).
+rule rti_ethersphere_bee_js_swarm_desktop_supply_chain_attack {
+  meta:
+    author = "daniyyell-dev"
+    description = "Matches UDM events against the published indicators for Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)"
+    threat = "Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack"
+    source_1 = "https://socket.dev/blog/bee-js-compromise"
+    source_2 = "https://corgea.com/research/ethersphere-bee-js-13-3-0-swarm-desktop-0-56-2-evjawbreaker-ethereum-c2-november-2026"
+    source_3 = "https://thehackernews.com/2026/11/hackers-compromise-etherspheres-bee-js.html"
+    mitre_attack_technique = "T1102.001, T1195.002, T1219, T1543.001, T1543.002, T1567.004"
+    false_positives = "Low for high-confidence indicators; shared hosting, CDN or cloud IPs and scanner IPs can match benign traffic"
+    yara_version = "YL2.0"
+    severity = "High"
+    priority = "High"
+    tlp = "CLEAR"
+    published = "2026-11-09"
+    rule_version = "1.0"
+
+  events:
+    (
+      $e.principal.ip = /^(?:193\.57\.9\.155|193\.57\.9\.17|178\.16\.54\.222|107\.189\.27\.223|107\.189\.27\.46|91\.108\.240\.156|107\.189\.16\.215|185\.232\.84\.169)$/ or
+      $e.target.ip = /^(?:193\.57\.9\.155|193\.57\.9\.17|178\.16\.54\.222|107\.189\.27\.223|107\.189\.27\.46|91\.108\.240\.156|107\.189\.16\.215|185\.232\.84\.169)$/ or
+      $e.network.dns.answers.data = /^(?:193\.57\.9\.155|193\.57\.9\.17|178\.16\.54\.222|107\.189\.27\.223|107\.189\.27\.46|91\.108\.240\.156|107\.189\.16\.215|185\.232\.84\.169)$/ or
+      $e.network.dns.questions.name = /(?:^|\.)(?:frameworkmetrics\.xyz|api\.frameworkmetrics\.xyz)\.?$/ nocase or
+      $e.target.hostname = /(?:^|\.)(?:frameworkmetrics\.xyz|api\.frameworkmetrics\.xyz)\.?$/ nocase or
+      $e.target.domain.name = /(?:^|\.)(?:frameworkmetrics\.xyz|api\.frameworkmetrics\.xyz)\.?$/ nocase or
+      re.regex($e.target.url, `^(?:[a-z][a-z0-9+.-]*://)?(?:[^/?#]*@)?(?:api\.frameworkmetrics\.xyz/v1/analytics|api\.frameworkmetrics\.xyz/v1/electron|api\.frameworkmetrics\.xyz/v1/assets/|api\.frameworkmetrics\.xyz/v1/swarm/report|107\.189\.27\.46:3000/app\.js|webhook\.site/fdc222d5\-2e6c\-4122\-801d\-93099f3fe827|webhook\.site/46358b99\-9cff\-4f14\-97bc\-4a436086e826|webhook\.site/c05b53d9\-c3b6\-4a90\-94dc\-b86a0a4e905f|pastebin\.com/raw/q1p9qH2w|(?:[^/?#@]*\.)?(?:frameworkmetrics\.xyz|api\.frameworkmetrics\.xyz)(?::\d+)?(?:[/?#]|$))`) nocase or
+      $e.target.file.sha256 = /^(?:d01fdf241aa9e0a1ba6ebc19f8f667af1bf652745021c5050126cb7036f7ce58|ee2f762e9ed3fd89f106e0b80c2e923bf1aed9a280277d3d998a5902c4d9ec0f|f81315968e679b48f6bdff1c9b928bb223230d07f44d7948412c2250c2a14deb|92c6eb24f9910b3577d5939a8686f9bf6e52f1bdd5872bf96cab0132b4558025|e49afac84dbb6d5a5d101f87754575024b078d67a7ab9e767ff0f7b5b4368069|40a45d68aa49e9e6233c4eb6bb2eb2e92525deea5d17863f6910fc24b06ff20e|14f23342f4292ede4546070e0e3e1cacd06fa781a2937ac374d2b47dbaf77666|23f2d944a0dfa60df493667428d9304cfc1961270b6c68f8d0f38df7fe0e2d31|aed930fbf5993df4ce9bb5951a4092da8a28a12fb45a81ad9715c7b029606fd0|e0304260dcf2f29d1b4690dc46e9ceb35d5554a79ea749cd913687288d6e228b|94df8933a57cb9962a312a79c079fd0d43706a45066cda1f1b2322f403ad9217|718ae6ac77e119568dff50a6409996bd649c8e9daf7c8a5616856ff1909a916f|0ef1fbe5db17ec0ebd3bcac576f0f0f351a5ef5da67d5e45a9817e7a224acc5d|ffd280b8ff519b647041b7453754bfd35d341bbd26bce02cb325c512c8976645|6a37ce783e406f135ed8b60e0897e0e1146a9fa220c2e6c5ce4118fff967f395|1f3a7afd2e43215f09f2a81063dc2796af556bae74aaf492fba2d66e5d65b14c|2496d74e6a913eba39c8537be31baeff9cf6ccdd8ee84a69475302815cfd4105|705b4aa2bc6fa35f8e6d448f3c6e193fac6027b9b5239e212e09732cc9fc0dba|735aba95e24f515a5cea4efea309f245952917d372b37b5fbea305986dbcd568|9b73e7cd4e1425e770392549d8df46c706139ef476f4f7b9ac405165dc8d9696|b601776817363b96295119f7221338a122d5247a35a77a64b04f286e1bbcc565|80d2672e2599732d3c0ae2a4cd0d1e3fe4d555a60273ce33feb99db3f34d250f|fae61f31f00988fdc5cc9e7272b51e08af2e245d81003237875415930fd27358|37d14bff30762ca701e9c1f8bc6c57c065bb20ae3a2208cb7411a6530610f08e|7527e86d70e7c9493db4356f1c3775380431b310000f2602c1e993cf435d01da)$/ nocase or
+      $e.target.process.file.sha256 = /^(?:d01fdf241aa9e0a1ba6ebc19f8f667af1bf652745021c5050126cb7036f7ce58|ee2f762e9ed3fd89f106e0b80c2e923bf1aed9a280277d3d998a5902c4d9ec0f|f81315968e679b48f6bdff1c9b928bb223230d07f44d7948412c2250c2a14deb|92c6eb24f9910b3577d5939a8686f9bf6e52f1bdd5872bf96cab0132b4558025|e49afac84dbb6d5a5d101f87754575024b078d67a7ab9e767ff0f7b5b4368069|40a45d68aa49e9e6233c4eb6bb2eb2e92525deea5d17863f6910fc24b06ff20e|14f23342f4292ede4546070e0e3e1cacd06fa781a2937ac374d2b47dbaf77666|23f2d944a0dfa60df493667428d9304cfc1961270b6c68f8d0f38df7fe0e2d31|aed930fbf5993df4ce9bb5951a4092da8a28a12fb45a81ad9715c7b029606fd0|e0304260dcf2f29d1b4690dc46e9ceb35d5554a79ea749cd913687288d6e228b|94df8933a57cb9962a312a79c079fd0d43706a45066cda1f1b2322f403ad9217|718ae6ac77e119568dff50a6409996bd649c8e9daf7c8a5616856ff1909a916f|0ef1fbe5db17ec0ebd3bcac576f0f0f351a5ef5da67d5e45a9817e7a224acc5d|ffd280b8ff519b647041b7453754bfd35d341bbd26bce02cb325c512c8976645|6a37ce783e406f135ed8b60e0897e0e1146a9fa220c2e6c5ce4118fff967f395|1f3a7afd2e43215f09f2a81063dc2796af556bae74aaf492fba2d66e5d65b14c|2496d74e6a913eba39c8537be31baeff9cf6ccdd8ee84a69475302815cfd4105|705b4aa2bc6fa35f8e6d448f3c6e193fac6027b9b5239e212e09732cc9fc0dba|735aba95e24f515a5cea4efea309f245952917d372b37b5fbea305986dbcd568|9b73e7cd4e1425e770392549d8df46c706139ef476f4f7b9ac405165dc8d9696|b601776817363b96295119f7221338a122d5247a35a77a64b04f286e1bbcc565|80d2672e2599732d3c0ae2a4cd0d1e3fe4d555a60273ce33feb99db3f34d250f|fae61f31f00988fdc5cc9e7272b51e08af2e245d81003237875415930fd27358|37d14bff30762ca701e9c1f8bc6c57c065bb20ae3a2208cb7411a6530610f08e|7527e86d70e7c9493db4356f1c3775380431b310000f2602c1e993cf435d01da)$/ nocase or
+      $e.principal.process.file.sha256 = /^(?:d01fdf241aa9e0a1ba6ebc19f8f667af1bf652745021c5050126cb7036f7ce58|ee2f762e9ed3fd89f106e0b80c2e923bf1aed9a280277d3d998a5902c4d9ec0f|f81315968e679b48f6bdff1c9b928bb223230d07f44d7948412c2250c2a14deb|92c6eb24f9910b3577d5939a8686f9bf6e52f1bdd5872bf96cab0132b4558025|e49afac84dbb6d5a5d101f87754575024b078d67a7ab9e767ff0f7b5b4368069|40a45d68aa49e9e6233c4eb6bb2eb2e92525deea5d17863f6910fc24b06ff20e|14f23342f4292ede4546070e0e3e1cacd06fa781a2937ac374d2b47dbaf77666|23f2d944a0dfa60df493667428d9304cfc1961270b6c68f8d0f38df7fe0e2d31|aed930fbf5993df4ce9bb5951a4092da8a28a12fb45a81ad9715c7b029606fd0|e0304260dcf2f29d1b4690dc46e9ceb35d5554a79ea749cd913687288d6e228b|94df8933a57cb9962a312a79c079fd0d43706a45066cda1f1b2322f403ad9217|718ae6ac77e119568dff50a6409996bd649c8e9daf7c8a5616856ff1909a916f|0ef1fbe5db17ec0ebd3bcac576f0f0f351a5ef5da67d5e45a9817e7a224acc5d|ffd280b8ff519b647041b7453754bfd35d341bbd26bce02cb325c512c8976645|6a37ce783e406f135ed8b60e0897e0e1146a9fa220c2e6c5ce4118fff967f395|1f3a7afd2e43215f09f2a81063dc2796af556bae74aaf492fba2d66e5d65b14c|2496d74e6a913eba39c8537be31baeff9cf6ccdd8ee84a69475302815cfd4105|705b4aa2bc6fa35f8e6d448f3c6e193fac6027b9b5239e212e09732cc9fc0dba|735aba95e24f515a5cea4efea309f245952917d372b37b5fbea305986dbcd568|9b73e7cd4e1425e770392549d8df46c706139ef476f4f7b9ac405165dc8d9696|b601776817363b96295119f7221338a122d5247a35a77a64b04f286e1bbcc565|80d2672e2599732d3c0ae2a4cd0d1e3fe4d555a60273ce33feb99db3f34d250f|fae61f31f00988fdc5cc9e7272b51e08af2e245d81003237875415930fd27358|37d14bff30762ca701e9c1f8bc6c57c065bb20ae3a2208cb7411a6530610f08e|7527e86d70e7c9493db4356f1c3775380431b310000f2602c1e993cf435d01da)$/ nocase or
+      $e.principal.process.parent_process.file.sha256 = /^(?:d01fdf241aa9e0a1ba6ebc19f8f667af1bf652745021c5050126cb7036f7ce58|ee2f762e9ed3fd89f106e0b80c2e923bf1aed9a280277d3d998a5902c4d9ec0f|f81315968e679b48f6bdff1c9b928bb223230d07f44d7948412c2250c2a14deb|92c6eb24f9910b3577d5939a8686f9bf6e52f1bdd5872bf96cab0132b4558025|e49afac84dbb6d5a5d101f87754575024b078d67a7ab9e767ff0f7b5b4368069|40a45d68aa49e9e6233c4eb6bb2eb2e92525deea5d17863f6910fc24b06ff20e|14f23342f4292ede4546070e0e3e1cacd06fa781a2937ac374d2b47dbaf77666|23f2d944a0dfa60df493667428d9304cfc1961270b6c68f8d0f38df7fe0e2d31|aed930fbf5993df4ce9bb5951a4092da8a28a12fb45a81ad9715c7b029606fd0|e0304260dcf2f29d1b4690dc46e9ceb35d5554a79ea749cd913687288d6e228b|94df8933a57cb9962a312a79c079fd0d43706a45066cda1f1b2322f403ad9217|718ae6ac77e119568dff50a6409996bd649c8e9daf7c8a5616856ff1909a916f|0ef1fbe5db17ec0ebd3bcac576f0f0f351a5ef5da67d5e45a9817e7a224acc5d|ffd280b8ff519b647041b7453754bfd35d341bbd26bce02cb325c512c8976645|6a37ce783e406f135ed8b60e0897e0e1146a9fa220c2e6c5ce4118fff967f395|1f3a7afd2e43215f09f2a81063dc2796af556bae74aaf492fba2d66e5d65b14c|2496d74e6a913eba39c8537be31baeff9cf6ccdd8ee84a69475302815cfd4105|705b4aa2bc6fa35f8e6d448f3c6e193fac6027b9b5239e212e09732cc9fc0dba|735aba95e24f515a5cea4efea309f245952917d372b37b5fbea305986dbcd568|9b73e7cd4e1425e770392549d8df46c706139ef476f4f7b9ac405165dc8d9696|b601776817363b96295119f7221338a122d5247a35a77a64b04f286e1bbcc565|80d2672e2599732d3c0ae2a4cd0d1e3fe4d555a60273ce33feb99db3f34d250f|fae61f31f00988fdc5cc9e7272b51e08af2e245d81003237875415930fd27358|37d14bff30762ca701e9c1f8bc6c57c065bb20ae3a2208cb7411a6530610f08e|7527e86d70e7c9493db4356f1c3775380431b310000f2602c1e993cf435d01da)$/ nocase or
+      $e.target.file.sha1 = /^(?:a205c8a5fed81e9a787645b2801f00be3db3348d)$/ nocase or
+      $e.target.process.file.sha1 = /^(?:a205c8a5fed81e9a787645b2801f00be3db3348d)$/ nocase or
+      $e.principal.process.file.sha1 = /^(?:a205c8a5fed81e9a787645b2801f00be3db3348d)$/ nocase or
+      $e.principal.process.parent_process.file.sha1 = /^(?:a205c8a5fed81e9a787645b2801f00be3db3348d)$/ nocase
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $dns_query = array_distinct($e.network.dns.questions.name)
+    $target_hostname = array_distinct($e.target.hostname)
+    $target_url = array_distinct($e.target.url)
+    $file_sha256 = array_distinct($e.target.file.sha256)
+    $process_sha256 = array_distinct($e.target.process.file.sha256)
+    $process_path = array_distinct($e.target.process.file.full_path)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}
+
+// Hunt leads and notes (not network or hash indicators), check manually in UDM search:
+//   [filename] @ethersphere/bee-js@13.3.0
+//   [filename] swarm-desktop 0.56.2
+//   [filename] ~/.solidity/
+//   [filename] solidity-langsupport-runner.service
+//   [filename] com.solidity.langsupport.runner.plist
+//   [filename] ScreenConnect Client (5cbe79c9c25524df)
+//   [filename] %TEMP%\.stuffed-*
+//   [filename] %LOCALAPPDATA%\.<32-hex-guid>\app.msi
+//   [eth_address] 0xf8a900Db50b3331be6B768bA460BB59f3E40C344
+//   [eth_address] 0x6a82595EEea0f4FDFB3aE13A2687BcbBE626e94B
+//   [eth_address] 0xFd3fc58bcbd8ccc77b6000201438eDfc636E7cA7
+//   [eth_address] 0xA7B15A2B5F6992DC3BabB946375d6895fF1171BF
