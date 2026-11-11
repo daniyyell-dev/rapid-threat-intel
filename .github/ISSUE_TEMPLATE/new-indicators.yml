@@ -12,7 +12,7 @@ body:
     attributes:
       label: Threat name
       description: Existing threat folder path, or a short name for a new threat
-      placeholder: "e.g. threats/2026-11_November-2026/2026-11-10_Turla-Cereal-Exchange-Espionage-Toolset"
+      placeholder: "e.g. threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset"
     validations:
       required: true
   - type: input

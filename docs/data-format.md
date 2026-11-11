@@ -69,4 +69,4 @@ Every Defender indicator expires **90 days** after it was added. Re-import the l
 
 ## Folder names
 
-`threats/<YYYY-MM>_<Month-YYYY>/<YYYY-MM-DD>_<Threat-Name>/`, for example `threats/2026-11_November-2026/2026-11-10_CopperDragon-Sparrow-Framework-China-Nexus-Espionage/`. The date in the folder name is when the threat was added to the repository (Europe/London). The published date of the source report is in each threat README. Each month folder has a README listing its threats, newest first.
+`threats/<YYYY-MM>_<Month-YYYY>/<YYYY-MM-DD>/<Threat-Name>/`, for example `threats/2026-11_November-2026/2026-11-10/CopperDragon-Sparrow-Framework-China-Nexus-Espionage/`. Threats are grouped by the date they were added (Europe/London). The published date of the source report is in each threat README. Each day and month folder has a README listing its threats, newest first.

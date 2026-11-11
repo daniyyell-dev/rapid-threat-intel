@@ -46,24 +46,31 @@ The result is one place where SOC analysts, threat hunters and incident responde
 
 ## Latest threats
 
-Grouped by the month they were added, newest first. The date column is when the main source report was published. Last updated 2026-11-11.
+Grouped by the month and day they were added, newest first. The date column is when the main source report was published. Last updated 2026-11-11.
 
 ### [November 2026](threats/2026-11_November-2026/)
 
+#### [2026-11-11](threats/2026-11_November-2026/2026-11-11/)
+
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
-| 2026-11-06 | [Storm-3358 ARTEX Agentic Intrusions Against the Financial Sector](threats/2026-11_November-2026/2026-11-11_Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/) | Financially motivated intrusion / financial sector | 8 | 8 | Agentic AI framework used to exploit web apps at banks and drop WISP, vshell and AdaptixC2 RATs |
-| 2026-11-09 | [AhsayCBS Backup Server Exploitation: Webshells, Cryptominer and Python Implant](threats/2026-11_November-2026/2026-11-10_AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant/) | Exploitation / backup server | 25 | 16 | Backup server auth bypass and RCE used to plant webshells, a cryptominer and a Python implant |
-| 2026-11-10 | [CopperDragon: China-Nexus Sparrow Framework Targeting Government and Telecoms](threats/2026-11_November-2026/2026-11-10_CopperDragon-Sparrow-Framework-China-Nexus-Espionage/) | APT / espionage | 158 | 116 | China-nexus Sparrow malware supplier behind espionage against government and telecoms in 21 countries |
-| 2026-11-06 | [NotC2: AWS-Native AI C2 Proof of Concept](threats/2026-11_November-2026/2026-11-10_NotC2-AWS-Native-AI-C2-Proof-of-Concept/) | Cloud / C2 | 2 | 0 | Proof-of-concept C2 built on AWS SQS, Lambda, SNS and Bedrock, with no network IOCs to block |
-| 2026-11-04 | [Phexia: macOS ClickFix Stealer with Polygon C2](threats/2026-11_November-2026/2026-11-10_Phexia-macOS-ClickFix-Stealer-Polygon-C2/) | Malware / macOS | 48 | 25 | macOS ClickFix backdoor and stealer that resolves C2 from a Polygon smart contract |
-| 2026-11-10 | [Turla Cereal: Exchange Server Espionage Toolset](threats/2026-11_November-2026/2026-11-10_Turla-Cereal-Exchange-Espionage-Toolset/) | APT / espionage | 26 | 18 | Russia-aligned Turla .NET toolset turning Exchange servers into passive backdoors |
-| 2026-11-09 | [MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants](threats/2026-11_November-2026/2026-11-10_MSP-Process-GDAP-Breach-Entra-Token-Abuse/) | Supply chain / identity | 57 | 1 | Stolen partner app secrets used for Graph token abuse in MSP customer tenants |
-| 2026-11-09 | [Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)](threats/2026-11_November-2026/2026-11-10_Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/) | Supply chain / npm | 57 | 37 | Malicious npm and desktop releases dropping a backdoor with Ethereum-based C2 |
-| 2026-11-09 | [BYOD Ransomware and Extortion: Vanderbilt University Attack](threats/2026-11_November-2026/2026-11-10_BYOD-Ransomware-Vanderbilt-University-Attack/) | Ransomware | 4 | 1 | New ransomware and extortion group claiming Vanderbilt University |
-| 2026-11-08 | [SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant](threats/2026-11_November-2026/2026-11-10_SSHole-OpenSSH-CVE-2026-123158-Exploitation/) | Exploitation / Linux | 40 | 10 | Password bypass on musl-based OpenSSH exploited to gain root and drop an implant |
-| 2026-11-05 | [FreeSWITCH CVE-2026-116779 SIP Command Injection Cryptominer Campaign](threats/2026-11_November-2026/2026-11-10_FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/) | Exploitation / cryptomining | 12 | 0 | SIP MESSAGE command injection used to install a cryptominer |
-| 2026-11-04 | [APT29 Watering Holes Targeting iOS and Android with N-Day Exploits](threats/2026-11_November-2026/2026-11-10_APT29-Mobile-Watering-Hole-Exploit-Chains/) | APT / espionage | 27 | 22 | Watering holes serving n-day exploit chains to iOS and Android visitors |
+| 2026-11-06 | [Storm-3358 ARTEX Agentic Intrusions Against the Financial Sector](threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/) | Financially motivated intrusion / financial sector | 8 | 8 | Agentic AI framework used to exploit web apps at banks and drop WISP, vshell and AdaptixC2 RATs |
+
+#### [2026-11-10](threats/2026-11_November-2026/2026-11-10/)
+
+| Date | Threat | Category | IOCs | Block now | Summary |
+|---|---|---|---|---|---|
+| 2026-11-09 | [AhsayCBS Backup Server Exploitation: Webshells, Cryptominer and Python Implant](threats/2026-11_November-2026/2026-11-10/AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant/) | Exploitation / backup server | 25 | 16 | Backup server auth bypass and RCE used to plant webshells, a cryptominer and a Python implant |
+| 2026-11-10 | [CopperDragon: China-Nexus Sparrow Framework Targeting Government and Telecoms](threats/2026-11_November-2026/2026-11-10/CopperDragon-Sparrow-Framework-China-Nexus-Espionage/) | APT / espionage | 158 | 116 | China-nexus Sparrow malware supplier behind espionage against government and telecoms in 21 countries |
+| 2026-11-06 | [NotC2: AWS-Native AI C2 Proof of Concept](threats/2026-11_November-2026/2026-11-10/NotC2-AWS-Native-AI-C2-Proof-of-Concept/) | Cloud / C2 | 2 | 0 | Proof-of-concept C2 built on AWS SQS, Lambda, SNS and Bedrock, with no network IOCs to block |
+| 2026-11-04 | [Phexia: macOS ClickFix Stealer with Polygon C2](threats/2026-11_November-2026/2026-11-10/Phexia-macOS-ClickFix-Stealer-Polygon-C2/) | Malware / macOS | 48 | 25 | macOS ClickFix backdoor and stealer that resolves C2 from a Polygon smart contract |
+| 2026-11-10 | [Turla Cereal: Exchange Server Espionage Toolset](threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset/) | APT / espionage | 26 | 18 | Russia-aligned Turla .NET toolset turning Exchange servers into passive backdoors |
+| 2026-11-09 | [MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants](threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse/) | Supply chain / identity | 57 | 1 | Stolen partner app secrets used for Graph token abuse in MSP customer tenants |
+| 2026-11-09 | [Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)](threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/) | Supply chain / npm | 57 | 37 | Malicious npm and desktop releases dropping a backdoor with Ethereum-based C2 |
+| 2026-11-09 | [BYOD Ransomware and Extortion: Vanderbilt University Attack](threats/2026-11_November-2026/2026-11-10/BYOD-Ransomware-Vanderbilt-University-Attack/) | Ransomware | 4 | 1 | New ransomware and extortion group claiming Vanderbilt University |
+| 2026-11-08 | [SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant](threats/2026-11_November-2026/2026-11-10/SSHole-OpenSSH-CVE-2026-123158-Exploitation/) | Exploitation / Linux | 40 | 10 | Password bypass on musl-based OpenSSH exploited to gain root and drop an implant |
+| 2026-11-05 | [FreeSWITCH CVE-2026-116779 SIP Command Injection Cryptominer Campaign](threats/2026-11_November-2026/2026-11-10/FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/) | Exploitation / cryptomining | 12 | 0 | SIP MESSAGE command injection used to install a cryptominer |
+| 2026-11-04 | [APT29 Watering Holes Targeting iOS and Android with N-Day Exploits](threats/2026-11_November-2026/2026-11-10/APT29-Mobile-Watering-Hole-Exploit-Chains/) | APT / espionage | 27 | 22 | Watering holes serving n-day exploit chains to iOS and Android visitors |
 
 To block everything at once, use [`all/`](all/): 254 high-confidence block indicators across all threats.
 
@@ -73,13 +80,15 @@ To block everything at once, use [`all/`](all/): 254 high-confidence block indic
 rapid-threat-intel/
 ├── threats/
 │   └── <YYYY-MM>_<Month-YYYY>/               one folder per month of entry, e.g. 2026-11_November-2026
-│       ├── README.md                         that month's threats
-│       └── <YYYY-MM-DD>_<Threat-Name>/         named by the date it was added
-│           ├── README.md                     summary, MITRE, actions, sources
-│           ├── block_now.txt                 high-confidence indicators to block
-│           ├── iocs.csv                      every indicator with description and source
-│           ├── defender_xdr_indicators.csv   Defender XDR bulk import
-│           └── hunt.kql                      Defender XDR advanced hunting query
+│       ├── README.md                         that month's days and threats
+│       └── <YYYY-MM-DD>/                     one folder per day of entry
+│           ├── README.md                     that day's threats
+│           └── <Threat-Name>/
+│               ├── README.md                 summary, MITRE, actions, sources
+│               ├── block_now.txt             high-confidence indicators to block
+│               ├── iocs.csv                  every indicator with description and source
+│               ├── defender_xdr_indicators.csv   Defender XDR bulk import
+│               └── hunt.kql                  Defender XDR advanced hunting query
 ├── all/                                      every threat combined
 │   ├── block_now.txt
 │   ├── block_now_<type>.txt                  one clean list per type for firewalls

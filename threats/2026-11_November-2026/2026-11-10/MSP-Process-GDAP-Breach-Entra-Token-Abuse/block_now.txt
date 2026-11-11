@@ -1,0 +1,5 @@
+# MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants
+# Published 2026-11-09. High-confidence indicators to block. Updated 2026-11-10.
+
+## ipv4 (1)
+172.169.63.30

@@ -1,5 +1,0 @@
-# NotC2: AWS-Native AI C2 Proof of Concept
-# Published 2026-11-06. Updated 2026-11-11.
-#
-# No indicators for this threat meet the block-now bar (high confidence and safe to block).
-# The published indicators are lower-confidence hunting leads: see iocs.csv, defender_xdr_indicators.csv and hunt.kql.
