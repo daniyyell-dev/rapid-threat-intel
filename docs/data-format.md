@@ -52,7 +52,7 @@
 
 ## defender_xdr_indicators.csv
 
-Follows Microsoft's bulk-import columns: `IndicatorType, IndicatorValue, ExpirationTime, Action, Severity, Title, Description, RecommendedActions, RbacGroups, Category, MitreTechniques, GenerateAlert`.
+The file follows Microsoft's bulk-import columns: `IndicatorType, IndicatorValue, ExpirationTime, Action, Severity, Title, Description, RecommendedActions, RbacGroups, Category, MitreTechniques, GenerateAlert`.
 
 | iocs.csv | Defender |
 |---|---|
@@ -61,7 +61,7 @@ Follows Microsoft's bulk-import columns: `IndicatorType, IndicatorValue, Expirat
 | `alert` | `Audit` with `GenerateAlert` set to `True` |
 | `high`, `med`, `low` | `Severity` `High`, `Medium`, `Low` |
 
-Rows with `monitor` and types Defender does not support (file names, email addresses and so on) are left out. URLs are written without the `https://` prefix. `Description` holds the indicator description and its source link.
+Rows marked `monitor`, and types Defender does not support (file names, email addresses and so on), are left out. URLs are written without the `https://` prefix. `Description` holds the indicator description and its source link.
 
 ## Expiry
 

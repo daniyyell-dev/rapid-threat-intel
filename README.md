@@ -2,7 +2,7 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.webp">
-  <img src="assets/banner-light.webp" alt="Rapid Threat Intel - Move fast with threat intel from different sources" width="70%">
+  <img src="assets/banner-light.webp" alt="Rapid Threat Intel – Move fast with threat intel from different sources" width="70%">
 </picture>
 
 **High-impact threat intelligence and IOCs, researched and ready to deploy**
@@ -11,7 +11,7 @@
 
 </div>
 
-## What is this
+## What is this?
 
 When a serious attack breaks, the indicators SOC teams need are scattered across vendor blogs, government advisories and researcher posts, often buried in PDFs, mixed with noise, and in formats no security tool can load directly. Commercial feeds fill the gap for those who can pay, but they bury the attacks that matter under thousands of low-value indicators, and free feeds rarely explain what an indicator is or where it came from.
 
@@ -20,14 +20,14 @@ This repository closes that gap for the threats that matter most: attacks on ban
 Each threat is collected, verified and packaged automatically, with human oversight, and nothing is published until a reputable vendor, researcher or government source has released indicators for it.
 
 > [!CAUTION]
-> **Handle all indicators as live and malicious.** Do not visit, open, download or resolve any IP address, domain, URL or file listed here from a corporate or personal device. Analyse them only in an isolated environment, such as a hosted sandbox like [ANY.RUN](https://any.run/) or a self-hosted sandbox such as [OpenSandbox](https://github.com/opensandbox-group/OpenSandbox), and follow your organisation's security policies. These indicators are provided for defensive use only, and the maintainers accept no responsibility for any damage, data loss or policy breach caused by their misuse or careless handling.
+> **Handle all indicators as live and malicious.** Do not visit, open, download or resolve any IP address, domain, URL or file listed here from a corporate or personal device. Analyse them only in an isolated environment, such as a hosted sandbox like [ANY.RUN](https://any.run/) or a self-hosted one like [OpenSandbox](https://github.com/opensandbox-group/OpenSandbox), and follow your organisation's security policies. These indicators are provided for defensive use only, and the maintainers accept no responsibility for any damage, data loss or policy breach caused by their misuse or careless handling.
 
 > [!IMPORTANT]
 > This repository is updated every 2 hours, and only high-impact threat intelligence makes it in: if a threat is not exploitable or would not put a business at risk, it is left out.
 
 ## Why this exists
 
-Working in a high-intensity threat environment every day, there is rarely time to browse a dozen threat intel sites and dig through each report for the IOCs, artefacts and behavioural context that threat hunters and incident responders actually need to act on.
+When you work in a high-intensity threat environment every day, there is rarely time to browse a dozen threat intel sites and dig through each report for the IOCs, artefacts and behavioural context that threat hunters and incident responders actually need to act on.
 
 Commercial threat intelligence is also expensive, and not every team or organisation can afford it.
 
@@ -96,15 +96,15 @@ To block everything at once, use [`all/`](all/): 258 high-confidence block indic
 
 ### Raw feeds
 
-Stable links that always serve the latest data. Use them as external dynamic lists or scheduled imports.
+These stable links always serve the latest data. Use them as external dynamic lists or scheduled imports.
 
 | Feed | Use | Raw URL |
 |---|---|---|
-| [`block_now_ipv4.txt`](all/block_now_ipv4.txt) | Firewall / EDR IP blocklist | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_ipv4.txt |
-| [`block_now_domain.txt`](all/block_now_domain.txt) | DNS / proxy domain blocklist | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_domain.txt |
-| [`block_now_url.txt`](all/block_now_url.txt) | Proxy / web filter URL blocklist | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_url.txt |
-| [`block_now_sha256.txt`](all/block_now_sha256.txt) | EDR SHA256 hash blocklist | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_sha256.txt |
-| [`block_now_sha1.txt`](all/block_now_sha1.txt) | EDR SHA1 hash blocklist | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_sha1.txt |
+| [`block_now_ipv4.txt`](all/block_now_ipv4.txt) | Firewall / EDR IP block list | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_ipv4.txt |
+| [`block_now_domain.txt`](all/block_now_domain.txt) | DNS / proxy domain block list | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_domain.txt |
+| [`block_now_url.txt`](all/block_now_url.txt) | Proxy / web filter URL block list | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_url.txt |
+| [`block_now_sha256.txt`](all/block_now_sha256.txt) | EDR SHA256 hash block list | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_sha256.txt |
+| [`block_now_sha1.txt`](all/block_now_sha1.txt) | EDR SHA1 hash block list | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_sha1.txt |
 | [`defender_xdr_indicators.csv`](all/defender_xdr_indicators.csv) | Defender XDR indicator import | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/defender_xdr_indicators.csv |
 | [`iocs.csv`](all/iocs.csv) | Every indicator with description and source, for a SIEM or TIP | https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/iocs.csv |
 
@@ -183,7 +183,7 @@ Thanks to the organisations whose published research these indicators come from.
 ## Disclaimer
 
 > [!NOTE]
-> Provided as-is for defensive use only. Infrastructure changes hands quickly, so verify indicators against your environment before blocking in production.
+> Everything here is provided as is, for defensive use only. Infrastructure changes hands quickly, so verify indicators against your environment before blocking in production.
 
 ## Licence
 

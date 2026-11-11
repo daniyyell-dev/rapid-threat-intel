@@ -8,7 +8,7 @@
 
 ## Summary
 
-Check Point Research tracks CopperDragon as a possible supplier of malware and infrastructure, the Sparrow framework, to several China-nexus groups including activity previously reported as FamousSparrow (linked to Salt Typhoon), Earth Estries, TropicTrooper and UAT-9244. A year-long investigation found activity in 21 countries across Europe, Asia and Latin America against government, telecommunications, military, research and critical infrastructure organisations, split into three clusters. SilentDelivery compromises legitimate websites in countries including Germany, France and the Czech Republic and shows selected visitors a fake Chrome certificate error that installs the SquadC backdoor or SparrowDoor. OceanGate exploits internet-facing Linux servers, mainly in India, deploys AnnobinDoor, SparrowShell with a modified Reptile rootkit and trojanized SSH, then moves into Windows. DarkWire targets telecoms and government, mainly in Latin America, with the in-memory CopperDoor and DNS-tunnelling CopperDNS backdoors and LSASS credential theft tools.
+Check Point Research tracks CopperDragon as a possible supplier of malware and infrastructure, the Sparrow framework, to several China-nexus groups including activity previously reported as FamousSparrow (linked to Salt Typhoon), Earth Estries, TropicTrooper and UAT-9244. A year-long investigation found activity in 21 countries across Europe, Asia and Latin America against government, telecommunications, military, research and critical infrastructure organisations, split into three clusters. SilentDelivery compromises legitimate websites in countries including Germany, France and the Czech Republic and shows selected visitors a fake Chrome certificate error that installs the SquadC backdoor or SparrowDoor. OceanGate exploits internet-facing Linux servers, mainly in India, deploys AnnobinDoor, SparrowShell with a modified Reptile rootkit and trojanised SSH, then moves into Windows. DarkWire targets telecoms and government, mainly in Latin America, with the in-memory CopperDoor and DNS-tunnelling CopperDNS backdoors and LSASS credential theft tools.
 
 > [!WARNING]
 > The report covers about a year of activity and gives no per-address dates, so some IPs may no longer be in use by the operators.
@@ -19,7 +19,7 @@ Check Point Research tracks CopperDragon as a possible supplier of malware and i
 - **Regions:** Latin America, Europe, Asia
 - **Sectors:** Telecommunications, Government, Military and defence, Research, Critical infrastructure
 - **Note:** Activity in 21 countries across Latin America, Europe and Asia; only the countries named by Check Point are listed. India is the main OceanGate focus; DarkWire is concentrated in Latin America.
-- **Source:** [Check Point Research - Not All That Glitters Is Gold: Tracking CopperDragon's Sparrow Framework Around the Globe](https://research.checkpoint.com/2026/not-all-that-glitters-is-gold-tracking-copperdragons-sparrow-framework-around-the-globe/)
+- **Source:** [Check Point Research – Not All That Glitters Is Gold: Tracking CopperDragon's Sparrow Framework Around the Globe](https://research.checkpoint.com/2026/not-all-that-glitters-is-gold-tracking-copperdragons-sparrow-framework-around-the-globe/)
 
 ## At a glance
 
@@ -30,7 +30,7 @@ Check Point Research tracks CopperDragon as a possible supplier of malware and i
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 158 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
 
-Indicators by type: 93 IPv4, 51 SHA256, 14 domain. See `iocs.csv` for full details and descriptions.
+Indicators by type: 93 IPv4, 51 SHA256, 14 domains. See `iocs.csv` for full details and descriptions.
 
 ## MITRE ATT&CK
 
@@ -60,12 +60,12 @@ Run this before blocking to find past activity.
 2. In the [Microsoft Defender portal](https://security.microsoft.com), go to **Hunting > Advanced hunting** and paste it into a new query tab.
 3. Select **Run query**. Results cover the last 30 days, one row per table, entity and indicator.
 
-Non-network leads such as file names or URL paths are listed as comments at the end of the query. More in the [Defender XDR guide](../../../../docs/defender-xdr.md).
+Non-network leads such as file names or URL paths are listed as comments at the end of the query. See the [Defender XDR guide](../../../../docs/defender-xdr.md) for more.
 
 ## Sources
 
-- [Check Point Research - Not All That Glitters Is Gold: Tracking CopperDragon's Sparrow Framework Around the Globe](https://research.checkpoint.com/2026/not-all-that-glitters-is-gold-tracking-copperdragons-sparrow-framework-around-the-globe/)
-- [Check Point - CopperDragon: Uncovering a Global China-Nexus Cyber Espionage Framework](https://blog.checkpoint.com/security/copperdragon-uncovering-a-global-china-nexus-cyber-espionage-framework/)
+- [Check Point Research – Not All That Glitters Is Gold: Tracking CopperDragon's Sparrow Framework Around the Globe](https://research.checkpoint.com/2026/not-all-that-glitters-is-gold-tracking-copperdragons-sparrow-framework-around-the-globe/)
+- [Check Point – CopperDragon: Uncovering a Global China-Nexus Cyber Espionage Framework](https://blog.checkpoint.com/security/copperdragon-uncovering-a-global-china-nexus-cyber-espionage-framework/)
 
 ---
 

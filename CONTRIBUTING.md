@@ -31,7 +31,7 @@ Column definitions are in [docs/data-format.md](docs/data-format.md).
 
 1. Fork the repository and create a branch, for example `add-<threat-name>`.
 2. **Existing threat:** add rows to `threats/<YYYY-MM>_<Month-YYYY>/<YYYY-MM-DD>/<Threat-Name>/iocs.csv` with the same columns.
-3. **New threat:** create `threats/<YYYY-MM>_<Month-YYYY>/<YYYY-MM-DD>/<Readable-Threat-Name>/`, under the Europe/London date you add it (for example `threats/2026-11_November-2026/2026-11-11/Example-Threat/`), with at least `README.md` (summary and sources) and `iocs.csv`.
+3. **New threat:** create `threats/<YYYY-MM>_<Month-YYYY>/<YYYY-MM-DD>/<Readable-Threat-Name>/`, using the date you add it in Europe/London time (for example `threats/2026-11_November-2026/2026-11-11/Example-Threat/`), with at least `README.md` (summary and sources) and `iocs.csv`.
 4. If you edit `defender_xdr_indicators.csv`, keep Microsoft's bulk-import format.
 5. Open the pull request and complete the [checklist](.github/pull_request_template.md).
 

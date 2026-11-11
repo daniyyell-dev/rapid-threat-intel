@@ -16,7 +16,7 @@ Recorded Future's Insikt Group reports GhostFrame, a previously undocumented com
 - **Regions:** Europe
 - **Sectors:** Not stated in the sources
 - **Note:** VPN appliances of organisations in the US and Europe targeted between late August and October 2026; sectors not stated.
-- **Source:** [Recorded Future Insikt Group - GhostFrame: A new ESXi Implant Linked to Settra Ransomware](https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware)
+- **Source:** [Recorded Future Insikt Group – GhostFrame: A new ESXi Implant Linked to Settra Ransomware](https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware)
 
 ## At a glance
 
@@ -58,11 +58,11 @@ Run this before blocking to find past activity.
 2. In the [Microsoft Defender portal](https://security.microsoft.com), go to **Hunting > Advanced hunting** and paste it into a new query tab.
 3. Select **Run query**. Results cover the last 30 days, one row per table, entity and indicator.
 
-Non-network leads such as file names or URL paths are listed as comments at the end of the query. More in the [Defender XDR guide](../../../../docs/defender-xdr.md).
+Non-network leads such as file names or URL paths are listed as comments at the end of the query. See the [Defender XDR guide](../../../../docs/defender-xdr.md) for more.
 
 ## Sources
 
-- [Recorded Future Insikt Group - GhostFrame: A new ESXi Implant Linked to Settra Ransomware](https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware)
+- [Recorded Future Insikt Group – GhostFrame: A new ESXi Implant Linked to Settra Ransomware](https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware)
 
 ---
 

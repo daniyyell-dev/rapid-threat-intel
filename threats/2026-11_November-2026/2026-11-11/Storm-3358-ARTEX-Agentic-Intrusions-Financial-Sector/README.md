@@ -16,7 +16,7 @@ Microsoft Threat Intelligence reports that Storm-3358, a financially motivated, 
 - **Regions:** Southeast Asia, Global
 - **Sectors:** Financial services
 - **Note:** Primarily financial organisations in Southeast Asia, plus a smaller number of large financial organisations globally.
-- **Source:** [Microsoft Threat Intelligence - ARTEX abuse expands as cybercriminals target financial sector](https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/)
+- **Source:** [Microsoft Threat Intelligence – ARTEX abuse expands as cybercriminals target financial sector](https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/)
 
 ## At a glance
 
@@ -57,11 +57,11 @@ Run this before blocking to find past activity.
 2. In the [Microsoft Defender portal](https://security.microsoft.com), go to **Hunting > Advanced hunting** and paste it into a new query tab.
 3. Select **Run query**. Results cover the last 30 days, one row per table, entity and indicator.
 
-Non-network leads such as file names or URL paths are listed as comments at the end of the query. More in the [Defender XDR guide](../../../../docs/defender-xdr.md).
+Non-network leads such as file names or URL paths are listed as comments at the end of the query. See the [Defender XDR guide](../../../../docs/defender-xdr.md) for more.
 
 ## Sources
 
-- [Microsoft Threat Intelligence - ARTEX abuse expands as cybercriminals target financial sector](https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/)
+- [Microsoft Threat Intelligence – ARTEX abuse expands as cybercriminals target financial sector](https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/)
 
 ---
 

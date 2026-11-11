@@ -18,7 +18,7 @@ NotC2 is a proof-of-concept command-and-control framework published by Varonis T
 - **Countries:** Not stated in the sources
 - **Sectors:** Not stated in the sources
 - **Note:** Researcher proof of concept with no reported victims.
-- **Source:** [Varonis - NotC2: How We Built an AI-Powered C2 Channel With AWS Services](https://www.varonis.com/blog/notc2-ai-powered-c2-channel)
+- **Source:** [Varonis – NotC2: How We Built an AI-Powered C2 Channel With AWS Services](https://www.varonis.com/blog/notc2-ai-powered-c2-channel)
 
 ## At a glance
 
@@ -48,11 +48,11 @@ Indicators by type: 2 other. See `iocs.csv` for full details and descriptions.
 
 ## Hunt
 
-This threat has no network or hash indicators to query in Defender XDR. The comments in [`hunt.kql`](hunt.kql) list the behaviours to hunt for in the relevant logs. More in the [Defender XDR guide](../../../../docs/defender-xdr.md).
+This threat has no network or hash indicators to query in Defender XDR. The comments in [`hunt.kql`](hunt.kql) list the behaviours to hunt for in the relevant logs. See the [Defender XDR guide](../../../../docs/defender-xdr.md) for more.
 
 ## Sources
 
-- [Varonis - NotC2: How We Built an AI-Powered C2 Channel With AWS Services](https://www.varonis.com/blog/notc2-ai-powered-c2-channel)
+- [Varonis – NotC2: How We Built an AI-Powered C2 Channel With AWS Services](https://www.varonis.com/blog/notc2-ai-powered-c2-channel)
 
 ---
 

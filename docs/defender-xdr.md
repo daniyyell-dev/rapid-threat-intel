@@ -95,7 +95,7 @@ Infrastructure changes hands quickly, so an indicator that was malicious when it
 If an indicator blocks or alerts on something legitimate in your environment:
 
 1. In the Defender portal, go to **Settings > Endpoints > Indicators**, find the indicator and change its action to **Allow**, or select **Delete** to remove it.
-2. Report it with the [false positive form](https://github.com/daniyyell-dev/rapid-threat-intel/issues/new?template=false-positive.yml). Include the indicator, the threat folder, and what legitimate service or owner it belongs to now. Leave out internal hostnames, user names and other sensitive details from your environment.
+2. Report it with the [false-positive form](https://github.com/daniyyell-dev/rapid-threat-intel/issues/new?template=false-positive.yml). Include the indicator, the threat folder, and what legitimate service or owner it belongs to now. Leave out internal hostnames, user names and other sensitive details from your environment.
 
 Confirmed reports are reviewed and the indicator is downgraded to `Audit` or removed from the repository.
 

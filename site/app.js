@@ -297,7 +297,7 @@
     $("feed-count").textContent = list.length === DATA.threats.length ? plural(list.length, "threat") + ", newest first" : list.length + " of " + DATA.threats.length + " threats, newest first";
     var f = clear($("feed"));
     if (!list.length) {
-      f.appendChild(h("li", { class: "empty-state" }, h("b", null, "No threats match"), "Try a wider date, another country or sector, or a different indicator type.",
+      f.appendChild(h("li", { class: "empty-state" }, h("b", null, "No threats match"), "Try another date, country or sector, or a different indicator type.",
         h("div", null, h("button", { type: "button", class: "link-btn", onclick: resetFilters }, "Reset filters"))));
     }
     list.forEach(function (t) { f.appendChild(row(t, newest)); });
@@ -362,7 +362,7 @@
       wrap.appendChild(h("div", { class: "empty-state" }, h("b", null, "Threat not found"), "This threat is no longer in the feed. ", h("a", { href: "#" }, "Back to the live feed")));
       return;
     }
-    document.title = t.name + " - Rapid Threat Intel";
+    document.title = t.name + " \u2013 Rapid Threat Intel";
     wrap.appendChild(backLink());
     var newest = DATA.threats[0].entry_date.split(" ")[0];
     wrap.appendChild(h("header", { class: "det-head" },
@@ -424,7 +424,7 @@
     fill();
     wrap.appendChild(h("section", { class: "ind-sec", "aria-labelledby": "ind-h" },
       h("div", { class: "ind-head" }, h("h2", { id: "ind-h" }, h("span", { class: "idx", text: "IOC" }), "Indicators ", countEl)),
-      h("p", { class: "ind-note" }, "Shown defanged and never as links. Copy gives the real value."),
+      h("p", { class: "ind-note" }, "Indicators are shown defanged and never as links. Copy gives the real value."),
       h("div", { class: "ind-tools" }, tq, ts),
       h("div", { class: "tbl-wrap" }, h("table", null,
         h("thead", null, h("tr", null, ["Indicator", "Type", "Confidence", "Action", multi ? "Description and source" : "Description"].map(function (x) { return h("th", { scope: "col", text: x }); }))), body))));
@@ -440,7 +440,7 @@
       window.scrollTo(0, 0);
       return;
     }
-    document.title = "Rapid Threat Intel - Live feed";
+    document.title = "Rapid Threat Intel \u2013 Live feed";
     detail.hidden = true; home.hidden = false;
     if (hash.indexOf("search/") === 0) {
       var q = decodeURIComponent(hash.slice(7));

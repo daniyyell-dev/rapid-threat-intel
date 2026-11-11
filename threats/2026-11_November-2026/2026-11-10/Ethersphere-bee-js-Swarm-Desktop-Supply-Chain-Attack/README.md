@@ -8,14 +8,14 @@
 
 ## Summary
 
-On 9 November 2026 an attacker abused Ethersphere's own GitHub release workflow to publish a malicious @ethersphere/bee-js 13.3.0 to npm and a trojanized Swarm Desktop 0.56.2 release on GitHub. Both carry a small loader that fetches and runs JavaScript from api.frameworkmetrics.xyz; later stages find their C2 through an Ethereum smart-contract dead drop shared with the SleepyDuck / EtherDuck campaign, steal Swarm wallet keys, and install the evjawbreaker backdoor on Linux and macOS or a rogue ScreenConnect client on Windows. npm removed 13.3.0 about 75 minutes after publication; the last clean bee-js version is 13.2.0.
+On 9 November 2026 an attacker abused Ethersphere's own GitHub release workflow to publish a malicious @ethersphere/bee-js 13.3.0 to npm and a trojanised Swarm Desktop 0.56.2 release on GitHub. Both carry a small loader that fetches and runs JavaScript from api.frameworkmetrics.xyz; later stages find their C2 through an Ethereum smart-contract dead drop shared with the SleepyDuck / EtherDuck campaign, steal Swarm wallet keys, and install the evjawbreaker backdoor on Linux and macOS or a rogue ScreenConnect client on Windows. npm removed 13.3.0 about 75 minutes after publication; the last clean bee-js version is 13.2.0.
 
 ## Affected countries and sectors
 
 - **Countries:** Not stated in the sources
 - **Sectors:** Cryptocurrency and Web3
 - **Note:** Swarm network node operators and developers who installed bee-js 13.3.0 or Swarm Desktop 0.56.2; the payload steals Swarm wallet keys. No countries named.
-- **Source:** [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise)
+- **Source:** [Socket – Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise)
 
 ## At a glance
 
@@ -26,7 +26,7 @@ On 9 November 2026 an attacker abused Ethersphere's own GitHub release workflow 
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 41 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
 
-Indicators by type: 25 SHA256, 9 URL, 8 IPv4, 8 file name, 4 Ethereum/Polygon address, 2 domain, 1 SHA1. See `iocs.csv` for full details and descriptions.
+Indicators by type: 25 SHA256, 9 URLs, 8 IPv4, 8 file names, 4 Ethereum/Polygon addresses, 2 domains, 1 SHA1. See `iocs.csv` for full details and descriptions.
 
 ## MITRE ATT&CK
 
@@ -54,13 +54,13 @@ Run this before blocking to find past activity.
 2. In the [Microsoft Defender portal](https://security.microsoft.com), go to **Hunting > Advanced hunting** and paste it into a new query tab.
 3. Select **Run query**. Results cover the last 30 days, one row per table, entity and indicator.
 
-Non-network leads such as file names or URL paths are listed as comments at the end of the query. More in the [Defender XDR guide](../../../../docs/defender-xdr.md).
+Non-network leads such as file names or URL paths are listed as comments at the end of the query. See the [Defender XDR guide](../../../../docs/defender-xdr.md) for more.
 
 ## Sources
 
-- [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise)
-- [Corgea - bee-js 13.3.0 and Swarm Desktop 0.56.2 hijacked to deploy evjawbreaker](https://corgea.com/research/ethersphere-bee-js-13-3-0-swarm-desktop-0-56-2-evjawbreaker-ethereum-c2-november-2026)
-- [The Hacker News - Hackers compromise Ethersphere's bee-js](https://thehackernews.com/2026/11/hackers-compromise-etherspheres-bee-js.html)
+- [Socket – Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise)
+- [Corgea – bee-js 13.3.0 and Swarm Desktop 0.56.2 hijacked to deploy evjawbreaker](https://corgea.com/research/ethersphere-bee-js-13-3-0-swarm-desktop-0-56-2-evjawbreaker-ethereum-c2-november-2026)
+- [The Hacker News – Hackers compromise Ethersphere's bee-js](https://thehackernews.com/2026/11/hackers-compromise-etherspheres-bee-js.html)
 
 ---
 

@@ -56,8 +56,8 @@ Fortinet recommends one hash type per malware hash feed, so use the SHA256 and S
 
 Both accept IP lists only.
 
-1. **pfSense:** go to **Firewall > Aliases > URLs**, add an alias of type **URL Table (IPs)** with the IPv4 raw URL.
-   **OPNsense:** go to **Firewall > Aliases**, add an alias of type **URL Table (IPs)** with the IPv4 raw URL.
+1. **pfSense:** go to **Firewall > Aliases > URLs** and add an alias of type **URL Table (IPs)** with the IPv4 raw URL.
+   **OPNsense:** go to **Firewall > Aliases** and add an alias of type **URL Table (IPs)** with the IPv4 raw URL.
 2. Use the alias as the destination (outbound) or source (inbound) in a block rule.
 
 ## EDR and other tools

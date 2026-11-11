@@ -26,7 +26,7 @@ ESET attributes Cereal, a previously undocumented modular .NET toolset, with hig
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 18 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
 
-Indicators by type: 18 SHA1, 5 URL, 3 file name. See `iocs.csv` for full details and descriptions.
+Indicators by type: 18 SHA1, 5 URLs, 3 file names. See `iocs.csv` for full details and descriptions.
 
 ## MITRE ATT&CK
 
@@ -53,12 +53,12 @@ Run this before blocking to find past activity.
 2. In the [Microsoft Defender portal](https://security.microsoft.com), go to **Hunting > Advanced hunting** and paste it into a new query tab.
 3. Select **Run query**. Results cover the last 30 days, one row per table, entity and indicator.
 
-Non-network leads such as file names or URL paths are listed as comments at the end of the query. More in the [Defender XDR guide](../../../../docs/defender-xdr.md).
+Non-network leads such as file names or URL paths are listed as comments at the end of the query. See the [Defender XDR guide](../../../../docs/defender-xdr.md) for more.
 
 ## Sources
 
-- [ESET - Turla Cereal white paper (PDF)](https://web-assets.esetstatic.com/wls/en/papers/white-papers/turla-cereal-tricks.pdf)
-- [ESET WeLiveSecurity - Exchange for breakfast: Turla's Cereal tricks are not for kids](https://www.welivesecurity.com/en/eset-research/exchange-for-breakfast-turlas-cereal-tricks-are-not-for-kids/)
+- [ESET – Turla Cereal white paper (PDF)](https://web-assets.esetstatic.com/wls/en/papers/white-papers/turla-cereal-tricks.pdf)
+- [ESET WeLiveSecurity – Exchange for breakfast: Turla's Cereal tricks are not for kids](https://www.welivesecurity.com/en/eset-research/exchange-for-breakfast-turlas-cereal-tricks-are-not-for-kids/)
 
 ---
 

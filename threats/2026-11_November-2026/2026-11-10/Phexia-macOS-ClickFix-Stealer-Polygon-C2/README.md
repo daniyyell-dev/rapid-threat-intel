@@ -8,14 +8,14 @@
 
 ## Summary
 
-Phexia is a modular macOS backdoor and infostealer sold to several criminal groups and delivered through ClickFix lures that get the victim to paste a curl-to-bash command into Terminal. WithSecure has tracked infections since late 2025 and a growing number of cases in 2026. From May 2026 the latest builds have fetched their C2 hostname from a Polygon smart contract (EtherHiding) rather than a hardcoded domain, so taking a C2 domain down does not stop new lookups. Once running, the backdoor steals the login password, keychain material, and browser and password-manager data, and has been used to deploy the XMRig Monero miner. A second contract appeared in a build installed on 27 October 2026. Older C2 domains can remain in use after the contract changes, and reinfection can leave more than one build active on the same Mac.
+Phexia is a modular macOS backdoor and infostealer sold to several criminal groups and delivered through ClickFix lures that get the victim to paste a curl-to-bash command into Terminal. WithSecure has tracked infections since late 2025, with a growing number of cases in 2026. From May 2026 the latest builds have fetched their C2 hostname from a Polygon smart contract (EtherHiding) rather than a hardcoded domain, so taking a C2 domain down does not stop new lookups. Once running, the backdoor steals the login password, keychain material, and browser and password-manager data, and has been used to deploy the XMRig Monero miner. A second contract appeared in a build installed on 27 October 2026. Older C2 domains can remain in use after the contract changes, and reinfection can leave more than one build active on the same Mac.
 
 ## Affected countries and sectors
 
 - **Countries:** Not stated in the sources
 - **Sectors:** Not stated in the sources
 - **Note:** WithSecure describes macOS users reached through ClickFix lures, without naming countries or sectors.
-- **Source:** [WithSecure - Inside Phexia: A macOS malware delivered through ClickFix](https://www.withsecure.com/en/resources-hub/w-labs/phexia-macos-malware/)
+- **Source:** [WithSecure – Inside Phexia: A macOS malware delivered through ClickFix](https://www.withsecure.com/en/resources-hub/w-labs/phexia-macos-malware/)
 
 ## At a glance
 
@@ -26,7 +26,7 @@ Phexia is a modular macOS backdoor and infostealer sold to several criminal grou
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 27 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
 
-Indicators by type: 24 domain, 12 file name, 4 other, 2 URL, 2 Ethereum/Polygon address, 2 Monero address, 1 IPv4, 1 function selector. See `iocs.csv` for full details and descriptions.
+Indicators by type: 24 domains, 12 file names, 4 other, 2 URLs, 2 Ethereum/Polygon addresses, 2 Monero addresses, 1 IPv4, 1 function selector. See `iocs.csv` for full details and descriptions.
 
 ## MITRE ATT&CK
 
@@ -55,11 +55,11 @@ Run this before blocking to find past activity.
 2. In the [Microsoft Defender portal](https://security.microsoft.com), go to **Hunting > Advanced hunting** and paste it into a new query tab.
 3. Select **Run query**. Results cover the last 30 days, one row per table, entity and indicator.
 
-Non-network leads such as file names or URL paths are listed as comments at the end of the query. More in the [Defender XDR guide](../../../../docs/defender-xdr.md).
+Non-network leads such as file names or URL paths are listed as comments at the end of the query. See the [Defender XDR guide](../../../../docs/defender-xdr.md) for more.
 
 ## Sources
 
-- [WithSecure - Inside Phexia: A macOS malware delivered through ClickFix](https://www.withsecure.com/en/resources-hub/w-labs/phexia-macos-malware/)
+- [WithSecure – Inside Phexia: A macOS malware delivered through ClickFix](https://www.withsecure.com/en/resources-hub/w-labs/phexia-macos-malware/)
 
 ---
 

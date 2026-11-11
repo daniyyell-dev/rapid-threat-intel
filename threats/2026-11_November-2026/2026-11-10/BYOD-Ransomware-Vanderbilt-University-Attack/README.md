@@ -14,8 +14,8 @@ BYOD is a ransomware and extortion group that launched in 2026 and runs a Tor da
 
 - **Countries:** United States (US), Japan (JP), United Kingdom (GB), Singapore (SG), Malaysia (MY)
 - **Sectors:** Education, Technology, Manufacturing, Hospitality, Healthcare
-- **Note:** From the victims on BYOD's leak site as tracked by ransomware.live on 11 Nov 2026 (United States 7 victims; Japan, United Kingdom, Singapore and Malaysia 1 each).
-- **Source:** [ransomware.live - BYOD group profile](https://www.ransomware.live/group/BYOD)
+- **Note:** Based on the victims listed on BYOD's leak site, as tracked by ransomware.live on 11 Nov 2026 (United States: 7 victims; Japan, the United Kingdom, Singapore and Malaysia: 1 each).
+- **Source:** [ransomware.live – BYOD group profile](https://www.ransomware.live/group/BYOD)
 
 ## At a glance
 
@@ -49,12 +49,12 @@ Run this before blocking to find past activity.
 2. In the [Microsoft Defender portal](https://security.microsoft.com), go to **Hunting > Advanced hunting** and paste it into a new query tab.
 3. Select **Run query**. Results cover the last 30 days, one row per table, entity and indicator.
 
-Non-network leads such as file names or URL paths are listed as comments at the end of the query. More in the [Defender XDR guide](../../../../docs/defender-xdr.md).
+Non-network leads such as file names or URL paths are listed as comments at the end of the query. See the [Defender XDR guide](../../../../docs/defender-xdr.md) for more.
 
 ## Sources
 
-- [BleepingComputer - Vanderbilt University hit in BYOD ransomware attack](https://www.bleepingcomputer.com/news/security/vanderbilt-university-hit-in-byod-ransomware-attack-data-theft-claimed/)
-- [ransomware.live - BYOD group profile](https://www.ransomware.live/group/BYOD)
+- [BleepingComputer – Vanderbilt University hit in BYOD ransomware attack](https://www.bleepingcomputer.com/news/security/vanderbilt-university-hit-in-byod-ransomware-attack-data-theft-claimed/)
+- [ransomware.live – BYOD group profile](https://www.ransomware.live/group/BYOD)
 
 ---
 

@@ -2,16 +2,16 @@
 
 [Back to index](../README.md#how-to-use)
 
-A dark, responsive GitHub Pages site for this repository. It is for SOC analysts, threat hunters and incident responders who need to check an indicator, read a short research summary and download ready-to-use files without browsing the folder tree.
+This is a dark, responsive GitHub Pages site for this repository. It is for SOC analysts, threat hunters and incident responders who need to check an indicator, read a short research summary and download ready-to-use files without browsing the folder tree.
 
 The page is built from the same curated data as the repository. Threats appear newest first. JavaScript is required; if it is turned off, a notice points you to the [repository](https://github.com/daniyyell-dev/rapid-threat-intel).
 
-> **Live URL:** https://daniyyell-dev.github.io/rapid-threat-intel/
+> **Live URL:** https://daniyyell.com/rapid-threat-intel/
 
 ## Handling live indicators safely
 
 > [!CAUTION]
-> **Handle all indicators as live and malicious.** Do not visit, open, download or resolve any IP address, domain, URL or file listed here from a corporate or personal device. Analyse them only in an isolated environment, such as a hosted sandbox like [ANY.RUN](https://any.run/) or a self-hosted sandbox such as [OpenSandbox](https://github.com/opensandbox-group/OpenSandbox), and follow your organisation's security policies. These indicators are provided for defensive use only, and the maintainers accept no responsibility for any damage, data loss or policy breach caused by their misuse or careless handling.
+> **Handle all indicators as live and malicious.** Do not visit, open, download or resolve any IP address, domain, URL or file listed here from a corporate or personal device. Analyse them only in an isolated environment, such as a hosted sandbox like [ANY.RUN](https://any.run/) or a self-hosted one like [OpenSandbox](https://github.com/opensandbox-group/OpenSandbox), and follow your organisation's security policies. These indicators are provided for defensive use only, and the maintainers accept no responsibility for any damage, data loss or policy breach caused by their misuse or careless handling.
 
 The same wording is shown in the red caution box at the top of the dashboard. Network indicators on the page are defanged and are never links; use a sandbox if you need to analyse the real value.
 
@@ -27,7 +27,7 @@ A slim top bar stays pinned on every view: the *Rapid Threat Intel* mark (which 
 
 **Check an indicator.** A search box for an IP address, domain, URL or hash. Defanged input is accepted, and pressing `/` anywhere on the page jumps to it (`Esc` clears it). See [Search and filters](#search-and-filters).
 
-**Live feed.** One row per threat, newest first. Each row shows when it was added (UK time) with a *New today* mark when the threat was added on the most recent entry date in the feed, the category, name and one-line headline, the report's published date, the indicator count, how many are set to block now, and a coloured bar with a count per indicator type. Each row also lists the affected countries (code and name, up to four plus a count of the rest) or regions, and the sectors, or *Not stated*. Open a row to go to `#threat/<id>`.
+**Live feed.** One row per threat, newest first. Each row shows when it was added (UK time), with a *New today* mark when the threat was added on the most recent entry date in the feed, the category, name and one-line headline, the report's published date, the indicator count, how many are set to block now, and a coloured bar with a count per indicator type. Each row also lists the affected countries (code and name, up to four plus a count of the rest) or regions, and the sectors, or *Not stated*. Open a row to go to `#threat/<id>`.
 
 **Filters.** Category, indicator type, country or region, sector and date added, plus *Reset filters*. On wide screens they sit in a column to the left of the feed; on phones they sit above it. See below.
 
@@ -35,7 +35,7 @@ A slim top bar stays pinned on every view: the *Rapid Threat Intel* mark (which 
 
 **Combined files.** A list, under the filters (or below the feed on phones), of links that download the latest files from [`all/`](../all/): the grouped block list, one clean list per type (IPv4, domain, URL, SHA256, SHA1), the Defender XDR import file, the full indicators CSV and the live-feed hunting query. These URLs always serve the current data, so a firewall, proxy, EDR or SIEM can point at them.
 
-**Footer.** The [Limitations](#limitations) text, links to the repository, this guide, the contributing guide, the issue form and [`feed.json`](../site/feed.json), and a credit line for Daniel Jeremiah and the MIT Licence.
+**Footer.** A one-line *Scope* note with an *Open an issue* link; *Project* links with icons (Repository, Dashboard documentation, Contributing guide, Open an issue and [`feed.json`](../site/feed.json)); *Visitors* (all time, last 24 hours and top countries), counted anonymously by GoatCounter with no cookies; a credit line (maintainer, MIT Licence, defensive use only); and a small *Sponsored by* credit.
 
 ### Threat detail (`#threat/<id>`)
 
@@ -48,11 +48,11 @@ The detail view has:
 - **Downloads** for that threat's files, plus *View folder in repository* (in the right-hand column on wide screens)
 - A note when the threat has a caveat (for example that some IPs may no longer be in use)
 - **Summary** — the research write-up
-- **Affected countries and sectors** — the countries named in the sources (two-letter ISO code and name), any regions such as *Latin America* or *Global*, the targeted sectors, a one-line note on scope and the source it came from. Anything the sources do not state is shown as *Not stated in the sources*
+- **Affected countries and sectors** — the countries named in the sources (two-letter ISO code and name), any regions such as *Latin America* or *Global*, the targeted sectors, a one-line note on scope and the source it came from. Anything the sources do not state is shown as *Not stated in the sources*.
 - **Recommended actions** — an ordered list
 - **MITRE ATT&CK** — techniques linking to [attack.mitre.org](https://attack.mitre.org/)
 - **Sources** — the published reports
-- **Indicators** — a table of every indicator, with a text filter and a type filter. On a narrow screen the rows stack as cards. Columns are indicator, type, confidence, action, and description with source
+- **Indicators** — a table of every indicator, with a text filter and a type filter. On a narrow screen the rows stack as cards. Columns are indicator, type, confidence, action, and description with source.
 
 ## Search and filters
 
@@ -166,7 +166,7 @@ The dashboard loads [`site/feed.json`](../site/feed.json) from the same folder a
 | `targets` | object | Affected countries, regions and sectors, recorded only from the threat's own sources (see below) | `{"countries": [{"code": "KZ", "name": "Kazakhstan"}, {"code": "RO", "name": "Romania"}], "regions": [], "sectors": ["Government"], "note": "...", "source": {"url": "...", "label": "..."}}` |
 | `mitre` | array | `{id, name, url}` ATT&CK techniques | `{"id": "T1595", "name": "Active Scanning", "url": "https://attack.mitre.org/techniques/T1595/"}` |
 | `recommended_actions` | array of string | Ordered actions | `"Block the ARTEX server and C2 addresses at the perimeter and in Defender XDR, ..."` |
-| `sources` | array | `{url, label}` source reports | `{"url": "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/", "label": "Microsoft Threat Intelligence - ARTEX abuse expands as cybercriminals target financial sector"}` |
+| `sources` | array | `{url, label}` source reports | `{"url": "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/", "label": "Microsoft Threat Intelligence – ARTEX abuse expands as cybercriminals target financial sector"}` |
 | `indicator_count` | integer | Indicators for this threat | `8` |
 | `block_now_count` | integer | High-confidence `block` indicators | `8` |
 | `indicator_counts` | object | Count per type | `{"ipv4": 8}` |
@@ -176,7 +176,7 @@ The dashboard loads [`site/feed.json`](../site/feed.json) from the same folder a
 
 ### Target objects (`threats[].targets`)
 
-Recorded by hand from each threat's cited sources, never inferred. An empty list means the sources do not state it, and the dashboard shows *Not stated*.
+Targets are recorded by hand from each threat's cited sources, never inferred. An empty list means the sources do not state it, and the dashboard shows *Not stated*.
 
 | Field | Type | Description | Example |
 |---|---|---|---|
@@ -196,7 +196,7 @@ Recorded by hand from each threat's cited sources, never inferred. An empty list
 | `recommended_action` | string | `block`, `alert` or `monitor` | `"block"` |
 | `description` | string | One-line description | `"WISP remote access trojan C2 node used by Storm-3358 against financial organisations, first seen 2 Nov 2026."` |
 | `source_url` | string or null | Report the indicator came from | `"https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/"` |
-| `source_label` | string or null | Readable source name | `"Microsoft Threat Intelligence - ARTEX abuse expands as cybercriminals target financial sector"` |
+| `source_label` | string or null | Readable source name | `"Microsoft Threat Intelligence – ARTEX abuse expands as cybercriminals target financial sector"` |
 
 `block` means attacker-owned infrastructure or malware and is safe to block. `alert` is likely malicious but shared (for example a cloud or VPN IP): detect, do not block. `monitor` is context or a hunt lead. `block_now` counts only indicators that are both `high` and `block`.
 
@@ -224,7 +224,7 @@ Short example (trimmed):
           "recommended_action": "block",
           "description": "WISP remote access trojan C2 node used by Storm-3358 against financial organisations, first seen 2 Nov 2026.",
           "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/",
-          "source_label": "Microsoft Threat Intelligence - ARTEX abuse expands as cybercriminals target financial sector"
+          "source_label": "Microsoft Threat Intelligence – ARTEX abuse expands as cybercriminals target financial sector"
         }
       ]
     }
@@ -273,11 +273,11 @@ The repository, the dashboard and `feed.json` are updated about every 2 hours, a
 
 The dashboard is the `site/` folder on `main`: `index.html`, `style.css`, `app.js`, `feed.json`, the `fonts/` folder (self-hosted Roboto and Roboto Mono, SIL Open Font License, licences in `fonts/OFL-Roboto.txt` and `fonts/OFL-RobotoMono.txt`), the `img/` folder (the project logo and banner, cut and resized from `assets/banner-dark.png` and `assets/banner-dark.webp`) and `.nojekyll`. Publish that folder as the GitHub Pages site root (for example with GitHub Actions, or by using the branch and folder your Pages settings serve). The page loads `feed.json` from the same folder, so keep those files together.
 
-> **Live URL:** https://daniyyell-dev.github.io/rapid-threat-intel/
+> **Live URL:** https://daniyyell.com/rapid-threat-intel/
 
-Once that address is live, a threat can be opened as `<site-url>/#threat/<id>` and a search as `<site-url>/#search/<value>`. The JSON feed will also be at `<site-url>/feed.json`. Until then, use the raw `site/feed.json` URL above.
+A threat can be opened as `<site-url>/#threat/<id>` and a search as `<site-url>/#search/<value>`. The JSON feed is at `<site-url>/feed.json`.
 
-The page is self-contained. It uses a strict Content-Security-Policy (same origin for scripts and style; connections only to itself and `raw.githubusercontent.com`), sends no referrer, and loads no third-party fonts, scripts or trackers.
+The page is self-hosted. It uses a strict Content-Security-Policy (same origin for styles and fonts; scripts only from itself and GoatCounter; connections only to itself, `raw.githubusercontent.com` and GoatCounter), sends no referrer, and loads no third-party fonts. The only third-party script is GoatCounter's cookie-free visit counter.
 
 **Fork.** Fork the repository and enable GitHub Pages in the same way. Download links in the shipped `feed.json` point at this project's raw files on `main` unless you regenerate the feed in your fork.
 
@@ -287,7 +287,7 @@ The page is self-contained. It uses a strict Content-Security-Policy (same origi
 
 This is not a full threat feed. We leave out routine threat intel and noise, and only publish confirmed attacks that are actively happening and have high impact. We also watch dark-web leak posts, social media and security websites for early warning. A threat only goes in once a reputable vendor, researcher or government source publishes indicators for it. Unverified claims are never published. Because we focus on the threats that matter, some activity will be missing on purpose. If you think we've missed something important, please [open an issue](https://github.com/daniyyell-dev/rapid-threat-intel/issues/new/choose) or contribute through the [contributing guide](../CONTRIBUTING.md).
 
-A value that is not in the feed is not therefore safe. Infrastructure also changes hands quickly, so verify indicators against your environment before blocking in production. The dashboard is provided as-is for defensive use only.
+A value that is not in the feed is not necessarily safe. Infrastructure also changes hands quickly, so verify indicators against your environment before blocking in production. The dashboard is provided as is, for defensive use only.
 
 ## Contributing
 
