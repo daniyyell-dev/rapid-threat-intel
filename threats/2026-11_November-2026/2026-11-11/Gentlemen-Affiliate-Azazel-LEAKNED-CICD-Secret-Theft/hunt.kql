@@ -1,11 +1,6 @@
-// Gentlemen Ransomware Affiliate Azazel: CI/CD Secret Theft, LEAKNED Extortion and MCP Command Execution
-// Microsoft Defender XDR advanced hunting query (last 30 days, the advanced hunting maximum).
-// Author: Daniel Jeremiah - https://www.linkedin.com/in/daniel-jeremiah
-// Source: https://github.com/daniyyell-dev/rapid-threat-intel
-// Tables your tenant does not license are skipped (union isfuzzy=true).
-// Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context.
-// Behaviour branches read DeviceFileEvents, DeviceProcessEvents.
-// Behaviours are leads, not confirmed indicators: compare any hit against your own baseline before acting.
+// Threat: Gentlemen Ransomware Affiliate Azazel: CI/CD Secret Theft, LEAKNED Extortion and MCP Command Execution
+// Author: Daniel Jeremiah | Date: 2026-11-11
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft
 let Lookback = 30d;
 let IPs = dynamic(["23.236.169.183", "162.220.163.26", "66.179.30.155", "141.95.252.30", "66.203.124.135"]);
 let Domains = dynamic(["forgitlab.com"]);
@@ -68,14 +63,3 @@ union isfuzzy=true
     | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(ActionType, " ", FolderPath, " by ", InitiatingProcessFileName)))
 | summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
 | order by LastSeen desc
-
-// Other hunt leads (not network or hash indicators) - check manually:
-//   [filename] ATTENTION_SENSITIVE_INFORMATION.txt
-//   [other] internet-census-mcp-scanner
-//   [other] hermes
-
-// Behavioural hunt notes:
-//   mc mirror, aws s3 sync and pg_dump are normal admin tools, so judge hits on the destination: an address or bucket you do not own is the signal.
-//   Linux servers often lack Defender, so check them directly: ls -la ~root/ATTENTION_SENSITIVE_INFORMATION.txt ~ubuntu/ATTENTION_SENSITIVE_INFORMATION.txt, cat /etc/motd, grep -i '^Banner' /etc/ssh/sshd_config and SHOW cluster_name in PostgreSQL.
-//   In GitLab audit and API logs, look for bulk reads of CI/CD variables, project exports or repository clones by a token from an unfamiliar address, and for README commits or new issues made with a pipeline token.
-//   If you run MCP servers, review their logs for initialize requests from clients named internet-census-mcp-scanner or hermes and for any listener bound beyond 127.0.0.1.

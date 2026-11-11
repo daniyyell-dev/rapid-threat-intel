@@ -1,11 +1,6 @@
-// MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants
-// Microsoft Defender XDR advanced hunting query (last 30 days, the advanced hunting maximum).
-// Author: Daniel Jeremiah - https://www.linkedin.com/in/daniel-jeremiah
-// Source: https://github.com/daniyyell-dev/rapid-threat-intel
-// Tables your tenant does not license are skipped (union isfuzzy=true).
-// Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context.
-// Behaviour branches read AADSpnSignInEventsBeta, AuditLogs, EntraIdSpnSignInEvents. AuditLogs needs Microsoft Sentinel connected to the Defender portal.
-// Behaviours are leads, not confirmed indicators: compare any hit against your own baseline before acting.
+// Threat: MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants
+// Author: Daniel Jeremiah | Date: 2026-11-10
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse
 let Lookback = 30d;
 let IPs = dynamic(["172.169.63.30", "64.236.54.139", "172.169.207.227", "172.169.187.35", "172.169.63.29", "172.169.63.35", "172.169.29.166", "172.169.58.181", "172.169.206.55", "172.168.41.166", "172.168.117.170", "172.168.253.63", "64.236.112.134", "64.236.112.237", "64.236.112.251", "64.236.112.221", "64.236.112.120", "64.236.112.111", "64.236.113.15", "64.236.113.23", "64.236.113.32", "52.230.237.27", "52.230.237.16", "52.230.237.18", "52.230.237.21", "52.230.237.13", "52.230.237.9", "52.228.167.149", "52.228.167.121", "52.154.255.0", "40.89.240.243", "40.89.240.113", "40.83.16.22", "13.89.111.197", "20.84.171.92", "130.131.144.244", "135.233.107.143", "172.215.180.155", "143.198.68.206", "187.15.92.123", "178.61.224.154", "46.148.159.8", "109.171.38.144", "213.5.16.40", "91.210.236.74", "202.44.193.79", "24.220.57.81", "188.137.78.112", "188.25.140.193", "193.188.198.233", "46.151.219.60", "178.205.170.18", "188.137.76.53", "213.226.214.89", "177.52.113.45", "46.253.235.237", "138.118.86.78"]);
 union isfuzzy=true

@@ -1,11 +1,6 @@
-// Storm-3358 ARTEX Agentic Intrusions Against the Financial Sector
-// Microsoft Defender XDR advanced hunting query (last 30 days, the advanced hunting maximum).
-// Author: Daniel Jeremiah - https://www.linkedin.com/in/daniel-jeremiah
-// Source: https://github.com/daniyyell-dev/rapid-threat-intel
-// Tables your tenant does not license are skipped (union isfuzzy=true).
-// Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context.
-// Behaviour branches read DeviceProcessEvents, W3CIISLog. W3CIISLog needs Microsoft Sentinel connected to the Defender portal.
-// Behaviours are leads, not confirmed indicators: compare any hit against your own baseline before acting.
+// Threat: Storm-3358 ARTEX Agentic Intrusions Against the Financial Sector
+// Author: Daniel Jeremiah | Date: 2026-11-11
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector
 let Lookback = 30d;
 let IPs = dynamic(["199.19.95.66", "199.19.95.67", "199.19.95.68", "91.92.240.238", "85.11.168.45", "85.11.167.52", "178.16.54.129", "31.77.229.35"]);
 union isfuzzy=true
@@ -53,7 +48,3 @@ union isfuzzy=true
     | project Timestamp, SourceTable = "W3CIISLog", Entity = Computer, Indicator = cIP, Context = strcat(Requests, " requests, ", Paths, " paths in 5m; ", strcat_array(Agents, " | ")))
 | summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
 | order by LastSeen desc
-
-// Behavioural hunt notes:
-//   A web-serving process (w3wp.exe, httpd, nginx, php-fpm, java, node) launching curl, wget or netcat is how the ARTEX agents delivered the WISP, vshell and AdaptixC2 RATs.
-//   Connections from inside your network to the WISP or C2 addresses suggest an implant; inbound hits from ARTEX servers mean probing or exploitation attempts.

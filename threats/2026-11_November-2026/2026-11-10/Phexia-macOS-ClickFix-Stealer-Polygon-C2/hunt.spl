@@ -1,14 +1,6 @@
-``` Phexia: macOS ClickFix Stealer with Polygon C2
-    Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
-    Splunk hunt, CIM data models (tstats). Author: daniyyell-dev. https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Phexia-macOS-ClickFix-Stealer-Polygon-C2
-    Sources: https://www.withsecure.com/en/resources-hub/w-labs/phexia-macos-malware/
-    Published 2026-11-04. Set the time picker to at least the last 30 days, or back to the earliest activity in the sources.
-    The indicators below are live and malicious: do not browse to them.
-    Needs these CIM data models populated: Network_Traffic, Network_Resolution, Web, Email. A model with no data simply returns nothing.
-    summariesonly=false also reads events the acceleration has not summarised yet. If these data models are
-    accelerated, summariesonly=true is much faster but only sees the summary range.
-    No CIM? Use hunt_raw.spl with the rti_* macros from all/splunk_macros.conf.
-    Output: first_seen, last_seen, ioc, ioc_type, data_model, host, user, src, dest, detail, count ```
+``` Threat: Phexia: macOS ClickFix Stealer with Polygon C2
+    Author: Daniel Jeremiah | Date: 2026-11-10
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Phexia-macOS-ClickFix-Stealer-Polygon-C2 ```
 | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
     FROM datamodel=Network_Traffic.All_Traffic
     WHERE All_Traffic.dest_ip IN ("62.60.226.50")
@@ -54,30 +46,3 @@
 | sort 0 - last_seen
 | eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
 | table first_seen last_seen ioc ioc_type data_model host user src dest detail count
-
-``` Other hunt leads (not network or hash indicators), check manually:
-    [eth_address] 0xA3a603F8a454a9c905b4c579Bb72628F7C15C2A0
-    [eth_address] 0x3445fB8Df432320251f611e691fe6B0C6664C960
-    [function_selector] 0x2686ecea
-    [other] polygon.drpc.org
-    [other] polygon.publicnode.com
-    [other] polygon-mainnet.gateway.tatum.io
-    [other] tenderly.rpc.polygon.community
-    [xmr_address] 4ApYm7Cp1QKHYd34eWHTLMR9JwGxEiPkP5GYNbD7UaGUBsAE31oRt8zbCiz7yV6BbHa5mZUGYxeMRbihPXxo9o3vNWJxx2L
-    [xmr_address] 82hSZSZNcbCdWd3ESkMDnC5cegaJnFhcG8PUBkMPof5mEdMDCF8cLcE1QuW4h82ggwi4qtfnRwMEgZPKQEnogkvmLFuRLFv
-    [filename] update.sh
-    [filename] script.sh
-    [filename] clear-cache.sh
-    [filename] Terminal.sh
-    [filename] ~/Library/LaunchAgents/com.<16 lowercase letters>.plist
-    [filename] ~/Library/LaunchAgents/com.Apple.<16 lowercase letters>.plist
-    [filename] ~/.passphrase
-    [filename] ~/.txid
-    [filename] ~/tempFolderC/
-    [filename] /tmp/updstat.txt
-    [filename] /tmp/rigupdater/
-    [filename] /tmp/applecomlistupdate/ ```
-``` Behavioural hunt notes:
-    Terminal-associated curl piped to bash, followed by osascript and LaunchAgent creation, is the ClickFix execution chain.
-    Polygon RPC lookups from osascript (polygon.drpc.org and the other published endpoints) are suspicious; those hosts are legitimate and must not be blocked.
-    curl POST bodies containing txid= and init, connect, task, bmodule, smodule, lmodule, ledger or shell, or a body of only check, are Phexia C2 patterns. ```

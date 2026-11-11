@@ -1,25 +1,12 @@
-// CopperDragon: China-Nexus Sparrow Framework Targeting Government and Telecoms
-// Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
-// Google SecOps (YARA-L 2.0) detection rule over UDM events. Author: daniyyell-dev.
-// https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/CopperDragon-Sparrow-Framework-China-Nexus-Espionage
-// Paste into Detection > Rules & Detections > Rules Editor, then run a Retrohunt over at least the last 30 days
-// before enabling it live. The indicators below are live and malicious: do not browse to them.
-// Groups hits per principal host per hour (events without a hostname are kept as one group).
+// Threat: CopperDragon: China-Nexus Sparrow Framework Targeting Government and Telecoms
+// Author: Daniel Jeremiah | Date: 2026-11-10
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/CopperDragon-Sparrow-Framework-China-Nexus-Espionage
 rule rti_copperdragon_sparrow_framework_china_nexus_espionage {
   meta:
-    author = "daniyyell-dev"
-    description = "Matches UDM events against the published indicators for CopperDragon: China-Nexus Sparrow Framework Targeting Government and Telecoms"
-    threat = "CopperDragon: China-Nexus Sparrow Framework Targeting Government and Telecoms"
+    author = "Daniel Jeremiah"
+    date = "2026-11-10"
+    description = "CopperDragon: China-Nexus Sparrow Framework Targeting Government and Telecoms"
     reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/CopperDragon-Sparrow-Framework-China-Nexus-Espionage"
-    source_1 = "https://research.checkpoint.com/2026/not-all-that-glitters-is-gold-tracking-copperdragons-sparrow-framework-around-the-globe/"
-    mitre_attack_technique = "T1003.001, T1014, T1071.004, T1090, T1189, T1190, T1556, T1574.002"
-    false_positives = "Low for high-confidence indicators; shared hosting, CDN or cloud IPs and scanner IPs can match benign traffic"
-    yara_version = "YL2.0"
-    severity = "High"
-    priority = "High"
-    tlp = "CLEAR"
-    published = "2026-11-10"
-    rule_version = "1.0"
 
   events:
     (

@@ -1,27 +1,12 @@
-// Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
-// Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
-// Google SecOps (YARA-L 2.0) detection rule over UDM events. Author: daniyyell-dev.
-// https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack
-// Paste into Detection > Rules & Detections > Rules Editor, then run a Retrohunt over at least the last 30 days
-// before enabling it live. The indicators below are live and malicious: do not browse to them.
-// Groups hits per principal host per hour (events without a hostname are kept as one group).
+// Threat: Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
+// Author: Daniel Jeremiah | Date: 2026-11-10
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack
 rule rti_ethersphere_bee_js_swarm_desktop_supply_chain_attack {
   meta:
-    author = "daniyyell-dev"
-    description = "Matches UDM events against the published indicators for Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)"
-    threat = "Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)"
+    author = "Daniel Jeremiah"
+    date = "2026-11-10"
+    description = "Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)"
     reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack"
-    source_1 = "https://socket.dev/blog/bee-js-compromise"
-    source_2 = "https://corgea.com/research/ethersphere-bee-js-13-3-0-swarm-desktop-0-56-2-evjawbreaker-ethereum-c2-november-2026"
-    source_3 = "https://thehackernews.com/2026/11/hackers-compromise-etherspheres-bee-js.html"
-    mitre_attack_technique = "T1102.001, T1195.002, T1219, T1543.001, T1543.002, T1567.004"
-    false_positives = "Low for high-confidence indicators; shared hosting, CDN or cloud IPs and scanner IPs can match benign traffic"
-    yara_version = "YL2.0"
-    severity = "High"
-    priority = "High"
-    tlp = "CLEAR"
-    published = "2026-11-09"
-    rule_version = "1.0"
 
   events:
     (
@@ -67,17 +52,3 @@ rule rti_ethersphere_bee_js_swarm_desktop_supply_chain_attack {
   options:
     allow_zero_values = true
 }
-
-// Hunt leads and notes (not network or hash indicators), check manually in UDM search:
-//   [filename] @ethersphere/bee-js@13.3.0
-//   [filename] swarm-desktop 0.56.2
-//   [filename] ~/.solidity/
-//   [filename] solidity-langsupport-runner.service
-//   [filename] com.solidity.langsupport.runner.plist
-//   [filename] ScreenConnect Client (5cbe79c9c25524df)
-//   [filename] %TEMP%\.stuffed-*
-//   [filename] %LOCALAPPDATA%\.<32-hex-guid>\app.msi
-//   [eth_address] 0xf8a900Db50b3331be6B768bA460BB59f3E40C344
-//   [eth_address] 0x6a82595EEea0f4FDFB3aE13A2687BcbBE626e94B
-//   [eth_address] 0xFd3fc58bcbd8ccc77b6000201438eDfc636E7cA7
-//   [eth_address] 0xA7B15A2B5F6992DC3BabB946375d6895fF1171BF

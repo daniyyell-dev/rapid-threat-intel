@@ -1,39 +1,19 @@
-// Xen Orchestra Authentication Bypass (VSA-2026-062) Exploited to Take Over XCP-ng Hosts
-// Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
-// Google SecOps (YARA-L 2.0) detection rule over UDM events. Author: daniyyell-dev.
-// https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover
-// Paste into Detection > Rules & Detections > Rules Editor, then run a Retrohunt over at least the last 30 days
-// before enabling it live. The indicators below are live and malicious: do not browse to them.
-// Groups hits per principal host per hour (events without a hostname are kept as one group).
-// Behaviours: 2 alert behaviour(s) with a clean UDM mapping are part of this rule; the rest are listed as leads at the end.
-// Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.
-// Behaviours are for hunting and alerting only; never block on them.
+// Threat: Xen Orchestra Authentication Bypass (VSA-2026-062) Exploited to Take Over XCP-ng Hosts
+// Author: Daniel Jeremiah | Date: 2026-11-11
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover
 rule rti_xen_orchestra_vsa_2026_062_auth_bypass_xcp_ng_takeover {
   meta:
-    author = "daniyyell-dev"
-    description = "Matches UDM events against the published indicators and alert behaviours for Xen Orchestra Authentication Bypass (VSA-2026-062) Exploited to Take Over XCP-ng Hosts"
-    threat = "Xen Orchestra Authentication Bypass (VSA-2026-062) Exploited to Take Over XCP-ng Hosts"
+    author = "Daniel Jeremiah"
+    date = "2026-11-11"
+    description = "Xen Orchestra Authentication Bypass (VSA-2026-062) Exploited to Take Over XCP-ng Hosts"
     reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover"
-    source_1 = "https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/"
-    source_2 = "https://thehackernews.com/2026/11/hackers-exploit-critical-xen-orchestra.html"
-    mitre_attack_technique = "T1053.003, T1090.003, T1190, T1550.001, T1564.006, T1571"
-    false_positives = "Low for high-confidence indicators; shared hosting, CDN or cloud IPs and scanner IPs can match benign traffic. Behaviour matches are leads and can be legitimate admin or automation activity; compare with your own baseline"
-    yara_version = "YL2.0"
-    severity = "High"
-    priority = "High"
-    tlp = "CLEAR"
-    published = "2026-11-10"
-    rule_version = "1.0"
 
   events:
     (
       $e.principal.ip = /^(?:91\.211\.251\.112|193\.148\.56\.72|37\.221\.208\.216|45\.66\.35\.11|64\.65\.0\.120|64\.65\.62\.160|89\.47\.51\.90|92\.60\.37\.247)$/ or
       $e.target.ip = /^(?:91\.211\.251\.112|193\.148\.56\.72|37\.221\.208\.216|45\.66\.35\.11|64\.65\.0\.120|64\.65\.62\.160|89\.47\.51\.90|92\.60\.37\.247)$/ or
       $e.network.dns.answers.data = /^(?:91\.211\.251\.112|193\.148\.56\.72|37\.221\.208\.216|45\.66\.35\.11|64\.65\.0\.120|64\.65\.62\.160|89\.47\.51\.90|92\.60\.37\.247)$/ or
-      // Behaviour 3 (Alert): Attacker foothold VM on XCP-ng
-      //   Note: the rule only sees xe or qemu command lines; also search xensource.log
       ($e.metadata.event_type = "PROCESS_LAUNCH" and $e.target.process.command_line = /-serial file:|hvm_serial/ nocase) or
-      // Behaviour 4 (Alert): Persistence files on XCP-ng hosts
       (($e.metadata.event_type = "FILE_CREATION" or $e.metadata.event_type = "FILE_MODIFICATION" or $e.metadata.event_type = "FILE_MOVE") and $e.target.file.full_path = /^(\/etc\/cron\.d\/zz-ustar[0-9]*|\/\.ustar[56]|\/etc\/ld\.so\.preload)$/)
     )
     $host = $e.principal.hostname
@@ -59,29 +39,3 @@ rule rti_xen_orchestra_vsa_2026_062_auth_bypass_xcp_ng_takeover {
   options:
     allow_zero_values = true
 }
-
-// Behaviours not in the rule above. Hunt them in UDM search or the named logs.
-// Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting. Behaviours are for hunting and alerting only; never block on them.
-//
-//   Behaviour 1 (Alert): Auth-bypass cookie sent to Xen Orchestra
-//       Look for: HTTP requests to Xen Orchestra with the cookie authenticationToken=j:{} or authenticationToken=j:%7B%7D
-//       Log source: Reverse-proxy, WAF or packet capture in front of Xen Orchestra
-//       No rule written: cookies are not in a standard UDM field; search the proxy or WAF logs with the Splunk query or a raw log search for authenticationToken=j:
-//
-//   Behaviour 2 (Hunt): Login-token harvesting requests
-//       Look for: Requests to /rest/v0/users/me/authentication_tokens from unfamiliar addresses
-//       Log source: Reverse-proxy and web logs
-//       UDM search: target.url = /\/rest\/v0\/users\/me\/authentication_tokens/
-
-// Hunt leads and notes (not network or hash indicators), check manually in UDM search:
-//   [other] ustar3rqxgnskzgnwkgpofgtvxevm6cx3lxdbwt4mndtveqyaohid.onion
-//   [other] authenticationToken=j:{}
-//   [other] authenticationToken=j:%7B%7D
-//   [other] pivot2
-//   [other] hvm_serial: file
-//   [filename] /etc/cron.d/zz-ustar
-//   [filename] /etc/cron.d/zz-ustar2
-//   [filename] /.ustar5
-//   [filename] /.ustar6
-//   Requests to /rest/v0/users/me/authentication_tokens from unfamiliar addresses suggest token harvesting after the bypass.
-//   Six of the listed addresses are public Tor relays (one is the dizum directory authority), so a hit there means a host used Tor; any Tor traffic from Xen Orchestra or an XCP-ng host is worth investigating.

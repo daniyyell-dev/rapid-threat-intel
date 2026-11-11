@@ -1,18 +1,6 @@
-``` Storm-3358 ARTEX Agentic Intrusions Against the Financial Sector
-    Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
-    Splunk hunt, CIM data models (tstats). Author: daniyyell-dev. https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector
-    Sources: https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/
-    Published 2026-11-06. Set the time picker to at least the last 30 days, or back to the earliest activity in the sources.
-    The indicators below are live and malicious: do not browse to them.
-    Needs these CIM data models populated: Network_Traffic, Endpoint, Web. A model with no data simply returns nothing.
-    summariesonly=false also reads events the acceleration has not summarised yet. If these data models are
-    accelerated, summariesonly=true is much faster but only sees the summary range.
-    No CIM? Use hunt_raw.spl with the rti_* macros from all/splunk_macros.conf.
-    Output: first_seen, last_seen, ioc, ioc_type, data_model, host, user, src, dest, detail, count
-
-    Behaviours (indicators of attack) are extra sections below, with ioc_type "behaviour (alert)" or "behaviour (hunt)".
-    Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.
-    Behaviours are for hunting and alerting only; never block on them. ```
+``` Threat: Storm-3358 ARTEX Agentic Intrusions Against the Financial Sector
+    Author: Daniel Jeremiah | Date: 2026-11-11
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector ```
 | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
     FROM datamodel=Network_Traffic.All_Traffic
     WHERE All_Traffic.dest_ip IN ("199.19.95.66", "199.19.95.67", "199.19.95.68", "91.92.240.238", "85.11.168.45", "85.11.167.52", "178.16.54.129", "31.77.229.35")
@@ -28,10 +16,6 @@
     | eval data_model="Network_Traffic", ioc_type="ipv4", ioc=src_ip, host=dvc, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
 ]
 
-``` Behaviour 1 (Alert): Web server starting a downloader or shell
-    Look for: A web server process starting curl, wget, nc, ncat, netcat or a shell
-    Log source: EDR process events on internet-facing web servers
-    Lead, not proof: compare any hit with your own baseline before acting. ```
 | append [
     | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
         FROM datamodel=Endpoint.Processes
@@ -42,10 +26,6 @@
     | eval ioc="Web server starting a downloader or shell", ioc_type="behaviour (alert)"
 ]
 
-``` Behaviour 2 (Hunt): Rapid scanning with default scanner user agents
-    Look for: Bursts of many varied requests from one source in minutes, with default tool user agents (Nmap, curl, wget, Python HTTP clients, headless Chromium or Playwright)
-    Log source: Web server, WAF and reverse-proxy logs
-    Lead, not proof: compare any hit with your own baseline before acting. ```
 | append [
     | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen dc(Web.url) AS paths values(Web.http_user_agent) AS agents
         FROM datamodel=Web.Web
@@ -58,10 +38,6 @@
     | eval ioc="Rapid scanning with default scanner user agents", ioc_type="behaviour (hunt)"
 ]
 
-``` Behaviour 3 (Hunt): New cron jobs and temp-folder binaries on web hosts
-    Look for: New cron jobs, and new binaries run from temporary or world-writable folders, on web hosts
-    Log source: EDR process and file events
-    Lead, not proof: compare any hit with your own baseline before acting. ```
 | append [
     | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
         FROM datamodel=Endpoint.Processes
@@ -83,7 +59,3 @@
 | sort 0 - last_seen
 | eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
 | table first_seen last_seen ioc ioc_type data_model host user src dest detail count
-
-``` Behavioural hunt notes:
-    A web-serving process (w3wp.exe, httpd, nginx, php-fpm, java, node) launching curl, wget or netcat is how the ARTEX agents delivered the WISP, vshell and AdaptixC2 RATs.
-    Connections from inside your network to the WISP or C2 addresses suggest an implant; inbound hits from ARTEX servers mean probing or exploitation attempts. ```

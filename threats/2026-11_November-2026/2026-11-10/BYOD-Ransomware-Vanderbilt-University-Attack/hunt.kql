@@ -1,11 +1,6 @@
-// BYOD Ransomware and Extortion: Vanderbilt University Attack
-// Microsoft Defender XDR advanced hunting query (last 30 days, the advanced hunting maximum).
-// Author: Daniel Jeremiah - https://www.linkedin.com/in/daniel-jeremiah
-// Source: https://github.com/daniyyell-dev/rapid-threat-intel
-// Tables your tenant does not license are skipped (union isfuzzy=true).
-// Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context.
-// Behaviour branches read DeviceFileEvents.
-// Behaviours are leads, not confirmed indicators: compare any hit against your own baseline before acting.
+// Threat: BYOD Ransomware and Extortion: Vanderbilt University Attack
+// Author: Daniel Jeremiah | Date: 2026-11-10
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/BYOD-Ransomware-Vanderbilt-University-Attack
 let Lookback = 30d;
 let Domains = dynamic(["byodxn5s7sua6oyyjj74rycgn6afncfckprt5ezskt3cni6lg3wdrgad.onion"]);
 union isfuzzy=true
@@ -35,13 +30,3 @@ union isfuzzy=true
     | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(ActionType, " ", FolderPath, " by ", InitiatingProcessFileName)))
 | summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
 | order by LastSeen desc
-
-// Other hunt leads (not network or hash indicators) - check manually:
-//   [filename] README_BYOD_31.txt
-//   [email] byod@onionmail.org
-//   [session_id] 05b18abb1c28e6ae8b12e2910197dba5e756c11c3a4046be50e0d356a815bc5d37
-//   [other] .byod
-
-// Behavioural hunt notes:
-//   Search DeviceFileEvents for FileName endswith ".byod" (FileRenamed or FileCreated); many on one device within minutes means encryption is running.
-//   Check OneDrive, SharePoint and Box audit logs for one account deleting or renaming hundreds of files in a short time.

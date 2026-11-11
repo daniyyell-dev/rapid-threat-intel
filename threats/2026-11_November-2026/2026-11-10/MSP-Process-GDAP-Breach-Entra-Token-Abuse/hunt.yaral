@@ -1,30 +1,12 @@
-// MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants
-// Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
-// Google SecOps (YARA-L 2.0) detection rule over UDM events. Author: daniyyell-dev.
-// https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse
-// Paste into Detection > Rules & Detections > Rules Editor, then run a Retrohunt over at least the last 30 days
-// before enabling it live. The indicators below are live and malicious: do not browse to them.
-// Groups hits per principal host per hour (events without a hostname are kept as one group).
-// 17 of the 57 indicators are low-confidence (alert only); expect scanner noise on internet-facing hosts.
-// Behaviours: 0 alert behaviour(s) with a clean UDM mapping are part of this rule; the rest are listed as leads at the end.
-// Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.
-// Behaviours are for hunting and alerting only; never block on them.
+// Threat: MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants
+// Author: Daniel Jeremiah | Date: 2026-11-10
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse
 rule rti_msp_process_gdap_breach_entra_token_abuse {
   meta:
-    author = "daniyyell-dev"
-    description = "Matches UDM events against the published indicators for MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants"
-    threat = "MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants"
+    author = "Daniel Jeremiah"
+    date = "2026-11-10"
+    description = "MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants"
     reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse"
-    source_1 = "https://www.inforcer.com/insights/when-a-gdap-vendor-is-breached-check-your-own-tenant"
-    source_2 = "https://www.thestack.technology/msp-software-firm-hacked-with-customer-entra-environments-now-getting-pwned/"
-    mitre_attack_technique = "T1078.004, T1110.003, T1199, T1550.001"
-    false_positives = "Low for high-confidence indicators; shared hosting, CDN or cloud IPs and scanner IPs can match benign traffic"
-    yara_version = "YL2.0"
-    severity = "High"
-    priority = "High"
-    tlp = "CLEAR"
-    published = "2026-11-09"
-    rule_version = "1.0"
 
   events:
     (
@@ -52,31 +34,3 @@ rule rti_msp_process_gdap_breach_entra_token_abuse {
   options:
     allow_zero_values = true
 }
-
-// Behaviours not in the rule above. Hunt them in UDM search or the named logs.
-// Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting. Behaviours are for hunting and alerting only; never block on them.
-//
-//   Behaviour 1 (Alert): App sign-ins from outside the MSP Process address
-//       Look for: Service principal sign-ins for the app connected to MSP Process from any address other than 64.236.54.139, from 09:56 UTC on 7 November 2026
-//       Log source: Entra service principal sign-in logs, in the MSP's own tenant where the app is registered
-//       No rule written: Entra service principal sign-in fields vary by Google SecOps parser version; use UDM search on principal.ip and the app name
-//
-//   Behaviour 2 (Hunt): One address trying several partner app secrets
-//       Look for: One address using several partner app secrets within seconds, first failing (invalid client secret, missing service principal) and succeeding about an hour later
-//       Log source: Entra service principal sign-in logs
-//       No rule written: needs the partner's list of app secrets and failure codes per tenant; group your Entra service principal sign-ins by IP address and count distinct apps
-//
-//   Behaviour 3 (Alert): Admin refresh token used from another address
-//       Look for: Non-interactive user sign-ins with the connecting admin's refresh token from an address other than 64.236.54.139
-//       Log source: Entra non-interactive user sign-in logs
-//       No rule written: depends on which admin account connected the app in your tenant; filter non-interactive sign-ins for that account not from 64.236.54.139
-//
-//   Behaviour 4 (Alert): Tenant changes made by the MSP Process app
-//       Look for: New app credentials, app role assignments, new users or GDAP security-group membership changes initiated by the MSP Process app since 6 November 2026
-//       Log source: Entra audit logs
-//       No rule written: Entra audit initiator fields vary by parser version; use UDM search
-//
-//   Behaviour 5 (Hunt): Graph requests with the app's tokens from another address
-//       Look for: Microsoft Graph requests made with the app's tokens from an address other than 64.236.54.139
-//       Log source: Microsoft Graph activity logs (only if already enabled on 7 November)
-//       No rule written: Microsoft Graph activity logs are only available if they were enabled before 7 November; filter them for the app ID and IP addresses other than 64.236.54.139

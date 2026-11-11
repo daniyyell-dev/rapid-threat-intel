@@ -1,9 +1,6 @@
-// Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
-// Microsoft Defender XDR advanced hunting query (last 30 days, the advanced hunting maximum).
-// Author: Daniel Jeremiah - https://www.linkedin.com/in/daniel-jeremiah
-// Source: https://github.com/daniyyell-dev/rapid-threat-intel
-// Tables your tenant does not license are skipped (union isfuzzy=true).
-// Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context.
+// Threat: Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
+// Author: Daniel Jeremiah | Date: 2026-11-10
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack
 let Lookback = 30d;
 let IPs = dynamic(["193.57.9.155", "193.57.9.17", "178.16.54.222", "107.189.27.223", "107.189.27.46", "91.108.240.156", "107.189.16.215", "185.232.84.169"]);
 let Domains = dynamic(["frameworkmetrics.xyz", "api.frameworkmetrics.xyz"]);
@@ -78,17 +75,3 @@ union isfuzzy=true
     | project Timestamp, SourceTable = "EmailAttachmentInfo", Entity = tostring(RecipientEmailAddress), Indicator = tostring(SHA256), Context = tostring(strcat(FileName, " from ", SenderFromAddress)))
 | summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
 | order by LastSeen desc
-
-// Other hunt leads (not network or hash indicators) - check manually:
-//   [filename] @ethersphere/bee-js@13.3.0
-//   [filename] swarm-desktop 0.56.2
-//   [filename] ~/.solidity/
-//   [filename] solidity-langsupport-runner.service
-//   [filename] com.solidity.langsupport.runner.plist
-//   [filename] ScreenConnect Client (5cbe79c9c25524df)
-//   [filename] %TEMP%\.stuffed-*
-//   [filename] %LOCALAPPDATA%\.<32-hex-guid>\app.msi
-//   [eth_address] 0xf8a900Db50b3331be6B768bA460BB59f3E40C344
-//   [eth_address] 0x6a82595EEea0f4FDFB3aE13A2687BcbBE626e94B
-//   [eth_address] 0xFd3fc58bcbd8ccc77b6000201438eDfc636E7cA7
-//   [eth_address] 0xA7B15A2B5F6992DC3BabB946375d6895fF1171BF

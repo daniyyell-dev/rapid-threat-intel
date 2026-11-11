@@ -1,19 +1,6 @@
-``` MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants
-    Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
-    Splunk hunt, CIM data models (tstats) plus raw log searches for behaviours. Author: daniyyell-dev. https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse
-    Sources: https://www.inforcer.com/insights/when-a-gdap-vendor-is-breached-check-your-own-tenant ; https://www.thestack.technology/msp-software-firm-hacked-with-customer-entra-environments-now-getting-pwned/
-    Published 2026-11-09. Set the time picker to at least the last 30 days, or back to the earliest activity in the sources.
-    The indicators below are live and malicious: do not browse to them.
-    Needs these CIM data models populated: Network_Traffic. A model with no data simply returns nothing.
-    summariesonly=false also reads events the acceleration has not summarised yet. If these data models are
-    accelerated, summariesonly=true is much faster but only sees the summary range.
-    No CIM? Use hunt_raw.spl with the rti_* macros from all/splunk_macros.conf.
-    Output: first_seen, last_seen, ioc, ioc_type, data_model, host, user, src, dest, detail, count
-
-    Behaviours (indicators of attack) are extra sections below, with ioc_type "behaviour (alert)" or "behaviour (hunt)".
-    Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.
-    Behaviours are for hunting and alerting only; never block on them.
-    Sections that read raw logs use index=*: replace it with your own index names to make them faster. ```
+``` Threat: MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants
+    Author: Daniel Jeremiah | Date: 2026-11-10
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse ```
 | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
     FROM datamodel=Network_Traffic.All_Traffic
     WHERE All_Traffic.dest_ip IN ("172.169.63.30", "64.236.54.139", "172.169.207.227", "172.169.187.35", "172.169.63.29", "172.169.63.35", "172.169.29.166", "172.169.58.181", "172.169.206.55", "172.168.41.166", "172.168.117.170", "172.168.253.63", "64.236.112.134", "64.236.112.237", "64.236.112.251", "64.236.112.221", "64.236.112.120", "64.236.112.111", "64.236.113.15", "64.236.113.23", "64.236.113.32", "52.230.237.27", "52.230.237.16", "52.230.237.18", "52.230.237.21", "52.230.237.13", "52.230.237.9", "52.228.167.149", "52.228.167.121", "52.154.255.0", "40.89.240.243", "40.89.240.113", "40.83.16.22", "13.89.111.197", "20.84.171.92", "130.131.144.244", "135.233.107.143", "172.215.180.155", "143.198.68.206", "187.15.92.123", "178.61.224.154", "46.148.159.8", "109.171.38.144", "213.5.16.40", "91.210.236.74", "202.44.193.79", "24.220.57.81", "188.137.78.112", "188.25.140.193", "193.188.198.233", "46.151.219.60", "178.205.170.18", "188.137.76.53", "213.226.214.89", "177.52.113.45", "46.253.235.237", "138.118.86.78")
@@ -29,14 +16,9 @@
     | eval data_model="Network_Traffic", ioc_type="ipv4", ioc=src_ip, host=dvc, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
 ]
 
-``` Behaviour 1 (Alert): App sign-ins from outside the MSP Process address
-    Look for: Service principal sign-ins for the app connected to MSP Process from any address other than 64.236.54.139, from 09:56 UTC on 7 November 2026
-    Log source: Entra service principal sign-in logs, in the MSP's own tenant where the app is registered
-    Lead, not proof: compare any hit with your own baseline before acting. ```
 | append [
     search index=* (sourcetype="azure:monitor:aad" OR sourcetype="mscs:azure:eventhub" OR sourcetype="azure:aad:signin" OR sourcetype="azure:aad:audit" OR sourcetype="ms:aad:signin" OR sourcetype="ms:aad:audit") "MSP Process" ("ServicePrincipalSignInLogs" OR "servicePrincipal") NOT "64.236.54.139"
-    ``` 1794045360 = 2026-11-07 09:56 UTC ```
-    | where _time >= 1794045360
+        | where _time >= 1794045360
     | eval host="-", user=coalesce('properties.servicePrincipalName', servicePrincipalName, 'properties.appDisplayName', appDisplayName, "MSP Process"), src=coalesce('properties.ipAddress', ipAddress, src_ip, src), dest=coalesce('properties.resourceDisplayName', resourceDisplayName, "-"), detail="service principal sign-in, result ".coalesce('properties.status.errorCode', 'status.errorCode', "-")
     | fillnull value="-" host user src dest detail
     | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
@@ -44,10 +26,6 @@
     | eval ioc="App sign-ins from outside the MSP Process address", ioc_type="behaviour (alert)"
 ]
 
-``` Behaviour 4 (Alert): Tenant changes made by the MSP Process app
-    Look for: New app credentials, app role assignments, new users or GDAP security-group membership changes initiated by the MSP Process app since 6 November 2026
-    Log source: Entra audit logs
-    Lead, not proof: compare any hit with your own baseline before acting. ```
 | append [
     search index=* (sourcetype="azure:monitor:aad" OR sourcetype="mscs:azure:eventhub" OR sourcetype="azure:aad:signin" OR sourcetype="azure:aad:audit" OR sourcetype="ms:aad:signin" OR sourcetype="ms:aad:audit") "MSP Process" ("credentials" OR "Certificates and secrets" OR "app role assignment" OR "Add member to group" OR "Add user")
     | where _time >= 1793923200
@@ -60,22 +38,3 @@
 | sort 0 - last_seen
 | eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
 | table first_seen last_seen ioc ioc_type data_model host user src dest detail count
-
-``` Behaviours to check by hand (no reliable Splunk field mapping, so no search is written):
-
-    Behaviour 2 (Hunt): One address trying several partner app secrets
-        Look for: One address using several partner app secrets within seconds, first failing (invalid client secret, missing service principal) and succeeding about an hour later
-        Log source: Entra service principal sign-in logs
-        Why no search: needs the partner's list of app secrets and failure codes per tenant; group your Entra service principal sign-ins by IP address and count distinct apps
-
-    Behaviour 3 (Alert): Admin refresh token used from another address
-        Look for: Non-interactive user sign-ins with the connecting admin's refresh token from an address other than 64.236.54.139
-        Log source: Entra non-interactive user sign-in logs
-        Why no search: depends on which admin account connected the app in your tenant; filter non-interactive sign-ins for that account not from 64.236.54.139
-
-    Behaviour 5 (Hunt): Graph requests with the app's tokens from another address
-        Look for: Microsoft Graph requests made with the app's tokens from an address other than 64.236.54.139
-        Log source: Microsoft Graph activity logs (only if already enabled on 7 November)
-        Why no search: Microsoft Graph activity logs are only available if they were enabled before 7 November; filter them for the app ID and IP addresses other than 64.236.54.139
-
-    Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting. Behaviours are for hunting and alerting only; never block on them. ```

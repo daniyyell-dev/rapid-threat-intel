@@ -1,12 +1,6 @@
-``` rapid-threat-intel live feed: hunts every high-confidence block-now indicator across the CIM data models.
-    Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
-    Author: daniyyell-dev. https://github.com/daniyyell-dev/rapid-threat-intel
-    Needs the lookup file rti_iocs.csv (columns indicator,type,threat), built from all/splunk_rti_iocs.csv in the repository.
-    Upload it in Settings > Lookups > Lookup table files, or refresh it on a schedule (for example a cron job that downloads
-    https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/splunk_rti_iocs.csv into your app's lookups folder).
-    summariesonly=false also reads unsummarised events; use summariesonly=true for speed on accelerated data models.
-    Set the time picker to at least the last 30 days. The indicators are live and malicious.
-    Output: first_seen, last_seen, ioc, ioc_type, threat, data_model, host, user, src, dest, detail, count ```
+``` Threat: Rapid Threat Intel live feed
+    Author: Daniel Jeremiah | Date: 2026-11-11
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel ```
 | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
     FROM datamodel=Network_Traffic.All_Traffic
     WHERE [| inputlookup rti_iocs.csv where type="ipv4" | rename indicator AS All_Traffic.dest_ip | fields All_Traffic.dest_ip]

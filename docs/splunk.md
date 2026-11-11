@@ -27,7 +27,7 @@ The search reads these CIM data models, depending on the indicators: `Network_Tr
 `summariesonly=false` also reads events that data model acceleration has not summarised yet. If your data models are accelerated, change it to `summariesonly=true` for a much faster search over the summarised range.
 
 > [!NOTE]
-> A URL indicator only matches that URL, not every page on its host, because many URLs sit on shared services such as paste sites or webhook hosts. Leads that are not network or hash indicators are listed as comments at the end of the search.
+> A URL indicator only matches that URL, not every page on its host, because many URLs sit on shared services such as paste sites or webhook hosts. Leads that are not network or hash indicators are not in the search; find them in `iocs.csv` and on the threat page.
 
 ## Behaviours
 
@@ -35,7 +35,7 @@ Where a threat has behaviours (indicators of attack) that map cleanly to log fie
 
 - Process, file, network and web behaviours use the CIM `Endpoint`, `Network_Traffic` and `Web` data models.
 - Cloud and appliance behaviours read raw events: AWS CloudTrail (`sourcetype="aws:cloudtrail"` from the Splunk Add-on for AWS), Microsoft Entra ID logs (the Microsoft Azure and Microsoft Cloud Services add-on sourcetypes) and syslog lines from appliances and hypervisors. These sections use `index=*`; replace it with your own index names to make them faster.
-- Behaviours that cannot be mapped to a reliable field are listed as comments with where to look.
+- Behaviours that cannot be mapped to a reliable field are left out of the search; the threat page lists them with where to look.
 
 > [!IMPORTANT]
 > Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting. Use them to hunt and alert, never to block.

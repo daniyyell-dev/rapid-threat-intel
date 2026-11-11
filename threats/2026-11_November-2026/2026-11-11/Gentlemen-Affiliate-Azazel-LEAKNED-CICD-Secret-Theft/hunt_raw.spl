@@ -1,17 +1,6 @@
-``` Gentlemen Ransomware Affiliate Azazel: CI/CD Secret Theft, LEAKNED Extortion and MCP Command Execution
-    Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
-    Splunk hunt over raw events, for data not mapped to CIM. Author: daniyyell-dev. https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft
-    Sources: https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files ; https://www.bitdefender.com/en-us/blog/businessinsights/bitdefender-threat-debrief-november-2026
-    Define the rti_network, rti_dns, rti_web and rti_endpoint macros once (example: all/splunk_macros.conf).
-    Each macro takes one argument, a list of search terms used to pre-filter the raw events, and must only use
-    streaming commands (search, eval, rename, rex, fields, spath) so it can run inside multisearch.
-    Set the time picker to at least the last 30 days. The indicators below are live and malicious.
-    Output: first_seen, last_seen, ioc, ioc_type, data_model, host, user, src, dest, detail, count
-
-    Behaviours (indicators of attack) are extra sections below, with ioc_type "behaviour (alert)" or "behaviour (hunt)".
-    Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.
-    Behaviours are for hunting and alerting only; never block on them.
-    Sections that read raw logs use index=*: replace it with your own index names to make them faster. ```
+``` Threat: Gentlemen Ransomware Affiliate Azazel: CI/CD Secret Theft, LEAKNED Extortion and MCP Command Execution
+    Author: Daniel Jeremiah | Date: 2026-11-11
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft ```
 | multisearch
   [ search `rti_network(23.236.169.183 OR 162.220.163.26 OR 66.179.30.155 OR 141.95.252.30 OR 66.203.124.135)`
     | search dest_ip IN ("23.236.169.183", "162.220.163.26", "66.179.30.155", "141.95.252.30", "66.203.124.135")
@@ -34,10 +23,6 @@
 | fillnull value="-" host user src dest detail
 | stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
 
-``` Behaviour 1 (Alert): Object storage mirrored out with the MinIO client
-    Look for: mc mirror (MinIO Client) copying a bucket to a remote destination you do not own
-    Log source: Linux process events, MinIO audit logs
-    Lead, not proof: compare any hit with your own baseline before acting. ```
 | append [
     search `rti_endpoint(mirror)`
     | where match(process_name, "(?i)(^|[\\/])(mc|mc\.exe)$") AND like(process, "%mirror%") AND NOT like(process, "%localhost%")
@@ -48,10 +33,6 @@
     | eval ioc="Object storage mirrored out with the MinIO client", ioc_type="behaviour (alert)"
 ]
 
-``` Behaviour 3 (Alert): Ransom notes planted on server surfaces
-    Look for: Ransom notes written to /etc/motd, the sshd_config Banner, the PostgreSQL cluster_name, the pgAdmin login template, a GitLab README or a new GitLab issue
-    Log source: Linux file integrity monitoring, GitLab audit events, PostgreSQL logs
-    Lead, not proof: compare any hit with your own baseline before acting. ```
 | append [
     search `rti_endpoint(ATTENTION_SENSITIVE_INFORMATION.txt)`
     | where match(coalesce(file_path, file_name), "(?i)ATTENTION_SENSITIVE_INFORMATION\.txt$")
@@ -62,10 +43,6 @@
     | eval ioc="Ransom notes planted on server surfaces", ioc_type="behaviour (alert)"
 ]
 
-``` Behaviour 5 (Hunt): Exposed MCP server or MCP scanner clients
-    Look for: MCP server listening beyond loopback, or MCP initialize requests from clients named internet-census-mcp-scanner or hermes
-    Log source: MCP server logs, reverse proxy logs, network listeners
-    Lead, not proof: compare any hit with your own baseline before acting. ```
 | append [
     search index=* ("internet-census-mcp-scanner" OR "exec_in_session")
     | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
@@ -75,10 +52,6 @@
     | eval ioc="Exposed MCP server or MCP scanner clients", ioc_type="behaviour (hunt)"
 ]
 
-``` Behaviour 6 (Hunt): Large uploads to MEGA or to port 9999
-    Look for: Large uploads from servers to MEGA (mega-cmd-server) or HTTP POSTs to port 9999 on unfamiliar hosts
-    Log source: Firewall, proxy and NetFlow logs, EDR network events
-    Lead, not proof: compare any hit with your own baseline before acting. ```
 | append [
     search `rti_network(9999)`
     | search dest_port=9999
@@ -99,25 +72,3 @@
 | sort 0 - last_seen
 | eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
 | table first_seen last_seen ioc ioc_type data_model host user src dest detail count
-
-``` Behaviours to check by hand (no reliable Splunk field mapping, so no search is written):
-
-    Behaviour 2 (Hunt): Bulk reads of GitLab CI/CD secrets
-        Look for: Bulk reads of GitLab CI/CD variables, project exports or repository clones by a token from an unfamiliar address
-        Log source: GitLab audit events and API logs
-        Why no search: GitLab audit event names depend on edition and version; review variable reads, project exports and clones per token against its normal use
-
-    Behaviour 4 (Alert): PostgreSQL killed and wiped after exfiltration
-        Look for: PostgreSQL process killed and its data directory deleted shortly after large pg_dump or scp transfers
-        Log source: Linux process events, PostgreSQL logs
-        Why no search: a sequence (large pg_dump or scp, then the PostgreSQL process stopped and its data directory deleted); review process and file events on database hosts after any large transfer
-
-    Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting. Behaviours are for hunting and alerting only; never block on them. ```
-``` Other hunt leads (not network or hash indicators), check manually:
-    [filename] ATTENTION_SENSITIVE_INFORMATION.txt
-    [other] internet-census-mcp-scanner
-    [other] hermes ```
-``` Behavioural hunt notes:
-    mc mirror, aws s3 sync and pg_dump are normal admin tools, so judge hits on the destination: an address or bucket you do not own is the signal.
-    In GitLab audit and API logs, look for bulk reads of CI/CD variables, project exports or repository clones by a token from an unfamiliar address, and for README commits or new issues made with a pipeline token.
-    If you run MCP servers, review their logs for initialize requests from clients named internet-census-mcp-scanner or hermes and for any listener bound beyond 127.0.0.1. ```

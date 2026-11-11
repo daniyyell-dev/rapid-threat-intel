@@ -1,14 +1,6 @@
-``` Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
-    Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
-    Splunk hunt, CIM data models (tstats). Author: daniyyell-dev. https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack
-    Sources: https://socket.dev/blog/bee-js-compromise ; https://corgea.com/research/ethersphere-bee-js-13-3-0-swarm-desktop-0-56-2-evjawbreaker-ethereum-c2-november-2026 ; https://thehackernews.com/2026/11/hackers-compromise-etherspheres-bee-js.html
-    Published 2026-11-09. Set the time picker to at least the last 30 days, or back to the earliest activity in the sources.
-    The indicators below are live and malicious: do not browse to them.
-    Needs these CIM data models populated: Network_Traffic, Network_Resolution, Web, Endpoint, Email. A model with no data simply returns nothing.
-    summariesonly=false also reads events the acceleration has not summarised yet. If these data models are
-    accelerated, summariesonly=true is much faster but only sees the summary range.
-    No CIM? Use hunt_raw.spl with the rti_* macros from all/splunk_macros.conf.
-    Output: first_seen, last_seen, ioc, ioc_type, data_model, host, user, src, dest, detail, count ```
+``` Threat: Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
+    Author: Daniel Jeremiah | Date: 2026-11-10
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack ```
 | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
     FROM datamodel=Network_Traffic.All_Traffic
     WHERE All_Traffic.dest_ip IN ("193.57.9.155", "193.57.9.17", "178.16.54.222", "107.189.27.223", "107.189.27.46", "91.108.240.156", "107.189.16.215", "185.232.84.169")
@@ -81,17 +73,3 @@
 | sort 0 - last_seen
 | eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
 | table first_seen last_seen ioc ioc_type data_model host user src dest detail count
-
-``` Other hunt leads (not network or hash indicators), check manually:
-    [filename] @ethersphere/bee-js@13.3.0
-    [filename] swarm-desktop 0.56.2
-    [filename] ~/.solidity/
-    [filename] solidity-langsupport-runner.service
-    [filename] com.solidity.langsupport.runner.plist
-    [filename] ScreenConnect Client (5cbe79c9c25524df)
-    [filename] %TEMP%\.stuffed-*
-    [filename] %LOCALAPPDATA%\.<32-hex-guid>\app.msi
-    [eth_address] 0xf8a900Db50b3331be6B768bA460BB59f3E40C344
-    [eth_address] 0x6a82595EEea0f4FDFB3aE13A2687BcbBE626e94B
-    [eth_address] 0xFd3fc58bcbd8ccc77b6000201438eDfc636E7cA7
-    [eth_address] 0xA7B15A2B5F6992DC3BabB946375d6895fF1171BF ```

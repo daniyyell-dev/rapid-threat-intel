@@ -295,19 +295,65 @@
     return h("div", { class: "hq-act" }, c, h("span", { class: "sep", "aria-hidden": "true", text: "\u00b7" }), d);
   }
   /* Preview: comment lines are dimmed so the query itself stands out. The copied text is the file, unchanged. */
+  // Syntax highlighting for the Hunt previews: a small tokenizer per language, rendered as text nodes.
+  var HL_KW = {
+    kql: "let union where project project-away project-rename summarize extend order sort by asc desc and or not in in~ !in has has_any has_all " +
+      "has_cs contains contains_cs startswith endswith matches regex isfuzzy true false join kind on take top distinct materialize " +
+      "datatable externaldata with between mv-expand parse print limit lookup invoke evaluate render",
+    spl: "search tstats stats eval table rename append appendpipe multisearch where fields rex lookup inputlookup sort dedup eventstats " +
+      "streamstats fillnull spath convert head tail return format by as and or not in from like datamodel nodename summariesonly " +
+      "allow_old_summaries values count dc min max latest earliest true false",
+    yaral: "rule meta events match outcome condition options over and or not nocase in any all if true false null"
+  };
+  var HL_SET = {};
+  Object.keys(HL_KW).forEach(function (k) {
+    HL_SET[k] = {};
+    HL_KW[k].split(" ").forEach(function (w) { HL_SET[k][w] = 1; });
+  });
+  var HL_RX = {
+    kql: /(\/\/[^\n]*)|(@?"(?:[^"\\\n]|\\.)*"|@?'(?:[^'\\\n]|\\.)*')|(\b\d{1,3}(?:\.\d{1,3}){3}\b|\b\d+(?:\.\d+)?[a-z]?\b)|([A-Za-z_][\w-]*~?)|(!?=~|==|!=|<=|>=|=>|[|=<>!~+*\/%-])/g,
+    spl: /(```[\s\S]*?(?:```|$))|("(?:[^"\\]|\\.)*")|(`[^`\n]*`)|(\b\d{1,3}(?:\.\d{1,3}){3}\b|\b\d+(?:\.\d+)?\b)|([A-Za-z_][\w.*:]*)|(!=|==|<=|>=|[|=<>!+*\/%-])/g,
+    yaral: /(\/\/[^\n]*)|("(?:[^"\\\n]|\\.)*"|`[^`\n]*`)|(\/(?:\\.|[^\/\\\n])+\/)|(\$\w+|%[\w.]+)|(\.[a-z_][\w]*(?:\.[a-z_][\w]*)*)|(\b\d{1,3}(?:\.\d{1,3}){3}\b|\b\d+(?:\.\d+)?\b)|([A-Za-z_][\w]*)|(!=|<=|>=|[=<>!+*\/%-])/g
+  };
+  function hlTokens(text, lang) {
+    var rx = HL_RX[lang], kw = HL_SET[lang], out = [], last = 0, m, prev = "";
+    rx.lastIndex = 0;
+    while ((m = rx.exec(text))) {
+      if (m.index > last) out.push([null, text.slice(last, m.index)]);
+      var t = m[0], cls = null, after = text.slice(rx.lastIndex, rx.lastIndex + 40);
+      if (lang === "kql") {
+        if (m[1]) cls = "c"; else if (m[2]) cls = "s"; else if (m[3]) cls = "n";
+        else if (m[4]) cls = kw[t.toLowerCase()] && !/^\s*\(/.test(after) ? "k" : /^\s*\(/.test(after) ? "f" : /^\s*=(?![=~])/.test(after) ? "v" : null;
+        else if (m[5]) cls = t === "|" ? "p" : "o";
+      } else if (lang === "spl") {
+        if (m[1]) cls = "c"; else if (m[2]) cls = "s"; else if (m[3]) cls = "f"; else if (m[4]) cls = "n";
+        else if (m[5]) cls = /^\s*\(/.test(after) ? "f" : kw[t.toLowerCase()] ? "k" : /^\s*!?=(?!=)/.test(after) ? "v" : null;
+        else if (m[6]) cls = t === "|" ? "p" : "o";
+      } else {
+        if (m[1]) cls = "c"; else if (m[2]) cls = "s";
+        else if (m[3]) {
+          if (/(?:=|,|\(|\bin)\s*$/.test(prev)) cls = "r";
+          else { out.push([null, "/"]); rx.lastIndex = m.index + 1; last = rx.lastIndex; prev += "/"; continue; }
+        }
+        else if (m[4]) cls = "v"; else if (m[5]) cls = "a"; else if (m[6]) cls = "n";
+        else if (m[7]) cls = /^\s*\(/.test(after) ? "f" : kw[t] ? "k" : /^\s*=/.test(after) && /^\s*$/.test(text.slice(text.lastIndexOf("\n", m.index) + 1, m.index)) ? "v" : null;
+        else if (m[8]) cls = "o";
+      }
+      out.push([cls, t]);
+      prev = (prev + text.slice(last, rx.lastIndex)).slice(-40);
+      last = rx.lastIndex;
+    }
+    if (last < text.length) out.push([null, text.slice(last)]);
+    return out;
+  }
   function renderCode(code, text, lang) {
     clear(code);
-    var spl = /^SPL/.test(lang), inBlock = false;
-    text.replace(/\n$/, "").split("\n").forEach(function (ln, i) {
-      var isC;
-      if (spl) {
-        var ticks = (ln.match(/```/g) || []).length;
-        isC = inBlock || ticks > 0;
-        if (ticks % 2 === 1) inBlock = !inBlock;
-      } else isC = /^\s*\/\//.test(ln);
-      if (i) code.appendChild(document.createTextNode("\n"));
-      code.appendChild(isC ? h("span", { class: "c", text: ln }) : document.createTextNode(ln));
+    var l = /^SPL/.test(lang) ? "spl" : /^YARA/.test(lang) ? "yaral" : "kql";
+    var frag = document.createDocumentFragment();
+    hlTokens(text.replace(/\n$/, ""), l).forEach(function (tk) {
+      frag.appendChild(tk[0] ? h("span", { class: "t-" + tk[0], text: tk[1] }) : document.createTextNode(tk[1]));
     });
+    code.appendChild(frag);
   }
   function huntSection(t) {
     var qs = (t.queries || []).filter(function (q) { return q && q.url; });
@@ -348,7 +394,7 @@
     show(0);
     return h("section", { class: "blk-sec hunt-sec", id: "hunt-sec", "aria-labelledby": "hq-h" },
       h("h2", { id: "hq-h" }, "Hunt", h("span", { text: plural(qs.length, "platform") })),
-      h("p", { class: "hq-intro" }, "The same hunt for each platform: " + (behaviourFirst(t) ? "the behaviours that map cleanly to log fields, with the rest as comments" : "the indicators" + (t.ioa_count ? " and the behaviours that map cleanly to log fields" : "")) +
+      h("p", { class: "hq-intro" }, "The same hunt for each platform: " + (behaviourFirst(t) ? "the behaviours that map cleanly to log fields (the rest are under Behaviours above)" : "the indicators" + (t.ioa_count ? " and the behaviours that map cleanly to log fields" : "")) +
         ". Run it before you block to find past activity." + (t.ioa_count ? " Behaviour hits are leads, not proof." : "")),
       tabs, panel);
   }

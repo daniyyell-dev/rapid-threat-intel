@@ -1,14 +1,6 @@
-``` Turla Cereal: Exchange Server Espionage Toolset
-    Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
-    Splunk hunt, CIM data models (tstats). Author: daniyyell-dev. https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset
-    Sources: https://web-assets.esetstatic.com/wls/en/papers/white-papers/turla-cereal-tricks.pdf
-    Published 2026-11-10. Set the time picker to at least the last 30 days, or back to the earliest activity in the sources.
-    The indicators below are live and malicious: do not browse to them.
-    Needs these CIM data models populated: Endpoint, Email. A model with no data simply returns nothing.
-    summariesonly=false also reads events the acceleration has not summarised yet. If these data models are
-    accelerated, summariesonly=true is much faster but only sees the summary range.
-    No CIM? Use hunt_raw.spl with the rti_* macros from all/splunk_macros.conf.
-    Output: first_seen, last_seen, ioc, ioc_type, data_model, host, user, src, dest, detail, count ```
+``` Threat: Turla Cereal: Exchange Server Espionage Toolset
+    Author: Daniel Jeremiah | Date: 2026-11-10
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset ```
 | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
     FROM datamodel=Endpoint.Processes
     WHERE Processes.process_hash IN ("*4a3c263977417fb6977b0e598c9e3bc5924f390c*", "*7742c6b0aaf114335cef7ebab11290cb18a0b8b3*", "*afe448dd95494cd14438f04f0c5f6b384664a3b7*", "*4a65040646e354303f067d47aa1c953d467f65cb*", "*d1e17520a2435edcdcc47f582381416fbdf75f94*", "*7ab784d0049890d9844aee7f214ba173e3cc23be*", "*5d80118b1ee974936322475f740ab3aeff70b8f3*", "*d51c58c2e95d4561848e0a5a8b9fb33c847c50a4*", "*5b94fe76ec4feb0b5cb6ea3bca4c48d2fe22597b*", "*1408a8f62b09a5ad0dff279b2878d8f59f70a330*", "*3d1a534ce0d0c293f62ece556cbc6d0728213104*", "*ad85fbf2cc879d4325bce1e6fb5f12ab59e3d387*", "*3ea03188dba8898d97e965732c1d6a68c5437edc*", "*3fba18af966deacf7ae09e4d4238952dd90a6d6f*", "*eb9ba1da5363f5d04e2f98673595fce93f39a78e*", "*0b4e4a1ce7fee91bfc62b2a2ec572c325642bb60*", "*a4e477ce257f2c635401ef554e05506c080967c0*", "*a5be8706032a0798fd63214a9f22efa6309355f5*")
@@ -47,13 +39,3 @@
 | sort 0 - last_seen
 | eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
 | table first_seen last_seen ioc ioc_type data_model host user src dest detail count
-
-``` Other hunt leads (not network or hash indicators), check manually:
-    [filename] iph.dat
-    [filename] C:\Windows\System32\wbem\ncobjapi.dll
-    [filename] C:\Windows\System32\wbem\wbemcomn.dll
-    [url_path] /owa/sdds/
-    [url_path] /AUTODISCOVER/MICROSOFT.EXCHANGE.PROXYSERVICE/
-    [url_path] /AUTODISCOVER/INTEGRATED/API/
-    [url_path] /AUTODISCOVER/PROXYSERVICE/
-    [url_path] /MICROSOFT-SERVER-ACTIVESYNC/INTEGRATED/API/ ```

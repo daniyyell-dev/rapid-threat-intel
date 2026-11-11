@@ -1,10 +1,6 @@
-// Author: Daniel Jeremiah - https://www.linkedin.com/in/daniel-jeremiah
-// Description: Hunts the last 30 days for every high-confidence indicator in the rapid-threat-intel live block lists
-// Reference: https://github.com/daniyyell-dev/rapid-threat-intel
-// Severity: High
-// Loads the latest lists straight from the repository with externaldata, so there is nothing to paste or update.
-// Tables your tenant does not license are skipped (union isfuzzy=true).
-// Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context, FirstSeen, LastSeen, Hits.
+// Threat: Rapid Threat Intel live feed
+// Author: Daniel Jeremiah | Date: 2026-11-11
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel
 let Lookback = 30d;
 let FeedIPs = toscalar(externaldata(Indicator: string)
     [@"https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_ipv4.txt"]

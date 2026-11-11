@@ -1,25 +1,12 @@
-// Phexia: macOS ClickFix Stealer with Polygon C2
-// Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
-// Google SecOps (YARA-L 2.0) detection rule over UDM events. Author: daniyyell-dev.
-// https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Phexia-macOS-ClickFix-Stealer-Polygon-C2
-// Paste into Detection > Rules & Detections > Rules Editor, then run a Retrohunt over at least the last 30 days
-// before enabling it live. The indicators below are live and malicious: do not browse to them.
-// Groups hits per principal host per hour (events without a hostname are kept as one group).
+// Threat: Phexia: macOS ClickFix Stealer with Polygon C2
+// Author: Daniel Jeremiah | Date: 2026-11-10
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Phexia-macOS-ClickFix-Stealer-Polygon-C2
 rule rti_phexia_macos_clickfix_stealer_polygon_c2 {
   meta:
-    author = "daniyyell-dev"
-    description = "Matches UDM events against the published indicators for Phexia: macOS ClickFix Stealer with Polygon C2"
-    threat = "Phexia: macOS ClickFix Stealer with Polygon C2"
+    author = "Daniel Jeremiah"
+    date = "2026-11-10"
+    description = "Phexia: macOS ClickFix Stealer with Polygon C2"
     reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Phexia-macOS-ClickFix-Stealer-Polygon-C2"
-    source_1 = "https://www.withsecure.com/en/resources-hub/w-labs/phexia-macos-malware/"
-    mitre_attack_technique = "T1041, T1059.002, T1102.001, T1204.004, T1496.001, T1543.001, T1555.001"
-    false_positives = "Low for high-confidence indicators; shared hosting, CDN or cloud IPs and scanner IPs can match benign traffic"
-    yara_version = "YL2.0"
-    severity = "High"
-    priority = "High"
-    tlp = "CLEAR"
-    published = "2026-11-04"
-    rule_version = "1.0"
 
   events:
     (
@@ -54,29 +41,3 @@ rule rti_phexia_macos_clickfix_stealer_polygon_c2 {
   options:
     allow_zero_values = true
 }
-
-// Hunt leads and notes (not network or hash indicators), check manually in UDM search:
-//   [eth_address] 0xA3a603F8a454a9c905b4c579Bb72628F7C15C2A0
-//   [eth_address] 0x3445fB8Df432320251f611e691fe6B0C6664C960
-//   [function_selector] 0x2686ecea
-//   [other] polygon.drpc.org
-//   [other] polygon.publicnode.com
-//   [other] polygon-mainnet.gateway.tatum.io
-//   [other] tenderly.rpc.polygon.community
-//   [xmr_address] 4ApYm7Cp1QKHYd34eWHTLMR9JwGxEiPkP5GYNbD7UaGUBsAE31oRt8zbCiz7yV6BbHa5mZUGYxeMRbihPXxo9o3vNWJxx2L
-//   [xmr_address] 82hSZSZNcbCdWd3ESkMDnC5cegaJnFhcG8PUBkMPof5mEdMDCF8cLcE1QuW4h82ggwi4qtfnRwMEgZPKQEnogkvmLFuRLFv
-//   [filename] update.sh
-//   [filename] script.sh
-//   [filename] clear-cache.sh
-//   [filename] Terminal.sh
-//   [filename] ~/Library/LaunchAgents/com.<16 lowercase letters>.plist
-//   [filename] ~/Library/LaunchAgents/com.Apple.<16 lowercase letters>.plist
-//   [filename] ~/.passphrase
-//   [filename] ~/.txid
-//   [filename] ~/tempFolderC/
-//   [filename] /tmp/updstat.txt
-//   [filename] /tmp/rigupdater/
-//   [filename] /tmp/applecomlistupdate/
-//   Terminal-associated curl piped to bash, followed by osascript and LaunchAgent creation, is the ClickFix execution chain.
-//   Polygon RPC lookups from osascript (polygon.drpc.org and the other published endpoints) are suspicious; those hosts are legitimate and must not be blocked.
-//   curl POST bodies containing txid= and init, connect, task, bmodule, smodule, lmodule, ledger or shell, or a body of only check, are Phexia C2 patterns.

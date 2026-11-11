@@ -1,11 +1,6 @@
-// NotC2: AWS-Native AI C2 Proof of Concept
-// Microsoft Defender XDR advanced hunting query (last 30 days, the advanced hunting maximum).
-// Author: Daniel Jeremiah - https://www.linkedin.com/in/daniel-jeremiah
-// Source: https://github.com/daniyyell-dev/rapid-threat-intel
-// Tables your tenant does not license are skipped (union isfuzzy=true).
-// Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context.
-// Behaviour branches read AWSCloudTrail, CloudAppEvents, DeviceProcessEvents. AWS rows in CloudAppEvents need the Defender for Cloud Apps AWS connector; AWSCloudTrail needs Microsoft Sentinel connected to the Defender portal.
-// Behaviours are leads, not confirmed indicators: compare any hit against your own baseline before acting.
+// Threat: NotC2: AWS-Native AI C2 Proof of Concept
+// Author: Daniel Jeremiah | Date: 2026-11-10
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/NotC2-AWS-Native-AI-C2-Proof-of-Concept
 let Lookback = 30d;
 union isfuzzy=true
   (CloudAppEvents
@@ -68,14 +63,3 @@ union isfuzzy=true
     | project Timestamp, SourceTable = "CloudAppEvents", Entity = Role, Indicator = "Bedrock plus discovery APIs", Context = strcat(ModelCalls, " model calls; ", strcat_array(Discovery, ", ")))
 | summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
 | order by LastSeen desc
-
-// Other hunt leads (not network or hash indicators) - check manually:
-//   [other] NotC2
-//   [other] execute_aws_operation
-
-// Behavioural hunt notes:
-//   No network or hash indicators were published. The query above searches CloudTrail events through CloudAppEvents (AWS connector) and AWSCloudTrail; Bedrock model invocation logs and Lambda logs must be checked where you store them.
-//   Look for new or unexpected SQS-to-Lambda event source mappings (lambda:CreateEventSourceMapping).
-//   Look for Bedrock InvokeModel or Converse calls from a Lambda execution role that has not previously used Bedrock, especially if that role also starts calling unrelated AWS APIs.
-//   Look for SNS HTTP or HTTPS subscriptions to external endpoints created by a Lambda execution role.
-//   Correlate an unexpected SQS message, a Lambda invocation, Bedrock activity, downstream AWS API calls and an SNS publish to an external subscriber in a short window.

@@ -1,28 +1,12 @@
-// rapid-threat-intel live feed: every high-confidence block-now indicator, through Google SecOps data tables.
-// Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
-// Author: daniyyell-dev. https://github.com/daniyyell-dev/rapid-threat-intel
-//
-// Create five data tables (Investigation > Data Tables > Create), one string column each, from the repository files:
-//   rti_block_ipv4    column ip      <- all/block_now_ipv4.txt
-//   rti_block_domain  column domain  <- all/block_now_domain.txt
-//   rti_block_url     column url     <- all/block_now_url.txt
-//   rti_block_sha256  column sha256  <- all/block_now_sha256.txt
-//   rti_block_sha1    column sha1    <- all/block_now_sha1.txt
-// Steps and the reference-list alternative are in docs/google-secops.md. Tables do not refresh themselves: re-sync them
-// when the feed updates (every 2 hours at most), for example with a scheduled job that calls the data tables API.
-// Matching is exact, so a listed domain does not match its subdomains. Domain, URL and hash values are lowercased first.
-// YARA-L allows at most 10 "in" list checks per rule, so this rule uses exactly 10.
-// The indicators are live and malicious. Run a Retrohunt over at least the last 30 days before enabling it live.
-
+// Threat: Rapid Threat Intel live feed
+// Author: Daniel Jeremiah | Date: 2026-11-11
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel
 rule rti_live_feed_block_now_indicators {
   meta:
-    author = "daniyyell-dev"
-    description = "Matches UDM events against the rapid-threat-intel live block-now lists held in data tables"
+    author = "Daniel Jeremiah"
+    date = "2026-11-11"
+    description = "Rapid Threat Intel live feed"
     reference = "https://github.com/daniyyell-dev/rapid-threat-intel"
-    severity = "High"
-    priority = "High"
-    tlp = "CLEAR"
-    rule_version = "1.1"
 
   events:
     (

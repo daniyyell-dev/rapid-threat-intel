@@ -1,30 +1,12 @@
-// Gentlemen Ransomware Affiliate Azazel: CI/CD Secret Theft, LEAKNED Extortion and MCP Command Execution
-// Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
-// Google SecOps (YARA-L 2.0) detection rule over UDM events. Author: daniyyell-dev.
-// https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft
-// Paste into Detection > Rules & Detections > Rules Editor, then run a Retrohunt over at least the last 30 days
-// before enabling it live. The indicators below are live and malicious: do not browse to them.
-// Groups hits per principal host per hour (events without a hostname are kept as one group).
-// 2 of the 9 indicators are low-confidence (alert only); expect scanner noise on internet-facing hosts.
-// Behaviours: 2 alert behaviour(s) with a clean UDM mapping are part of this rule; the rest are listed as leads at the end.
-// Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.
-// Behaviours are for hunting and alerting only; never block on them.
+// Threat: Gentlemen Ransomware Affiliate Azazel: CI/CD Secret Theft, LEAKNED Extortion and MCP Command Execution
+// Author: Daniel Jeremiah | Date: 2026-11-11
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft
 rule rti_gentlemen_affiliate_azazel_leakned_cicd_secret_theft {
   meta:
-    author = "daniyyell-dev"
-    description = "Matches UDM events against the published indicators and alert behaviours for Gentlemen Ransomware Affiliate Azazel: CI/CD Secret Theft, LEAKNED Extortion and MCP Command Execution"
-    threat = "Gentlemen Ransomware Affiliate Azazel: CI/CD Secret Theft, LEAKNED Extortion and MCP Command Execution"
+    author = "Daniel Jeremiah"
+    date = "2026-11-11"
+    description = "Gentlemen Ransomware Affiliate Azazel: CI/CD Secret Theft, LEAKNED Extortion and MCP Command Execution"
     reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft"
-    source_1 = "https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files"
-    source_2 = "https://www.bitdefender.com/en-us/blog/businessinsights/bitdefender-threat-debrief-november-2026"
-    mitre_attack_technique = "T1021.004, T1059.004, T1110.002, T1190, T1213.003, T1485, T1491.001, T1552.001, T1567.002"
-    false_positives = "Low for high-confidence indicators; shared hosting, CDN or cloud IPs and scanner IPs can match benign traffic. Behaviour matches are leads and can be legitimate admin or automation activity; compare with your own baseline"
-    yara_version = "YL2.0"
-    severity = "High"
-    priority = "High"
-    tlp = "CLEAR"
-    published = "2026-10-05"
-    rule_version = "1.0"
 
   events:
     (
@@ -35,11 +17,8 @@ rule rti_gentlemen_affiliate_azazel_leakned_cicd_secret_theft {
       $e.target.hostname = /(?:^|\.)(?:forgitlab\.com)\.?$/ nocase or
       $e.target.domain.name = /(?:^|\.)(?:forgitlab\.com)\.?$/ nocase or
       re.regex($e.target.url, `^(?:[a-z][a-z0-9+.-]*://)?(?:[^/?#]*@)?(?:(?:[^/?#@]*\.)?(?:forgitlab\.com)(?::\d+)?(?:[/?#]|$))`) nocase or
-      // Behaviour 1 (Alert): Object storage mirrored out with the MinIO client
       ($e.metadata.event_type = "PROCESS_LAUNCH" and $e.target.process.file.full_path = /(^|[\\\/])mc(\.exe)?$/ nocase and
         $e.target.process.command_line = /(^|\s)mirror(\s|$)/ nocase and not $e.target.process.command_line = /localhost/ nocase) or
-      // Behaviour 3 (Alert): Ransom notes planted on server surfaces
-      //   Note: covers the named note file; changes to /etc/motd, the sshd Banner, PostgreSQL cluster_name, pgAdmin templates and GitLab READMEs need file integrity or GitLab audit checks
       (($e.metadata.event_type = "FILE_CREATION" or $e.metadata.event_type = "FILE_MODIFICATION" or $e.metadata.event_type = "FILE_MOVE") and $e.target.file.full_path = /ATTENTION_SENSITIVE_INFORMATION\.txt$/ nocase)
     )
     $host = $e.principal.hostname
@@ -68,34 +47,3 @@ rule rti_gentlemen_affiliate_azazel_leakned_cicd_secret_theft {
   options:
     allow_zero_values = true
 }
-
-// Behaviours not in the rule above. Hunt them in UDM search or the named logs.
-// Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting. Behaviours are for hunting and alerting only; never block on them.
-//
-//   Behaviour 2 (Hunt): Bulk reads of GitLab CI/CD secrets
-//       Look for: Bulk reads of GitLab CI/CD variables, project exports or repository clones by a token from an unfamiliar address
-//       Log source: GitLab audit events and API logs
-//       No rule written: GitLab audit event names depend on edition and version; review variable reads, project exports and clones per token against its normal use
-//
-//   Behaviour 4 (Alert): PostgreSQL killed and wiped after exfiltration
-//       Look for: PostgreSQL process killed and its data directory deleted shortly after large pg_dump or scp transfers
-//       Log source: Linux process events, PostgreSQL logs
-//       No rule written: a sequence (large pg_dump or scp, then the PostgreSQL process stopped and its data directory deleted); review process and file events on database hosts after any large transfer
-//
-//   Behaviour 5 (Hunt): Exposed MCP server or MCP scanner clients
-//       Look for: MCP server listening beyond loopback, or MCP initialize requests from clients named internet-census-mcp-scanner or hermes
-//       Log source: MCP server logs, reverse proxy logs, network listeners
-//       No rule written: MCP client names are not mapped to a UDM field; search proxy and MCP server logs
-//
-//   Behaviour 6 (Hunt): Large uploads to MEGA or to port 9999
-//       Look for: Large uploads from servers to MEGA (mega-cmd-server) or HTTP POSTs to port 9999 on unfamiliar hosts
-//       Log source: Firewall, proxy and NetFlow logs, EDR network events
-//       UDM search: target.port = 9999 OR target.process.file.full_path = /mega-?cmd/ nocase
-
-// Hunt leads and notes (not network or hash indicators), check manually in UDM search:
-//   [filename] ATTENTION_SENSITIVE_INFORMATION.txt
-//   [other] internet-census-mcp-scanner
-//   [other] hermes
-//   mc mirror, aws s3 sync and pg_dump are normal admin tools, so judge hits on the destination: an address or bucket you do not own is the signal.
-//   In GitLab audit and API logs, look for bulk reads of CI/CD variables, project exports or repository clones by a token from an unfamiliar address, and for README commits or new issues made with a pipeline token.
-//   If you run MCP servers, review their logs for initialize requests from clients named internet-census-mcp-scanner or hermes and for any listener bound beyond 127.0.0.1.

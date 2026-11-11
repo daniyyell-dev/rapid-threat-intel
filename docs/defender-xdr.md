@@ -22,7 +22,7 @@ Hunt first so you know whether a threat was already in your environment before y
 The query searches the last 30 days, the advanced hunting maximum, across endpoint, email and Entra ID sign-in tables. Tables your tenant does not license are skipped (`union isfuzzy=true`). Results are grouped by table, entity and indicator, with first seen, last seen and hit count.
 
 > [!NOTE]
-> Leads that are not network or hash indicators, such as file names or URL paths seen only by the attacker's server, are listed as comments at the end of the query. Search for them manually.
+> Leads that are not network or hash indicators, such as file names or URL paths seen only by the attacker's server, are not in the query; find them in `iocs.csv` and on the threat page, and search for them manually.
 
 ## Hunt with the live feed
 

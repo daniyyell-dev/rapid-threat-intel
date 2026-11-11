@@ -1,11 +1,6 @@
-// GhostFrame: ESXi Hypervisor Implant Linked to Settra Ransomware (TAG-218)
-// Microsoft Defender XDR advanced hunting query (last 30 days, the advanced hunting maximum).
-// Author: Daniel Jeremiah - https://www.linkedin.com/in/daniel-jeremiah
-// Source: https://github.com/daniyyell-dev/rapid-threat-intel
-// Tables your tenant does not license are skipped (union isfuzzy=true).
-// Output columns: Timestamp, SourceTable, Entity (device, account or mailbox), Indicator, Context.
-// Behaviour branches read CommonSecurityLog, DeviceNetworkEvents, Syslog. CommonSecurityLog, Syslog need Microsoft Sentinel connected to the Defender portal.
-// Behaviours are leads, not confirmed indicators: compare any hit against your own baseline before acting.
+// Threat: GhostFrame: ESXi Hypervisor Implant Linked to Settra Ransomware (TAG-218)
+// Author: Daniel Jeremiah | Date: 2026-11-11
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware
 let Lookback = 30d;
 let IPs = dynamic(["45.158.196.81", "45.158.196.141", "193.5.65.114"]);
 let SHA256s = dynamic(["a05eae6d07b82e2e5451a72266f21fbaf76486ef4920a820988de93e15353a10"]);
@@ -80,8 +75,3 @@ union isfuzzy=true
     | project Timestamp = TimeGenerated, SourceTable = "Syslog", Entity = tostring(Computer), Indicator = tostring(ProcessName), Context = tostring(SyslogMessage))
 | summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
 | order by LastSeen desc
-
-// Behavioural hunt notes:
-//   ESXi hosts rarely report to Defender, so also search firewall, NetFlow and proxy logs for the C2 addresses and for one source opening six ports (53, 2222, 3389, 4444, 8443, 9443) to the same IP within seconds.
-//   On ESXi, a modified /etc/rc.local.d/local.sh that runs esxcli network firewall set --enabled false or sets execInstalledOnly to 0 is GhostFrame persistence.
-//   Settra ransomware intrusions used MeshAgent for persistence; an unexpected MeshAgent install on a server is worth checking.

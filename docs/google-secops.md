@@ -11,13 +11,13 @@ Each threat folder has a ready YARA-L 2.0 rule, `hunt.yaral`. To match every thr
 3. Run a **Retrohunt** over at least the last 30 days to find past activity.
 4. If the results look right, turn on live mode and alerting.
 
-The rule matches the threat's IP addresses, domains, URLs and file hashes across the common UDM fields (principal and target IPs, DNS questions and answers, target hostname and URL, and file and process hashes). It groups hits per host per hour; events with no hostname are kept as one group. Leads that are not network or hash indicators are listed as comments at the end of the file.
+The rule matches the threat's IP addresses, domains, URLs and file hashes across the common UDM fields (principal and target IPs, DNS questions and answers, target hostname and URL, and file and process hashes). It groups hits per host per hour; events with no hostname are kept as one group. Leads that are not network or hash indicators are not in the rule; find them in `iocs.csv` and on the threat page.
 
 A URL indicator only matches that URL, not every page on its host, because many URLs sit on shared services such as paste sites or webhook hosts.
 
 ## Behaviours
 
-Where a threat has behaviours (indicators of attack), alert behaviours with a clean UDM mapping are added to the same rule: process launches (`principal.process` and `target.process`), file writes (`target.file.full_path`) and AWS CloudTrail events (`metadata.log_type = "AWS_CLOUDTRAIL"` with `metadata.product_event_type`). Hunt behaviours, and behaviours that need several events or fields that are not in UDM, are listed as comments at the end of the file, with a UDM search where one applies.
+Where a threat has behaviours (indicators of attack), alert behaviours with a clean UDM mapping are added to the same rule: process launches (`principal.process` and `target.process`), file writes (`target.file.full_path`) and AWS CloudTrail events (`metadata.log_type = "AWS_CLOUDTRAIL"` with `metadata.product_event_type`). Hunt behaviours, and behaviours that need several events or fields that are not in UDM, are left out of the rule; the threat page lists them with where to look.
 
 > [!IMPORTANT]
 > Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting. Use them to hunt and alert, never to block.

@@ -1,25 +1,12 @@
-// Turla Cereal: Exchange Server Espionage Toolset
-// Field names follow CIM/UDM conventions and have not been tested against live data; adjust them to your environment.
-// Google SecOps (YARA-L 2.0) detection rule over UDM events. Author: daniyyell-dev.
-// https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset
-// Paste into Detection > Rules & Detections > Rules Editor, then run a Retrohunt over at least the last 30 days
-// before enabling it live. The indicators below are live and malicious: do not browse to them.
-// Groups hits per principal host per hour (events without a hostname are kept as one group).
+// Threat: Turla Cereal: Exchange Server Espionage Toolset
+// Author: Daniel Jeremiah | Date: 2026-11-10
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset
 rule rti_turla_cereal_exchange_espionage_toolset {
   meta:
-    author = "daniyyell-dev"
-    description = "Matches UDM events against the published indicators for Turla Cereal: Exchange Server Espionage Toolset"
-    threat = "Turla Cereal: Exchange Server Espionage Toolset"
+    author = "Daniel Jeremiah"
+    date = "2026-11-10"
+    description = "Turla Cereal: Exchange Server Espionage Toolset"
     reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset"
-    source_1 = "https://web-assets.esetstatic.com/wls/en/papers/white-papers/turla-cereal-tricks.pdf"
-    mitre_attack_technique = "T1055, T1114, T1505, T1574.001, T1620"
-    false_positives = "Low for high-confidence indicators; shared hosting, CDN or cloud IPs and scanner IPs can match benign traffic"
-    yara_version = "YL2.0"
-    severity = "High"
-    priority = "High"
-    tlp = "CLEAR"
-    published = "2026-11-10"
-    rule_version = "1.0"
 
   events:
     (
@@ -51,13 +38,3 @@ rule rti_turla_cereal_exchange_espionage_toolset {
   options:
     allow_zero_values = true
 }
-
-// Hunt leads and notes (not network or hash indicators), check manually in UDM search:
-//   [filename] iph.dat
-//   [filename] C:\Windows\System32\wbem\ncobjapi.dll
-//   [filename] C:\Windows\System32\wbem\wbemcomn.dll
-//   [url_path] /owa/sdds/
-//   [url_path] /AUTODISCOVER/MICROSOFT.EXCHANGE.PROXYSERVICE/
-//   [url_path] /AUTODISCOVER/INTEGRATED/API/
-//   [url_path] /AUTODISCOVER/PROXYSERVICE/
-//   [url_path] /MICROSOFT-SERVER-ACTIVESYNC/INTEGRATED/API/
