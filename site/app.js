@@ -602,7 +602,7 @@
       window.scrollTo(0, 0);
       return;
     }
-    document.title = "Rapid Threat Intel \u2013 Live feed";
+    document.title = "Rapid Threat Intel \u2013 AI threat intel, IOCs and hunting queries";
     detail.hidden = true; home.hidden = false;
     if (hash.indexOf("search/") === 0) {
       var q = decodeURIComponent(hash.slice(7));

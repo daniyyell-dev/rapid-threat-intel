@@ -811,3 +811,8 @@ h1.tagline span:nth-child(3) { animation-delay: 1s; }
   .caution-l { padding-left: 20px; }
   .caution-more { margin-left: 20px; }
 }
+
+/* "AI threat intel" label beside the TLP badge */
+.meta { align-items: center; gap: 8px; }
+.ai-tag { display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border: 1px solid rgba(242, 19, 104, .45); border-radius: 999px; background: rgba(242, 19, 104, .08); font: 500 12px/1 var(--sans); letter-spacing: .01em; color: #ff8fb3; white-space: nowrap; }
+.meta .tlp { margin-top: 0; }
