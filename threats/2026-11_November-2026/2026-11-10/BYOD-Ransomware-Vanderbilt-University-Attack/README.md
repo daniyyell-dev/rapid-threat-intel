@@ -10,6 +10,13 @@
 
 BYOD is a ransomware and extortion group that launched in 2026 and runs a Tor data leak site, where ransomware.live counted 17 listed victims on 10 November 2026. On 9 November 2026 it claimed an attack on Vanderbilt University, alleging encrypted databases and theft of student, employee and research data including over a million Social Security numbers. The ransom note README_BYOD_31.txt points to the leak site and a Session messenger ID for negotiation. Vanderbilt confirmed an active cybersecurity incident but has not confirmed the group's involvement or whether devices were encrypted.
 
+## Affected countries and sectors
+
+- **Countries:** United States (US), Japan (JP), United Kingdom (GB), Singapore (SG), Malaysia (MY)
+- **Sectors:** Education, Technology, Manufacturing, Hospitality, Healthcare
+- **Note:** From the victims on BYOD's leak site as tracked by ransomware.live on 11 Nov 2026 (United States 7 victims; Japan, United Kingdom, Singapore and Malaysia 1 each).
+- **Source:** [ransomware.live - BYOD group profile](https://www.ransomware.live/group/BYOD)
+
 ## At a glance
 
 | File | What it is |

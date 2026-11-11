@@ -85,6 +85,7 @@ To block everything at once, use [`all/`](all/): 254 high-confidence block indic
 
 | Tool | Guide |
 |---|---|
+| Live feed dashboard | [Browse threats, check an indicator, download files](docs/dashboard.md) |
 | Microsoft Defender XDR | [Import indicators, run hunts, create detection rules](docs/defender-xdr.md) |
 | Firewalls and EDR | [Use block lists as external dynamic lists](docs/firewall-and-edr.md) |
 | Google SecOps | [Data tables and YARA-L 2.0 rules](docs/google-secops.md) |

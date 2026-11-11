@@ -10,6 +10,14 @@
 
 Microsoft Threat Intelligence reports that Storm-3358, a financially motivated, Cambodia-based intrusion cluster, began targeting financial organisations in October 2026 with ARTEX, an open-source agentic penetration testing framework. Most targets are financial organisations in Southeast Asia, with a smaller number of large financial organisations globally. The ARTEX agents scan internet-facing systems at machine speed, exploit anonymous file upload and server-side request forgery (SSRF) flaws in web applications, then use curl and netcat to pull down the open-source WISP, vshell and AdaptixC2 remote access trojans for persistence and lateral movement. Microsoft listed the ARTEX servers and C2 nodes below as active on 6 November 2026; the actor rotates infrastructure, so behaviour-based hunting matters as much as blocking.
 
+## Affected countries and sectors
+
+- **Countries:** Not stated in the sources
+- **Regions:** Southeast Asia, Global
+- **Sectors:** Financial services
+- **Note:** Primarily financial organisations in Southeast Asia, plus a smaller number of large financial organisations globally.
+- **Source:** [Microsoft Threat Intelligence - ARTEX abuse expands as cybercriminals target financial sector](https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/)
+
 ## At a glance
 
 | File | What it is |

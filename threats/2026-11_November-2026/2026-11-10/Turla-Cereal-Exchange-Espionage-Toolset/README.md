@@ -10,6 +10,13 @@
 
 ESET attributes Cereal, a previously undocumented modular .NET toolset, with high confidence to the Russia-aligned APT group Turla. It was found on Microsoft Exchange servers of governmental organisations in Kazakhstan (November 2025) and Romania, where an email collection module injected into legitimate Exchange processes taps the mail transport pipeline and was configured to pick out email sent to or from NATO and the EU. There is no external C2: the CerealNeuron passive backdoor turns the victim's own Exchange server into the C2 through HttpListener URL prefixes, and the loaders abuse DLL search-order hijacking and the .NET native image cache.
 
+## Affected countries and sectors
+
+- **Countries:** Kazakhstan (KZ), Romania (RO)
+- **Sectors:** Government
+- **Note:** Two national governmental organisations; the Romanian implant filtered email to or from NATO and EU addresses.
+- **Source:** [welivesecurity.com](https://www.welivesecurity.com/en/eset-research/exchange-for-breakfast-turlas-cereal-tricks-are-not-for-kids/)
+
 ## At a glance
 
 | File | What it is |

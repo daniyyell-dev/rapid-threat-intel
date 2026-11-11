@@ -13,6 +13,14 @@ Check Point Research tracks CopperDragon as a possible supplier of malware and i
 > [!WARNING]
 > The report covers about a year of activity and gives no per-address dates, so some IPs may no longer be in use by the operators.
 
+## Affected countries and sectors
+
+- **Countries:** Czech Republic (CZ), Germany (DE), France (FR), Taiwan (TW), Nepal (NP), Hong Kong (HK), Indonesia (ID), India (IN)
+- **Regions:** Latin America, Europe, Asia
+- **Sectors:** Telecommunications, Government, Military and defence, Research, Critical infrastructure
+- **Note:** Activity in 21 countries across Latin America, Europe and Asia; only the countries named by Check Point are listed. India is the main OceanGate focus; DarkWire is concentrated in Latin America.
+- **Source:** [Check Point Research - Not All That Glitters Is Gold: Tracking CopperDragon's Sparrow Framework Around the Globe](https://research.checkpoint.com/2026/not-all-that-glitters-is-gold-tracking-copperdragons-sparrow-framework-around-the-globe/)
+
 ## At a glance
 
 | File | What it is |

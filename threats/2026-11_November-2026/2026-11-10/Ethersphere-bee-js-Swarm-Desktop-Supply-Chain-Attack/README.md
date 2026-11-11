@@ -10,6 +10,13 @@
 
 On 9 November 2026 an attacker abused Ethersphere's own GitHub release workflow to publish a malicious @ethersphere/bee-js 13.3.0 to npm and a trojanized Swarm Desktop 0.56.2 release on GitHub. Both carry a small loader that fetches and runs JavaScript from api.frameworkmetrics.xyz; later stages find their C2 through an Ethereum smart-contract dead drop shared with the SleepyDuck / EtherDuck campaign, steal Swarm wallet keys, and install the evjawbreaker backdoor on Linux and macOS or a rogue ScreenConnect client on Windows. npm removed 13.3.0 about 75 minutes after publication; the last clean bee-js version is 13.2.0.
 
+## Affected countries and sectors
+
+- **Countries:** Not stated in the sources
+- **Sectors:** Cryptocurrency and Web3
+- **Note:** Swarm network node operators and developers who installed bee-js 13.3.0 or Swarm Desktop 0.56.2; the payload steals Swarm wallet keys. No countries named.
+- **Source:** [Socket - Malicious bee-js npm release and Swarm Desktop releases deliver SleepyDuck Ethereum C2 backdoor](https://socket.dev/blog/bee-js-compromise)
+
 ## At a glance
 
 | File | What it is |

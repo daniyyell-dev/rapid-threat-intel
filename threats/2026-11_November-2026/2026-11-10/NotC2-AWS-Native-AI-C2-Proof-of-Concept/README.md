@@ -13,6 +13,13 @@ NotC2 is a proof-of-concept command-and-control framework published by Varonis T
 > [!WARNING]
 > This is a researcher-published proof of concept. Varonis has not reported in-the-wild use and published no network indicators to block. Hunt in AWS CloudTrail for the behaviours below.
 
+## Affected countries and sectors
+
+- **Countries:** Not stated in the sources
+- **Sectors:** Not stated in the sources
+- **Note:** Researcher proof of concept with no reported victims.
+- **Source:** [Varonis - NotC2: How We Built an AI-Powered C2 Channel With AWS Services](https://www.varonis.com/blog/notc2-ai-powered-c2-channel)
+
 ## At a glance
 
 | File | What it is |

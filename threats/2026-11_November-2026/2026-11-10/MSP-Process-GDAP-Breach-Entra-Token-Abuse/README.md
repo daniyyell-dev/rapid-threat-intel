@@ -10,6 +10,13 @@
 
 On 7 November 2026 MSP Process, a GDAP tooling vendor serving over 1,000 MSPs, told partners that an attacker had accessed one of its storage accounts (09:56-14:40 UTC) holding partners' Entra app client IDs and secrets, admin refresh tokens and GDAP relationship lists. The attacker used the stolen secrets to get Microsoft Graph tokens in partner and customer tenants with no user sign-in or MFA, and Huntress reported successful malicious token grants in 47 tenants. Password-spray and client-secret attempts from a residential proxy pool preceded the breach on 6-7 November. Any tenant connected to MSP Process should be treated as exposed.
 
+## Affected countries and sectors
+
+- **Countries:** Not stated in the sources
+- **Sectors:** Managed service providers, MSP customers
+- **Note:** MSP Process serves over 1,000 MSPs; Huntress reported malicious token grants in 47 partner and customer tenants. No countries named.
+- **Source:** [The Stack - MSP software firm hacked, customer Entra environments getting pwned (Huntress IOCs)](https://www.thestack.technology/msp-software-firm-hacked-with-customer-entra-environments-now-getting-pwned/)
+
 ## At a glance
 
 | File | What it is |
