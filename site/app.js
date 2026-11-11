@@ -1,6 +1,11 @@
 (function () {
   "use strict";
 
+  window.goatcounter = window.goatcounter || {};
+  window.goatcounter.path = window.goatcounter.path || function () {
+    return location.pathname + (location.hash || "");
+  };
+
   var DATA = null;
   var ALL_IND = [];
   var TYPE_LABEL = {
@@ -472,9 +477,62 @@
         $("q").focus();
       }
     });
-    window.addEventListener("hashchange", route);
+    window.addEventListener("hashchange", function () {
+      route();
+      if (window.goatcounter && typeof window.goatcounter.count === "function") window.goatcounter.count();
+    });
     route();
   }
+
+  function fmtVisitors(n) {
+    if (typeof n === "string") return n;
+    n = Math.floor(Number(n));
+    if (!isFinite(n) || n < 0) return null;
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+  function loadVisitors() {
+    var box = $("visits");
+    if (!box) return;
+    function reveal() { box.hidden = false; }
+    fetch("https://daniyyell.goatcounter.com/counter/TOTAL.json")
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (d) {
+        var n = d && d.count;
+        if (n == null || n === "") return;
+        $("visits-total-n").textContent = String(n);
+        $("visits-total").hidden = false;
+        reveal();
+      })
+      .catch(function () {});
+    fetch("stats.json", { cache: "no-cache" })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (d) {
+        if (!d) return;
+        if (d.last24h != null) {
+          var n = fmtVisitors(d.last24h);
+          if (n != null) {
+            $("visits-24h-n").textContent = n;
+            $("visits-24h").hidden = false;
+            reveal();
+          }
+        }
+        var geo = $("visits-geo"), ok = 0;
+        clear(geo);
+        (d.top_countries || []).forEach(function (c) {
+          if (ok >= 5 || !c || !c.code || c.count == null) return;
+          var n = fmtVisitors(c.count);
+          if (n == null) return;
+          ok += 1;
+          geo.appendChild(h("li", null,
+            h("span", { class: "visits-cc", text: String(c.code).toUpperCase() }),
+            h("span", { class: "visits-cn", text: c.name || c.code }),
+            h("span", { class: "visits-cv", text: n })));
+        });
+        if (ok) { geo.hidden = false; reveal(); }
+      })
+      .catch(function () {});
+  }
+  loadVisitors();
 
   fetch("feed.json", { cache: "no-cache" })
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })

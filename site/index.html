@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://raw.githubusercontent.com; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; style-src 'self'; font-src 'self'; img-src 'self' data: https://daniyyell.goatcounter.com; connect-src 'self' https://raw.githubusercontent.com https://daniyyell.goatcounter.com; object-src 'none'; base-uri 'self'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#141010">
@@ -39,7 +39,7 @@
   <div id="home">
     <section class="brief" aria-labelledby="title">
       <div class="brief-l">
-        <p class="eyebrow"><span class="tag">TLP:CLEAR</span><span class="eb-t">Curated for banking, insurance, finance, the UK and critical systems</span></p>
+        <p class="eyebrow"><span class="tag">TLP:CLEAR</span><span class="tag tag-ai">AI-driven · human-in-the-loop</span><span class="eb-t">Curated for banking, insurance, finance, the UK and critical systems</span></p>
         <h1 id="title">High-impact threat intelligence and IOCs, researched and ready&nbsp;to&nbsp;deploy</h1>
         <div class="caution" role="note" aria-labelledby="caution-h">
           <p class="caution-h" id="caution-h"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8.9 1.5a1 1 0 0 0-1.8 0L.6 13.5A1 1 0 0 0 1.5 15h13a1 1 0 0 0 .9-1.5ZM8 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 5Zm0 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/></svg>Caution</p>
@@ -116,27 +116,53 @@
 <footer class="foot">
   <div class="foot-in">
     <section class="foot-lim" aria-labelledby="lim-h">
-      <h2 id="lim-h">Limitations</h2>
+      <h2 class="foot-h" id="lim-h">Limitations</h2>
       <p>This is not a full threat feed. We leave out routine threat intel and noise, and only publish confirmed attacks that are actively happening and have high impact. We also watch dark-web leak posts, social media and security websites for early warning. A threat only goes in once a reputable vendor, researcher or government source publishes indicators for it. Unverified claims are never published. Because we focus on the threats that matter, some activity will be missing on purpose. If you think we&#x27;ve missed something important, please <a href="https://github.com/daniyyell-dev/rapid-threat-intel/issues/new/choose" rel="noopener noreferrer" target="_blank">open an issue</a> or contribute through the <a href="https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/CONTRIBUTING.md" rel="noopener noreferrer" target="_blank">contributing guide</a>.</p>
+      <p class="foot-ai"><b>How it works:</b> LLM-based agents find, verify and process threats autonomously, with a human in the loop. Nothing is published until a reputable source has released indicators for it.</p>
     </section>
-    <nav class="foot-links" aria-label="Project links">
-      <a href="https://github.com/daniyyell-dev/rapid-threat-intel">Repository</a>
-      <a href="https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md">Dashboard documentation</a>
-      <a href="https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/CONTRIBUTING.md">Contributing guide</a>
-      <a href="https://github.com/daniyyell-dev/rapid-threat-intel/issues/new/choose">Open an issue</a>
-      <a href="feed.json">feed.json</a>
+    <nav class="foot-links" aria-labelledby="links-h">
+      <h2 class="foot-h" id="links-h">Project</h2>
+      <ul>
+        <li><a href="https://github.com/daniyyell-dev/rapid-threat-intel">Repository</a></li>
+        <li><a href="https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md">Dashboard documentation</a></li>
+        <li><a href="https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/CONTRIBUTING.md">Contributing guide</a></li>
+        <li><a href="https://github.com/daniyyell-dev/rapid-threat-intel/issues/new/choose">Open an issue</a></li>
+        <li><a href="feed.json" class="mono">feed.json</a></li>
+      </ul>
     </nav>
+    <section class="visits" id="visits" hidden aria-labelledby="visits-h">
+      <div class="visits-in">
+        <h2 class="foot-h visits-h" id="visits-h">Visitors</h2>
+        <dl class="visits-nums">
+          <div class="visits-cell" id="visits-total" hidden>
+            <dt>All time</dt>
+            <dd id="visits-total-n"></dd>
+          </div>
+          <div class="visits-cell" id="visits-24h" hidden>
+            <dt>Last 24 hours</dt>
+            <dd id="visits-24h-n"></dd>
+          </div>
+        </dl>
+        <ol class="visits-geo" id="visits-geo" hidden aria-label="Top countries"></ol>
+      </div>
+    </section>
   </div>
-  <div class="spons">
-    <p class="spons-h" id="spons-h">Sponsored by</p>
-    <ul class="spons-list" aria-labelledby="spons-h">
-      <li><a href="https://prynoid.com/" target="_blank" rel="noopener"><img class="spons-prynoid" src="img/sponsors/prynoid.webp" alt="Prynoid" width="1196" height="292" loading="lazy" decoding="async"></a></li>
-      <li><a href="https://phishcore.io/" target="_blank" rel="noopener"><img class="spons-phishcore" src="img/sponsors/phishcore.png" alt="PhishCore" width="909" height="172" loading="lazy" decoding="async"></a></li>
-    </ul>
+  <div class="foot-end">
+    <div class="foot-meta">
+      <p class="credit"><span>Maintained by <a href="https://www.linkedin.com/in/daniel-jeremiah">Daniel Jeremiah</a></span><span>Released under the <a href="https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/LICENSE">MIT Licence</a></span><span>For defensive use only</span></p>
+      <p class="privacy">Anonymous visit counts via <a href="https://www.goatcounter.com/">GoatCounter</a>: no cookies, no personal data.</p>
+    </div>
+    <div class="spons">
+      <p class="spons-h" id="spons-h">Sponsored by</p>
+      <ul class="spons-list" aria-labelledby="spons-h">
+        <li><a href="https://prynoid.com/" target="_blank" rel="noopener"><img class="spons-prynoid" src="img/sponsors/prynoid.webp" alt="Prynoid" width="1196" height="292" loading="lazy" decoding="async"></a></li>
+        <li><a href="https://phishcore.io/" target="_blank" rel="noopener"><img class="spons-phishcore" src="img/sponsors/phishcore.png" alt="PhishCore" width="909" height="172" loading="lazy" decoding="async"></a></li>
+      </ul>
+    </div>
   </div>
-  <p class="credit"><span>Maintained by <a href="https://www.linkedin.com/in/daniel-jeremiah">Daniel Jeremiah</a></span><span>Released under the <a href="https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/LICENSE">MIT Licence</a></span><span>For defensive use only</span></p>
 </footer>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script src="app.js"></script>
+<script data-goatcounter="https://daniyyell.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
