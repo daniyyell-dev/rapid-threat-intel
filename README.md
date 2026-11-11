@@ -17,6 +17,9 @@ When a serious attack breaks, the indicators SOC teams need are scattered across
 
 This repository closes that gap for the threats that matter most: attacks on banking, insurance and financial services, UK organisations and critical systems such as identity providers, edge devices and core enterprise software. Each threat comes with a short research summary (what happened, who is behind it, who is targeted, MITRE techniques and recommended actions), curated and deduplicated IOCs that each have a one-line description and a link to the published source, and ready-to-use files: a block list, a Microsoft Defender XDR import file and an advanced hunting query.
 
+> [!CAUTION]
+> **Handle all indicators as live and malicious.** Do not visit, open, download or resolve any IP address, domain, URL or file listed here from a corporate or personal device. Analyse them only in an isolated environment, such as a hosted sandbox like [ANY.RUN](https://any.run/) or a self-hosted sandbox such as [OpenSandbox](https://github.com/opensandbox-group/OpenSandbox), and follow your organisation's security policies. These indicators are provided for defensive use only, and the maintainers accept no responsibility for any damage, data loss or policy breach caused by their misuse or careless handling.
+
 > [!IMPORTANT]
 > This repository is updated every 2 hours, and only high-impact threat intelligence makes it in: if a threat is not exploitable or would not put a business at risk, it is left out.
 
