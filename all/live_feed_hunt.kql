@@ -1,4 +1,4 @@
-// Threat: Rapid Threat Intel live feed
+// Threat: AI Rapid Threat Intel live feed
 // Author: Daniel Jeremiah | Date: 2026-11-11
 // Ref: https://github.com/daniyyell-dev/rapid-threat-intel
 let Lookback = 30d;

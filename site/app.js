@@ -557,7 +557,7 @@
       wrap.appendChild(h("div", { class: "empty-state" }, h("b", null, "Threat not found"), "This threat is no longer in the feed. ", h("a", { href: "#" }, "Back to the live feed")));
       return;
     }
-    document.title = t.name + " \u2013 Rapid Threat Intel";
+    document.title = t.name + " \u2013 AI Rapid Threat Intel";
     wrap.appendChild(backLink());
     var newest = DATA.threats[0].entry_date.split(" ")[0];
     wrap.appendChild(h("header", { class: "det-head" },
@@ -640,7 +640,7 @@
       window.scrollTo(0, 0);
       return;
     }
-    document.title = "Rapid Threat Intel \u2013 AI threat intel, IOCs and hunting queries";
+    document.title = "AI Rapid Threat Intel \u2013 AI threat intel, IOCs and hunting queries";
     detail.hidden = true; home.hidden = false;
     var pm = /^page=(\d+)$/.exec(hash), want = pm ? Math.max(1, parseInt(pm[1], 10)) : 1;
     if (DATA && want !== PAGE) {

@@ -17,7 +17,7 @@ The same wording is shown in the red caution box at the top of the dashboard. Ne
 
 ## What's on the page
 
-A slim top bar stays pinned on every view: the *Rapid Threat Intel* mark (which returns to the live feed), the last-updated time in UK time, and links to this guide, the repository and `feed.json`. The footer is also on every view.
+A slim top bar stays pinned on every view: the *AI Rapid Threat Intel* mark (which returns to the live feed), the last-updated time in UK time, and links to this guide, the repository and `feed.json`. The footer is also on every view.
 
 **Headline.** The same as the repository: *High-impact threat intelligence and IOCs, researched and ready to deploy*.
 
@@ -131,7 +131,7 @@ The dashboard loads [`site/feed.json`](../site/feed.json) from the same folder a
 
 | Field | Type | Description | Example |
 |---|---|---|---|
-| `title` | string | Project name | `"Rapid Threat Intel"` |
+| `title` | string | Project name | `"AI Rapid Threat Intel"` |
 | `description` | string | Headline | `"High-impact threat intelligence and IOCs, researched and ready to deploy"` |
 | `repository` | string | Repository URL | `"https://github.com/daniyyell-dev/rapid-threat-intel"` |
 | `documentation` | string | This guide | `"https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md"` |

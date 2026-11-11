@@ -1,0 +1,17 @@
+# Trigram: DPRK Dropper Chain Targeting AI, Blockchain and Logistics (Kimsuky / UNK_DeadDrop)
+# Published 2026-11-11. High-confidence indicators to block. Updated 2026-11-11.
+
+## domain (10)
+icagllmbt.space
+dashboard.asteara.org
+dashboard.gaganata.ink
+api.fallgganata.ink
+gaganata.ink
+api.gaganata.ink
+fallgganata.ink
+chestsoi.ink
+api.chestsoi.ink
+asteara.org
+
+## sha256 (1)
+808e7154b7af2bc7a4b28d577297c55f77221c355191cbe00f9f1810b6d4a619

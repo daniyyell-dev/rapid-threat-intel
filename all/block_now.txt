@@ -1,5 +1,18 @@
 # All high-confidence indicators to block. Updated 2026-11-11.
 
+## 2026-11-11 Trigram: DPRK Dropper Chain Targeting AI, Blockchain and Logistics (Kimsuky / UNK_DeadDrop)
+icagllmbt.space
+dashboard.asteara.org
+dashboard.gaganata.ink
+api.fallgganata.ink
+gaganata.ink
+api.gaganata.ink
+fallgganata.ink
+chestsoi.ink
+api.chestsoi.ink
+asteara.org
+808e7154b7af2bc7a4b28d577297c55f77221c355191cbe00f9f1810b6d4a619
+
 ## 2026-10-05 Gentlemen Ransomware Affiliate Azazel: CI/CD Secret Theft, LEAKNED Extortion and MCP Command Execution
 23.236.169.183
 162.220.163.26

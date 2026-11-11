@@ -1,0 +1,120 @@
+// Threat: Trigram: DPRK Dropper Chain Targeting AI, Blockchain and Logistics (Kimsuky / UNK_DeadDrop)
+// Author: Daniel Jeremiah | Date: 2026-11-11
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Trigram-DPRK-Dropper-Kimsuky-UNK-DeadDrop
+let Lookback = 30d;
+let IPs = dynamic(["170.205.31.182", "216.198.79.1", "198.54.127.82", "170.205.29.83", "185.147.159.187", "146.19.215.187", "170.205.30.27", "193.160.32.10", "193.160.32.188", "65.110.40.18", "170.205.28.251", "193.160.32.243", "208.84.100.64", "23.137.104.77"]);
+let Domains = dynamic(["geoveral.space", "lumenorbit.space", "terraverro.space", "albedorb.space", "veriearth.space", "swathely.space", "nadirva.space", "groundvy.space", "bullishtalents.xyz", "ambercouncil.xyz", "boytalents.xyz", "joinnillion.xyz", "seihires.xyz", "inv2scroller.xyz", "availcouncil.xyz", "rdcouncil.xyz", "oslcouncil.xyz", "eignecloudhires.xyz", "movementhires.xyz", "inv2taiko.xyz", "joinearnest.xyz", "lineahires.xyz", "jointuring.xyz", "pixelground.space", "celestiatalents.xyz", "mercortalents.xyz", "joinsaga.xyz", "buildwithaztec.xyz", "joinfuel.xyz", "hyperlanecouncil.xyz", "kaicouncil.xyz", "metiscouncil.xyz", "mantle2council.xyz", "buildwithalephzero.xyz", "joinocho.xyz", "inv2surge.xyz", "minatalents.xyz", "joinaxelar.xyz", "initiatalents.xyz", "bit2talents.xyz", "workwithbera.xyz", "dymensionhires.xyz", "animocacouncil.xyz", "joinwebflow.xyz", "ritualhires.xyz", "pantherbuilders.xyz", "soniccouncil.xyz", "inv2apexef.xyz", "inv2motus.xyz", "joinsuccinct.xyz", "jointheladders.xyz", "joindill.xyz", "espresssotalents.xyz", "inv2sonic.xyz", "joinkaia.xyz", "inv2animoca.xyz", "inv2amber.xyz", "inv2avail.xyz", "eigencouncil.xyz", "buildwithritual.xyz", "buildwithrd.xyz", "buildwithdymension.xyz", "movementcouncil.xyz", "workwithsei.xyz", "workwithlinea.xyz", "seicareers.site", "workwithapex.xyz", "dymensioncareers.xyz", "buildwithespresso.online", "berahires.online", "axelarbuilders.ink", "buildwithnillion.site", "inv2boyaa.site", "dymensioncouncil.site", "apexbuilders.site", "joinmotus.site", "oslhires.ink", "movementgigs.site", "surgebuilders.ink", "workwitheigen.xyz", "inv2bullish.xyz", "scrolltalents.online", "sonichires.site", "buildwithmina.ink", "verifearth.space", "albedorb.world", "pixelground.xyz", "terraverro.info", "nadirva.info", "geoveral.ink", "groundvy.xyz", "lineagigs.site", "joinmantle.ink", "inv2celestia.online", "buildwithmercor.site", "inv2initia.ink", "fuelcouncil.ink", "joinmetis.site", "mantlehires.xyz", "lineacareers.xyz", "ritualtalents.xyz", "icagllmbt.space", "whaleradar.ink", "d2stradeapp.ink", "ievade.net", "waybilltrack.xyz", "freightviewer.ink", "tracedhl.xyz", "shipdhl.xyz", "loadtrace.delivery", "freightracker.ink", "shiptrace.delivery", "transitwatch.ink", "loadwatchdhl.xyz", "shiptransit.ink", "loadwatcherdpd.ink", "loadtracedpd.xyz", "loadshipdpd.ink", "loadwadpd.xyz", "loadwatchdpd.ink", "tracedpd.xyz", "tracearamex.ink", "trackaramex.xyz", "parcelaramex.ink", "loadshiparamex.ink", "loadwatcharamex.xyz", "shiparamex.xyz", "parcelaramex.xyz", "scrollbuilders.xyz", "kaiatalents.xyz", "inv2metis.xyz", "alephzerotalents.xyz", "buildwithlinea.xyz", "osltalents.xyz", "inv2eigen.xyz", "sagabuilders.xyz", "dymensiontalents.xyz", "sonictalent.xyz", "joinhyperlane.xyz", "sagatalents.xyz", "seitalents.xyz", "taikotalent.xyz", "buildwithsei.xyz", "alephzerobuilders.xyz", "jointoamber.xyz", "inv2dymension.xyz", "ambertalents.xyz", "animocabuilders.xyz", "lineatalent.xyz", "joinanimoca.xyz", "jointoavail.xyz", "buildiwitheigen.xyz", "buildwithtaiko.xyz", "inv2mantle.xyz", "inv2nillion.xyz", "nillionbuilders.xyz", "turingbuilders.xyz", "buildwithboyaa.xyz", "succinctbuilders.xyz", "seibuilders.xyz", "inv2saga.xyz", "joineigencloud.xyz", "aztectalents.xyz", "joinaztec.xyz", "aztecbuilders.xyz", "inv2bera.xyz", "beratalents.xyz", "movementtalents.xyz", "axelartalents.xyz", "ritualbuilders.xyz", "rdtalents.xyz", "dymensionbuilders.xyz", "inv2osl.xyz", "buildwithfuel.xyz", "buildwithsonic.xyz", "nilliontalents.xyz", "buildwithbullish.xyz", "movementbuilders.xyz", "panthertalents.xyz", "validator.dokamacto.xyz", "online.dokamacto.xyz", "dokamacto.xyz", "dashboard.asteara.org", "dashboard.gaganata.ink", "almanac.3dscenebox.online", "dashboard.cklomino.ink", "gamsterb.ink", "api.cerysoi.ink", "api.fallgganata.ink", "gaganata.ink", "api.gaganata.ink", "fallgganata.ink", "chestsoi.ink", "api.chestsoi.ink", "asteara.org", "api.gamsterb.ink", "fallgamsterb.ink", "api.fallgamsterb.ink", "subnet.dokamacto.xyz", "dscufo.xyz", "buildwithknexus.xyz", "cklomino.ink", "cerysoi.ink"]);
+let Urls = dynamic(["https://api.gamsterb.ink/guard-launcher-result", "https://api.gamsterb.ink/guard-install-log", "https://api.fallgamsterb.ink/guard-launcher-result", "https://api.fallgamsterb.ink/guard-install-log", "https://icagllmbt.space/verify_m", "https://icagllmbt.space/verify_w", "https://api.gaganata.ink/install_guard.js", "https://api.fallgganata.ink/install_guard.js", "https://api.gaganata.ink/guard-install-log", "https://api.gaganata.ink/guard-launcher-result", "https://api.gaganata.ink/guard-install-progress", "https://api.gaganata.ink/api/verify", "https://api.gaganata.ink/refcode/unlock", "https://api.gaganata.ink/track-activity", "https://api.chestsoi.ink/install_guard.js", "wss://api.chestsoi.ink", "https://api.chestsoi.ink/data/google-update-support-linux-amd64", "https://api.chestsoi.ink/api/agent-bundle/windows-node.zip", "https://api.chestsoi.ink/api/company-wallet/upload", "https://api.chestsoi.ink/mark-complete", "https://buildwithknexus.xyz/check_m", "https://gitlab.com/drop-indexings/tasks/-/raw/main/config.json", "https://gitlab.com/up-indexings/tasks/-/raw/main/config.json"]);
+let UrlKeys = dynamic(["api.gamsterb.ink/guard-launcher-result", "api.gamsterb.ink/guard-install-log", "api.fallgamsterb.ink/guard-launcher-result", "api.fallgamsterb.ink/guard-install-log", "icagllmbt.space/verify_m", "icagllmbt.space/verify_w", "api.gaganata.ink/install_guard.js", "api.fallgganata.ink/install_guard.js", "api.gaganata.ink/guard-install-log", "api.gaganata.ink/guard-launcher-result", "api.gaganata.ink/guard-install-progress", "api.gaganata.ink/api/verify", "api.gaganata.ink/refcode/unlock", "api.gaganata.ink/track-activity", "api.chestsoi.ink/install_guard.js", "api.chestsoi.ink", "api.chestsoi.ink/data/google-update-support-linux-amd64", "api.chestsoi.ink/api/agent-bundle/windows-node.zip", "api.chestsoi.ink/api/company-wallet/upload", "api.chestsoi.ink/mark-complete", "buildwithknexus.xyz/check_m", "gitlab.com/drop-indexings/tasks/-/raw/main/config.json", "gitlab.com/up-indexings/tasks/-/raw/main/config.json"]);
+let SHA256s = dynamic(["cd20f43f985f7df7ba3ad9b08e5bdbecc20aaa4d8f60dc09e8468bdd1b249fe6", "249626244f23928c75e6c382da62278ed1d4e012a0c0f62beafefc1e4d7c5baa", "2c09fce2856bcd92b8afea424da0f9daa67bf2d22ceb625af60deaabd3d0573d", "c7c22e322c17bda8198257342d4034af6250a5c433242461b870879ba9aa285d", "465cd1a445782c72cbb30e82e57ebbae38f1535f248bf821b11bc4897d90180e", "89918bef29cd6081ea88488a0259da269bd3d633efb319e98110bf7587d88460", "2b4d770d4eb954b3e4b3a43dc3c9ee4cbcbf7b43e09f6b9d52714a79cb2e51fe", "68f76004af3c2774edc1897a02814ba185230b324ca0d3ef28414b1eb079f6f4", "f048440496c8bcee28d4f06284674e3044f77479f2ca19b9b6f6fc9e3dd6f318", "1dff0f5ccf16fc6740a3f09facc3295ee04a0e9004549223e0a316d09674fb73", "0cffa69ea2e284d3b255ba0915fe86e08f1c4d97d941c69a6336d4cfbc5e8f0b", "ffd31b1ff0914f2c989a617c125d6b3c46bd78b577466a42f97457a207fe7b65", "97af1c38ffa8fea94e4574481bda8cc6ae02d345f4443c28de385b2484ceceae", "cd6008512161a4634af3ee2c8e62ea7838165a9b46cdb0e0ea70f8d2aaa7436e", "36ad2e5dae563945c0485037fd1e8062efbdf30708e84106edf255ee669ae415", "237e60ed1c2b619085ba690e1ff613100fc03d7f9bde637029ff05892dda792e", "808e7154b7af2bc7a4b28d577297c55f77221c355191cbe00f9f1810b6d4a619"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " port ", RemotePort))),
+  (DeviceLogonEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceLogonEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", LogonType, " ", AccountName))),
+  (EntraIdSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSignInEvents", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (AADSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSignInEventsBeta", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (EntraIdSpnSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSpnSignInEvents", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (AADSpnSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSpnSignInEventsBeta", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(AccountDisplayName), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ActionType))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (DeviceEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType == "DnsQueryResponse" and tostring(parse_json(AdditionalFields).DnsQueryString) has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(parse_json(AdditionalFields).DnsQueryString), Context = tostring(strcat("DNS ", InitiatingProcessFileName))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (UrlKeys)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (EmailUrlInfo
+    | where Timestamp > ago(Lookback)
+    | where UrlDomain has_any (Domains) or Url has_any (UrlKeys)
+    | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = tostring(Url), Context = tostring("URL in email")),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url has_any (Domains) or Url has_any (UrlKeys)
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(ActionType, " ", FolderPath))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceImageLoadEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " loaded by ", InitiatingProcessFileName))),
+  (EmailAttachmentInfo
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "EmailAttachmentInfo", Entity = tostring(RecipientEmailAddress), Indicator = tostring(SHA256), Context = tostring(strcat(FileName, " from ", SenderFromAddress))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where (FileName in~ ("wscript.exe", "cscript.exe") and ProcessCommandLine has "nvdg_worker") or ProcessCommandLine has "install_guard.js" or ProcessCommandLine has "NVDG_HIDDEN" or (FileName in~ ("cmd.exe", "powershell.exe", "pwsh.exe", "curl.exe", "curl", "bash", "zsh", "node.exe", "node") and ProcessCommandLine has_any ("verify_w", "verify_m")) or ProcessCommandLine has_any ("GoogleUpdateSupporterNode", "drop-indexings/tasks", "up-indexings/tasks")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in~ ("cmd.exe", "powershell.exe", "pwsh.exe", "powershell_ise.exe") and (ProcessCommandLine has "Unblock-File" or ProcessCommandLine has "Zone.Identifier")
+    | project MotwTime = Timestamp, DeviceId, DeviceName, MotwCmd = ProcessCommandLine, MotwFile = FileName
+    | join kind=inner (
+        DeviceProcessEvents
+        | where Timestamp > ago(Lookback)
+        | where FileName =~ "wscript.exe" and ProcessCommandLine has "//B"
+        | project WscriptTime = Timestamp, DeviceId, WscriptCmd = ProcessCommandLine
+    ) on DeviceId
+    | where WscriptTime > MotwTime and WscriptTime <= MotwTime + 10m
+    | project Timestamp = WscriptTime, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(WscriptCmd), Context = tostring(strcat("MOTW strip then hidden wscript within 10m; motw: ", MotwFile, " ", MotwCmd, iff(WscriptCmd has "nvdg_worker", "; nvdg_worker in command line", "")))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in~ ("wscript.exe", "cscript.exe") and ProcessCommandLine has "nvdg_worker"
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(FileName, " ", FolderPath, " ", ProcessCommandLine))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName has "nvdg_worker"
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " ", FileName, " ", FolderPath))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any ("drop-indexings/tasks", "up-indexings/tasks")
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where ProcessCommandLine has "install_guard.js" or ProcessCommandLine has_any ("verify_w", "verify_m") or (FileName in~ ("node.exe", "node") and ProcessCommandLine has "install_guard")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(FileName, " ", FolderPath, " ", ProcessCommandLine))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in~ ("install_guard.js", "install_guard_alt.js", "verify_w", "verify_w.cmd", "verify_m")
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " ", FileName, " ", FolderPath))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any ("install_guard.js", "/verify_w", "/verify_m", "guard-launcher-result", "guard-install-log")
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where ProcessCommandLine has_any ("GoogleUpdateSupporterNode", "com.google.UpdateSupporter", "google-agent.service", "google-update-support", "run-update-agent.vbs")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(FileName, " ", FolderPath, " ", ProcessCommandLine)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc
