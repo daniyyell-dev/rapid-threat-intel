@@ -745,6 +745,22 @@
   window.addEventListener("focus", visitsStart);
   if (!document.hidden) visitsStart(); else visitsTick();
 
+  // When the scheduled run last checked its sources (status.json), shown even when nothing new was added.
+  var UK_TIME = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+  var UK_DAY = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", day: "numeric", month: "short" });
+  function loadChecked() {
+    getJSON("status.json?t=" + Date.now()).then(function (st) {
+      var d = new Date(st && st.last_checked), el = $("pulse-ck");
+      if (!el || isNaN(d)) return;
+      var today = UK_DAY.format(d) === UK_DAY.format(new Date());
+      add(clear(el), ["Checked ", today ? "" : UK_DAY.format(d) + " ", UK_TIME.format(d) + " UK"]);
+      el.title = "Sources last checked " + UK_DAY.format(d) + " " + UK_TIME.format(d) + " UK time";
+      el.hidden = false;
+    }, function () {});
+  }
+  loadChecked();
+  setInterval(function () { if (!document.hidden) loadChecked(); }, 120000);
+
   fetch("feed.json", { cache: "no-cache" })
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(init)
