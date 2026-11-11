@@ -20,12 +20,6 @@ This repository closes that gap for the threats that matter most: attacks on ban
 > [!IMPORTANT]
 > This repository is updated every 2 hours, and only high-impact threat intelligence makes it in: if a threat is not exploitable or would not put a business at risk, it is left out.
 
-## Quick start
-
-1. **Block now.** Point your firewall, proxy or EDR at a [raw feed URL](#raw-feeds), or import [`defender_xdr_indicators.csv`](all/defender_xdr_indicators.csv) into Defender ([how](docs/defender-xdr.md#import-indicators)).
-2. **Hunt in Defender.** Paste [`live_feed_hunt.kql`](all/live_feed_hunt.kql) into Advanced hunting. It loads the latest indicators itself, so there is nothing to copy in ([guide](docs/defender-xdr.md#hunt-with-the-live-feed)).
-3. **Detect in Google SecOps.** Load the feeds into data tables and match them with YARA-L rules ([guide](docs/google-secops.md)).
-
 ## Why this exists
 
 Working in a high-intensity threat environment every day, there is rarely time to browse a dozen threat intel sites and dig through each report for the IOCs, artefacts and behavioural context that threat hunters and incident responders actually need to act on.
@@ -47,6 +41,12 @@ The result is one place where SOC analysts, threat hunters and incident responde
   <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.png">
   <img src="assets/how-it-works-light.png" alt="How it works: collect, filter for high impact and actionable, verify, clean and deduplicate, describe and map to MITRE, build files, quality checks, publish every 2 hours, expire after 90 days" width="100%">
 </picture>
+
+## Quick start
+
+1. **Block now.** Point your firewall, proxy or EDR at a [raw feed URL](#raw-feeds), or import [`defender_xdr_indicators.csv`](all/defender_xdr_indicators.csv) into Defender ([how](docs/defender-xdr.md#import-indicators)).
+2. **Hunt in Defender.** Paste [`live_feed_hunt.kql`](all/live_feed_hunt.kql) into Advanced hunting. It loads the latest indicators itself, so there is nothing to copy in ([guide](docs/defender-xdr.md#hunt-with-the-live-feed)).
+3. **Detect in Google SecOps.** Load the feeds into data tables and match them with YARA-L rules ([guide](docs/google-secops.md)).
 
 ## Latest threats
 
@@ -78,30 +78,6 @@ Grouped by the month and day they were added, newest first. The date column is w
 
 To block everything at once, use [`all/`](all/): 254 high-confidence block indicators across all threats.
 
-## Repository structure
-
-```text
-rapid-threat-intel/
-├── threats/
-│   └── <YYYY-MM>_<Month-YYYY>/               one folder per month of entry, e.g. 2026-11_November-2026
-│       ├── README.md                         that month's days and threats
-│       └── <YYYY-MM-DD>/                     one folder per day of entry
-│           ├── README.md                     that day's threats
-│           └── <Threat-Name>/
-│               ├── README.md                 summary, MITRE, actions, sources
-│               ├── block_now.txt             high-confidence indicators to block
-│               ├── iocs.csv                  every indicator with description and source
-│               ├── defender_xdr_indicators.csv   Defender XDR bulk import
-│               └── hunt.kql                  Defender XDR advanced hunting query
-├── all/                                      every threat combined
-│   ├── block_now.txt
-│   ├── block_now_<type>.txt                  one clean list per type for firewalls
-│   ├── iocs.csv
-│   ├── defender_xdr_indicators.csv
-│   └── live_feed_hunt.kql                    Defender hunt that loads the live feeds
-└── docs/                                     how-to guides
-```
-
 ## How to use
 
 | Tool | Guide |
@@ -127,6 +103,30 @@ Stable links that always serve the latest data. Use them as external dynamic lis
 
 > [!WARNING]
 > Hunt before you block, and test file-hash blocks on one host first where a threat abuses legitimate file names. Defender IP indicators only cover outbound connections from endpoints, so block inbound attacker IPs at the firewall.
+
+## Repository structure
+
+```text
+rapid-threat-intel/
+├── threats/
+│   └── <YYYY-MM>_<Month-YYYY>/               one folder per month of entry, e.g. 2026-11_November-2026
+│       ├── README.md                         that month's days and threats
+│       └── <YYYY-MM-DD>/                     one folder per day of entry
+│           ├── README.md                     that day's threats
+│           └── <Threat-Name>/
+│               ├── README.md                 summary, MITRE, actions, sources
+│               ├── block_now.txt             high-confidence indicators to block
+│               ├── iocs.csv                  every indicator with description and source
+│               ├── defender_xdr_indicators.csv   Defender XDR bulk import
+│               └── hunt.kql                  Defender XDR advanced hunting query
+├── all/                                      every threat combined
+│   ├── block_now.txt
+│   ├── block_now_<type>.txt                  one clean list per type for firewalls
+│   ├── iocs.csv
+│   ├── defender_xdr_indicators.csv
+│   └── live_feed_hunt.kql                    Defender hunt that loads the live feeds
+└── docs/                                     how-to guides
+```
 
 ## Confidence and actions
 
@@ -158,6 +158,10 @@ Stable links that always serve the latest data. Use them as external dynamic lis
 
 Full reference, including the Defender file and expiry: [docs/data-format.md](docs/data-format.md).
 
+## Contributing
+
+New indicators, corrections, false-positive reports and better detections are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), then open an [issue](https://github.com/daniyyell-dev/rapid-threat-intel/issues/new/choose) or a pull request. To report a security problem privately, see [SECURITY.md](SECURITY.md).
+
 ## Acknowledgements
 
 Thanks to the organisations whose published research these indicators come from. Inclusion does not imply endorsement.
@@ -169,10 +173,6 @@ Thanks to the organisations whose published research these indicators come from.
 | **Security news** | [BleepingComputer](https://www.bleepingcomputer.com/) · [The Hacker News](https://thehackernews.com/) · [The Stack](https://www.thestack.technology/) |
 | **Also monitored** | [Mandiant / Google Threat Intelligence](https://cloud.google.com/security/mandiant) · [Unit 42](https://unit42.paloaltonetworks.com/) · [Cisco Talos](https://blog.talosintelligence.com/) · [Kaspersky Securelist](https://securelist.com/) · [SentinelLabs](https://www.sentinelone.com/labs/) · [Proofpoint](https://www.proofpoint.com/us/blog/threat-insight) · [Recorded Future](https://www.recordedfuture.com/research) · [Trend Micro](https://www.trendmicro.com/en_us/research.html) · [Sophos X-Ops](https://www.sophos.com/) · [CrowdStrike](https://www.crowdstrike.com/en-us/blog/) · [Volexity](https://www.volexity.com/blog/) · [Elastic Security Labs](https://www.elastic.co/security-labs) · [Rapid7](https://www.rapid7.com/blog/) · [Arctic Wolf](https://arcticwolf.com/resources/blog/) · [The DFIR Report](https://thedfirreport.com/) · [Wiz](https://www.wiz.io/blog) · [Aikido](https://www.aikido.dev/blog) · [StepSecurity](https://www.stepsecurity.io/blog) · [CrowdSec](https://www.crowdsec.net/) · [watchTowr](https://labs.watchtowr.com/) · [VulnCheck](https://www.vulncheck.com/kev) · [Bitdefender](https://www.bitdefender.com/) · [Zscaler ThreatLabz](https://www.zscaler.com/blogs/security-research) · [Datadog Security Labs](https://securitylabs.datadoghq.com/) · [JPCERT/CC](https://blogs.jpcert.or.jp/en/) · [FortiGuard Labs](https://www.fortinet.com/blog/threat-research) · [Group-IB](https://www.group-ib.com/blog/) · [Symantec](https://www.security.com/threat-intelligence) · [abuse.ch](https://abuse.ch/) · [Censys](https://censys.com/blog/) · [CISA](https://www.cisa.gov/) · [NCSC UK](https://www.ncsc.gov.uk/) · [CERT-EU](https://cert.europa.eu/) · [CERT-FR](https://www.cert.ssi.gouv.fr/) · [ENISA](https://www.enisa.europa.eu/) · [FBI IC3](https://www.ic3.gov/) · [ACSC](https://www.cyber.gov.au/) · [FS-ISAC](https://www.fsisac.com/) · [The Record](https://therecord.media/) · [SecurityWeek](https://www.securityweek.com/) |
 
-## Contributing
-
-New indicators, corrections, false-positive reports and better detections are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), then open an [issue](https://github.com/daniyyell-dev/rapid-threat-intel/issues/new/choose) or a pull request. To report a security problem privately, see [SECURITY.md](SECURITY.md).
-
 ## Disclaimer
 
 > [!NOTE]
@@ -181,3 +181,7 @@ New indicators, corrections, false-positive reports and better detections are we
 ## Licence
 
 Released under the [MIT Licence](LICENSE).
+
+## Limitations
+
+This is not a full threat feed. We leave out routine threat intel and noise, and only publish confirmed attacks that are actively happening and have high impact. We also watch dark-web leak posts, social media and security websites for early warning. A threat only goes in once a reputable vendor, researcher or government source publishes indicators for it. Unverified claims are never published. Because we focus on the threats that matter, some activity will be missing on purpose. If you think we've missed something important, please [open an issue](https://github.com/daniyyell-dev/rapid-threat-intel/issues/new/choose) or contribute through the [contributing guide](CONTRIBUTING.md).
