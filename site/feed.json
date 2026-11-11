@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-11 10:05",
- "threat_count": 14,
- "indicator_count": 485,
- "block_now_count": 260,
+ "last_updated": "2026-11-11 10:21",
+ "threat_count": 15,
+ "indicator_count": 495,
+ "block_now_count": 263,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -74,6 +74,235 @@
   }
  ],
  "threats": [
+  {
+   "id": "Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft",
+   "folder": "threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft",
+   "name": "Gentlemen Ransomware Affiliate Azazel: CI/CD Secret Theft, LEAKNED Extortion and MCP Command Execution",
+   "short": "Gentlemen affiliate Azazel (LEAKNED)",
+   "category": "Ransomware / data theft and extortion",
+   "published": "2026-10-05",
+   "entry_date": "2026-11-11 10:21",
+   "last_updated": "2026-11-11",
+   "seq": 15,
+   "headline": "Gentlemen ransomware affiliate stealing CI/CD secrets and leaking victims on its own LEAKNED site",
+   "summary": "CloudSEK traced an exposed open directory and storage server to Azazel, a Russian-speaking affiliate of The Gentlemen ransomware-as-a-service operation, and confirmed more than two dozen breached organisations in six countries across logistics, insurance, pharmaceuticals, medical devices, AI and government-linked services. Azazel used The Gentlemen's tooling and ransom note template but published victims on his own leak site, LEAKNED, and kept the proceeds; Bitdefender's November 2026 debrief reports more than 6 TB of stolen data. Most victims were reached through secrets harvested from GitLab CI/CD variables and repository history (database passwords, API tokens and SSH keys), and one AI platform was entered through a server-side URL fetch (SSRF). Data left through aws s3 sync, mc mirror, scp, pg_dump and HTTP POST to port 9999 on the C2 server, then moved to MEGA. After exfiltration Azazel killed a production PostgreSQL process and deleted its data directory, and planted ransom notes on eight surfaces, including /etc/motd, the SSH banner and ATTENTION_SENSITIVE_INFORMATION.txt in the root and ubuntu home directories. He also ran commands through exec_in_session, a Model Context Protocol (MCP) tool served on 127.0.0.1:35367, and scanned the internet for exposed MCP servers.",
+   "caveat": null,
+   "targets": {
+    "countries": [],
+    "regions": [],
+    "sectors": [
+     "Logistics",
+     "Insurance",
+     "Pharmaceuticals",
+     "Medical devices",
+     "Technology",
+     "Government"
+    ],
+    "note": "CloudSEK confirmed more than two dozen breached organisations in six countries but does not name the countries. Sectors are those CloudSEK lists; the government entry is a platform hosting a government-linked financial registry.",
+    "source": {
+     "url": "https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files",
+     "label": "CloudSEK – Caught in 4K: The Gentlemen Files",
+     "name": "CloudSEK"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1552.001",
+     "name": "Credentials In Files",
+     "url": "https://attack.mitre.org/techniques/T1552/001/"
+    },
+    {
+     "id": "T1213.003",
+     "name": "Code Repositories",
+     "url": "https://attack.mitre.org/techniques/T1213/003/"
+    },
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1021.004",
+     "name": "SSH",
+     "url": "https://attack.mitre.org/techniques/T1021/004/"
+    },
+    {
+     "id": "T1059.004",
+     "name": "Unix Shell",
+     "url": "https://attack.mitre.org/techniques/T1059/004/"
+    },
+    {
+     "id": "T1110.002",
+     "name": "Password Cracking",
+     "url": "https://attack.mitre.org/techniques/T1110/002/"
+    },
+    {
+     "id": "T1567.002",
+     "name": "Exfiltration to Cloud Storage",
+     "url": "https://attack.mitre.org/techniques/T1567/002/"
+    },
+    {
+     "id": "T1485",
+     "name": "Data Destruction",
+     "url": "https://attack.mitre.org/techniques/T1485/"
+    },
+    {
+     "id": "T1491.001",
+     "name": "Internal Defacement",
+     "url": "https://attack.mitre.org/techniques/T1491/001/"
+    }
+   ],
+   "recommended_actions": [
+    "Block 23.236.169.183, 162.220.163.26 and 66.179.30.155 at the perimeter and in Defender XDR, and search 90 days of firewall, NetFlow and GitLab access logs for them, including SSH and outbound HTTP to port 9999.",
+    "Rotate every secret held in GitLab CI/CD variables and in repository history (database passwords, API tokens, SSH keys and cloud keys), make variables masked and protected, and review CI/CD variable reads and API token use from unexpected addresses.",
+    "Search Linux servers for ATTENTION_SENSITIVE_INFORMATION.txt in the root and ubuntu home directories, and for changes to /etc/motd, the sshd_config Banner setting, the PostgreSQL cluster_name and the pgAdmin login template; also check GitLab for README edits or issues opened with a pipeline token.",
+    "Alert on mc mirror, aws s3 sync, pg_dump or mega-cmd-server runs to destinations you do not own, keep any MCP server bound to loopback with an approved client allowlist, and alert on MCP clients named internet-census-mcp-scanner."
+   ],
+   "sources": [
+    {
+     "url": "https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files",
+     "label": "CloudSEK – Caught in 4K: The Gentlemen Files",
+     "name": "CloudSEK"
+    },
+    {
+     "url": "https://www.bitdefender.com/en-us/blog/businessinsights/bitdefender-threat-debrief-november-2026",
+     "label": "Bitdefender – Threat Debrief November 2026",
+     "name": "Bitdefender"
+    }
+   ],
+   "indicator_count": 9,
+   "block_now_count": 3,
+   "hunt_count": 6,
+   "hunt_counts": {
+    "alert": 5,
+    "monitor": 1
+   },
+   "indicator_counts": {
+    "ipv4": 5,
+    "other": 2,
+    "domain": 1,
+    "filename": 1
+   },
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/block_now.txt",
+     "download": "Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/defender_xdr_indicators.csv",
+     "download": "Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/hunt.kql",
+     "download": "Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft_hunt.kql"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/iocs.csv",
+     "download": "Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft",
+   "indicators": [
+    {
+     "value": "23.236.169.183",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Azazel's victim-facing command-and-control server: Penelope reverse shell sessions, an HTTP upload listener on port 9999 receiving stolen data, and the open directory on port 8000 that exposed the operation.",
+     "source_url": "https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files",
+     "source_label": "CloudSEK – Caught in 4K: The Gentlemen Files",
+     "source_name": "CloudSEK"
+    },
+    {
+     "value": "162.220.163.26",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Azazel's staging server, nicknamed forgitlab, which held operational scripts, per-victim working directories and live exfiltration jobs, including a continuous mirror of one victim's object storage.",
+     "source_url": "https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files",
+     "source_label": "CloudSEK – Caught in 4K: The Gentlemen Files",
+     "source_name": "CloudSEK"
+    },
+    {
+     "value": "66.179.30.155",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Azazel's novostnik server, which hosts the LEAKNED leak site front end and a long-term archive of stolen data.",
+     "source_url": "https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files",
+     "source_label": "CloudSEK – Caught in 4K: The Gentlemen Files",
+     "source_name": "CloudSEK"
+    },
+    {
+     "value": "141.95.252.30",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Address that CloudSEK lists as a beacon check-in for Azazel's operation. It also serves a public website on a general hosting provider, so alert on it rather than block.",
+     "source_url": "https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files",
+     "source_label": "CloudSEK – Caught in 4K: The Gentlemen Files",
+     "source_name": "CloudSEK"
+    },
+    {
+     "value": "66.203.124.135",
+     "type": "ipv4",
+     "confidence": "low",
+     "recommended_action": "alert",
+     "description": "MEGA API server that Azazel used as the final destination for stolen data through mega-cmd-server. It is legitimate MEGA infrastructure, so do not block it unless your organisation bans MEGA; alert on uploads from servers.",
+     "source_url": "https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files",
+     "source_label": "CloudSEK – Caught in 4K: The Gentlemen Files",
+     "source_name": "CloudSEK"
+    },
+    {
+     "value": "forgitlab.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Domain name Azazel used for his staging server, chosen to look like GitLab infrastructure. It does not resolve today, so treat any hit as historical or as a sign it has been re-registered.",
+     "source_url": "https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files",
+     "source_label": "CloudSEK – Caught in 4K: The Gentlemen Files",
+     "source_name": "CloudSEK"
+    },
+    {
+     "value": "ATTENTION_SENSITIVE_INFORMATION.txt",
+     "type": "filename",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Ransom note Azazel planted in the root and ubuntu home directories on compromised Linux servers, alongside notes in /etc/motd, the SSH banner, the PostgreSQL cluster_name and the pgAdmin login page.",
+     "source_url": "https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files",
+     "source_label": "CloudSEK – Caught in 4K: The Gentlemen Files",
+     "source_name": "CloudSEK"
+    },
+    {
+     "value": "internet-census-mcp-scanner",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Client fingerprint Azazel's scanner used when probing the internet for exposed MCP servers. Search MCP server and reverse-proxy logs for it.",
+     "source_url": "https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files",
+     "source_label": "CloudSEK – Caught in 4K: The Gentlemen Files",
+     "source_name": "CloudSEK"
+    },
+    {
+     "value": "hermes",
+     "type": "other",
+     "confidence": "low",
+     "recommended_action": "monitor",
+     "description": "MCP client identity Azazel used to call his exec_in_session command tool. The name is also used by legitimate software, so treat a hit only as a lead.",
+     "source_url": "https://www.cloudsek.com/blog/caught-in-4k-the-gentlemen-files",
+     "source_label": "CloudSEK – Caught in 4K: The Gentlemen Files",
+     "source_name": "CloudSEK"
+    }
+   ]
+  },
   {
    "id": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover",
    "folder": "threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover",
@@ -5337,7 +5566,7 @@
    "last_updated": "2026-11-10",
    "seq": 4,
    "headline": "New ransomware and extortion group claiming Vanderbilt University",
-   "summary": "BYOD is a ransomware and extortion group that launched in 2026 and runs a Tor data leak site, where ransomware.live counted 17 listed victims on 10 November 2026. On 9 November 2026 it claimed an attack on Vanderbilt University, alleging encrypted databases and theft of student, employee and research data including over a million Social Security numbers. The ransom note README_BYOD_31.txt points to the leak site and a Session messenger ID for negotiation. Vanderbilt confirmed an active cybersecurity incident but has not confirmed the group's involvement or whether devices were encrypted.",
+   "summary": "BYOD is a ransomware and extortion group that launched in 2026 and runs a Tor data leak site, where ransomware.live counted 17 listed victims on 10 November 2026. On 9 November 2026 it claimed an attack on Vanderbilt University, alleging encrypted databases and theft of student, employee and research data including over a million Social Security numbers. The ransom note README_BYOD_31.txt points to the leak site and a Session messenger ID for negotiation. Vanderbilt confirmed an active cybersecurity incident but has not confirmed the group's involvement. Staff told the Nashville Banner that a “system update” notice and a message about deleting old files appeared before the ransom warning, after which their files carried a .byod extension, and that Box sent notices of file deletions by administrators who had not touched the files.",
    "caveat": null,
    "targets": {
     "countries": [
@@ -5392,6 +5621,8 @@
    "recommended_actions": [
     "Hunt endpoints and file shares for README_BYOD_*.txt ransom notes.",
     "Alert on mail to or from byod@onionmail.org and on any proxy or tor2web access to the leak site.",
+    "Alert on bursts of file renames to the .byod extension on endpoints and file shares, and on mass deletions or changes in OneDrive, Box or Dropbox by one account.",
+    "The encryptor reached Vanderbilt machines looking like a system update, so review recent Group Policy, scheduled task and software deployment changes made from domain controllers or management servers.",
     "No network IOCs for the intrusion itself have been published yet; focus on general ransomware hardening and backup checks."
    ],
    "sources": [
@@ -5404,18 +5635,24 @@
      "url": "https://www.ransomware.live/group/BYOD",
      "label": "ransomware.live – BYOD group profile",
      "name": "ransomware.live"
+    },
+    {
+     "url": "https://nashvillebanner.com/2026/11/09/vanderbilt-university-cyberattack-byod/",
+     "label": "Nashville Banner – Cybersecurity breach impacts Vanderbilt University",
+     "name": "Nashville Banner"
     }
    ],
-   "indicator_count": 4,
+   "indicator_count": 5,
    "block_now_count": 1,
-   "hunt_count": 3,
+   "hunt_count": 4,
    "hunt_counts": {
-    "alert": 3
+    "alert": 4
    },
    "indicator_counts": {
     "domain": 1,
     "email": 1,
     "filename": 1,
+    "other": 1,
     "session_id": 1
    },
    "files": [
@@ -5485,6 +5722,16 @@
      "source_url": "https://www.ransomware.live/group/BYOD",
      "source_label": "ransomware.live – BYOD group profile",
      "source_name": "ransomware.live"
+    },
+    {
+     "value": ".byod",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "File extension BYOD ransomware gave to encrypted files on Vanderbilt computers. Many renames to .byod on one device in a short time mean encryption is running.",
+     "source_url": "https://nashvillebanner.com/2026/11/09/vanderbilt-university-cyberattack-byod/",
+     "source_label": "Nashville Banner – Cybersecurity breach impacts Vanderbilt University",
+     "source_name": "Nashville Banner"
     }
    ]
   },

@@ -30,3 +30,8 @@ union isfuzzy=true
 //   [filename] README_BYOD_31.txt
 //   [email] byod@onionmail.org
 //   [session_id] 05b18abb1c28e6ae8b12e2910197dba5e756c11c3a4046be50e0d356a815bc5d37
+//   [other] .byod
+
+// Behavioural hunt notes:
+//   Search DeviceFileEvents for FileName endswith ".byod" (FileRenamed or FileCreated); many on one device within minutes means encryption is running.
+//   Check OneDrive, SharePoint and Box audit logs for one account deleting or renaming hundreds of files in a short time.
