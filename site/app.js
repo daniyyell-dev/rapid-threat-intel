@@ -221,15 +221,14 @@
   function renderGeo(geo, geoName) {
     var list = clear($("geo-list")), keys = Object.keys(geo).filter(function (k) { return k.charAt(0) === "c"; })
       .sort(function (a, b) { return geo[b] - geo[a] || geoName[a].localeCompare(geoName[b]); });
-    var max = keys.length ? geo[keys[0]] : 1, top = keys.slice(0, 8);
-    top.forEach(function (k) {
+    var max = keys.length ? geo[keys[0]] : 1;
+    keys.forEach(function (k) {
       var bar = h("i", { "aria-hidden": "true" });
       bar.style.width = Math.max(8, Math.round(geo[k] / max * 100)) + "%";
       list.appendChild(h("li", null, h("button", { type: "button", class: "geo-btn", "data-k": k, "aria-pressed": "false", onclick: function () { pickGeo(k); } },
         h("span", { class: "geo-c", text: k.slice(2) }), h("span", { class: "geo-n", text: geoName[k].replace(/ \([A-Z]{2}\)$/, "") }),
         h("span", { class: "geo-v", text: String(geo[k]) }), h("span", { class: "geo-bar" }, bar))));
     });
-    if (keys.length > top.length) list.appendChild(h("li", { class: "geo-more", text: "+" + (keys.length - top.length) + " more in the Country filter" }));
     var rg = clear($("geo-regions")), regs = Object.keys(geo).filter(function (k) { return k.charAt(0) === "r"; }).sort(function (a, b) { return geo[b] - geo[a] || a.localeCompare(b); });
     if (regs.length) {
       rg.appendChild(h("span", { class: "geo-rl", text: "By region: " }));
