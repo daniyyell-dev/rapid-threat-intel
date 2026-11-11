@@ -5,13 +5,17 @@
   <img src="assets/banner-light.webp" alt="Rapid Threat Intel - Move fast with threat intel from different sources" width="70%">
 </picture>
 
+**High-impact threat intelligence and IOCs, researched and ready to deploy**
+
 [![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-12-informational)](#latest-threats) ![IOCs](https://img.shields.io/badge/IOCs-464-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--11-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
 </div>
 
 ## What is this
 
-Curated, deduplicated indicators of compromise (IOCs) for current attacks, one folder per named threat. Every indicator comes from a published vendor, researcher or government report, has a one-line description, and links back to its source. Each threat ships ready-to-use files: a block list, a Microsoft Defender XDR import file and an advanced hunting query.
+When a serious attack breaks, the indicators SOC teams need are scattered across vendor blogs, government advisories and researcher posts, often buried in PDFs, mixed with noise, and in formats no security tool can load directly. Commercial feeds fill the gap for those who can pay, but they bury the attacks that matter under thousands of low-value indicators, and free feeds rarely explain what an indicator is or where it came from.
+
+This repository closes that gap for the threats that matter most: attacks on banking, insurance and financial services, UK organisations and critical systems such as identity providers, edge devices and core enterprise software. Each threat comes with a short research summary (what happened, who is behind it, who is targeted, MITRE techniques and recommended actions), curated and deduplicated IOCs that each have a one-line description and a link to the published source, and ready-to-use files: a block list, a Microsoft Defender XDR import file and an advanced hunting query.
 
 > [!IMPORTANT]
 > This repository is updated every 2 hours, and only high-impact threat intelligence makes it in: if a threat is not exploitable or would not put a business at risk, it is left out.
