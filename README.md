@@ -187,6 +187,12 @@ Thanks to the organisations whose published research these indicators come from.
 
 Released under the [MIT Licence](LICENSE).
 
+## Sponsored by
+
+<p>
+<a href="https://prynoid.com/"><picture><source media="(prefers-color-scheme: dark)" srcset="site/img/sponsors/prynoid.webp"><img src="site/img/sponsors/prynoid-light.webp" alt="Prynoid" height="32"></picture></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://phishcore.io/"><img src="site/img/sponsors/phishcore.png" alt="PhishCore" height="28"></a>
+</p>
+
 ## Limitations
 
 This is not a full threat feed. We leave out routine threat intel and noise, and only publish confirmed attacks that are actively happening and have high impact. We also watch dark-web leak posts, social media and security websites for early warning. A threat only goes in once a reputable vendor, researcher or government source publishes indicators for it. Unverified claims are never published. Because we focus on the threats that matter, some activity will be missing on purpose. If you think we've missed something important, please [open an issue](https://github.com/daniyyell-dev/rapid-threat-intel/issues/new/choose) or contribute through the [contributing guide](CONTRIBUTING.md).
