@@ -624,46 +624,76 @@
     });
     return img;
   }
+  // Visitors: live figures on load, then every 2 minutes while the tab is visible.
+  // Sources, best first: the stats endpoint in data-live (aggregates only, the API key stays server-side),
+  // GoatCounter's public site counter (all-time only), then the stats.json snapshot. The largest all-time
+  // figure wins, and all-time is never shown below the last 24 hours.
+  var VISITS_EVERY = 120000;
+  function getJSON(url) {
+    return fetch(url, { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+  }
+  function toCount(v) {
+    var n = Math.floor(Number(String(v == null ? "" : v).replace(/[^0-9]/g, "")));
+    return v == null || v === "" || !isFinite(n) ? null : n;
+  }
+  function renderVisitors(all, day, countries) {
+    var box = $("visits");
+    if (all == null && day == null && !countries) return;
+    day = day == null ? 0 : day;
+    all = Math.max(all || 0, day);
+    $("visits-total-n").textContent = fmtVisitors(all);
+    $("visits-total").hidden = false;
+    $("visits-24h-n").textContent = fmtVisitors(day);
+    $("visits-24h").hidden = false;
+    var geo = clear($("visits-geo")), rows = [];
+    (countries || []).forEach(function (c) {
+      var n = c && toCount(c.count);
+      if (rows.length >= 5 || !c || !c.code || n == null) return;
+      rows.push({ code: String(c.code).toUpperCase(), name: countryName(String(c.code).toUpperCase(), c.name), n: n });
+    });
+    var base = Math.max(all, rows.reduce(function (t, r) { return t + r.n; }, 0)) || 1;
+    rows.forEach(function (r) {
+      var pct = Math.max(2, Math.min(100, Math.round(r.n / base * 100)));
+      var fill = h("span", { class: "visits-bar-f" });
+      fill.style.setProperty("width", pct + "%");
+      geo.appendChild(h("li", null,
+        flagImg(r.code, r.name),
+        h("span", { class: "visits-cn", text: r.name }),
+        h("span", { class: "visits-cv", text: fmtVisitors(r.n) }),
+        h("span", { class: "visits-bar", "aria-hidden": "true" }, fill)));
+    });
+    $("visits-geo-wrap").hidden = !rows.length;
+    box.hidden = false;
+  }
   function loadVisitors() {
     var box = $("visits");
     if (!box) return;
-    fetch("stats.json", { cache: "no-cache" })
-      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(function (d) {
-        if (!d) return;
-        var day = Math.max(0, Math.floor(Number(d.last24h)) || 0);
-        var all = Math.max(Math.floor(Number(d.total)) || 0, day);
-        var shown = false;
-        if (d.total != null || d.last24h != null) {
-          $("visits-total-n").textContent = fmtVisitors(all);
-          $("visits-total").hidden = false;
-          $("visits-24h-n").textContent = fmtVisitors(day);
-          $("visits-24h").hidden = false;
-          shown = true;
-        }
-        var geo = clear($("visits-geo")), rows = [];
-        (d.top_countries || []).forEach(function (c) {
-          var n = c && Math.floor(Number(c.count));
-          if (rows.length >= 5 || !c || !c.code || !isFinite(n) || n < 0) return;
-          rows.push({ code: String(c.code).toUpperCase(), name: countryName(String(c.code).toUpperCase(), c.name), n: n });
-        });
-        var base = Math.max(all, rows.reduce(function (t, r) { return t + r.n; }, 0)) || 1;
-        rows.forEach(function (r) {
-          var pct = Math.max(2, Math.min(100, Math.round(r.n / base * 100)));
-          var fill = h("span", { class: "visits-bar-f" });
-          fill.style.setProperty("width", pct + "%");
-          geo.appendChild(h("li", null,
-            flagImg(r.code, r.name),
-            h("span", { class: "visits-cn", text: r.name }),
-            h("span", { class: "visits-cv", text: fmtVisitors(r.n) }),
-            h("span", { class: "visits-bar", "aria-hidden": "true" }, fill)));
-        });
-        if (rows.length) { $("visits-geo-wrap").hidden = false; shown = true; }
-        if (shown) box.hidden = false;
-      })
-      .catch(function () {});
+    var live = box.getAttribute("data-live") || "";
+    var settle = function (p) { return p.then(function (v) { return v; }, function () { return null; }); };
+    Promise.all([
+      live ? settle(getJSON(live)) : Promise.resolve(null),
+      settle(getJSON("https://daniyyell.goatcounter.com/counter/TOTAL.json?start=2019-01-01")),
+      settle(getJSON("stats.json?t=" + Date.now()))
+    ]).then(function (res) {
+      var lv = res[0] || {}, pc = res[1] || {}, snap = res[2] || {};
+      var totals = [toCount(lv.total), toCount(pc.count), toCount(snap.total)].filter(function (n) { return n != null; });
+      var day = toCount(lv.last24h);
+      if (day == null) day = toCount(snap.last24h);
+      var countries = (lv.top_countries && lv.top_countries.length) ? lv.top_countries : snap.top_countries;
+      renderVisitors(totals.length ? Math.max.apply(null, totals) : null, day, countries);
+    });
   }
-  loadVisitors();
+  var visitsTimer = null, visitsLast = 0;
+  function visitsTick() { visitsLast = Date.now(); loadVisitors(); }
+  function visitsStart() {
+    if (visitsTimer) return;
+    if (Date.now() - visitsLast >= VISITS_EVERY) visitsTick();
+    visitsTimer = setInterval(visitsTick, VISITS_EVERY);
+  }
+  function visitsStop() { if (visitsTimer) { clearInterval(visitsTimer); visitsTimer = null; } }
+  document.addEventListener("visibilitychange", function () { if (document.hidden) visitsStop(); else visitsStart(); });
+  window.addEventListener("focus", visitsStart);
+  if (!document.hidden) visitsStart(); else visitsTick();
 
   fetch("feed.json", { cache: "no-cache" })
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
