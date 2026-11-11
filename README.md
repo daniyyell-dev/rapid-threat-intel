@@ -45,7 +45,7 @@ The result is one place where SOC analysts, threat hunters and incident responde
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.png">
-  <img src="assets/how-it-works-light.png" alt="How it works: collect, filter for high impact and actionable, verify, clean and deduplicate, describe and map to MITRE, build files, quality checks, publish every 2 hours, expire after 90 days" width="100%">
+  <img src="assets/how-it-works-light.png" alt="How it works: collect from vendor reports, CERT advisories, IOC repos, Telegram, dark-web trackers and social media, filter for high impact and actionable, verify and cross-check sources, clean and deduplicate, describe and map to MITRE, build block lists, Defender import, hunt.kql, SPL and YARA-L, quality checks, publish every 2 hours, expire after 90 days" width="100%">
 </picture>
 
 ## Quick start
@@ -213,4 +213,4 @@ Released under the [MIT Licence](LICENSE).
 
 ## Limitations
 
-This is not a full threat feed. We leave out routine threat intel and noise, and only publish confirmed attacks that are actively happening and have high impact. We also watch dark-web leak posts, social media and security websites for early warning. A threat only goes in once a reputable vendor, researcher or government source publishes indicators for it. Unverified claims are never published. Because we focus on the threats that matter, some activity will be missing on purpose. If you think we've missed something important, please [open an issue](https://github.com/daniyyell-dev/rapid-threat-intel/issues/new/choose) or contribute through the [contributing guide](CONTRIBUTING.md).
+This is not a full threat feed. We leave out routine threat intel and noise, and only publish confirmed attacks that are actively happening and have high impact. We also watch Telegram channels, dark-web leak posts, social media and security websites for early warning. A threat only goes in once a reputable vendor, researcher or government source publishes indicators for it. Unverified claims are never published. Because we focus on the threats that matter, some activity will be missing on purpose. If you think we've missed something important, please [open an issue](https://github.com/daniyyell-dev/rapid-threat-intel/issues/new/choose) or contribute through the [contributing guide](CONTRIBUTING.md).
