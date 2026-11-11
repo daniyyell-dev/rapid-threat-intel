@@ -48,6 +48,13 @@
     var g = tg(t);
     return g.countries.map(function (c) { return "c:" + c.code; }).concat(g.regions.map(function (r) { return "r:" + r; }));
   }
+  function srcName(s) { return s.name || s.label || s.url; }
+  function srcLine(list, cls, lead) {
+    if (!list || !list.length) return null;
+    var out = [];
+    list.forEach(function (s, i) { if (i) out.push(h("span", { class: "sep", "aria-hidden": "true", text: " \u00b7 " })); out.push(extLink(s.url, srcName(s))); });
+    return h("p", { class: cls || "srcline" }, h("span", { class: "sl", text: lead || (list.length === 1 ? "Source " : "Sources ") }), out);
+  }
   function countryTag(c) { return h("span", { class: "ctry", title: c.name }, h("b", { text: c.code }), " " + c.name); }
   function typesOf(t) {
     return Object.keys(t.indicator_counts).sort(function (a, b) { return t.indicator_counts[b] - t.indicator_counts[a] || a.localeCompare(b); });
@@ -239,15 +246,16 @@
       comp.appendChild(seg);
     });
     var shown = types.slice(0, 4), more = types.length - shown.length;
-    return h("li", { class: "row" }, h("a", { href: "#threat/" + encodeURIComponent(t.id) },
+    return h("li", { class: "row" }, h("div", { class: "row-in" },
       h("div", { class: "when" }, h("b", { text: fmtDay(t.entry_date) }), timeOf(t.entry_date) ? timeOf(t.entry_date) + " UK" : null,
         t.entry_date.split(" ")[0] === newest ? h("span", { class: "new" }, "New today") : null),
       h("div", { class: "r-main" },
         h("div", { class: "r-cat", text: t.category }),
-        h("h3", { text: t.name }),
-        h("p", { text: t.headline }),
+        h("h3", null, h("a", { class: "r-link", href: "#threat/" + encodeURIComponent(t.id), text: t.name })),
+        h("p", { class: "r-sum", text: t.headline }),
         targetLine(t),
-        h("div", { class: "r-meta", text: "Source published " + fmtDay(t.published) + (t.last_updated && t.last_updated !== t.entry_date.split(" ")[0] ? "  /  updated " + fmtDay(t.last_updated) : "") })),
+        h("div", { class: "r-meta" }, h("span", { text: "Published " + fmtDay(t.published) + (t.last_updated && t.last_updated !== t.entry_date.split(" ")[0] ? " \u00b7 updated " + fmtDay(t.last_updated) : "") }),
+          srcLine(t.sources, "r-src"))),
       h("div", { class: "r-side" },
         h("div", { class: "r-num" }, h("b", { text: String(t.indicator_count) }), h("span", null, t.block_now_count ? h("span", { class: "blk", text: t.block_now_count + " block now" }) : "none to block")),
         comp,
@@ -260,7 +268,10 @@
       : (g.regions.length ? g.regions.join(", ") : h("span", { class: "dim", text: "Not stated" }));
     if (shown.length && g.regions.length) geo = [geo, h("span", { class: "dim", text: " \u00b7 " + g.regions.join(", ") })];
     var sec = g.sectors.length ? g.sectors.slice(0, 3).join(", ") + (g.sectors.length > 3 ? " +" + (g.sectors.length - 3) + " more" : "") : h("span", { class: "dim", text: "Not stated" });
-    return h("dl", { class: "r-tg" }, h("div", null, h("dt", { text: !shown.length && g.regions.length ? "Regions" : "Countries" }), h("dd", null, geo)), h("div", null, h("dt", { text: "Sectors" }), h("dd", null, sec)));
+    var hasGeo = shown.length || g.regions.length, hasSec = g.sectors.length;
+    if (!hasGeo && !hasSec) return h("p", { class: "r-tg dim", text: "Countries and sectors not stated" });
+    return h("dl", { class: "r-tg" }, hasGeo ? h("div", null, h("dt", { text: !shown.length ? "Regions" : "Countries" }), h("dd", null, geo)) : null,
+      hasSec ? h("div", null, h("dt", { text: "Sectors" }), h("dd", null, sec)) : null);
   }
   function renderFeed() {
     var c = $("f-cat").value, ty = $("f-type").value, d = $("f-date").value, gk = $("f-country").value, sc = $("f-sector").value;
@@ -333,7 +344,7 @@
     rows.push(h("div", null, h("dt", { text: "Sectors" }), h("dd", null, g.sectors.length ? g.sectors.join(", ") : ns.cloneNode(true))));
     return sec("Affected countries and sectors", h("div", null, h("dl", { class: "tg-dl" }, rows),
       g.note ? h("p", { class: "tg-note", text: g.note }) : null,
-      g.source ? h("p", { class: "tg-src" }, "Source: ", extLink(g.source.url, g.source.label)) : null));
+      g.source && t.sources.length > 1 ? srcLine([g.source], "tg-src", "Per ") : null));
   }
   function renderDetail(id) {
     var t = null;
@@ -354,20 +365,28 @@
       h("h1", { text: t.name }),
       h("p", { class: "lede", text: t.headline }),
       h("dl", { class: "facts" },
-        [["Published", fmtDay(t.published)], ["Added", fmtAdded(t.entry_date)], ["Last updated", fmtDay(t.last_updated)], ["Indicators", t.indicator_count], ["Block now", t.block_now_count, "hot"]]
+        [["Published", fmtDay(t.published)], ["Added", fmtAdded(t.entry_date)], ["Last updated", fmtDay(t.last_updated)]]
           .map(function (f) { return h("div", { class: f[2] || null }, h("dt", { text: f[0] }), h("dd", { text: String(f[1]) })); }))));
 
     var main = h("div", { class: "det-main" });
     if (t.caveat) main.appendChild(h("div", { class: "warn", role: "note" }, h("b", null, "Note"), t.caveat));
-    if (t.summary) main.appendChild(sec("Summary", h("div", { class: "prose" }, h("p", { text: t.summary }))));
+    var hunt = t.hunt_count != null ? t.hunt_count : t.indicator_count - t.block_now_count;
+    var todo = h("p", { class: "todo" },
+      t.block_now_count ? h("span", { class: "blk" }, h("b", { text: String(t.block_now_count) }), " to block now") : h("span", { class: "dim", text: "Nothing to block" }),
+      h("span", { class: "sep", "aria-hidden": "true", text: " \u00b7 " }),
+      hunt ? h("span", { class: "hunt" }, h("b", { text: String(hunt) }), " to hunt") : h("span", { class: "dim", text: "Nothing to hunt" }),
+      h("span", { class: "sep", "aria-hidden": "true", text: " \u00b7 " }),
+      h("button", { type: "button", class: "link-btn", onclick: function () { $("ind-h").scrollIntoView({ block: "start" }); } }, "See " + plural(t.indicator_count, "indicator")));
+    main.appendChild(sec("What to do", h("div", null, todo,
+      t.recommended_actions.length ? h("ol", { class: "steps" }, t.recommended_actions.map(function (a) { return h("li", { text: a }); })) : null)));
     main.appendChild(targetSection(t));
-    if (t.recommended_actions.length) main.appendChild(sec("Recommended actions", h("ol", { class: "steps" }, t.recommended_actions.map(function (a) { return h("li", { text: a }); }))));
+    main.appendChild(srcLine(t.sources, "srcline det-src"));
+    if (t.summary) main.appendChild(sec("Background", h("div", { class: "prose" }, h("p", { text: t.summary }))));
 
-    var side = h("aside", { class: "side", "aria-label": "Downloads and references" });
+    var side = h("aside", { class: "side", "aria-label": "Downloads and MITRE ATT&CK" });
     side.appendChild(sec("Downloads", h("div", null, fileList(t.files),
       h("p", { class: "rail-p", "aria-hidden": "false" }, extLink(t.repo_url, ["View folder in repository", h("span", { class: "ext-ico", "aria-hidden": "true" })])))));
     if (t.mitre.length) side.appendChild(sec("MITRE ATT&CK", h("ul", { class: "mitre" }, t.mitre.map(function (m) { return h("li", null, extLink(m.url, [h("b", { text: m.id }), h("span", { text: m.name })])); })), String(t.mitre.length)));
-    if (t.sources.length) side.appendChild(sec("Sources", h("ul", { class: "srcs" }, t.sources.map(function (s) { return h("li", null, extLink(s.url, s.label)); })), String(t.sources.length)));
 
     wrap.appendChild(h("div", { class: "det-grid" }, main, side));
 
@@ -376,6 +395,7 @@
       typesOf(t).map(function (k) { return h("option", { value: k }, typeLabel(k) + " (" + t.indicator_counts[k] + ")"); }));
     if ($("f-type").value && t.indicator_counts[$("f-type").value]) ts.value = $("f-type").value;
     var body = h("tbody");
+    var multi = t.sources.length > 1;
     var countEl = h("span");
     function fill() {
       clear(body);
@@ -389,7 +409,7 @@
           h("td", null, typeTag(ind.type)),
           h("td", null, confMeter(ind.confidence)),
           h("td", null, actionPill(ind.recommended_action)),
-          h("td", { class: "desc" }, ind.description || "", ind.source_url ? h("div", { class: "src" }, "Source: ", extLink(ind.source_url, ind.source_label || ind.source_url)) : null)));
+          h("td", { class: "desc" }, ind.description || "", multi && ind.source_url ? h("div", { class: "src" }, extLink(ind.source_url, ind.source_name || ind.source_label || ind.source_url)) : null)));
       });
       countEl.textContent = n === t.indicators.length ? plural(n, "indicator") : n + " of " + t.indicators.length;
       if (!n) body.appendChild(h("tr", null, h("td", { colspan: "5", class: "none" }, "No indicators match this filter.")));
@@ -399,10 +419,10 @@
     fill();
     wrap.appendChild(h("section", { class: "ind-sec", "aria-labelledby": "ind-h" },
       h("div", { class: "ind-head" }, h("h2", { id: "ind-h" }, h("span", { class: "idx", text: "IOC" }), "Indicators ", countEl)),
-      h("p", { class: "ind-note" }, "Network indicators are shown defanged and are never links. Copy gives you the real value."),
+      h("p", { class: "ind-note" }, "Shown defanged and never as links. Copy gives the real value."),
       h("div", { class: "ind-tools" }, tq, ts),
       h("div", { class: "tbl-wrap" }, h("table", null,
-        h("thead", null, h("tr", null, ["Indicator", "Type", "Confidence", "Action", "Description and source"].map(function (x) { return h("th", { scope: "col", text: x }); }))), body))));
+        h("thead", null, h("tr", null, ["Indicator", "Type", "Confidence", "Action", multi ? "Description and source" : "Description"].map(function (x) { return h("th", { scope: "col", text: x }); }))), body))));
   }
 
   /* Routing: #threat/<id> opens a threat, #search/<value> runs a search, anything else shows the feed. */
