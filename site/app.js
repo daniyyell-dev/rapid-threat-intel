@@ -639,6 +639,16 @@
         $("q").focus();
       }
     });
+    // The logo goes home without a page reload; modified clicks still open a new tab as normal.
+    var mark = document.querySelector(".mark");
+    if (mark) mark.addEventListener("click", function (e) {
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      if (location.hash) { history.pushState(null, "", location.pathname + location.search); route(); }
+      window.scrollTo(0, 0);
+      mark.blur();
+    });
+    window.addEventListener("popstate", route);
     window.addEventListener("hashchange", function () {
       route();
       if (window.goatcounter && typeof window.goatcounter.count === "function") window.goatcounter.count();

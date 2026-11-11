@@ -673,3 +673,57 @@ tbody tr:last-child td { border-bottom: 0; }
   .brief { row-gap: 8px; }
   .banner { margin: 0 auto; max-width: 220px; }
 }
+
+/* Focus: a ring for keyboard users only, never after a mouse click */
+:focus:not(:focus-visible) { outline: none; }
+a:focus-visible, button:focus-visible, summary:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--pink-text); outline-offset: 3px; border-radius: 4px; }
+
+/* Header bar: brand, live status, update times, project links */
+.bar-in { height: 60px; gap: 16px; }
+.mark { gap: 10px; padding: 4px 6px; margin-left: -6px; border-radius: 6px; }
+.mark-i { width: 28px; height: 28px; margin: 0; }
+.mark-w { height: 17px; }
+.live { display: inline-flex; align-items: center; gap: 7px; height: 24px; padding: 0 10px 0 9px; border: 1px solid var(--line-2); border-radius: 999px; background: rgba(255, 255, 255, .03); font: 500 12px/1 var(--sans); color: var(--ink-2); white-space: nowrap; }
+.live .dot { width: 6px; height: 6px; }
+.pulse { margin-left: auto; font-size: 12px; color: var(--ink-3); }
+.pulse-in { gap: 12px; }
+.pulse-ck { padding-left: 12px; }
+.bar-nav { margin-left: 0; padding-left: 16px; border-left: 1px solid var(--line); gap: 2px; }
+.bar-nav a { padding: 8px 10px; border-radius: 6px; }
+.bar-nav a:hover { background: rgba(255, 255, 255, .04); }
+
+/* Hero: one type scale and an 8px rhythm */
+.brief { padding-top: clamp(40px, 5.5vw, 72px); padding-bottom: 48px; grid-template-columns: minmax(0, 1fr) 340px; gap: 64px; }
+.meta { margin: 0 0 20px; font-size: 13.5px; line-height: 1.5; color: var(--ink-3); }
+h1 { font: 700 clamp(34px, 3.9vw, 52px)/1.05 var(--sans); letter-spacing: -.022em; max-width: 15em; }
+.tagline-sub { margin: 16px 0 0; font: 400 18px/1.5 var(--sans); color: var(--ink-2); }
+.caution { margin-top: 32px; max-width: 620px; }
+.banner { max-width: 340px; }
+.banner-cap { margin-top: 6px; font-size: 13px; }
+
+@media (max-width: 1080px) {
+  .brief { grid-template-columns: minmax(0, 1fr) 250px; gap: 40px; }
+}
+@media (max-width: 1080px) and (min-width: 721px) {
+  .bar-nav a.mono { display: none; }
+}
+@media (max-width: 860px) {
+  .brief { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .banner { max-width: 220px; }
+}
+@media (max-width: 720px) {
+  .bar-in { height: 56px; gap: 10px; }
+  .mark { padding: 4px; margin-left: -4px; gap: 7px; }
+  .mark-i { width: 24px; height: 24px; }
+  .mark-w { height: 13px; }
+  .live { width: 22px; height: 22px; padding: 0; justify-content: center; }
+  .live-t { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .pulse { font-size: 11px; }
+  .pulse-ck { padding-left: 0; }
+  .pulse-in { gap: 3px; }
+  .brief { padding-top: 28px; padding-bottom: 28px; }
+  .meta { margin-bottom: 16px; font-size: 13px; }
+  h1 { font-size: 32px; line-height: 1.08; letter-spacing: -.018em; }
+  .tagline-sub { margin-top: 12px; font-size: 16px; }
+  .caution { margin-top: 24px; }
+}
