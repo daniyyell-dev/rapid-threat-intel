@@ -1,0 +1,5 @@
+# SkyW4lker: Microsoft 365 Device-Code Phishing Kit Targeting Enterprises
+# Published 2026-10-27. Updated 2026-11-11.
+#
+# No indicators for this threat meet the block-now bar (high confidence and safe to block).
+# The published indicators are lower-confidence hunting leads: see iocs.csv, defender_xdr_indicators.csv and hunt.kql.

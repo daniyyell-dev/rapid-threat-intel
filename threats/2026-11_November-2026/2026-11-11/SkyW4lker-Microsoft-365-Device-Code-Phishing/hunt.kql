@@ -1,0 +1,85 @@
+// Threat: SkyW4lker: Microsoft 365 Device-Code Phishing Kit Targeting Enterprises
+// Author: Daniel Jeremiah | Date: 2026-11-11
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/SkyW4lker-Microsoft-365-Device-Code-Phishing
+let Lookback = 30d;
+let Domains = dynamic(["0ff365access.mooo.com", "0utlook0ffice365admin.twilightparadox.com", "5200m.com", "7criccasinobonus.cc", "acrobat-adobe-com-4464uswc.egllo.com", "atlantictriad.ignorelist.com", "atlassgroupinc.com", "auth-loadingdocuments.online", "awemode.outlookoffice365.microsoftcopilots.docshare.linnwest.us", "bennett002.mooo.com", "bezpartien.online", "bigbrain.chickenkiller.com", "bloomfleldcapital.com", "bramum.online", "bxcelcounselling.org", "calmechc.net", "celestialtremor.org", "celvarioncorn.org", "centipedtourspa.com", "cleggs.my03.com", "clingard.pro", "clubdenut.club", "coreansdmain.com", "csr-rooflng.com", "dutchfarrms.com", "eccentric-authentication.com", "ecosys.newdocument2026.pdfdocshared.tntileandmarbleinc.com", "efaxdoc.auth.outlook2026common.copilos26.kone-inc.com", "efaxdoc.documents2026.docs.shared.lakeviewscustom.com", "flow505.mooo.com", "flow55.chickenkiller.com", "frontdesk.click", "ghethim.com", "glafondbottamconstruction.com", "globlasumi.com", "gregor.justdied.com", "grincool.xyz", "haevy-llc.com", "hivezoom.com", "ideahom.world", "incommecialre.com", "innvisoin.net", "insigthinvestments.com", "investomind.biz", "jjnysnobiogtx.org", "kilishy.qhigh.com", "kuer.online", "lampadasdeslgn.com", "linking.mefound.com", "m365cloud.login.outlook.office365.azgymfloor.com", "maqaigiapelhani.cam", "metrorocl.co.uk", "mgproparties.com", "naregruop.com", "noxband.com", "off365acess.jumpingcrab.com", "off365mail.club", "office0365login.2waky.com", "outlookdrive.microsoftonline.common.oauth2.client.buycerm.com", "pdlhaelth.com", "priorispace.biz", "psionicsandhorses.net", "reauth.copilot.auth.outlook.mcloud365.buycerm.com", "reauth.docs.copilot.auth02.outlook.mcloud365.argentventuras.com", "rektham.online", "rustlnsurance.com", "seatacsmarine.com", "slybee.com", "solutions00fileptroduct.com", "stellarntis-fs.com", "studeseliamechan.link", "sunraycontractlng.com", "sunstateaquips.com", "swiftii.chickenkiller.com", "thepaybank.com", "torvion.life", "unitadrentals.com", "us-agricultures.com", "vasquezmyth.com", "copilots.outlook.cloud.microsoft.andersonelevators.com"]);
+let SHA256s = dynamic(["9aa0b87974b9b4cd42603833b7ad44257578467d279b315a071108a5ed02c268"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (DeviceEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType == "DnsQueryResponse" and tostring(parse_json(AdditionalFields).DnsQueryString) has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(parse_json(AdditionalFields).DnsQueryString), Context = tostring(strcat("DNS ", InitiatingProcessFileName))),
+  (EmailUrlInfo
+    | where Timestamp > ago(Lookback)
+    | where UrlDomain has_any (Domains)
+    | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = tostring(Url), Context = tostring("URL in email")),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url has_any (Domains)
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(ActionType, " ", FolderPath))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceImageLoadEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " loaded by ", InitiatingProcessFileName))),
+  (EmailAttachmentInfo
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "EmailAttachmentInfo", Entity = tostring(RecipientEmailAddress), Indicator = tostring(SHA256), Context = tostring(strcat(FileName, " from ", SenderFromAddress))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where ProcessCommandLine has "session_public.php" or ProcessCommandLine has_any ("client_geo.js", "url_helper.js") or (FileName in~ ("wscript.exe", "cscript.exe", "mshta.exe") and ProcessCommandLine has "login.microsoft")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has "session_public.php" and RemoteUrl has "action="
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (EmailUrlInfo
+    | where Timestamp > ago(Lookback)
+    | where Url has "session_public.php"
+    | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = tostring(Url), Context = tostring("URL in email")),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url has "session_public.php"
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any ("/assets/js/client_geo.js", "/assets/js/endpoint.js", "/assets/js/url_helper.js")
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (AADSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where ClientAppUsed has "Device Code" or AuthenticationProtocol has "deviceCode" or AuthenticationProtocol has "device code"
+    | project Timestamp, SourceTable = "AADSignInEventsBeta", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ClientAppUsed, " ", ErrorCode, " ", ResourceDisplayName))),
+  (EntraIdSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where ClientAppUsed has "Device Code" or AuthenticationProtocol has "deviceCode" or AuthenticationProtocol has "device code"
+    | project Timestamp, SourceTable = "EntraIdSignInEvents", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ClientAppUsed, " ", ErrorCode))),
+  (EmailUrlInfo
+    | where Timestamp > ago(Lookback)
+    | where Url matches regex @"/(it|zt)[A-Za-z0-9]{32}(us|op)"
+    | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = tostring(Url), Context = tostring("SkyW4lker-style landing token in email")),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url matches regex @"/(it|zt)[A-Za-z0-9]{32}(us|op)"
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl matches regex @"/(it|zt)[A-Za-z0-9]{32}(us|op)"
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any ("/assets/private_captcha/public/widget.js", "/assets/php/endpoints/private_captcha_challenge.php", "/assets/php/endpoints/confirm_visit.php")
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

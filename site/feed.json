@@ -4,9 +4,9 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-11 10:21",
- "threat_count": 15,
- "indicator_count": 495,
+ "last_updated": "2026-11-11 16:11",
+ "threat_count": 16,
+ "indicator_count": 585,
  "block_now_count": 263,
  "combined_files": [
   {
@@ -102,6 +102,1163 @@
   }
  ],
  "threats": [
+  {
+   "id": "SkyW4lker-Microsoft-365-Device-Code-Phishing",
+   "folder": "threats/2026-11_November-2026/2026-11-11/SkyW4lker-Microsoft-365-Device-Code-Phishing",
+   "name": "SkyW4lker: Microsoft 365 Device-Code Phishing Kit Targeting Enterprises",
+   "short": "SkyW4lker Microsoft 365 device-code phishing",
+   "category": "Phishing / identity",
+   "published": "2026-10-27",
+   "entry_date": "2026-11-11 16:11",
+   "last_updated": "2026-11-11",
+   "seq": 16,
+   "headline": "Microsoft 365 device-code phishing kit that obtains tokens through genuine sign-in and MFA",
+   "summary": "ANY.RUN describes SkyW4lker (also branded SkyW4lker x365 Sentinel) as a device-code phishing kit aimed at Microsoft 365 users, most often in technology, manufacturing and government organisations in the United States, and also seen in India, Canada, the United Kingdom and elsewhere in Europe. The victim is sent a password-protected PDF, DOCX or XLSX, typically framed as a contract, invoice or proposal, with the password in the email body; a CAPTCHA and sometimes a lure page on a trusted service then leads to a page that tells them to enter a Microsoft device code on Microsoft's own sign-in site. Completing that genuine sign-in, including MFA, hands the attacker a Microsoft 365 token without a password being stolen. The kit's PHP backend and obfuscated JavaScript register the visit with action=start on /session_public.php and poll with action=poll until authentication finishes. ANY.RUN counted 618 related sandbox analyses between 23 June and 21 October 2026, rising from about 20 in June to about 200 in September, and assesses with high confidence that SkyW4lker and the Gabagool credential-phishing kit were built by the same developer. These figures are sandbox submissions, not a confirmed victim count, and the indicators come from a single source, so they are published at medium confidence for alerting and hunting, not for blocking.",
+   "caveat": null,
+   "targets": {
+    "countries": [
+     {
+      "code": "US",
+      "name": "United States"
+     },
+     {
+      "code": "IN",
+      "name": "India"
+     },
+     {
+      "code": "CA",
+      "name": "Canada"
+     },
+     {
+      "code": "GB",
+      "name": "United Kingdom"
+     }
+    ],
+    "regions": [
+     "United States",
+     "Europe"
+    ],
+    "sectors": [
+     "Technology",
+     "Manufacturing",
+     "Government"
+    ],
+    "note": "Figures are sandbox submissions, not a confirmed victim census. ANY.RUN says 46–47% of submissions came from the United States, more than twice the share of any other country, and that submitting organisations were mainly in technology, manufacturing and government, most often from the United States, India, Canada and the United Kingdom.",
+    "source": {
+     "url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "name": "ANY.RUN"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1566.001",
+     "name": "Phishing: Spearphishing Attachment",
+     "url": "https://attack.mitre.org/techniques/T1566/001/"
+    },
+    {
+     "id": "T1566.002",
+     "name": "Phishing: Spearphishing Link",
+     "url": "https://attack.mitre.org/techniques/T1566/002/"
+    },
+    {
+     "id": "T1528",
+     "name": "Steal Application Access Token",
+     "url": "https://attack.mitre.org/techniques/T1528/"
+    },
+    {
+     "id": "T1583.001",
+     "name": "Acquire Infrastructure: Domains",
+     "url": "https://attack.mitre.org/techniques/T1583/001/"
+    },
+    {
+     "id": "T1656",
+     "name": "Impersonation",
+     "url": "https://attack.mitre.org/techniques/T1656/"
+    },
+    {
+     "id": "T1027",
+     "name": "Obfuscated Files or Information",
+     "url": "https://attack.mitre.org/techniques/T1027/"
+    },
+    {
+     "id": "T1497",
+     "name": "Virtualization/Sandbox Evasion",
+     "url": "https://attack.mitre.org/techniques/T1497/"
+    }
+   ],
+   "recommended_actions": [
+    "Hunt proxy, DNS and web logs for /session_public.php?action=start, repeated ?action=poll, and the JavaScript modules /assets/js/client_geo.js, endpoint.js and url_helper.js.",
+    "In Entra ID, review unexpected device-code sign-ins, especially shortly after a password-protected contract or invoice email, and restrict the device-code flow with Conditional Access where it is not required.",
+    "Alert on the listed typo-squatted and kit-hosting domains; do not block them yet, because they come from a single source, and some other hosts in the same report look like compromised legitimate sites and were left out.",
+    "Treat password-protected business attachments whose password is in the email body as suspicious, and never enter a Microsoft device code from an email, a document or a page that is not a sign-in you started."
+   ],
+   "sources": [
+    {
+     "url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "name": "ANY.RUN"
+    }
+   ],
+   "indicator_count": 90,
+   "block_now_count": 0,
+   "hunt_count": 90,
+   "hunt_counts": {
+    "alert": 90
+   },
+   "indicator_counts": {
+    "domain": 80,
+    "url": 7,
+    "other": 2,
+    "sha256": 1
+   },
+   "ioas": [
+    {
+     "artefact": "Outbound requests to /session_public.php?action=start, followed by repeated /session_public.php?action=poll",
+     "log_source": "Web proxy, firewall or endpoint network logs",
+     "why": "The SkyW4lker phishing page registers a session with the visitor's IP and geolocation, then polls every few seconds to see whether the victim has completed Microsoft device-code authentication.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_name": "ANY.RUN",
+     "title": "Outbound requests to /session_public.php?action=start",
+     "queries": [
+      "KQL"
+     ]
+    },
+    {
+     "artefact": "Loads of /assets/js/client_geo.js, /assets/js/endpoint.js or /assets/js/url_helper.js",
+     "log_source": "Web proxy or endpoint network logs",
+     "why": "These JavaScript modules are distinctive SkyW4lker kit fingerprints, and they are also used by the related Gabagool credential-phishing kit.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_name": "ANY.RUN",
+     "title": "Loads of /assets/js/client_geo.js",
+     "queries": [
+      "KQL"
+     ]
+    },
+    {
+     "artefact": "Unexpected Microsoft Entra ID device-code sign-ins, especially shortly after a password-protected contract, invoice or proposal email",
+     "log_source": "Entra ID / Microsoft 365 sign-in logs",
+     "why": "SkyW4lker does not steal a password or bypass MFA. The victim completes a genuine Microsoft device-code sign-in, and the attacker's backend receives the issued token.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_name": "ANY.RUN",
+     "title": "Unexpected Microsoft Entra ID device-code sign-ins",
+     "queries": [
+      "KQL"
+     ]
+    },
+    {
+     "artefact": "Landing paths matching //it[A-Za-z0-9]{32}us or the earlier //zt[A-Za-z0-9]{32}op, including links that end with ? or ??",
+     "log_source": "Email URL, proxy and web logs",
+     "why": "ANY.RUN observed these landing-token formats on SkyW4lker (and Gabagool) pages from June to October 2026.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_name": "ANY.RUN",
+     "title": "Landing paths matching //it[A-Za-z0-9]{32}us or the earlier...",
+     "queries": [
+      "KQL"
+     ]
+    },
+    {
+     "artefact": "Requests for /assets/private_captcha/public/widget.js or /assets/php/endpoints/private_captcha_challenge.php, or /assets/php/endpoints/confirm_visit.php",
+     "log_source": "Web proxy or endpoint network logs",
+     "why": "SkyW4lker and Gabagool use a self-hosted CAPTCHA gate and a shared visit-confirmation endpoint to hide the phishing page from automated scanners.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_name": "ANY.RUN",
+     "title": "Requests for /assets/private_captcha/public/widget.js or...",
+     "queries": [
+      "KQL"
+     ]
+    }
+   ],
+   "ioa_count": 5,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/SkyW4lker-Microsoft-365-Device-Code-Phishing/block_now.txt",
+     "download": "SkyW4lker-Microsoft-365-Device-Code-Phishing_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/SkyW4lker-Microsoft-365-Device-Code-Phishing/defender_xdr_indicators.csv",
+     "download": "SkyW4lker-Microsoft-365-Device-Code-Phishing_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/SkyW4lker-Microsoft-365-Device-Code-Phishing/hunt.kql",
+     "download": "SkyW4lker-Microsoft-365-Device-Code-Phishing_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/SkyW4lker-Microsoft-365-Device-Code-Phishing/hunt.spl",
+     "download": "SkyW4lker-Microsoft-365-Device-Code-Phishing_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/SkyW4lker-Microsoft-365-Device-Code-Phishing/hunt_raw.spl",
+     "download": "SkyW4lker-Microsoft-365-Device-Code-Phishing_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/SkyW4lker-Microsoft-365-Device-Code-Phishing/hunt.yaral",
+     "download": "SkyW4lker-Microsoft-365-Device-Code-Phishing_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/SkyW4lker-Microsoft-365-Device-Code-Phishing/iocs.csv",
+     "download": "SkyW4lker-Microsoft-365-Device-Code-Phishing_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/SkyW4lker-Microsoft-365-Device-Code-Phishing",
+   "indicators": [
+    {
+     "value": "0ff365access.mooo.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker phishing-kit host on a public dynamic-DNS service. Alert on this FQDN only; do not block the parent dynamic-DNS domain.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "0utlook0ffice365admin.twilightparadox.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker phishing-kit host on a public dynamic-DNS service. Alert on this FQDN only; do not block the parent dynamic-DNS domain.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "5200m.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "7criccasinobonus.cc",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "acrobat-adobe-com-4464uswc.egllo.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker Microsoft-themed phishing hostname. The parent domain was not added, because it may be a real organisation.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "atlantictriad.ignorelist.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker phishing-kit host on a public dynamic-DNS service. Alert on this FQDN only; do not block the parent dynamic-DNS domain.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "atlassgroupinc.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "auth-loadingdocuments.online",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "awemode.outlookoffice365.microsoftcopilots.docshare.linnwest.us",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker Microsoft-themed phishing hostname. The parent domain was not added, because it may be a real organisation.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "bennett002.mooo.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker phishing-kit host on a public dynamic-DNS service. Alert on this FQDN only; do not block the parent dynamic-DNS domain.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "bezpartien.online",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "bigbrain.chickenkiller.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker phishing-kit host on a public dynamic-DNS service. Alert on this FQDN only; do not block the parent dynamic-DNS domain.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "bloomfleldcapital.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "bramum.online",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "bxcelcounselling.org",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "calmechc.net",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "celestialtremor.org",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "celvarioncorn.org",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "centipedtourspa.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "cleggs.my03.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker phishing-kit host on a public dynamic-DNS service. Alert on this FQDN only; do not block the parent dynamic-DNS domain.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "clingard.pro",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "clubdenut.club",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "coreansdmain.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "csr-rooflng.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "dutchfarrms.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "eccentric-authentication.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "ecosys.newdocument2026.pdfdocshared.tntileandmarbleinc.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker Microsoft-themed phishing hostname. The parent domain was not added, because it may be a real organisation.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "efaxdoc.auth.outlook2026common.copilos26.kone-inc.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker Microsoft-themed phishing hostname. The parent domain was not added, because it may be a real organisation.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "efaxdoc.documents2026.docs.shared.lakeviewscustom.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker Microsoft-themed phishing hostname. The parent domain was not added, because it may be a real organisation.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "flow505.mooo.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker phishing-kit host on a public dynamic-DNS service. Alert on this FQDN only; do not block the parent dynamic-DNS domain.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "flow55.chickenkiller.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker phishing-kit host on a public dynamic-DNS service. Alert on this FQDN only; do not block the parent dynamic-DNS domain.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "frontdesk.click",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "ghethim.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "glafondbottamconstruction.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "globlasumi.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "gregor.justdied.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker phishing-kit host on a public dynamic-DNS service. Alert on this FQDN only; do not block the parent dynamic-DNS domain.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "grincool.xyz",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "haevy-llc.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "hivezoom.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "ideahom.world",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "incommecialre.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "innvisoin.net",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "insigthinvestments.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "investomind.biz",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "jjnysnobiogtx.org",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "kilishy.qhigh.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker phishing-kit host on a public dynamic-DNS service. Alert on this FQDN only; do not block the parent dynamic-DNS domain.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "kuer.online",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "lampadasdeslgn.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "linking.mefound.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker phishing-kit host on a public dynamic-DNS service. Alert on this FQDN only; do not block the parent dynamic-DNS domain.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "m365cloud.login.outlook.office365.azgymfloor.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker Microsoft-themed phishing hostname. The parent domain was not added, because it may be a real organisation.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "maqaigiapelhani.cam",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "metrorocl.co.uk",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "mgproparties.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "naregruop.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "noxband.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "off365acess.jumpingcrab.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker phishing-kit host on a public dynamic-DNS service. Alert on this FQDN only; do not block the parent dynamic-DNS domain.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "off365mail.club",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "office0365login.2waky.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker phishing-kit host on a public dynamic-DNS service. Alert on this FQDN only; do not block the parent dynamic-DNS domain.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "outlookdrive.microsoftonline.common.oauth2.client.buycerm.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker Microsoft-themed phishing hostname. The parent domain was not added, because it may be a real organisation.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "pdlhaelth.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "priorispace.biz",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "psionicsandhorses.net",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "reauth.copilot.auth.outlook.mcloud365.buycerm.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker Microsoft-themed phishing hostname. The parent domain was not added, because it may be a real organisation.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "reauth.docs.copilot.auth02.outlook.mcloud365.argentventuras.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker Microsoft-themed phishing hostname. The parent domain was not added, because it may be a real organisation.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "rektham.online",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "rustlnsurance.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "seatacsmarine.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "slybee.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "solutions00fileptroduct.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "stellarntis-fs.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "studeseliamechan.link",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "sunraycontractlng.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "sunstateaquips.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "swiftii.chickenkiller.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker phishing-kit host on a public dynamic-DNS service. Alert on this FQDN only; do not block the parent dynamic-DNS domain.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "thepaybank.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "torvion.life",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "unitadrentals.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "us-agricultures.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "vasquezmyth.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker typo-squat or attacker-registered domain used to host the device-code phishing kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "/assets/php/endpoints/session_public.php",
+     "type": "url",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker PHP backend used with action=start (session registration) and action=poll (device-code status). Hunt in proxy and web logs.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "/assets/js/client_geo.js",
+     "type": "url",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker JavaScript module that geolocates the visitor. Shared with the Gabagool kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "/assets/js/endpoint.js",
+     "type": "url",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker JavaScript module that logs session state and credentials to the PHP backend. Shared with Gabagool.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "/assets/js/url_helper.js",
+     "type": "url",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker JavaScript URL-helper module. Shared with the Gabagool kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "/assets/php/endpoints/confirm_visit.php",
+     "type": "url",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker visit-confirmation endpoint, also used by Gabagool.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "/assets/private_captcha/public/widget.js",
+     "type": "url",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Self-hosted CAPTCHA widget SkyW4lker places in front of the phishing page.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "/assets/php/endpoints/private_captcha_challenge.php",
+     "type": "url",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Self-hosted CAPTCHA challenge endpoint used by the SkyW4lker kit.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "it[A-Za-z0-9]{32}us",
+     "type": "other",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker landing-page token in use from 10 August 2026, often as a URL path //it<32 alphanumeric>us, sometimes ending with ? or ??.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "zt[A-Za-z0-9]{32}op",
+     "type": "other",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Earlier SkyW4lker landing-page token, seen from 25 June to 28 September 2026 as a URL path //zt<32 alphanumeric>op.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "9aa0b87974b9b4cd42603833b7ad44257578467d279b315a071108a5ed02c268",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of a password-protected PDF lure used to deliver a SkyW4lker phishing link, cited as an example by ANY.RUN.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    },
+    {
+     "value": "copilots.outlook.cloud.microsoft.andersonelevators.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SkyW4lker Microsoft-themed phishing hostname. The parent domain was not added, because it may be a real organisation.",
+     "source_url": "https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/",
+     "source_label": "ANY.RUN – SkyW4lker Exposed: A Growing Microsoft 365 Phishing Threat to American Enterprises",
+     "source_name": "ANY.RUN"
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/SkyW4lker-Microsoft-365-Device-Code-Phishing/hunt.kql",
+     "download": "SkyW4lker-Microsoft-365-Device-Code-Phishing_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/SkyW4lker-Microsoft-365-Device-Code-Phishing/hunt.spl",
+     "download": "SkyW4lker-Microsoft-365-Device-Code-Phishing_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/SkyW4lker-Microsoft-365-Device-Code-Phishing/hunt_raw.spl",
+      "download": "SkyW4lker-Microsoft-365-Device-Code-Phishing_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/SkyW4lker-Microsoft-365-Device-Code-Phishing/hunt.yaral",
+     "download": "SkyW4lker-Microsoft-365-Device-Code-Phishing_hunt.yaral"
+    }
+   ]
+  },
   {
    "id": "Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft",
    "folder": "threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft",
