@@ -332,13 +332,13 @@ td.none { text-align: center; padding: 32px; color: var(--ink-3); font-size: 14p
 /* Footer, as on daniyyell.com. One grid shared by every band, on the same columns as the dashboard (rail | content | side),
    so labels, text and logos line up down the page. Rhythm: 48 / 32 / 24 / 16 / 8. */
 .foot { margin-top: 64px; border-top: 1px solid var(--line-2); background: var(--foot); }
-.foot-in { display: grid; grid-template-columns: var(--rail) minmax(0, 1fr) 232px; column-gap: 40px; }
+.foot-in { display: grid; grid-template-columns: minmax(0, 240px) max-content minmax(0, 1fr); column-gap: 56px; }
 .foot-in { padding-top: 40px; padding-bottom: 36px; grid-template-areas: "scope links vis"; row-gap: 32px; align-items: start; }
 .foot-h { margin: 0 0 14px; font: 500 12px/16px var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
 .foot-scope { grid-area: scope; min-width: 0; }
 .foot-scope p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--ink-2); }
 .foot-links { grid-area: links; min-width: 0; }
-.foot-links ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, max-content); gap: 10px 40px; }
+.foot-links ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: max-content; gap: 10px; }
 .nw { white-space: nowrap; }
 .foot-links a { display: inline-flex; align-items: flex-start; gap: 8px; font: 500 14px/1.4 var(--sans); color: #fff8fc; text-decoration: none; }
 .foot-links .ico { flex: none; display: block; width: 14px; height: 14px; margin-top: 3px; color: var(--ink-3); transition: color .15s; }
@@ -365,20 +365,22 @@ td.none { text-align: center; padding: 32px; color: var(--ink-3); font-size: 14p
 
 /* Visitors: third column of the footer grid. Two even stats, then a flag list with share bars */
 .visits { grid-area: vis; min-width: 0; }
-.visits-nums { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.visits-nums { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, max-content)); gap: 16px 48px; }
 .visits-cell { min-width: 0; }
 .visits-cell dd { margin: 0; font: 700 26px/1 var(--sans); letter-spacing: -.01em; font-variant-numeric: tabular-nums; color: var(--ink); }
 .visits-cell dt { margin-top: 6px; font: 400 12px/1.3 var(--sans); color: var(--ink-3); }
 .visits-cell { display: flex; flex-direction: column-reverse; }
 .visits-geo-wrap { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line); }
 .visits-sub { margin: 0 0 12px; font: 500 12px/16px var(--sans); color: var(--ink-3); }
-.visits-geo { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.visits-geo { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 32px; }
 .visits-geo li { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; column-gap: 10px; row-gap: 6px; align-items: center; }
 .visits-flag { display: block; width: 20px; height: 15px; border-radius: 2px; object-fit: cover; box-shadow: 0 0 0 1px rgba(255, 255, 255, .12); }
 .visits-cn { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 400 13px/1.3 var(--sans); color: var(--ink-2); }
 .visits-cv { font: 500 13px/1 var(--mono); font-variant-numeric: tabular-nums; color: var(--ink); text-align: right; }
 .visits-bar { grid-column: 2 / -1; display: block; height: 2px; background: var(--line); border-radius: 1px; overflow: hidden; }
 .visits-bar-f { display: block; height: 100%; background: var(--pink); border-radius: 1px; }
+.visits-other { background: var(--line-2); box-shadow: none; }
+.visits-geo li:has(.visits-other) .visits-bar-f { background: var(--ink-3); }
 
 .toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 16px); background: var(--raise); border: 1px solid var(--line-2); color: var(--ink); font: 500 13px/1 var(--sans); padding: 12px 16px; opacity: 0; pointer-events: none; transition: opacity .18s, transform .25s var(--ease); z-index: 40; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
@@ -398,9 +400,8 @@ td.none { text-align: center; padding: 32px; color: var(--ink-3); font-size: 14p
   .geo-list .geo-more { grid-column: 1 / -1; }
   .feed { order: 3; }
   .files { order: 4; }
-  .foot-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .foot-in { grid-template-areas: "scope vis" "links vis"; }
-  .foot-links ul { grid-template-columns: repeat(2, max-content); }
+  .foot-in { grid-template-columns: minmax(0, 1fr) max-content; }
+  .foot-in { grid-template-areas: "scope links" "vis vis"; }
   .det-grid { grid-template-columns: 1fr; }
   .facts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .facts div { border-bottom: 1px solid var(--line); }
@@ -413,6 +414,7 @@ td.none { text-align: center; padding: 32px; color: var(--ink-3); font-size: 14p
 
 /* Phone */
 @media (max-width: 720px) {
+  .visits-geo { grid-template-columns: minmax(0, 1fr); }
   body { font-size: 15px; }
   .bar-in { gap: 12px; height: 52px; }
   .mark-s, .bar-nav, .pl { display: none; }
@@ -474,7 +476,6 @@ td.none { text-align: center; padding: 32px; color: var(--ink-3); font-size: 14p
   .tg-dl div { grid-template-columns: 1fr; gap: 2px; }
   .foot-in { grid-template-columns: minmax(0, 1fr); grid-template-areas: "scope" "links" "vis"; padding-top: 32px; padding-bottom: 28px; row-gap: 28px; }
   .foot-h { margin-bottom: 12px; }
-  .foot-links ul { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px 16px; }
   .foot-end { flex-direction: column; align-items: flex-start; gap: 16px; }
   .spons { gap: 12px; }
   .spons-list { gap: 16px; }

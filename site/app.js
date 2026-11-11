@@ -682,7 +682,7 @@
     var n = Math.floor(Number(String(v == null ? "" : v).replace(/[^0-9]/g, "")));
     return v == null || v === "" || !isFinite(n) ? null : n;
   }
-  function renderVisitors(all, day, countries) {
+  function renderVisitors(all, day, countries, otherCount) {
     var box = $("visits");
     if (all == null && day == null && !countries) return;
     day = day == null ? 0 : day;
@@ -694,16 +694,20 @@
     var geo = clear($("visits-geo")), rows = [];
     (countries || []).forEach(function (c) {
       var n = c && toCount(c.count);
-      if (rows.length >= 5 || !c || !c.code || n == null) return;
+      if (!c || !c.code || n == null) return;
       rows.push({ code: String(c.code).toUpperCase(), name: countryName(String(c.code).toUpperCase(), c.name), n: n });
     });
-    var base = Math.max(all, rows.reduce(function (t, r) { return t + r.n; }, 0)) || 1;
+    var base = Math.max(all, rows.reduce(function (t, r) { return t + r.n; }, 0) + (otherCount || 0)) || 1;
+    if (rows.length > 8 || otherCount > 0) {
+      var rest = rows.splice(8).reduce(function (t, r) { return t + r.n; }, 0) + (otherCount || 0);
+      if (rest > 0) rows.push({ other: true, code: "", name: "Other", n: rest });
+    }
     rows.forEach(function (r) {
       var pct = Math.max(2, Math.min(100, Math.round(r.n / base * 100)));
       var fill = h("span", { class: "visits-bar-f" });
       fill.style.setProperty("width", pct + "%");
       geo.appendChild(h("li", null,
-        flagImg(r.code, r.name),
+        r.other ? h("span", { class: "visits-flag visits-other", "aria-hidden": "true" }) : flagImg(r.code, r.name),
         h("span", { class: "visits-cn", text: r.name }),
         h("span", { class: "visits-cv", text: fmtVisitors(r.n) }),
         h("span", { class: "visits-bar", "aria-hidden": "true" }, fill)));
@@ -725,8 +729,8 @@
       var totals = [toCount(lv.total), toCount(pc.count), toCount(snap.total)].filter(function (n) { return n != null; });
       var day = toCount(lv.last24h);
       if (day == null) day = toCount(snap.last24h);
-      var countries = (lv.top_countries && lv.top_countries.length) ? lv.top_countries : snap.top_countries;
-      renderVisitors(totals.length ? Math.max.apply(null, totals) : null, day, countries);
+      var src = (lv.top_countries && lv.top_countries.length) ? lv : snap;
+      renderVisitors(totals.length ? Math.max.apply(null, totals) : null, day, src.top_countries, toCount(src.other_count) || 0);
     });
   }
   var visitsTimer = null, visitsLast = 0;
