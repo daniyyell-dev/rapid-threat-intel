@@ -4,9 +4,9 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-11 17:20",
- "threat_count": 17,
- "indicator_count": 860,
+ "last_updated": "2026-11-11 22:05",
+ "threat_count": 18,
+ "indicator_count": 871,
  "block_now_count": 274,
  "combined_files": [
   {
@@ -102,6 +102,404 @@
   }
  ],
  "threats": [
+  {
+   "id": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign",
+   "folder": "threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign",
+   "name": "ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints",
+   "short": "ScreenConnect cloud panel hijack (MSPs)",
+   "category": "Supply chain / MSP remote access",
+   "published": "2026-11-11",
+   "entry_date": "2026-11-11 22:05",
+   "last_updated": "2026-11-11",
+   "seq": 18,
+   "headline": "Hijacked cloud ScreenConnect panels push rogue clients to MSP-managed endpoints and pivot back to technicians",
+   "summary": "Huntress's SOC is responding to an active campaign that began around 17:47 UTC on 11 November 2026 against managed service providers using cloud-hosted ConnectWise ScreenConnect. At the time of its update Huntress was tracking six compromised MSPs and more than 286 endpoints, with the numbers rising; the actor numbers each victim MSP and the observed tags start partway through the sequence, so other MSPs were probably hit first. Huntress has seen no evidence of a new vulnerability and has not confirmed how the panels were accessed; the evidence points to stolen credentials or hijacked operator sessions. With panel access, the actor uses Run Command to push a second, rogue ScreenConnect client to every managed endpoint, giving an independent backdoor that no longer needs the MSP's panel. If a technician then opens an interactive ScreenConnect session to investigate, the malware rides that session back onto the technician's workstation, drops sqlite3.exe to scrape saved browser sessions and tokens, and pivots into any other ScreenConnect panels the technician can reach. Persistence is a TrapWatch scheduled task running as SYSTEM every 10 seconds, files under C:\\ProgramData\\RelayTrap\\ and %TEMP%\\sckit-*, and a RelayTrapLiteAlert Run-key value; endpoints reinfect within minutes if isolation is lifted before these are removed. The indicators come from a single vendor's incident response and are published at medium confidence: the attacker relay, C2 hostnames and stager URL are set to Block in the Defender import file but stay off the block-now list until a second source confirms them, and a possible C2 domain contributed by another responder is alert-only.",
+   "caveat": null,
+   "targets": {
+    "countries": [],
+    "regions": [],
+    "sectors": [
+     "Managed service providers (MSPs)",
+     "MSP-managed customer organisations"
+    ],
+    "note": "Huntress tracks six compromised MSPs and more than 286 managed endpoints using cloud-hosted ScreenConnect, with more victims likely; no countries are named.",
+    "source": {
+     "url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "label": "Huntress SOC on r/msp – Active malware campaign abusing ScreenConnect",
+     "name": "Reddit r/msp"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1078",
+     "name": "Valid Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/"
+    },
+    {
+     "id": "T1539",
+     "name": "Steal Web Session Cookie",
+     "url": "https://attack.mitre.org/techniques/T1539/"
+    },
+    {
+     "id": "T1199",
+     "name": "Trusted Relationship",
+     "url": "https://attack.mitre.org/techniques/T1199/"
+    },
+    {
+     "id": "T1072",
+     "name": "Software Deployment Tools",
+     "url": "https://attack.mitre.org/techniques/T1072/"
+    },
+    {
+     "id": "T1219",
+     "name": "Remote Access Software",
+     "url": "https://attack.mitre.org/techniques/T1219/"
+    },
+    {
+     "id": "T1053.005",
+     "name": "Scheduled Task",
+     "url": "https://attack.mitre.org/techniques/T1053/005/"
+    },
+    {
+     "id": "T1547.001",
+     "name": "Registry Run Keys / Startup Folder",
+     "url": "https://attack.mitre.org/techniques/T1547/001/"
+    },
+    {
+     "id": "T1555.003",
+     "name": "Credentials from Web Browsers",
+     "url": "https://attack.mitre.org/techniques/T1555/003/"
+    },
+    {
+     "id": "T1021",
+     "name": "Remote Services",
+     "url": "https://attack.mitre.org/techniques/T1021/"
+    },
+    {
+     "id": "T1105",
+     "name": "Ingress Tool Transfer",
+     "url": "https://attack.mitre.org/techniques/T1105/"
+    }
+   ],
+   "recommended_actions": [
+    "Do not triage suspected hosts through ScreenConnect: use your EDR live-response shell, WinRM or another out-of-band tool, because an interactive session can carry the infection back to the technician's workstation.",
+    "Revoke all active ScreenConnect web sessions, rotate ScreenConnect credentials, verify MFA in your identity provider, and audit Run Command and Toolbox history for mass executions you did not start.",
+    "Block 185.99.255.28, 155.94.150.39, newnewnew.gotdns.org, soxnewwork.homedns.org, sc.payproofkit.com and the ns.mo7sen.dev stager URL in Defender XDR (they come from one vendor's incident response, so follow your own policy for single-source blocks), block only these exact dynamic-DNS hostnames, not gotdns.org or homedns.org, and alert on cdn007-digitaldownloads.com.",
+    "On endpoints, remove the rogue ScreenConnect client service (client IDs 2588ef5c15954b10 and ed630cc2c873b091), the TrapWatch scheduled task, C:\\ProgramData\\RelayTrap\\, %TEMP%\\sckit-* and the RelayTrapLiteAlert Run value before lifting isolation.",
+    "On technician workstations, look for sqlite3.exe reading browser profile data and for Panel-Lateral.ps1 or Run-Lateral-Full.bat, then reset browser-stored sessions and tokens."
+   ],
+   "sources": [
+    {
+     "url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "label": "Huntress SOC on r/msp – Active malware campaign abusing ScreenConnect",
+     "name": "Reddit r/msp"
+    }
+   ],
+   "indicator_count": 11,
+   "block_now_count": 0,
+   "hunt_count": 11,
+   "hunt_counts": {
+    "block": 6,
+    "alert": 5
+   },
+   "indicator_counts": {
+    "domain": 4,
+    "filename": 4,
+    "ipv4": 2,
+    "url": 1
+   },
+   "ioas": [
+    {
+     "artefact": "ScreenConnect.ClientSetup.msi installed by an existing ScreenConnect client (Run Command pushing a second client), especially with c=Exploited in the installer query",
+     "log_source": "Defender XDR DeviceProcessEvents; ScreenConnect audit log (Run Command and Toolbox history)",
+     "why": "With panel access the actor uses Run Command to push a second, rogue ScreenConnect client to every managed endpoint; Huntress lists the installer pattern /Bin/ScreenConnect.ClientSetup.msi?...&c=Exploited and the actor name Addmin. Legitimate MSP upgrades also run this installer, so judge the relay host and whether a change was scheduled.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "source_name": "Reddit r/msp",
+     "title": "Second ScreenConnect client pushed by Run Command",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "ScreenConnect client service whose command line carries the rogue client IDs 2588ef5c15954b10 or ed630cc2c873b091, or a relay (h=) of 185.99.255.28 or the campaign C2 hostnames",
+     "log_source": "Defender XDR DeviceProcessEvents",
+     "why": "Every ScreenConnect client names its relay in the h= value of the service command line. Huntress published two rogue client IDs and the attacker relay, so a client pointing there is the backdoor itself.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "source_name": "Reddit r/msp",
+     "title": "Rogue ScreenConnect client IDs or attacker relay",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "TrapWatch scheduled task running as SYSTEM every 10 seconds",
+     "log_source": "Defender XDR DeviceEvents (ScheduledTaskCreated) and DeviceProcessEvents",
+     "why": "Huntress names the TrapWatch task as the persistence that reinfects endpoints within minutes of isolation being lifted.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "source_name": "Reddit r/msp",
+     "title": "TrapWatch scheduled task persistence",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Files under C:\\ProgramData\\RelayTrap\\ or %TEMP%\\sckit-*",
+     "log_source": "Defender XDR DeviceFileEvents",
+     "why": "Huntress lists both locations as campaign artefacts that must be wiped before an endpoint is released.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "source_name": "Reddit r/msp",
+     "title": "RelayTrap and sckit staging files",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "RelayTrapLiteAlert value in a registry Run key",
+     "log_source": "Defender XDR DeviceRegistryEvents",
+     "why": "Huntress names this Run-key value as part of the persistence to remove.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "source_name": "Reddit r/msp",
+     "title": "RelayTrapLiteAlert Run-key persistence",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "sqlite3.exe run on a device within 60 minutes of a ScreenConnect process on the same device (technician reverse pivot)",
+     "log_source": "Defender XDR DeviceProcessEvents (join on DeviceId within 60 minutes)",
+     "why": "When a technician opens an interactive ScreenConnect session to an infected endpoint, the malware rides the session back, drops sqlite3.exe to scrape saved browser sessions and tokens, then pivots into other panels. Huntress does not give a time window; 60 minutes is a starting point to tune. Developer and database tools can run sqlite3.exe, so exclude known users and paths.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "source_name": "Reddit r/msp",
+     "title": "sqlite3 after ScreenConnect activity (reverse pivot)",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Mass Run Command or Toolbox executions in the ScreenConnect audit log that no technician started",
+     "log_source": "ScreenConnect audit and session logs",
+     "why": "Huntress asks every ScreenConnect user to check Run Command history now, even with no alert, because the actor pushes the rogue client to all endpoints at once.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "source_name": "Reddit r/msp",
+     "title": "Unexpected mass Run Command or Toolbox use",
+     "queries": []
+    }
+   ],
+   "ioa_count": 7,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/block_now.txt",
+     "download": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/defender_xdr_indicators.csv",
+     "download": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/hunt.kql",
+     "download": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/hunt.spl",
+     "download": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/hunt_raw.spl",
+     "download": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/hunt.yaral",
+     "download": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/iocs.csv",
+     "download": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign",
+   "indicators": [
+    {
+     "value": "185.99.255.28",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "Attacker relay (hostname screen) that the rogue ScreenConnect clients pushed through hijacked MSP panels connect to for persistent remote access.",
+     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "source_label": "Huntress SOC on r/msp – Active malware campaign abusing ScreenConnect",
+     "source_name": "Reddit r/msp"
+    },
+    {
+     "value": "155.94.150.39",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "Secondary C2 server (hostname WIN-FB5CKHMU4E1) behind sc.payproofkit.com in the ScreenConnect panel-hijack campaign.",
+     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "source_label": "Huntress SOC on r/msp – Active malware campaign abusing ScreenConnect",
+     "source_name": "Reddit r/msp"
+    },
+    {
+     "value": "newnewnew.gotdns.org",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "C2 hostname used by the rogue ScreenConnect clients in the panel-hijack campaign against MSPs.",
+     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "source_label": "Huntress SOC on r/msp – Active malware campaign abusing ScreenConnect",
+     "source_name": "Reddit r/msp"
+    },
+    {
+     "value": "soxnewwork.homedns.org",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "C2 hostname used by the rogue ScreenConnect clients in the panel-hijack campaign against MSPs.",
+     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "source_label": "Huntress SOC on r/msp – Active malware campaign abusing ScreenConnect",
+     "source_name": "Reddit r/msp"
+    },
+    {
+     "value": "sc.payproofkit.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "Secondary C2 hostname for the ScreenConnect panel-hijack campaign, hosted on 155.94.150.39.",
+     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "source_label": "Huntress SOC on r/msp – Active malware campaign abusing ScreenConnect",
+     "source_name": "Reddit r/msp"
+    },
+    {
+     "value": "cdn007-digitaldownloads.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Possible C2 domain for the ScreenConnect panel-hijack campaign, contributed by another responder in the Huntress thread and not yet confirmed.",
+     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "source_label": "Huntress SOC on r/msp – Active malware campaign abusing ScreenConnect",
+     "source_name": "Reddit r/msp"
+    },
+    {
+     "value": "https://ns.mo7sen.dev/EadF.php?p=4",
+     "type": "url",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "Stager URL used in the ScreenConnect panel-hijack campaign to deliver the next stage to managed endpoints.",
+     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "source_label": "Huntress SOC on r/msp – Active malware campaign abusing ScreenConnect",
+     "source_name": "Reddit r/msp"
+    },
+    {
+     "value": "Panel-Lateral.ps1",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Script the actor uses to pivot from a compromised technician workstation into other ScreenConnect panels.",
+     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "source_label": "Huntress SOC on r/msp – Active malware campaign abusing ScreenConnect",
+     "source_name": "Reddit r/msp"
+    },
+    {
+     "value": "Run-Lateral-Full.bat",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Batch file used for lateral movement in the ScreenConnect panel-hijack campaign.",
+     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "source_label": "Huntress SOC on r/msp – Active malware campaign abusing ScreenConnect",
+     "source_name": "Reddit r/msp"
+    },
+    {
+     "value": "runnew.cmd",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Command script dropped in the ScreenConnect panel-hijack campaign.",
+     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "source_label": "Huntress SOC on r/msp – Active malware campaign abusing ScreenConnect",
+     "source_name": "Reddit r/msp"
+    },
+    {
+     "value": "ToolboxRelayUploader.exe",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Executable used to stage payloads through the ScreenConnect Toolbox in the panel-hijack campaign.",
+     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+     "source_label": "Huntress SOC on r/msp – Active malware campaign abusing ScreenConnect",
+     "source_name": "Reddit r/msp"
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/hunt.kql",
+     "download": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/hunt.spl",
+     "download": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/hunt_raw.spl",
+      "download": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/hunt.yaral",
+     "download": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign_hunt.yaral"
+    }
+   ]
+  },
   {
    "id": "Trigram-DPRK-Dropper-Kimsuky-UNK-DeadDrop",
    "folder": "threats/2026-11_November-2026/2026-11-11/Trigram-DPRK-Dropper-Kimsuky-UNK-DeadDrop",

@@ -1,0 +1,99 @@
+// Threat: ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints
+// Author: Daniel Jeremiah | Date: 2026-11-11
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign
+let Lookback = 30d;
+let IPs = dynamic(["185.99.255.28", "155.94.150.39"]);
+let Domains = dynamic(["newnewnew.gotdns.org", "soxnewwork.homedns.org", "sc.payproofkit.com", "cdn007-digitaldownloads.com"]);
+let Urls = dynamic(["https://ns.mo7sen.dev/EadF.php?p=4"]);
+let UrlKeys = dynamic(["ns.mo7sen.dev/EadF.php?p=4"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " port ", RemotePort))),
+  (DeviceLogonEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceLogonEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", LogonType, " ", AccountName))),
+  (EntraIdSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSignInEvents", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (AADSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSignInEventsBeta", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (EntraIdSpnSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSpnSignInEvents", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (AADSpnSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSpnSignInEventsBeta", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(AccountDisplayName), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ActionType))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (DeviceEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType == "DnsQueryResponse" and tostring(parse_json(AdditionalFields).DnsQueryString) has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(parse_json(AdditionalFields).DnsQueryString), Context = tostring(strcat("DNS ", InitiatingProcessFileName))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (UrlKeys)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (EmailUrlInfo
+    | where Timestamp > ago(Lookback)
+    | where UrlDomain has_any (Domains) or Url has_any (UrlKeys)
+    | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = tostring(Url), Context = tostring("URL in email")),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url has_any (Domains) or Url has_any (UrlKeys)
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where ProcessCommandLine has_any ("TrapWatch", "RelayTrap", "sckit-", "Panel-Lateral.ps1", "Run-Lateral-Full.bat", "ToolboxRelayUploader", "2588ef5c15954b10", "ed630cc2c873b091", "c=Exploited") or FileName in~ ("ToolboxRelayUploader.exe", "runnew.cmd")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where (InitiatingProcessFileName startswith "ScreenConnect" or InitiatingProcessFolderPath has "ScreenConnect") and ProcessCommandLine has "ScreenConnect.ClientSetup"
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", FileName, " ", ProcessCommandLine))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "ScreenConnect.ClientService.exe" and ProcessCommandLine has_any ("2588ef5c15954b10", "ed630cc2c873b091", "185.99.255.28", "newnewnew.gotdns.org", "soxnewwork.homedns.org", "sc.payproofkit.com", "c=Exploited")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType in ("ScheduledTaskCreated", "ScheduledTaskUpdated") and tostring(AdditionalFields) has "TrapWatch"
+    | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(ActionType), Context = tostring(strcat("Task: ", tostring(AdditionalFields.TaskName)))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "schtasks.exe" and ProcessCommandLine has "TrapWatch"
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", ProcessCommandLine))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FolderPath has @"\ProgramData\RelayTrap" or FolderPath has @"\sckit-" or FileName in~ ("Panel-Lateral.ps1", "Run-Lateral-Full.bat", "ToolboxRelayUploader.exe")
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " by ", InitiatingProcessFileName))),
+  (DeviceRegistryEvents
+    | where Timestamp > ago(Lookback)
+    | where RegistryValueName =~ "RelayTrapLiteAlert" or RegistryValueData has "RelayTrap"
+    | project Timestamp, SourceTable = "DeviceRegistryEvents", Entity = tostring(DeviceName), Indicator = tostring(RegistryKey), Context = tostring(strcat(ActionType, " ", RegistryValueName, " = ", RegistryValueData))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName startswith "ScreenConnect" or InitiatingProcessFileName startswith "ScreenConnect"
+    | summarize ScTime = min(Timestamp) by DeviceId, bin(Timestamp, 1h)
+    | join kind=inner (
+        DeviceProcessEvents
+        | where Timestamp > ago(Lookback)
+        | where FileName =~ "sqlite3.exe"
+        | project SqlTime = Timestamp, DeviceId, DeviceName, SqlCmd = ProcessCommandLine, SqlPath = FolderPath
+    ) on DeviceId
+    | where SqlTime >= ScTime and SqlTime <= ScTime + 60m
+    | project Timestamp = SqlTime, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(SqlCmd), Context = tostring(strcat("sqlite3 after ScreenConnect activity within 60m; path: ", SqlPath, iff(SqlCmd has_any ("Cookies", "Login Data", "Web Data"), "; browser profile data in command line", ""))))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

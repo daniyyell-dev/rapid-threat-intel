@@ -1,0 +1,86 @@
+``` Threat: ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints
+    Author: Daniel Jeremiah | Date: 2026-11-11
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign ```
+| multisearch
+  [ search `rti_network(185.99.255.28 OR 155.94.150.39)`
+    | search dest_ip IN ("185.99.255.28", "155.94.150.39")
+    | eval data_model="network", ioc_type="ipv4", ioc=dest_ip, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_network(185.99.255.28 OR 155.94.150.39)`
+    | search src_ip IN ("185.99.255.28", "155.94.150.39")
+    | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_dns(newnewnew.gotdns.org OR soxnewwork.homedns.org OR sc.payproofkit.com OR cdn007-digitaldownloads.com)`
+    | search query IN ("newnewnew.gotdns.org", "*.newnewnew.gotdns.org", "soxnewwork.homedns.org", "*.soxnewwork.homedns.org", "sc.payproofkit.com", "*.sc.payproofkit.com", "cdn007-digitaldownloads.com", "*.cdn007-digitaldownloads.com")
+    | rex field=query "(?i)(?<ioc>(?:newnewnew\.gotdns\.org|soxnewwork\.homedns\.org|sc\.payproofkit\.com|cdn007\-digitaldownloads\.com))\.?$"
+    | eval data_model="dns", ioc_type="domain", host=src, detail="DNS query ".query
+  ]
+  [ search `rti_web(newnewnew.gotdns.org OR soxnewwork.homedns.org OR sc.payproofkit.com OR cdn007-digitaldownloads.com OR ns.mo7sen.dev)`
+    | search url IN ("*://newnewnew.gotdns.org*", "*.newnewnew.gotdns.org*", "newnewnew.gotdns.org*", "*://soxnewwork.homedns.org*", "*.soxnewwork.homedns.org*", "soxnewwork.homedns.org*", "*://sc.payproofkit.com*", "*.sc.payproofkit.com*", "sc.payproofkit.com*", "*://cdn007-digitaldownloads.com*", "*.cdn007-digitaldownloads.com*", "cdn007-digitaldownloads.com*", "*ns.mo7sen.dev/EadF.php?p=4*") OR dest IN ("newnewnew.gotdns.org", "*.newnewnew.gotdns.org", "soxnewwork.homedns.org", "*.soxnewwork.homedns.org", "sc.payproofkit.com", "*.sc.payproofkit.com", "cdn007-digitaldownloads.com", "*.cdn007-digitaldownloads.com")
+    | rex field=url "(?i)(?<ioc>ns\.mo7sen\.dev/EadF\.php\?p=4|newnewnew\.gotdns\.org|soxnewwork\.homedns\.org|sc\.payproofkit\.com|cdn007\-digitaldownloads\.com)"
+    | eval ioc=coalesce(ioc, dest), data_model="web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search `rti_endpoint(ScreenConnect.ClientSetup)`
+    | where match(coalesce(parent_process_name, ""), "(?i)^screenconnect") AND match(coalesce(process, ""), "(?i)ScreenConnect\.ClientSetup")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Second ScreenConnect client pushed by Run Command", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(2588ef5c15954b10 OR ed630cc2c873b091 OR 185.99.255.28 OR newnewnew.gotdns.org OR soxnewwork.homedns.org OR sc.payproofkit.com OR "c=Exploited")`
+    | where match(coalesce(process, ""), "(?i)2588ef5c15954b10|ed630cc2c873b091|185\.99\.255\.28|newnewnew\.gotdns\.org|soxnewwork\.homedns\.org|sc\.payproofkit\.com|c=Exploited")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Rogue ScreenConnect client IDs or attacker relay", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(TrapWatch)`
+    | where match(coalesce(process, ""), "(?i)TrapWatch")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="TrapWatch scheduled task persistence", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(RelayTrap OR sckit- OR Panel-Lateral.ps1 OR Run-Lateral-Full.bat OR ToolboxRelayUploader.exe)`
+    | where match(coalesce(file_path, file_name, ""), "(?i)ProgramData.RelayTrap|sckit-|Panel-Lateral\.ps1|Run-Lateral-Full\.bat|ToolboxRelayUploader\.exe")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="RelayTrap and sckit staging files", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search index=* RelayTrapLiteAlert
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="raw events"
+    | eval ioc="RelayTrapLiteAlert Run-key persistence", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(sqlite3.exe)`
+    | where match(coalesce(process_name, ""), "(?i)sqlite3\.exe")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="sqlite3 after ScreenConnect activity (reverse pivot)", ioc_type="behaviour (hunt)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count
