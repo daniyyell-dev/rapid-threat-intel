@@ -20,6 +20,8 @@
   --pink: #f21368;
   --pink-text: #f54e8e;
   --pink-deep: #c20f53;
+  --ioc: #f21368;
+  --ioc-bg: rgba(242, 19, 104, .16);
   --block: #ee5f5b;
   --alert: #e58a10;
   --monitor: #3fa9cb;
@@ -541,10 +543,35 @@ td.none { text-align: center; padding: 32px; color: var(--ink-3); font-size: 14p
 .ioa-title { margin: 0 0 8px; font: 500 16px/1.4 var(--sans); color: var(--ink); overflow-wrap: anywhere; }
 .ioa-title .pill { margin-right: 8px; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
 .ioa-line { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 0 12px; margin: 4px 0 0; font-size: 14px; line-height: 1.55; color: var(--ink-2); max-width: 78ch; overflow-wrap: anywhere; }
-.ioa-lab { display: block; padding-top: 2px; font: 500 12px/1.55 var(--sans); color: var(--ink-3); text-transform: uppercase; letter-spacing: .04em; }
+.ioa-lab { display: block; padding-top: 2px; font: 700 12px/1.55 var(--sans); color: var(--pink); text-transform: uppercase; letter-spacing: .04em; }
 .ioa-qs { font-family: var(--mono); font-size: 13px; color: var(--ink); }
 .ioa-qs .ioa-lab { font-family: var(--sans); }
 .ioa-qs.none { font-family: var(--sans); color: var(--ink-3); }
+
+/* Value cell in the two-column IOA line, so IOC chips stay in the text column. */
+.ioa-val { min-width: 0; overflow-wrap: anywhere; }
+/* IOCs and other actionable values in card text (applied at render time).
+   Inline, not grid items; short tokens stay on one line. */
+.ioc {
+  display: inline;
+  font-family: var(--mono);
+  font-size: .92em;
+  font-weight: 600;
+  color: var(--ioc);
+  background: var(--ioc-bg);
+  padding: 0 .22em;
+  margin: 0 .02em;
+  border-radius: 3px;
+  white-space: nowrap;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.ioc.ioc-long {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+/* Source links stay the existing pink/underline style; never restyle a link as an IOC chip. */
+a.ioc, a .ioc, .ioc a { font-family: inherit; font-weight: inherit; font-size: inherit; color: inherit; background: none; padding: 0; margin: 0; border-radius: 0; }
 
 /* Hunt preview and actions */
 .hq-act { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin: 0 0 12px; }
@@ -569,7 +596,7 @@ td.none { text-align: center; padding: 32px; color: var(--ink-3); font-size: 14p
 @media (max-width: 720px) {
   .ioa-list > li { grid-template-columns: 22px minmax(0, 1fr); gap: 0 8px; padding: 16px 0; }
   .ioa-line { display: block; }
-  .ioa-lab { padding-top: 0; }
+  .ioa-lab { padding-top: 0; margin-bottom: 2px; }
   .ioa-title { font-size: 15px; }
   .hq-code { max-height: 360px; padding: 10px; font-size: 11.5px; }
 }
@@ -837,3 +864,11 @@ a.pg-btn:hover, a.pg-num:hover { border-color: rgba(242, 19, 104, .45); color: v
   .pg-list { gap: 3px; }
   .pg-num { min-width: 32px; height: 32px; }
 }
+
+/* Explicit light theme hook only (the dashboard is dark-first). A light OS colour
+   scheme must not recolour labels, because the page background stays dark. */
+html[data-theme="light"] {
+  --ioc: #c20f53;
+  --ioc-bg: rgba(194, 15, 83, .12);
+}
+html[data-theme="light"] .ioa-lab { color: #c20f53; }

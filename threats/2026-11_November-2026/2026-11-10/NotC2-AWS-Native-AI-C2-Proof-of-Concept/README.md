@@ -61,7 +61,7 @@ Indicators by type: 2 other. See `iocs.csv` for full details and descriptions.
 
 2. **Hunt** · SNS subscription confirmed for a new external endpoint\
    Look for: SNS ConfirmSubscription for a new external HTTP or HTTPS endpoint\
-   Why it matters: NotC2 only receives results once the operator's endpoint confirms the subscription. The source address of the confirmation can point to the receiving server, so record it as a lead.\
+   Why it matters: NotC2 only receives results once the operator's endpoint confirms the subscription. Record the confirmation's source address as a lead.\
    Log source: CloudTrail management events (sns.amazonaws.com)\
    Source: [Varonis](https://www.varonis.com/blog/notc2-ai-powered-c2-channel)
 
@@ -85,7 +85,7 @@ Indicators by type: 2 other. See `iocs.csv` for full details and descriptions.
 
 6. **Alert** · AWS resources named NotC2\
    Look for: SQS queue named NotC2-Commands, or queue, function or topic names containing NotC2\
-   Why it matters: NotC2-Commands is the command queue name in Varonis's published screenshots (created with aws sqs create-queue --queue-name NotC2-Commands). The name is trivial to change, so a miss means little.\
+   Why it matters: NotC2-Commands is the command queue name in Varonis's published screenshots. The name is trivial to change, so a miss means little.\
    Log source: CloudTrail management events (sqs CreateQueue requestParameters.queueName), AWS CLI command lines on endpoints\
    Source: [Varonis](https://www.varonis.com/blog/notc2-ai-powered-c2-channel)
 
@@ -108,8 +108,8 @@ Indicators by type: 2 other. See `iocs.csv` for full details and descriptions.
    Source: [Varonis](https://www.varonis.com/blog/notc2-ai-powered-c2-channel)
 
 10. **Hunt** · Lambda logs relaying commands through SNS\
-   Look for: Lambda log lines "SNS message body:" followed by Command:, Target:, Exit Code:, Output: and Error: fields, or functions configured with SNS_TOPIC_ARN or SNS_TOPIC_NAME\
-   Why it matters: These strings appear in the NotC2 code shown in Varonis's screenshots (the results message format and the topic lookup). Default names are easy to change, so treat a match as a strong lead and a miss as no proof.\
+   Look for: Lambda log lines "SNS message body:" followed by Command:, Target:, Exit Code:, Output: and Error: fields, or functions with SNS_TOPIC_ARN or SNS_TOPIC_NAME\
+   Why it matters: These strings appear in the NotC2 code in Varonis's screenshots. Default names are easy to change, so a match is a strong lead and a miss is no proof.\
    Log source: Lambda CloudWatch Logs and function configuration\
    Source: [Varonis](https://www.varonis.com/blog/notc2-ai-powered-c2-channel)
 

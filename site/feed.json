@@ -2548,9 +2548,9 @@
    },
    "ioas": [
     {
-     "artefact": "Unauthenticated OCI-P or XML requests to Cisco BroadWorks XSP on port 2208, especially requests that pull external entities or unusual DTDs",
+     "artefact": "Unauthenticated OCI-P or XML requests to Cisco BroadWorks XSP on port 2208, especially those that pull external entities or unusual DTDs",
      "log_source": "Load-balancer, WAF and BroadWorks XSP logs",
-     "why": "Malbear Labs describes initial access through CVE-2026-20320, an unauthenticated XXE in the BroadWorks OCI XML parser on port 2208. CISA later listed the CVE as exploited.",
+     "why": "Initial access is CVE-2026-20320, an unauthenticated XXE in the BroadWorks OCI XML parser on port 2208. CISA later listed the CVE as exploited.",
      "action": "hunt",
      "has_query": true,
      "source_url": "https://malbearlabs.com/posts/operation-snowball-inside-an-autonomous-ai-intrusion-campaign",
@@ -2562,9 +2562,9 @@
      ]
     },
     {
-     "artefact": "Outbound PowerShell or unexpected SSH from BroadWorks or telecom application servers, including connections to api.tablacysexplorer.com or to ports 2299, 8000 or 56777",
+     "artefact": "Outbound PowerShell or unexpected SSH from BroadWorks or telecom application servers, especially to api.tablacysexplorer.com or ports 2299, 8000 or 56777",
      "log_source": "EDR process and network events on BroadWorks and adjacent hosts",
-     "why": "Malbear Labs recovered a PowerShell C2 chain, Sliver operator configuration, and SSH access to the Sliver server and an operator host from the exposed workspace.",
+     "why": "Malbear Labs recovered a PowerShell C2 chain, Sliver operator configuration, and SSH access to the C2 and an operator host.",
      "action": "alert",
      "has_query": true,
      "source_url": "https://malbearlabs.com/posts/operation-snowball-inside-an-autonomous-ai-intrusion-campaign",
@@ -2796,9 +2796,9 @@
    },
    "ioas": [
     {
-     "artefact": "OUTLOOK.EXE making outbound SMB connections on TCP 445 or 139 to addresses that are not private",
+     "artefact": "OUTLOOK.EXE making outbound SMB on TCP 445 or 139 to addresses that are not private",
      "log_source": "EDR network events on workstations and mail hosts",
-     "why": "CVE-2026-124194 is an exploited Outlook flaw that can force the client to authenticate over SMB and expose an NTLMv2 hash when a crafted message is processed, with no meaningful user click. No campaign indicators were published. Internal SMB is expected; hunt only outbound or previously unseen destinations, and do not treat this as a block list.",
+     "why": "CVE-2026-124194 can expose an NTLMv2 hash over SMB when Outlook processes a crafted message, with no meaningful user click. No campaign indicators were published. Hunt outbound or previously unseen destinations only; this is not a block list.",
      "action": "hunt",
      "has_query": true,
      "source_url": "https://www.cisa.gov/news-events/alerts/2026/11/10/cisa-adds-six-known-exploited-vulnerabilities-catalog",
@@ -12243,7 +12243,7 @@
     {
      "artefact": "Bursts of many varied requests from one source in minutes, with default tool user agents (Nmap, curl, wget, Python HTTP clients, headless Chromium or Playwright)",
      "log_source": "Web server, WAF and reverse-proxy logs",
-     "why": "Microsoft describes agentic scanning as a wide variety of requests in a short time, with retries at machine speed. The agent changes user agents quickly, so use this to alert, not to block.",
+     "why": "Microsoft describes agentic scanning as many varied requests in a short time, at machine speed. The agent changes user agents quickly, so use this to alert, not to block.",
      "action": "hunt",
      "has_query": true,
      "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/",
@@ -12268,7 +12268,7 @@
      ]
     },
     {
-     "artefact": "Short bursts of about one to 14 web or API requests a second apart, then a pause of 25 to 31 seconds, consistent with an agent waiting on a model inference call",
+     "artefact": "Short bursts of about 1 to 14 web or API requests a second apart, then a 25 to 31 second pause, consistent with waiting on a model inference call",
      "log_source": "Web server, WAF and reverse-proxy logs",
      "why": "Unit 42's ARTEX defender guide describes this think-then-act cadence as a hallmark of agentic tooling, alongside machine-speed pivots after a credential is found.",
      "action": "hunt",
@@ -12298,7 +12298,7 @@
     {
      "artefact": "Placeholder or canary usernames and values sent immediately before real credentials in the same authentication or API session",
      "log_source": "Web application, identity and API logs",
-     "why": "Unit 42 saw ARTEX agents test canary inputs, such as bogus usernames, before real ones. Hunt for that pattern in your own logs; do not treat research examples as indicators.",
+     "why": "Unit 42 saw ARTEX agents test canary inputs, such as bogus usernames, before real ones. Hunt that pattern in your logs; do not treat research examples as indicators.",
      "action": "hunt",
      "has_query": false,
      "source_url": "https://unit42.paloaltonetworks.com/artex-and-ai-powered-red-teaming-tools/",
@@ -16101,7 +16101,7 @@
     {
      "artefact": "SNS ConfirmSubscription for a new external HTTP or HTTPS endpoint",
      "log_source": "CloudTrail management events (sns.amazonaws.com)",
-     "why": "NotC2 only receives results once the operator's endpoint confirms the subscription. The source address of the confirmation can point to the receiving server, so record it as a lead.",
+     "why": "NotC2 only receives results once the operator's endpoint confirms the subscription. Record the confirmation's source address as a lead.",
      "action": "hunt",
      "has_query": true,
      "source_url": "https://www.varonis.com/blog/notc2-ai-powered-c2-channel",
@@ -16158,7 +16158,7 @@
     {
      "artefact": "SQS queue named NotC2-Commands, or queue, function or topic names containing NotC2",
      "log_source": "CloudTrail management events (sqs CreateQueue requestParameters.queueName), AWS CLI command lines on endpoints",
-     "why": "NotC2-Commands is the command queue name in Varonis's published screenshots (created with aws sqs create-queue --queue-name NotC2-Commands). The name is trivial to change, so a miss means little.",
+     "why": "NotC2-Commands is the command queue name in Varonis's published screenshots. The name is trivial to change, so a miss means little.",
      "action": "alert",
      "has_query": true,
      "source_url": "https://www.varonis.com/blog/notc2-ai-powered-c2-channel",
@@ -16212,9 +16212,9 @@
      ]
     },
     {
-     "artefact": "Lambda log lines \"SNS message body:\" followed by Command:, Target:, Exit Code:, Output: and Error: fields, or functions configured with SNS_TOPIC_ARN or SNS_TOPIC_NAME",
+     "artefact": "Lambda log lines \"SNS message body:\" followed by Command:, Target:, Exit Code:, Output: and Error: fields, or functions with SNS_TOPIC_ARN or SNS_TOPIC_NAME",
      "log_source": "Lambda CloudWatch Logs and function configuration",
-     "why": "These strings appear in the NotC2 code shown in Varonis's screenshots (the results message format and the topic lookup). Default names are easy to change, so treat a match as a strong lead and a miss as no proof.",
+     "why": "These strings appear in the NotC2 code in Varonis's screenshots. Default names are easy to change, so a match is a strong lead and a miss is no proof.",
      "action": "hunt",
      "has_query": false,
      "source_url": "https://www.varonis.com/blog/notc2-ai-powered-c2-channel",

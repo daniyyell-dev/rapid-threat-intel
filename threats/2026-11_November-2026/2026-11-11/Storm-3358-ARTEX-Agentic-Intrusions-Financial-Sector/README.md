@@ -67,7 +67,7 @@ Indicators by type: 8 IPv4. See `iocs.csv` for full details and descriptions.
 
 2. **Hunt** · Rapid scanning with default scanner user agents\
    Look for: Bursts of many varied requests from one source in minutes, with default tool user agents (Nmap, curl, wget, Python HTTP clients, headless Chromium or Playwright)\
-   Why it matters: Microsoft describes agentic scanning as a wide variety of requests in a short time, with retries at machine speed. The agent changes user agents quickly, so use this to alert, not to block.\
+   Why it matters: Microsoft describes agentic scanning as many varied requests in a short time, at machine speed. The agent changes user agents quickly, so use this to alert, not to block.\
    Log source: Web server, WAF and reverse-proxy logs\
    Source: [Microsoft](https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/)
 
@@ -78,7 +78,7 @@ Indicators by type: 8 IPv4. See `iocs.csv` for full details and descriptions.
    Source: [Microsoft](https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/)
 
 4. **Hunt** · Inference-paced request bursts then a pause\
-   Look for: Short bursts of about one to 14 web or API requests a second apart, then a pause of 25 to 31 seconds, consistent with an agent waiting on a model inference call\
+   Look for: Short bursts of about 1 to 14 web or API requests a second apart, then a 25 to 31 second pause, consistent with waiting on a model inference call\
    Why it matters: Unit 42's ARTEX defender guide describes this think-then-act cadence as a hallmark of agentic tooling, alongside machine-speed pivots after a credential is found.\
    Log source: Web server, WAF and reverse-proxy logs\
    Source: [Unit 42](https://unit42.paloaltonetworks.com/artex-and-ai-powered-red-teaming-tools/)
@@ -91,7 +91,7 @@ Indicators by type: 8 IPv4. See `iocs.csv` for full details and descriptions.
 
 6. **Hunt** · Canary inputs immediately before real credentials\
    Look for: Placeholder or canary usernames and values sent immediately before real credentials in the same authentication or API session\
-   Why it matters: Unit 42 saw ARTEX agents test canary inputs, such as bogus usernames, before real ones. Hunt for that pattern in your own logs; do not treat research examples as indicators.\
+   Why it matters: Unit 42 saw ARTEX agents test canary inputs, such as bogus usernames, before real ones. Hunt that pattern in your logs; do not treat research examples as indicators.\
    Log source: Web application, identity and API logs\
    Source: [Unit 42](https://unit42.paloaltonetworks.com/artex-and-ai-powered-red-teaming-tools/)
 

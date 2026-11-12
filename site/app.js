@@ -249,13 +249,75 @@
   function behaviourFirst(t) {
     return !!t.ioa_count && !NET_TYPES.some(function (k) { return t.indicator_counts[k]; });
   }
+
+  /* Highlight IOCs and other actionable values in card text. Links, Copy and Download
+     controls are left alone (this only wraps plain-text leaves). Patterns that must
+     stay case-sensitive (AWS API names) are kept off the /i flag so words such as
+     "listed" or "confirmed" are not marked. */
+  var IOC_PATTERNS = [
+    /(?:hxxps?|https?|fxps?|ftps?):\/\/[^\s,;<>]+/gi,
+    /CVE-\d{4}-\d{4,}/gi,
+    /\b\d{1,3}(?:\[\.\]|\(\.\)|\.)\d{1,3}(?:\[\.\]|\(\.\)|\.)\d{1,3}(?:\[\.\]|\(\.\)|\.)\d{1,3}\b/g,
+    /\b[a-fA-F0-9]{64}\b/g,
+    /\b[a-fA-F0-9]{40}\b/g,
+    /\b[a-fA-F0-9]{32}\b/g,
+    /%[A-Za-z0-9_]+%(?:\\[\w .#*-]+)*/g,
+    /(?:HK(?:LM|CU|CR|CC|U)|HKEY_[A-Z_]+)\\[^\s,;]+/g,
+    /(?:[A-Za-z]:|\\\\)\\[^\s,;]+/g,
+    /\/(?:etc|var|tmp|usr|opt|home|root|dev|proc|rest)(?:\/[^\s,;:]+)+/g,
+    /\/\.[A-Za-z0-9_-]+/g,
+    /\b[\w.+#-]+\.(?:exe|dll|sys|ps1|bat|cmd|aspx|ashx|php|jsp|jar|vbs|vbe|scr|msi|lnk|hta|wsf|so|dylib|sh|py|json|config|conf|yml|yaml)\b/gi,
+    /\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\[\.])+[a-z]{2,24}\b/gi,
+    /\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+(?:com|net|org|io|dev|gov|edu|info|biz|ru|cn|uk|us|de|fr|app|xyz|top|pro|co|in|au|ca|nl|jp|br|pl|eu|cloud|local|internal|onion|gg|me|cc|tv|to|ai|sh|rs|se|ch|at|be|it|es|pt|cz|sk|hu|ro|bg|ua|by|kz|tr|ir|il|sa|ae|za|nz|mx|ar|cl|pe|id|th|vn|ph|my|sg|hk|tw|kr|tech|online|site|store|club|live|news|media|security|systems|network|digital|email|support|services|agency|solutions|software|host|hosting|server|cfd|sbs|shop|fun|icu|cyou|bond|click|link|pw)\b/gi,
+    /\b(?:TCP|UDP|ports?)\s+\d{2,5}(?:(?:\s*,\s*|\s+and\s+|\s+or\s+)\d{2,5})*/gi,
+    /\b[a-p]{32}\b/g,
+    /\bauthenticationToken=\S+/g,
+    /\b(?:Create|Describe|Get|List|Put|Delete|Invoke|Update|Assume|Pass|Confirm|Subscribe)[A-Z][A-Za-z0-9]+\b/g,
+    /\b[A-Z][A-Z0-9]*_[A-Za-z0-9_]{2,}\b/g,
+    /"[^"\n]{3,80}"/g,
+    /\bPowerShell\b/gi
+  ];
+  function highlightIocs(text) {
+    if (text == null || text === "") return text == null ? text : text;
+    var s = String(text), marks = [];
+    IOC_PATTERNS.forEach(function (pat) {
+      var re = new RegExp(pat.source, pat.flags), m;
+      while ((m = re.exec(s))) {
+        if (!m[0]) { re.lastIndex++; continue; }
+        marks.push({ a: m.index, b: m.index + m[0].length, t: m[0] });
+      }
+    });
+    marks.sort(function (x, y) { return x.a - y.a || (y.b - y.a) - (x.b - x.a); });
+    var kept = [], end = 0;
+    marks.forEach(function (m) {
+      if (m.a < end) return;
+      kept.push(m);
+      end = m.b;
+    });
+    if (!kept.length) return s;
+    var out = [], last = 0;
+    kept.forEach(function (m) {
+      if (m.a > last) out.push(s.slice(last, m.a));
+      out.push(h("span", { class: m.t.length > 28 ? "ioc ioc-long" : "ioc", text: m.t }));
+      last = m.b;
+    });
+    if (last < s.length) out.push(s.slice(last));
+    return out;
+  }
+  function highlightTree(body) {
+    if (body == null || body === false) return body;
+    if (typeof body === "string" || typeof body === "number") return highlightIocs(String(body));
+    if (Array.isArray(body)) return body.map(highlightTree);
+    return body;
+  }
+
   function ioaSection(t) {
     if (!t.ioas || !t.ioas.length) return null;
     var multi = t.ioas.some(function (x) { return x.source_url; }) && t.sources.length > 1;
-    function line(label, body, cls) { return h("p", { class: "ioa-line" + (cls ? " " + cls : "") }, h("span", { class: "ioa-lab", text: label }), body); }
+    function line(label, body, cls) { return h("p", { class: "ioa-line" + (cls ? " " + cls : "") }, h("span", { class: "ioa-lab", text: label }), h("span", { class: "ioa-val" }, highlightTree(body))); }
     return h("section", { class: "blk-sec ioa-sec", id: "ioa-sec", "aria-labelledby": "ioa-h" },
       h("h2", { id: "ioa-h" }, "Behaviours to hunt", h("span", { text: String(t.ioas.length) })),
-      h("p", { class: "ioa-note", role: "note" }, t.ioa_note || ""),
+      h("p", { class: "ioa-note", role: "note" }, highlightIocs(t.ioa_note || "")),
       h("ol", { class: "ioa-list" }, t.ioas.map(function (x, i) {
         var qs = x.queries && x.queries.length ? x.queries : (x.has_query ? ["KQL"] : []);
         return h("li", null,
@@ -569,7 +631,7 @@
           .map(function (f) { return h("div", { class: f[2] || null }, h("dt", { text: f[0] }), h("dd", { text: String(f[1]) })); }))));
 
     var main = h("div", { class: "det-main" });
-    if (t.caveat) main.appendChild(h("div", { class: "warn", role: "note" }, h("b", null, "Note"), t.caveat));
+    if (t.caveat) main.appendChild(h("div", { class: "warn", role: "note" }, h("b", null, "Note"), " ", highlightIocs(t.caveat)));
     var hunt = t.hunt_count != null ? t.hunt_count : t.indicator_count - t.block_now_count;
     var todo = h("p", { class: "todo" },
       t.block_now_count ? h("span", { class: "blk" }, h("b", { text: String(t.block_now_count) }), " to block now") : h("span", { class: "dim", text: "Nothing to block" }),
@@ -579,14 +641,14 @@
       t.ioa_count ? [h("span", { class: "ioa-c" }, h("b", { text: String(t.ioa_count) }), (t.ioa_count === 1 ? " behaviour" : " behaviours") + " to hunt"), h("span", { class: "sep", "aria-hidden": "true", text: " \u00b7 " })] : null,
       h("button", { type: "button", class: "link-btn", onclick: function () { $("ind-h").scrollIntoView({ block: "start" }); } }, "See " + plural(t.indicator_count, "indicator")));
     main.appendChild(sec("What to do", h("div", null, todo,
-      t.recommended_actions.length ? h("ol", { class: "steps" }, t.recommended_actions.map(function (a) { return h("li", { text: a }); })) : null)));
+      t.recommended_actions.length ? h("ol", { class: "steps" }, t.recommended_actions.map(function (a) { return h("li", null, h("span", null, highlightIocs(a))); })) : null)));
     var ioa = ioaSection(t);
     if (ioa) main.appendChild(ioa);
     var hq = huntSection(t);
     if (hq) main.appendChild(hq);
     main.appendChild(targetSection(t));
     main.appendChild(srcLine(t.sources, "srcline det-src"));
-    if (t.summary) main.appendChild(sec("Background", h("div", { class: "prose" }, h("p", { text: t.summary }))));
+    if (t.summary) main.appendChild(sec("Background", h("div", { class: "prose" }, h("p", null, highlightIocs(t.summary)))));
 
     var side = h("aside", { class: "side", "aria-label": "Downloads and MITRE ATT&CK" });
     side.appendChild(sec("Downloads", h("div", null, fileList(t.files),
