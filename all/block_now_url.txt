@@ -1,15 +1,8 @@
 http://194.150.166.244:8080/exfil
 https://ns.mo7sen.dev/EadF.php?p=4
-https://creepexplosiondarknight.com/d
-https://coeuzgoq.bahisbiz.com//update.sh
 http://62.60.226.50/upload.php
 https://api.frameworkmetrics.xyz/v1/analytics
 https://api.frameworkmetrics.xyz/v1/electron
-https://api.frameworkmetrics.xyz/v1/assets/
 https://api.frameworkmetrics.xyz/v1/swarm/report
-https://webhook.site/fdc222d5-2e6c-4122-801d-93099f3fe827
-https://webhook.site/46358b99-9cff-4f14-97bc-4a436086e826
-https://webhook.site/c05b53d9-c3b6-4a90-94dc-b86a0a4e905f
-https://ad.starx-net.com:8881/telemetry/v12
-https://static.flux-telemetry.com/module/5b4c8fea5cbcee273e8d830f52-temfp.js
-https://edge-ord.clouds-stacks.com/module/5b4c8fea5cbcee273e8d830f52-temfp.js
+http://107.189.27.46:3000/app.js
+https://pastebin.com/raw/q1p9qH2w

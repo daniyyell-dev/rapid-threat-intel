@@ -4,11 +4,11 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-11 | 2026-11-12 09:25 | 2026-11-12 | APT / browser implant | 27 | 0 |
+| 2026-11-11 | 2026-11-12 09:25 | 2026-11-12 | APT / browser implant | 27 | 1 |
 
 ## Summary
 
-Unit 42 describes Falcon, also called XG or Xiang Ge, a browser-based command-and-control framework that runs malicious JavaScript on compromised webmail portals and government web applications. Between March and May 2026 it was used against ministries of foreign affairs, defence and interior, and law enforcement in one Middle Eastern country and four Southeast Asian countries. The framework steals passwords, emails, session cookies and communications, sideloads a malicious Chrome or Firefox extension, and in some cases delivers Antino, a Rust implant that uses Microsoft OneDrive as its C2 channel. The published domains, extension ID and file hashes come only from Unit 42, so they are medium confidence: they appear as Block in the Defender import file, not on the high-confidence block-now list. Do not block OneDrive or other Microsoft services; hunt for Antino's OneDrive paths and the GatherOSStateKit persistence folder instead.
+Unit 42 describes Falcon, also called XG or Xiang Ge, a browser-based command-and-control framework that runs malicious JavaScript on compromised webmail portals and government web applications. Between March and May 2026 it was used against ministries of foreign affairs, defence and interior, and law enforcement in one Middle Eastern country and four Southeast Asian countries. The framework steals passwords, emails, session cookies and communications, sideloads a malicious Chrome or Firefox extension, and in some cases delivers Antino, a Rust implant that uses Microsoft OneDrive as its C2 channel. The published domains, extension ID and file hashes come only from Unit 42, so they are medium confidence and alert only; one hash that MalwareBazaar also holds is on the block-now list. Do not block OneDrive or other Microsoft services; hunt for Antino's OneDrive paths and the GatherOSStateKit persistence folder instead.
 
 > [!WARNING]
 > Single-source indicators (Unit 42). The observed activity is from March to May 2026. Do not block OneDrive or other Microsoft services.
@@ -25,7 +25,7 @@ Unit 42 describes Falcon, also called XG or Xiang Ge, a browser-based command-an
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant/block_now.txt) (raw) | None yet: no indicator is high-confidence enough to block, so use the files below to hunt |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant/block_now.txt) (raw) | 1 high-confidence indicators to block now |
 | [`iocs.csv`](iocs.csv) | All 27 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 26 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
@@ -48,7 +48,7 @@ Indicators by type: 21 SHA256, 5 domains, 1 other. See `iocs.csv` for full detai
 
 ## Recommended actions
 
-1. Import the Falcon domains and file hashes in Defender XDR at medium confidence, and hunt 30 days of DNS, proxy and endpoint logs for them.
+1. Import the Falcon domains and file hashes in Defender XDR as alerts, and hunt 30 days of DNS, proxy and endpoint logs for them.
 2. Search browser extension inventories, file paths and registry keys for Chrome extension ID mbidcmlcbgbphpoacojjbmfpohcimjji.
 3. Hunt for files under %LOCALAPPDATA%\Windows GatherOSStateKit, sdiagnhost.exe launching PowerShell, and OneDrive or Graph activity to antino/heartbeat/ or antino/antino_upload/ paths. Do not block OneDrive or Microsoft services.
 4. On internal or government web applications, look for unexpected third-party JavaScript and for Hm_lvt_$ local-storage keys or an Hm_lvt__ cookie with a long-lived expiry.
@@ -91,7 +91,7 @@ Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql)
 
 ## Hunt
 
-Run one of these to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
 
 | File | Platform | How to run it |
 |---|---|---|

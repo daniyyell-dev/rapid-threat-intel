@@ -4,7 +4,7 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-10 | 2026-11-10 17:59 | 2026-11-10 | APT / espionage | 158 | 116 |
+| 2026-11-10 | 2026-11-10 17:59 | 2026-11-10 | APT / espionage | 158 | 14 |
 
 ## Summary
 
@@ -25,7 +25,7 @@ Check Point Research tracks CopperDragon as a possible supplier of malware and i
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/CopperDragon-Sparrow-Framework-China-Nexus-Espionage/block_now.txt) (raw) | 116 high-confidence indicators to block now |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/CopperDragon-Sparrow-Framework-China-Nexus-Espionage/block_now.txt) (raw) | 14 high-confidence indicators to block now |
 | [`iocs.csv`](iocs.csv) | All 158 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 158 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
@@ -50,7 +50,7 @@ Indicators by type: 93 IPv4, 51 SHA256, 14 domains. See `iocs.csv` for full deta
 
 ## Recommended actions
 
-1. Block the domains, the C2 IPs marked block and the file hashes; alert on the cloud-hosted IPs rather than blocking them.
+1. Block the file hashes marked Block, which a second source confirms; alert on the other domains, C2 IPs and hashes, which only Check Point lists.
 2. Hunt for CertFixer.msi downloads and fake certificate-repair prompts, and for signed applications loading the listed DLL names from unusual folders.
 3. On internet-facing Linux servers, verify the ssh and sshd binaries against package checksums and look for containerd-demo, xfs_rudp and aplk.
 4. Alert on new LSA security packages, LSASS dumps and hidden local administrator accounts, and on unusual DNS MX query volumes to rare domains.

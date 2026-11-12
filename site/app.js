@@ -614,7 +614,7 @@
           h("td", null, typeTag(ind.type)),
           h("td", null, confMeter(ind.confidence)),
           h("td", null, actionPill(ind.recommended_action)),
-          h("td", { class: "desc" }, ind.description || "", multi && ind.source_url ? h("div", { class: "src" }, extLink(ind.source_url, ind.source_name || ind.source_label || ind.source_url)) : null)));
+          h("td", { class: "desc" }, ind.description || "", ind.sources && ind.sources.length ? h("div", { class: "src" }, ind.sources.map(function (s, i) { return [i ? " \u00b7 " : null, extLink(s.url, s.name)]; })) : (multi && ind.source_url ? h("div", { class: "src" }, extLink(ind.source_url, ind.source_name || ind.source_label || ind.source_url)) : null))));
       });
       countEl.textContent = n === t.indicators.length ? plural(n, "indicator") : n + " of " + t.indicators.length;
       if (!n) body.appendChild(h("tr", null, h("td", { colspan: "5", class: "none" }, "No indicators match this filter.")));

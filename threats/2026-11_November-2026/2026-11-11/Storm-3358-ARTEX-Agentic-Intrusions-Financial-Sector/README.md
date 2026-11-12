@@ -4,7 +4,7 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-06 | 2026-11-11 03:52 | 2026-11-12 09:50 | Financially motivated intrusion / financial sector | 8 | 8 |
+| 2026-11-06 | 2026-11-11 03:52 | 2026-11-12 09:50 | Financially motivated intrusion / financial sector | 8 | 1 |
 
 ## Summary
 
@@ -22,7 +22,7 @@ Microsoft Threat Intelligence reports that Storm-3358, a financially motivated, 
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/block_now.txt) (raw) | 8 high-confidence indicators to block now |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/block_now.txt) (raw) | 1 high-confidence indicators to block now |
 | [`iocs.csv`](iocs.csv) | All 8 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 8 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
@@ -47,7 +47,7 @@ Indicators by type: 8 IPv4. See `iocs.csv` for full details and descriptions.
 
 ## Recommended actions
 
-1. Block the ARTEX server and C2 addresses at the perimeter and in Defender XDR, and search 30 days of firewall, proxy and web server logs for them.
+1. Block 85.11.167.52, which URLhaus also lists, alert on the other ARTEX server and C2 addresses, which only Microsoft lists, and search 30 days of firewall, proxy and web server logs for them.
 2. Inventory internet-facing upload endpoints and server-side URL fetch features (document portals, onboarding and KYC forms, webhooks, PDF and image processors); require authentication on uploads and restrict outbound destinations.
 3. Hunt for web server processes spawning a shell, curl, wget or nc, new binaries run from temp or world-writable paths, and new cron entries on web hosts.
 4. Watch for bursts of rapid, retried requests with default tool user agents (Nmap, curl, python-requests, headless Chromium) against public web applications.

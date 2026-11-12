@@ -4,7 +4,7 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-09 | 2026-11-10 13:43 | 2026-11-10 | Supply chain / npm | 57 | 37 |
+| 2026-11-09 | 2026-11-10 13:43 | 2026-11-10 | Supply chain / npm | 57 | 25 |
 
 ## Summary
 
@@ -21,7 +21,7 @@ On 9 November 2026 an attacker abused Ethersphere's own GitHub release workflow 
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/block_now.txt) (raw) | 37 high-confidence indicators to block now |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/block_now.txt) (raw) | 25 high-confidence indicators to block now |
 | [`iocs.csv`](iocs.csv) | All 57 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 41 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
@@ -45,7 +45,7 @@ Indicators by type: 25 SHA256, 9 URLs, 8 IPv4, 8 file names, 4 Ethereum/Polygon 
 ## Recommended actions
 
 1. Search lockfiles and installed apps for @ethersphere/bee-js 13.3.0 and Swarm Desktop 0.56.2; pin bee-js to 13.2.0.
-2. Block the frameworkmetrics.xyz domains, the C2 IPs and the exact webhook.site and pastebin URLs.
+2. Block the indicators marked Block (the frameworkmetrics.xyz domains, the C2 IPs and the exact pastebin URL), which Socket and Corgea both list, and alert on the rest.
 3. On affected hosts look for ~/.solidity/, the solidity-langsupport persistence units and the rogue ScreenConnect service, then rebuild.
 4. Move any Swarm or Ethereum wallet funds to new keys and rotate npm, GitHub and CI secrets present on the host.
 

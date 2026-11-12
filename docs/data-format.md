@@ -24,10 +24,11 @@
 | `type` | See [Types](#types) |
 | `threat` | Threat the indicator belongs to |
 | `confidence` | `high`, `med` or `low` |
-| `recommended_action` | `block`, `alert` or `monitor` |
+| `recommended_action` | `block`, `alert` or `monitor`. Only `high` indicators that at least two independent sources publish are `block` |
 | `source_url` | Published report the indicator came from |
 | `description` | One line on what the indicator is |
 | `notes` | Extra context from the source, such as file names or caveats |
+| `sources` | Every source that publishes the indicator, space-separated |
 
 ### Types
 
