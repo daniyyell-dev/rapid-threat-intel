@@ -126,7 +126,7 @@
   }
   function iocCell(ind) {
     var b = h("button", { type: "button", class: "copy", title: "Copy the real (not defanged) value", "aria-label": "Copy indicator " + defang(ind.value, ind.type) }, "Copy");
-    b.addEventListener("click", function () { copyText(ind.value, b); });
+    b.addEventListener("click", function () { copyText(ind.value, b); trackEvent("copy/ioc", "Copy indicator"); });
     return h("div", { class: "ioc" }, h("code", { text: defang(ind.value, ind.type) }), b);
   }
   function actionPill(a) { return h("span", { class: "pill " + a, text: a }); }
@@ -140,8 +140,29 @@
       h("b", { text: f.label }), h("small", { text: f.note || f.name }), h("span", { class: "ext", "aria-hidden": "true", text: ext }));
     return saveOnClick(a, f);
   }
+  // Downloads and copies are counted as anonymous GoatCounter events with a few fixed names:
+  // download/<file kind>, copy/query/<kql|spl|yaral> and copy/ioc. No indicator or query text is sent.
+  function trackEvent(path, title) {
+    try {
+      if (window.goatcounter && typeof window.goatcounter.count === "function")
+        window.goatcounter.count({ path: path, title: title, event: true });
+    } catch (e) {}
+  }
+  function trackDownload(name) {
+    var n = String(name || "file").replace(/^.*\//, "").toLowerCase().replace(/[^a-z0-9._-]/g, "");
+    trackEvent("download/" + n, "Download " + n);
+  }
+  function trackQueryCopy(name) {
+    var ext = (String(name || "").split(".").pop() || "query").toLowerCase().replace(/[^a-z0-9-]/g, "");
+    trackEvent("copy/query/" + ext, "Copy " + ext + " query");
+  }
+  document.addEventListener("click", function (e) {
+    var a = e.target && e.target.closest && e.target.closest("a[data-dl]");
+    if (a) trackDownload(a.getAttribute("data-dl"));
+  });
   function saveOnClick(a, f) {
     a.addEventListener("click", function (e) {
+      trackDownload(f.name);
       if (!window.fetch || !window.URL || !URL.createObjectURL) return;
       e.preventDefault();
       a.classList.add("busy");
@@ -348,6 +369,7 @@
     c.addEventListener("click", function () {
       qText(q).then(function (x) {
         copyText(x, null, "Copied " + q.name);
+        trackQueryCopy(q.name);
         c.textContent = "Copied"; c.classList.add("done");
         setTimeout(function () { c.textContent = "Copy " + q.name; c.classList.remove("done"); }, 1400);
       }, function () { toast("Could not load " + q.name + ". Use Download."); });
@@ -797,7 +819,7 @@
     var n = Math.floor(Number(String(v == null ? "" : v).replace(/[^0-9]/g, "")));
     return v == null || v === "" || !isFinite(n) ? null : n;
   }
-  function renderVisitors(all, day, countries, otherCount) {
+  function renderVisitors(all, day, countries, otherCount, dl, dl24, cp, cp24) {
     var box = $("visits");
     if (all == null && day == null && !countries) return;
     day = day == null ? 0 : day;
@@ -806,6 +828,16 @@
     $("visits-total").hidden = false;
     $("visits-24h-n").textContent = fmtVisitors(day);
     $("visits-24h").hidden = false;
+    if (cp != null) {
+      $("visits-cp-n").textContent = fmtVisitors(cp);
+      $("visits-cp-24").textContent = cp24 ? "+" + fmtVisitors(cp24) + " in 24h" : "";
+      $("visits-cp").hidden = false;
+    }
+    if (dl != null) {
+      $("visits-dl-n").textContent = fmtVisitors(dl);
+      $("visits-dl-24").textContent = dl24 ? "+" + fmtVisitors(dl24) + " in 24h" : "";
+      $("visits-dl").hidden = false;
+    }
     var geo = clear($("visits-geo")), rows = [];
     (countries || []).forEach(function (c) {
       var n = c && toCount(c.count);
@@ -841,13 +873,62 @@
       settle(getJSON("stats.json?t=" + Date.now()))
     ]).then(function (res) {
       var lv = res[0] || {}, pc = res[1] || {}, snap = res[2] || {};
-      var totals = [toCount(lv.total), toCount(pc.count), toCount(snap.total)].filter(function (n) { return n != null; });
+      // The public counter includes download events, so it is only a fallback when the stats endpoint is down.
+      var totals = [toCount(lv.total), lv.total == null ? toCount(pc.count) : null, toCount(snap.total)].filter(function (n) { return n != null; });
+      var dls = [toCount(lv.downloads), toCount(snap.downloads)].filter(function (n) { return n != null; });
+      var dl = dls.length ? Math.max.apply(null, dls) : null;
+      var dl24 = toCount(lv.downloads24h);
+      if (dl24 == null) dl24 = toCount(snap.downloads24h);
+      var cps = [toCount(lv.copies), toCount(snap.copies)].filter(function (n) { return n != null; });
+      var cp = cps.length ? Math.max.apply(null, cps) : null;
+      var cp24 = toCount(lv.copies24h);
+      if (cp24 == null) cp24 = toCount(snap.copies24h);
       var day = toCount(lv.last24h);
       if (day == null) day = toCount(snap.last24h);
       var src = (lv.top_countries && lv.top_countries.length) ? lv : snap;
-      renderVisitors(totals.length ? Math.max.apply(null, totals) : null, day, src.top_countries, toCount(src.other_count) || 0);
+      renderVisitors(totals.length ? Math.max.apply(null, totals) : null, day, src.top_countries, toCount(src.other_count) || 0, dl, dl24, cp, cp24);
     });
   }
+  // Online now: this page sends a random id (new on every page load, never stored) to /online every
+  // 30 seconds while the tab is visible; the endpoint answers with how many pages checked in recently.
+  var ONLINE_EVERY = 30000, onlineTimer = null, onlineFails = 0, onlineId = "";
+  try {
+    var rnd = new Uint8Array(16); crypto.getRandomValues(rnd);
+    onlineId = Array.prototype.map.call(rnd, function (b) { return ("0" + b.toString(16)).slice(-2); }).join("");
+  } catch (e) {}
+  function onlineURL() {
+    var live = ($("visits") && $("visits").getAttribute("data-live")) || "";
+    return live && onlineId ? live.replace(/\/?$/, "/") + "online" : "";
+  }
+  function renderOnline(n) {
+    var cell = $("visits-online");
+    if (!cell) return;
+    if (n == null) {
+      if (++onlineFails >= 2) cell.hidden = true; else { $("visits-online-n").textContent = "–"; cell.classList.add("is-off"); }
+      return;
+    }
+    onlineFails = 0;
+    $("visits-online-n").textContent = fmtVisitors(Math.max(1, n));
+    cell.classList.remove("is-off");
+    cell.hidden = false;
+  }
+  function onlinePing() {
+    var url = onlineURL();
+    if (!url) return;
+    fetch(url, { method: "POST", body: onlineId, headers: { "Content-Type": "text/plain" }, cache: "no-store", credentials: "omit" })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (j) { renderOnline(toCount(j && j.online)); }, function () { renderOnline(null); });
+  }
+  function onlineStart() { if (!onlineTimer) { onlinePing(); onlineTimer = setInterval(onlinePing, ONLINE_EVERY); } }
+  function onlineStop() { if (onlineTimer) { clearInterval(onlineTimer); onlineTimer = null; } }
+  function onlineLeave() {
+    var url = onlineURL();
+    if (url && navigator.sendBeacon) try { navigator.sendBeacon(url, new Blob([onlineId + " leave"], { type: "text/plain" })); } catch (e) {}
+  }
+  document.addEventListener("visibilitychange", function () { if (document.hidden) { onlineStop(); onlineLeave(); } else onlineStart(); });
+  window.addEventListener("pagehide", onlineLeave);
+  if (!document.hidden) onlineStart();
+
   var visitsTimer = null, visitsLast = 0;
   function visitsTick() { visitsLast = Date.now(); loadVisitors(); }
   function visitsStart() {

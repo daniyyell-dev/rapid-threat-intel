@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-12T12:04:41Z",
+ "updated": "2026-11-12T12:07:00Z",
  "last24h": 45,
  "top_countries": [
   {
@@ -49,5 +49,9 @@
   }
  ],
  "other_count": 0,
- "total": 50
+ "total": 50,
+ "downloads": 0,
+ "downloads24h": 0,
+ "copies": 0,
+ "copies24h": 0
 }
