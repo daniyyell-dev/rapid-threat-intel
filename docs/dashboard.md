@@ -19,23 +19,23 @@ The same wording is shown in the red caution box at the top of the dashboard. Ne
 
 A slim top bar stays pinned on every view: the *AI Rapid Threat Intel* mark (which returns to the live feed), the last-updated time in UK time, and links to this guide, the repository and `feed.json`. The footer is also on every view.
 
-**Headline.** The same as the repository: *High-impact threat intelligence and IOCs, researched and ready to deploy*.
+**Headline:** The same as the repository: *High-impact threat intelligence and IOCs, researched and ready to deploy*.
 
-**Caution.** The red box above, word for word.
+**Caution:** The red box above, word for word.
 
-**Stats.** Four figures, beside the headline on wide screens, from the current feed: number of threats, number of indicators, how many are high-confidence *block now*, and the last-updated date and time in UK time (Europe/London).
+**Stats:** Four figures, beside the headline on wide screens, from the current feed: number of threats, number of indicators, how many are high-confidence *block now*, and the last-updated date and time in UK time (Europe/London).
 
-**Check an indicator.** A search box for an IP address, domain, URL or hash. Defanged input is accepted, and pressing `/` anywhere on the page jumps to it (`Esc` clears it). See [Search and filters](#search-and-filters).
+**Check an indicator:** A search box for an IP address, domain, URL or hash. Defanged input is accepted, and pressing `/` anywhere on the page jumps to it (`Esc` clears it). See [Search and filters](#search-and-filters).
 
-**Live feed.** One row per threat, newest first. Each row shows when it was added (UK time), with a *New today* mark when the threat was added on the most recent entry date in the feed, the category, name and one-line headline, the report's published date, the indicator count, how many are set to block now, and a coloured bar with a count per indicator type. Each row also lists the affected countries (code and name, up to four plus a count of the rest) or regions, and the sectors, or *Not stated*. Open a row to go to `#threat/<id>`.
+**Live feed:** One row per threat, newest first. Each row shows when it was added (UK time), with a *New today* mark when the threat was added on the most recent entry date in the feed, the category, name and one-line headline, the report's published date, the indicator count, how many are set to block now, and a coloured bar with a count per indicator type. Each row also lists the affected countries (code and name, up to four plus a count of the rest) or regions, and the sectors, or *Not stated*. Open a row to go to `#threat/<id>`.
 
-**Filters.** Category, indicator type, country or region, sector and date added, plus *Reset filters*. On wide screens they sit in a column to the left of the feed; on phones they sit above it. See below.
+**Filters:** Category, indicator type, country or region, sector and date added, plus *Reset filters*. On wide screens they sit in a column to the left of the feed; on phones they sit above it. See below.
 
-**Countries affected.** A ranked list of the countries named in the sources, with how many threats name each one and a short bar, followed by the regions (for example *Global* or *Latin America*). Select a country or region to filter the feed to it; select it again to clear. It sits between the filters and the combined files on wide screens, and above the feed on phones.
+**Countries affected:** A ranked list of the countries named in the sources, with how many threats name each one and a short bar, followed by the regions (for example *Global* or *Latin America*). Select a country or region to filter the feed to it; select it again to clear. It sits between the filters and the combined files on wide screens, and above the feed on phones.
 
-**Combined files.** A list, under the filters (or below the feed on phones), of links that download the latest files from [`all/`](../all/): the grouped block list, one clean list per type (IPv4, domain, URL, SHA256, SHA1), the Defender XDR import file, the full indicators CSV and the live-feed hunting query. These URLs always serve the current data, so a firewall, proxy, EDR or SIEM can point at them.
+**Combined files:** A list, under the filters (or below the feed on phones), of links that download the latest files from [`all/`](../all/): the grouped block list, one clean list per type (IPv4, domain, URL, SHA256, SHA1), the Defender XDR import file, the full indicators CSV and the live-feed hunting query. These URLs always serve the current data, so a firewall, proxy, EDR or SIEM can point at them.
 
-**Footer.** A one-line *Scope* note with an *Open an issue* link; *Project* links with icons (Repository, Dashboard documentation, Contributing guide, Open an issue and [`feed.json`](../site/feed.json)); *Visitors* (all time, last 24 hours and top countries), counted anonymously by GoatCounter with no cookies; a credit line (maintainer, MIT Licence, defensive use only); and a small *Sponsored by* credit.
+**Footer:** A one-line *Scope* note with an *Open an issue* link; *Project* links with icons (Repository, Dashboard documentation, Contributing guide, Open an issue and [`feed.json`](../site/feed.json)); *Visitors* (all time, last 24 hours and top countries), counted anonymously by GoatCounter with no cookies; a credit line (maintainer, MIT Licence, defensive use only); and a small *Sponsored by* credit.
 
 ### Threat detail (`#threat/<id>`)
 
@@ -269,11 +269,11 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/daniyyell-dev/rapid-th
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/block_now_ipv4.txt" -OutFile block_now_ipv4.txt
 ```
 
-**Microsoft Defender XDR.** Download `defender_xdr_indicators.csv` (combined or per threat). In the [Defender portal](https://security.microsoft.com) go to **Settings > Endpoints > Indicators**, select the tab for the indicator type, then **Import**. Only 500 indicators can be uploaded per batch. To hunt, paste `live_feed_hunt.kql` (every threat) or a threat's `hunt.kql` into **Hunting > Advanced hunting** and run it. The live-feed query loads the current per-type lists with `externaldata`, so it does not need to be edited when the feed changes. Step-by-step: [Microsoft Defender XDR](defender-xdr.md).
+**Microsoft Defender XDR:** Download `defender_xdr_indicators.csv` (combined or per threat). In the [Defender portal](https://security.microsoft.com) go to **Settings > Endpoints > Indicators**, select the tab for the indicator type, then **Import**. Only 500 indicators can be uploaded per batch. To hunt, paste `live_feed_hunt.kql` (every threat) or a threat's `hunt.kql` into **Hunting > Advanced hunting** and run it. The live-feed query loads the current per-type lists with `externaldata`, so it does not need to be edited when the feed changes. Step-by-step: [Microsoft Defender XDR](defender-xdr.md).
 
-**Google Security Operations.** Load the per-type `block_now_*.txt` files into data tables (one value per line, no comments) and match UDM events with `live_feed.yaral`, or paste a threat's `hunt.yaral` into the Rules Editor. The JSON feed is useful where you want descriptions and sources as well as values; the plain lists are the direct import path. Step-by-step: [Google SecOps](google-secops.md).
+**Google Security Operations:** Load the per-type `block_now_*.txt` files into data tables (one value per line, no comments) and match UDM events with `live_feed.yaral`, or paste a threat's `hunt.yaral` into the Rules Editor. The JSON feed is useful where you want descriptions and sources as well as values; the plain lists are the direct import path. Step-by-step: [Google SecOps](google-secops.md).
 
-**Splunk.** Run a threat's `hunt.spl` (CIM data models) or `hunt_raw.spl` (raw events through the `rti_*` macros), or load `splunk_rti_iocs.csv` as the `rti_iocs.csv` lookup and run `live_feed_hunt.spl` for every threat. Step-by-step: [Splunk](splunk.md).
+**Splunk:** Run a threat's `hunt.spl` (CIM data models) or `hunt_raw.spl` (raw events through the `rti_*` macros), or load `splunk_rti_iocs.csv` as the `rti_iocs.csv` lookup and run `live_feed_hunt.spl` for every threat. Step-by-step: [Splunk](splunk.md).
 
 For firewalls, proxies and EDR lists, see [Firewalls and EDR](firewall-and-edr.md).
 
@@ -291,9 +291,9 @@ A threat can be opened as `<site-url>/#threat/<id>` and a search as `<site-url>/
 
 The page is self-hosted. It uses a strict Content-Security-Policy (same origin for styles and fonts; scripts only from itself and GoatCounter; connections only to itself, `raw.githubusercontent.com` and GoatCounter), sends no referrer, and loads no third-party fonts. The only third-party script is GoatCounter's cookie-free visit counter.
 
-**Fork.** Fork the repository and enable GitHub Pages in the same way. Download links in the shipped `feed.json` point at this project's raw files on `main` unless you regenerate the feed in your fork.
+**Fork:** Fork the repository and enable GitHub Pages in the same way. Download links in the shipped `feed.json` point at this project's raw files on `main` unless you regenerate the feed in your fork.
 
-**Self-host.** Copy the contents of `site/` to any static web server or object store and serve them as a site. The search, filters and detail views will work as long as `feed.json` is next to `index.html`. Downloads still come from the raw GitHub URLs listed in the feed.
+**Self-host:** Copy the contents of `site/` to any static web server or object store and serve them as a site. The search, filters and detail views will work as long as `feed.json` is next to `index.html`. Downloads still come from the raw GitHub URLs listed in the feed.
 
 ## Limitations
 
