@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-12 15:11",
- "threat_count": 33,
- "indicator_count": 1059,
- "block_now_count": 370,
+ "last_updated": "2026-11-12 15:52",
+ "threat_count": 34,
+ "indicator_count": 1069,
+ "block_now_count": 380,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -102,6 +102,434 @@
   }
  ],
  "threats": [
+  {
+   "id": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper",
+   "folder": "threats/2026-11_November-2026/2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper",
+   "name": "PHP2Shell on Check Point Gateways: TSGA Backdoor, TSProxy and destroy_v6 ESXi Wiper",
+   "short": "Check Point PHP2Shell TSGA",
+   "category": "Exploitation / edge device",
+   "published": "2026-11-12",
+   "entry_date": "2026-11-12 15:52",
+   "last_updated": "2026-11-12",
+   "seq": 34,
+   "headline": "PHP2Shell exploitation of Check Point Mobile Access gateways leading to the TSGA backdoor and a destroy_v6 wiper on ESXi",
+   "summary": "Check Point Research reports that from 30 October 2026, about a week after the fix shipped, an attacker scanned and exploited unpatched Check Point Security Gateways through their Mobile Access portals using PHP2Shell (CVE-2026-109618 and CVE-2026-109619). The first wave hit Israeli organisations and included destructive activity; a broader second wave on 2 November reached organisations in many countries and sectors with no sign of destruction. In the investigated intrusion the attacker escalated from the portal service account to root through the DynamicCLI interface (CVE-2026-123039), planted zz*.tpl PHP webshells in the portal templates directory, then launched the TSGA backdoor from /tmp/CPconfigdaemon, which relaunches as slot_CPconfigdaemon, listens on TCP 11072 and drops the TSProxy library as /lib/libcpfwcommon.so. They ran the gogo scanner, moved to a VMware ESXi host over SSH with the vpxuser account, and ran the destroy_v6 wiper, leaving DREAM_ANNEXATION.txt notes. TSGA and TSProxy are modified PhiliKit tools, which ESET tied to China-nexus UNC5221 and Ivanti attacks, but Check Point does not attribute the operation with high confidence. Both attacker IPs and all eight hashes are on the block list.",
+   "caveat": "Attribution is unclear: Check Point lists a China-nexus actor, an access broker or a false flag as possible. The IP addresses sit on LightNode VPS space and may be reassigned later, so review hits in context. The gogo hash is a specific sample; gogo itself is a public scanner.",
+   "targets": {
+    "countries": [
+     {
+      "code": "IL",
+      "name": "Israel"
+     }
+    ],
+    "regions": [
+     "Middle East"
+    ],
+    "sectors": [],
+    "note": "Check Point says the first wave on 30 October 2026 targeted Israeli organisations, some with destructive activity; a second wave on 2 November hit organisations in multiple countries with no clear sector preference.",
+    "source": {
+     "url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+     "label": "Check Point Research – PHP2Shell Exploitation on Check Point Gateway",
+     "name": "Check Point Research"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1068",
+     "name": "Exploitation for Privilege Escalation",
+     "url": "https://attack.mitre.org/techniques/T1068/"
+    },
+    {
+     "id": "T1505.003",
+     "name": "Web Shell",
+     "url": "https://attack.mitre.org/techniques/T1505/003/"
+    },
+    {
+     "id": "T1037",
+     "name": "Boot or Logon Initialization Scripts",
+     "url": "https://attack.mitre.org/techniques/T1037/"
+    },
+    {
+     "id": "T1055",
+     "name": "Process Injection",
+     "url": "https://attack.mitre.org/techniques/T1055/"
+    },
+    {
+     "id": "T1090",
+     "name": "Proxy",
+     "url": "https://attack.mitre.org/techniques/T1090/"
+    },
+    {
+     "id": "T1046",
+     "name": "Network Service Discovery",
+     "url": "https://attack.mitre.org/techniques/T1046/"
+    },
+    {
+     "id": "T1021.004",
+     "name": "SSH",
+     "url": "https://attack.mitre.org/techniques/T1021/004/"
+    },
+    {
+     "id": "T1078",
+     "name": "Valid Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/"
+    },
+    {
+     "id": "T1070",
+     "name": "Indicator Removal",
+     "url": "https://attack.mitre.org/techniques/T1070/"
+    },
+    {
+     "id": "T1485",
+     "name": "Data Destruction",
+     "url": "https://attack.mitre.org/techniques/T1485/"
+    }
+   ],
+   "recommended_actions": [
+    "Patch Check Point Security Gateways for PHP2Shell (CVE-2026-109618, CVE-2026-109619) and CVE-2026-123039, and restrict who can reach Mobile Access portals.",
+    "Block 130.94.19.204 and 130.94.19.168 and search 90 days of firewall, VPN and gateway logs for them from 30 October 2026.",
+    "On gateways, look for zz*.tpl files or challenge_render.tpl in the portal templates directory, /tmp/.up.tpl, /tmp/CPconfigdaemon, slot_CPconfigdaemon, /tmp/.bd.log, /lib/libcpfwcommon.so, /tmp/.p_sock and a listener on TCP 11072; treat any hit as a full gateway compromise.",
+    "Check ESXi hosts for SSH logins as vpxuser from a gateway, /tmp/des and DREAM_ANNEXATION.txt files, and rotate the vpxuser and gateway credentials if a gateway was exposed."
+   ],
+   "sources": [
+    {
+     "url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+     "label": "Check Point Research – PHP2Shell Exploitation on Check Point Gateway",
+     "name": "Check Point Research"
+    },
+    {
+     "url": "https://www.welivesecurity.com/en/eset-research/eset-apt-activity-report-q4-2025-q1-2026/",
+     "label": "ESET – APT Activity Report Q4 2025-Q1 2026 (PhiliKit in the UNC5221 SPAWN toolset)",
+     "name": "WeLiveSecurity"
+    },
+    {
+     "url": "https://www.spamhaus.org/drop/asndrop.json",
+     "label": "Spamhaus – ASN-DROP list (AS154177 LightNode listed)",
+     "name": "Spamhaus"
+    }
+   ],
+   "indicator_count": 10,
+   "block_now_count": 10,
+   "hunt_count": 0,
+   "hunt_counts": {},
+   "indicator_counts": {
+    "sha256": 8,
+    "ipv4": 2
+   },
+   "ioas": [
+    {
+     "artefact": "PHP session files containing the upload_progress_pwn marker under /opt/CPcvpn-*/tmp/, together with bursts of segmentation faults in the Mobile Access portal Apache/PHP workers",
+     "log_source": "Check Point gateway file system and system logs (forwarded syslog), EDR file events where a sensor is installed",
+     "why": "Check Point Research saw these session artefacts and hundreds of worker crashes on 30 October 2026 as the first sign of PHP2Shell exploitation of the Mobile Access portal.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+     "source_name": "Check Point Research",
+     "title": "PHP2Shell session artefacts on the Mobile Access portal",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Files named zz*.tpl or challenge_render.tpl written into the Mobile Access login templates directory, or a file at /tmp/.up.tpl",
+     "log_source": "Check Point gateway file integrity checks, EDR file events",
+     "why": "The attacker wrote base64-decoded PHP webshells as zz<random>.tpl files (printf ... | base64 -d), stored uploads at /tmp/.up.tpl and copied them into the portal as challenge_render.tpl. The expanded shell needs the key zz2026.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+     "source_name": "Check Point Research",
+     "title": "zz*.tpl webshells in the portal templates",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "A process named CPconfigdaemon or slot_CPconfigdaemon started from /tmp or the boot persistence directory, output redirected to /tmp/.bd.log, the library /lib/libcpfwcommon.so, the socket /tmp/.p_sock, or a listener on TCP 11072",
+     "log_source": "Check Point gateway process list and file checks, EDR process, file and network events",
+     "why": "This is the TSGA backdoor: it was started with nohup /tmp/CPconfigdaemon >/tmp/.bd.log, relaunches as slot_CPconfigdaemon, injects the TSProxy library /lib/libcpfwcommon.so into appliance processes, and talks over TCP 11072 and /tmp/.p_sock.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+     "source_name": "Check Point Research",
+     "title": "TSGA backdoor, TSProxy library or port 11072 listener",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "SSH login to a VMware ESXi host as vpxuser from a firewall or VPN gateway address, followed by files at /tmp/des or DREAM_ANNEXATION.txt",
+     "log_source": "ESXi auth and shell logs (syslog), EDR file events, firewall logs for gateway-to-ESXi SSH",
+     "why": "From the compromised gateway the attacker ran the gogo scanner, logged in to ESXi over SSH with the vpxuser service account, staged the destroy_v6 wiper as /tmp/des and left DREAM_ANNEXATION.txt in each wiped directory.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+     "source_name": "Check Point Research",
+     "title": "vpxuser SSH to ESXi and the destroy_v6 wiper",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    }
+   ],
+   "ioa_count": 4,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/block_now.txt",
+     "download": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/defender_xdr_indicators.csv",
+     "download": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/hunt.kql",
+     "download": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/hunt.spl",
+     "download": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/hunt_raw.spl",
+     "download": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/hunt.yaral",
+     "download": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/iocs.csv",
+     "download": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper",
+   "indicators": [
+    {
+     "value": "130.94.19.204",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Attacker IP that scanned and exploited Check Point Mobile Access portals with PHP2Shell (CVE-2026-109618/109619) from 30 October 2026, first against Israeli organisations.",
+     "source_url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+     "source_label": "Check Point Research – PHP2Shell Exploitation on Check Point Gateway",
+     "source_name": "Check Point Research",
+     "sources": [
+      {
+       "url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+       "name": "Check Point Research"
+      },
+      {
+       "url": "https://www.spamhaus.org/drop/asndrop.json",
+       "name": "Spamhaus"
+      }
+     ]
+    },
+    {
+     "value": "130.94.19.168",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Second attacker IP Check Point Research lists for the PHP2Shell gateway intrusions, on the same LightNode VPS range.",
+     "source_url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+     "source_label": "Check Point Research – PHP2Shell Exploitation on Check Point Gateway",
+     "source_name": "Check Point Research",
+     "sources": [
+      {
+       "url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+       "name": "Check Point Research"
+      },
+      {
+       "url": "https://www.spamhaus.org/drop/asndrop.json",
+       "name": "Spamhaus"
+      }
+     ]
+    },
+    {
+     "value": "edb3e92eb7bda7413a09edcc4b1ba3cbed4bcdf42808a8abce63b6e4c3fda2b3",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "PHP webshell written as zz*.tpl into the Mobile Access login templates directory; the expanded version needs the key zz2026 and runs commands, PHP code and uploads to /tmp/.up.tpl.",
+     "source_url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+     "source_label": "Check Point Research – PHP2Shell Exploitation on Check Point Gateway",
+     "source_name": "Check Point Research",
+     "sources": [
+      {
+       "url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+       "name": "Check Point Research"
+      }
+     ]
+    },
+    {
+     "value": "4171b521fa6441382aa2fa014a08e18ff9a6e0ab6096c9144072bf46b37a2ec8",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "TSGA gateway backdoor as it relaunches under the name slot_CPconfigdaemon in the boot persistence directory, with encrypted remote access, configuration theft and firewall-log tampering.",
+     "source_url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+     "source_label": "Check Point Research – PHP2Shell Exploitation on Check Point Gateway",
+     "source_name": "Check Point Research",
+     "sources": [
+      {
+       "url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+       "name": "Check Point Research"
+      }
+     ]
+    },
+    {
+     "value": "d7549671c7189979f0624ec52dad9ea6a707d23146e3585ab8f8c4720eca0c63",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "TSGA backdoor dropped as /tmp/CPconfigdaemon and started with nohup, output sent to /tmp/.bd.log; it carries the TSProxy library written to /lib/libcpfwcommon.so.",
+     "source_url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+     "source_label": "Check Point Research – PHP2Shell Exploitation on Check Point Gateway",
+     "source_name": "Check Point Research",
+     "sources": [
+      {
+       "url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+       "name": "Check Point Research"
+      }
+     ]
+    },
+    {
+     "value": "3b51080a909023f7d484e2443740b572307ce0054eb9e32d98f0a06bfcd2db90",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "gogo scanner binary the attackers ran on the compromised gateway to map internal assets and services before moving to an ESXi host.",
+     "source_url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+     "source_label": "Check Point Research – PHP2Shell Exploitation on Check Point Gateway",
+     "source_name": "Check Point Research",
+     "sources": [
+      {
+       "url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+       "name": "Check Point Research"
+      }
+     ]
+    },
+    {
+     "value": "c7d9477309fac6c638a1128442056a242de086996add8cb49cd6496c36003237",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "destroy_v6 Linux wiper staged on the VMware ESXi host as /tmp/des; it zero-fills and deletes files under a target directory and drops DREAM_ANNEXATION.txt.",
+     "source_url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+     "source_label": "Check Point Research – PHP2Shell Exploitation on Check Point Gateway",
+     "source_name": "Check Point Research",
+     "sources": [
+      {
+       "url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+       "name": "Check Point Research"
+      }
+     ]
+    },
+    {
+     "value": "0522937c0c0337be54fe25493539e5f5f8ceb9742c980aaff1cfc9515f3a96f7",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "DREAM_ANNEXATION.txt, the politically themed note in Hebrew the wiper writes to each directory it destroys; it rejects ransom negotiation.",
+     "source_url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+     "source_label": "Check Point Research – PHP2Shell Exploitation on Check Point Gateway",
+     "source_name": "Check Point Research",
+     "sources": [
+      {
+       "url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+       "name": "Check Point Research"
+      }
+     ]
+    },
+    {
+     "value": "ee16e1695711b9d60c62925fcfb2fe1a29c18ae26565bc05410a14e16d2a39d7",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "philistine, the PhiliKit passive backdoor and installer for Ivanti VPN appliances that TSGA is derived from (uploaded to VirusTotal on 25 February 2026).",
+     "source_url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+     "source_label": "Check Point Research – PHP2Shell Exploitation on Check Point Gateway",
+     "source_name": "Check Point Research",
+     "sources": [
+      {
+       "url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+       "name": "Check Point Research"
+      }
+     ]
+    },
+    {
+     "value": "fb1a6235eb6bce8c9ec8cd8bb85f17c9c2bde8ecb45b7a243a30ceadf26654da",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "libdssafe.so, the PhiliKit networking library whose operator credentials, transport secrets and TLS certificate match TSProxy.",
+     "source_url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+     "source_label": "Check Point Research – PHP2Shell Exploitation on Check Point Gateway",
+     "source_name": "Check Point Research",
+     "sources": [
+      {
+       "url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
+       "name": "Check Point Research"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/hunt.kql",
+     "download": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/hunt.spl",
+     "download": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/hunt_raw.spl",
+      "download": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/hunt.yaral",
+     "download": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper_hunt.yaral"
+    }
+   ]
+  },
   {
    "id": "BBNet-Linux-Botnet-Multi-Arch-Scanners",
    "folder": "threats/2026-11_November-2026/2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners",

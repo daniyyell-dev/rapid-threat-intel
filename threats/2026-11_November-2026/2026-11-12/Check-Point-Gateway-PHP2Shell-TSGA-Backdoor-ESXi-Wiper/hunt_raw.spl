@@ -1,0 +1,70 @@
+``` Threat: PHP2Shell on Check Point Gateways: TSGA Backdoor, TSProxy and destroy_v6 ESXi Wiper
+    Author: Daniel Jeremiah | Date: 2026-11-12
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper ```
+| multisearch
+  [ search `rti_network(130.94.19.204 OR 130.94.19.168)`
+    | search dest_ip IN ("130.94.19.204", "130.94.19.168")
+    | eval data_model="network", ioc_type="ipv4", ioc=dest_ip, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_network(130.94.19.204 OR 130.94.19.168)`
+    | search src_ip IN ("130.94.19.204", "130.94.19.168")
+    | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_endpoint(edb3e92eb7bda7413a09edcc4b1ba3cbed4bcdf42808a8abce63b6e4c3fda2b3 OR 4171b521fa6441382aa2fa014a08e18ff9a6e0ab6096c9144072bf46b37a2ec8 OR d7549671c7189979f0624ec52dad9ea6a707d23146e3585ab8f8c4720eca0c63 OR 3b51080a909023f7d484e2443740b572307ce0054eb9e32d98f0a06bfcd2db90 OR c7d9477309fac6c638a1128442056a242de086996add8cb49cd6496c36003237 OR 0522937c0c0337be54fe25493539e5f5f8ceb9742c980aaff1cfc9515f3a96f7 OR ee16e1695711b9d60c62925fcfb2fe1a29c18ae26565bc05410a14e16d2a39d7 OR fb1a6235eb6bce8c9ec8cd8bb85f17c9c2bde8ecb45b7a243a30ceadf26654da)`
+    | search file_hash IN ("*edb3e92eb7bda7413a09edcc4b1ba3cbed4bcdf42808a8abce63b6e4c3fda2b3*", "*4171b521fa6441382aa2fa014a08e18ff9a6e0ab6096c9144072bf46b37a2ec8*", "*d7549671c7189979f0624ec52dad9ea6a707d23146e3585ab8f8c4720eca0c63*", "*3b51080a909023f7d484e2443740b572307ce0054eb9e32d98f0a06bfcd2db90*", "*c7d9477309fac6c638a1128442056a242de086996add8cb49cd6496c36003237*", "*0522937c0c0337be54fe25493539e5f5f8ceb9742c980aaff1cfc9515f3a96f7*", "*ee16e1695711b9d60c62925fcfb2fe1a29c18ae26565bc05410a14e16d2a39d7*", "*fb1a6235eb6bce8c9ec8cd8bb85f17c9c2bde8ecb45b7a243a30ceadf26654da*") OR process_hash IN ("*edb3e92eb7bda7413a09edcc4b1ba3cbed4bcdf42808a8abce63b6e4c3fda2b3*", "*4171b521fa6441382aa2fa014a08e18ff9a6e0ab6096c9144072bf46b37a2ec8*", "*d7549671c7189979f0624ec52dad9ea6a707d23146e3585ab8f8c4720eca0c63*", "*3b51080a909023f7d484e2443740b572307ce0054eb9e32d98f0a06bfcd2db90*", "*c7d9477309fac6c638a1128442056a242de086996add8cb49cd6496c36003237*", "*0522937c0c0337be54fe25493539e5f5f8ceb9742c980aaff1cfc9515f3a96f7*", "*ee16e1695711b9d60c62925fcfb2fe1a29c18ae26565bc05410a14e16d2a39d7*", "*fb1a6235eb6bce8c9ec8cd8bb85f17c9c2bde8ecb45b7a243a30ceadf26654da*") OR parent_process_hash IN ("*edb3e92eb7bda7413a09edcc4b1ba3cbed4bcdf42808a8abce63b6e4c3fda2b3*", "*4171b521fa6441382aa2fa014a08e18ff9a6e0ab6096c9144072bf46b37a2ec8*", "*d7549671c7189979f0624ec52dad9ea6a707d23146e3585ab8f8c4720eca0c63*", "*3b51080a909023f7d484e2443740b572307ce0054eb9e32d98f0a06bfcd2db90*", "*c7d9477309fac6c638a1128442056a242de086996add8cb49cd6496c36003237*", "*0522937c0c0337be54fe25493539e5f5f8ceb9742c980aaff1cfc9515f3a96f7*", "*ee16e1695711b9d60c62925fcfb2fe1a29c18ae26565bc05410a14e16d2a39d7*", "*fb1a6235eb6bce8c9ec8cd8bb85f17c9c2bde8ecb45b7a243a30ceadf26654da*")
+    | eval matched=file_hash." ".process_hash." ".parent_process_hash
+    | rex field=matched "(?i)(?<ioc>edb3e92eb7bda7413a09edcc4b1ba3cbed4bcdf42808a8abce63b6e4c3fda2b3|4171b521fa6441382aa2fa014a08e18ff9a6e0ab6096c9144072bf46b37a2ec8|d7549671c7189979f0624ec52dad9ea6a707d23146e3585ab8f8c4720eca0c63|3b51080a909023f7d484e2443740b572307ce0054eb9e32d98f0a06bfcd2db90|c7d9477309fac6c638a1128442056a242de086996add8cb49cd6496c36003237|0522937c0c0337be54fe25493539e5f5f8ceb9742c980aaff1cfc9515f3a96f7|ee16e1695711b9d60c62925fcfb2fe1a29c18ae26565bc05410a14e16d2a39d7|fb1a6235eb6bce8c9ec8cd8bb85f17c9c2bde8ecb45b7a243a30ceadf26654da)"
+    | eval data_model="endpoint", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, detail=coalesce(process, file_path)
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search index=* (upload_progress_pwn OR "CPcvpn")
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="Check Point gateway logs"
+    | eval ioc="PHP2Shell session artefacts on the Mobile Access portal", ioc_type="behaviour (hunt)"
+]
+
+| append [
+    search `rti_endpoint((".tpl"))`
+    | where match(coalesce(file_name, file_path, ""), "(?i)(^|/)zz[A-Za-z0-9_-]*\.tpl$|challenge_render\.tpl$|^/tmp/\.up\.tpl$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="zz*.tpl webshells in the portal templates", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint((CPconfigdaemon OR slot_CPconfigdaemon OR ".bd.log"))`
+    | where match(coalesce(process, process_name, ""), "(?i)CPconfigdaemon|/tmp/\.bd\.log")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="TSGA backdoor, TSProxy library or port 11072 listener", ioc_type="behaviour (alert)"
+]
+| append [
+    search `rti_endpoint((libcpfwcommon OR ".p_sock" OR ".bd.log" OR CPconfigdaemon))`
+    | where match(coalesce(file_path, file_name, ""), "(?i)/lib/libcpfwcommon\.so$|/tmp/\.p_sock$|/tmp/\.bd\.log$|/tmp/CPconfigdaemon$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="TSGA backdoor, TSProxy library or port 11072 listener", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search index=* (DREAM_ANNEXATION OR (vpxuser sshd Accepted) OR destroy_v6 OR destory_v6)
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="ESXi / endpoint logs"
+    | eval ioc="vpxuser SSH to ESXi and the destroy_v6 wiper", ioc_type="behaviour (alert)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count
