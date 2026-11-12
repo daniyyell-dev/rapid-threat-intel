@@ -45,7 +45,7 @@ union isfuzzy=true
     | where Events has_any ("GetObject", "ListBuckets", "ListObjects", "ListObjectsV2") and Events has_any ("SignUp", "InitiateAuth")),
   (union isfuzzy=true AWSCloudTrail, W3CIISLog, CommonSecurityLog
     | where TimeGenerated > ago(Lookback)
-    | extend ua = coalesce(UserAgent, csUserAgent, RequestContextUserAgent)
+    | extend ua = coalesce(UserAgent, csUserAgent)
     | where ua has_any ("artex-readonly", "artex-pentest", "artex-audit", "artex-spawn", "artex-verify", "ARTEX-worker", "ARTeX-authorized-pentest", "Mozilla/5.0 ARTeX", "artex-i21861-canary")
     | project Timestamp=TimeGenerated, ua, SourceIP=coalesce(SourceIpAddress, cIP, SourceIP), Actor=column_ifexists("UserIdentityArn", "")),
   (AWSCloudTrail

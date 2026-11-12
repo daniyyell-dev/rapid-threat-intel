@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-12 09:50",
- "threat_count": 26,
- "indicator_count": 965,
- "block_now_count": 278,
+ "last_updated": "2026-11-12 09:55",
+ "threat_count": 27,
+ "indicator_count": 969,
+ "block_now_count": 279,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -102,6 +102,340 @@
   }
  ],
  "threats": [
+  {
+   "id": "Able2Shell-N-able-N-central-Zero-Days",
+   "folder": "threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days",
+   "name": "Able2Shell N-able N-central Zero-Days",
+   "short": "Able2Shell N-central zero-days",
+   "category": "Exploitation / MSP RMM",
+   "published": "2026-11-09",
+   "entry_date": "2026-11-12 09:55",
+   "last_updated": "2026-11-12",
+   "seq": 27,
+   "headline": "Public N-central RCE chains that still work on HF2, honeypot exploitation seen; hunt the server and N-able Agent activity",
+   "summary": "An independent researcher published proof-of-concept code for 33 flaws in N-able N-central, the remote monitoring and management platform used by MSPs and IT teams, under the name Able2Shell. N-able took Hosted N-central offline on 9 November and shipped 2026.4 HF2 on 10 November, but late on 11 November the researcher released two more chains, 4EverAble2Shell (unauthenticated root RCE on the server) and Agent2Shell (commands as SYSTEM on managed Windows endpoints), which Huntress says work against HF2, so a fully patched server should be treated as vulnerable. watchTowr, Lupovis and Previdian have seen exploitation attempts against N-central honeypots, and N-able reports scanning tied to the public code; no customer compromise has been confirmed. Earlier N-central zero-days were exploited and are in CISA KEV, and Beazley notes past state-sponsored targeting. 5.231.45.175 is reported by both Previdian and Lupovis and is a block candidate; the AWS address 3.74.48.121 is alert-only. Most of the value here is in the behaviours: hunt N-central web logs, the appliance file system and N-able Agent child processes on managed endpoints.",
+   "caveat": "Exploitation attempts are from honeypots; no confirmed customer compromise yet. Huntress's file and process indicators come from static analysis of the public code and may not match modified exploits. 3.74.48.121 is AWS: alert only.",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Global"
+    ],
+    "sectors": [
+     "Managed service providers",
+     "IT operations"
+    ],
+    "note": "Any MSP or IT team running N-central is exposed, along with the customer networks it manages; Censys counts about 1,728 internet-exposed instances. No victim organisations have been named.",
+    "source": {
+     "url": "https://www.huntress.com/blog/n-able-disables-cloud-services-following-disclosure-of-able2shell-exploit-chains",
+     "label": "Huntress – N-able disables cloud services following disclosure of Able2Shell exploit chains",
+     "name": "Huntress"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1199",
+     "name": "Trusted Relationship",
+     "url": "https://attack.mitre.org/techniques/T1199/"
+    },
+    {
+     "id": "T1072",
+     "name": "Software Deployment Tools",
+     "url": "https://attack.mitre.org/techniques/T1072/"
+    },
+    {
+     "id": "T1136",
+     "name": "Create Account",
+     "url": "https://attack.mitre.org/techniques/T1136/"
+    },
+    {
+     "id": "T1059.001",
+     "name": "PowerShell",
+     "url": "https://attack.mitre.org/techniques/T1059/001/"
+    },
+    {
+     "id": "T1068",
+     "name": "Exploitation for Privilege Escalation",
+     "url": "https://attack.mitre.org/techniques/T1068/"
+    },
+    {
+     "id": "T1005",
+     "name": "Data from Local System",
+     "url": "https://attack.mitre.org/techniques/T1005/"
+    }
+   ],
+   "recommended_actions": [
+    "Take on-premises N-central servers off the internet, even on 2026.4 HF2, until N-able publishes a fix for 4EverAble2Shell and Agent2Shell; do not rely on IP allowlisting alone, because agents and probes use the same endpoints.",
+    "Block 5.231.45.175 and alert on 3.74.48.121 at the perimeter, and search N-central web and proxy logs from 8 November for both addresses and for requests to /dms/services/ServerUI and /dms2/services2/ServerMMS2 from unexpected external sources.",
+    "On the server, look for new or enabled Default Administrator accounts, unexpected password resets, new scripts, software or policy deployments and remote sessions, plus serverchild-* files under /var/opt/n-central/tmp and CodeDropMeta.xml ZIPs.",
+    "On managed Windows endpoints, hunt for encoded PowerShell run as SYSTEM by the N-able Agent, wsp.exe or service.cfg written to the Windows Software Probe folder, and taskkill of wsp.exe from a .cmd in %TEMP%. If anything is confirmed, treat every network managed by that server as in scope."
+   ],
+   "sources": [
+    {
+     "url": "https://www.huntress.com/blog/n-able-disables-cloud-services-following-disclosure-of-able2shell-exploit-chains",
+     "label": "Huntress – N-able disables cloud services following disclosure of Able2Shell exploit chains",
+     "name": "Huntress"
+    },
+    {
+     "url": "https://labs.beazley.security/advisories/BSL-A1242",
+     "label": "Beazley Security Labs – Emerging threat: critical vulnerabilities in N-able N-central (watchTowr and Lupovis observations)",
+     "name": "Beazley Security"
+    },
+    {
+     "url": "https://blog.previdian.com/n-able-n-central-critical-vulnerabilities-what-we-know-so-far/",
+     "label": "Previdian – N-able N-central critical vulnerabilities: what we know so far",
+     "name": "Previdian"
+    },
+    {
+     "url": "https://www.n-able.com/blog/update-on-n-central-2026-4-hf2-and-ongoing-security-response",
+     "label": "N-able – Update on N-central 2026.4 HF2 and ongoing security response",
+     "name": "N-able"
+    },
+    {
+     "url": "https://www.tenable.com/blog/able2shell-frequently-asked-questions-for-reported-n-able-n-central-zero-day-vulnerabilities",
+     "label": "Tenable – Able2Shell FAQ: N-able N-central zero-days and Hotfix 2",
+     "name": "Tenable"
+    },
+    {
+     "url": "https://www.rapid7.com/blog/post/etr-critical-vulnerabilities-in-n-able-n-central-prompt-hosted-shutdown/",
+     "label": "Rapid7 – Critical vulnerabilities in N-able N-central prompt hosted shutdown",
+     "name": "Rapid7"
+    }
+   ],
+   "indicator_count": 4,
+   "block_now_count": 1,
+   "hunt_count": 3,
+   "hunt_counts": {
+    "alert": 3
+   },
+   "indicator_counts": {
+    "ipv4": 2,
+    "url": 2
+   },
+   "ioas": [
+    {
+     "artefact": "Unauthenticated SOAP POSTs to /dms/services/ServerUI or /dms2/services2/ServerMMS2 from external addresses, carrying SessionHello, GenericAgentXMPPMessageExchange or RemoteExecutionTaskSubmit with SessionID -1, importServiceFromFile with a remote FilePath, or an XML DOCTYPE",
+     "log_source": "N-central web server, reverse-proxy and WAF logs",
+     "why": "These are the endpoints and messages used by the public Able2Shell chains. watchTowr saw SessionHello posts to ServerMMS2, Previdian captured XXE DOCTYPE and importServiceFromFile requests to ServerUI, and Huntress lists the jline.internal.TerminalLineSettings, GenericAgentXMPPMessageExchange and RemoteExecutionTaskSubmit patterns. Agents and probes also use these endpoints, so focus on unexpected external sources and the listed message contents.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://www.huntress.com/blog/n-able-disables-cloud-services-following-disclosure-of-able2shell-exploit-chains",
+     "source_name": "Huntress",
+     "title": "N-central ServerUI or ServerMMS2 exploit requests",
+     "queries": [
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "HTTP requests whose User-Agent ends in N-central-sec-audit/1.0",
+     "log_source": "N-central web server, reverse-proxy and WAF logs",
+     "why": "watchTowr's published exploitation attempt used this User-Agent. It is trivial to change, so its absence does not rule out exploitation.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://labs.beazley.security/advisories/BSL-A1242",
+     "source_name": "Beazley Security",
+     "title": "N-central-sec-audit/1.0 user agent",
+     "queries": [
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Files on the N-central server: /var/opt/n-central/flag/flag_default.json as a symlink to ServerChild.sh, /var/opt/n-central/tmp/serverchild-<12 hex>.bak, .sh or .out, or ZIPs under /download/scheduled_tasks/output_files/ containing CodeDropMeta.xml",
+     "log_source": "File integrity or EDR file events on the N-central appliance",
+     "why": "Huntress identified these files from static analysis of the 4EverAble2Shell and Agent2Shell code; they would appear if the public exploit is run unmodified.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.huntress.com/blog/n-able-disables-cloud-services-following-disclosure-of-able2shell-exploit-chains",
+     "source_name": "Huntress",
+     "title": "serverchild, flag_default.json or CodeDropMeta.xml on the server",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "powershell.exe -NoProfile -NonInteractive -EncodedCommand run as SYSTEM by the N-able Agent or Windows Software Probe on a managed Windows endpoint",
+     "log_source": "EDR process events on Windows endpoints managed by N-central",
+     "why": "Agent2Shell lets an unauthenticated attacker who can reach the server run commands on managed endpoints as SYSTEM. PowerShell is a very common child of the N-able Agent, so the encoded command line, not the process tree, is the signal; decode it and compare with scripts your MSP actually deploys.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.huntress.com/blog/n-able-disables-cloud-services-following-disclosure-of-able2shell-exploit-chains",
+     "source_name": "Huntress",
+     "title": "Encoded PowerShell as SYSTEM from the N-able Agent",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "wsp.exe or service.cfg written to the Windows Software Probe bin folder, a CodeDrop ServiceBackup copy of wsp.exe, or files in Temp CodeDropTmp",
+     "log_source": "EDR file events on N-central probe hosts",
+     "why": "Huntress lists these writes as artefacts of the Agent2Shell probe-replacement chain. The probe is normally updated by N-able, so check for writes outside a planned upgrade.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.huntress.com/blog/n-able-disables-cloud-services-following-disclosure-of-able2shell-exploit-chains",
+     "source_name": "Huntress",
+     "title": "Windows Software Probe binary or config replaced",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "taskkill /f /im wsp.exe or a stop and start of the Windows Software Probe Service, run from a .cmd file in %TEMP%",
+     "log_source": "EDR process events on N-central probe hosts",
+     "why": "Huntress lists this service restart from a temporary batch file as part of the Agent2Shell chain. Legitimate upgrades also restart the probe, so look at the launching script location.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.huntress.com/blog/n-able-disables-cloud-services-following-disclosure-of-able2shell-exploit-chains",
+     "source_name": "Huntress",
+     "title": "Probe service killed from a temp .cmd",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "New or newly enabled N-central administrator accounts (including Default Administrator), unexpected password resets, new scripts, software or policy deployments, and remote control sessions from unfamiliar addresses since 8 November",
+     "log_source": "N-central audit and login logs",
+     "why": "The unauthenticated XXE chain resets an account password and can create an enabled administrator; earlier N-central exploitation was followed by scripts sprayed into managed environments. Beazley and Huntress both recommend this review.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://labs.beazley.security/advisories/BSL-A1242",
+     "source_name": "Beazley Security",
+     "title": "New N-central admins, resets, scripts or sessions",
+     "queries": []
+    }
+   ],
+   "ioa_count": 7,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days/block_now.txt",
+     "download": "Able2Shell-N-able-N-central-Zero-Days_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days/defender_xdr_indicators.csv",
+     "download": "Able2Shell-N-able-N-central-Zero-Days_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days/hunt.kql",
+     "download": "Able2Shell-N-able-N-central-Zero-Days_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days/hunt.spl",
+     "download": "Able2Shell-N-able-N-central-Zero-Days_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days/hunt_raw.spl",
+     "download": "Able2Shell-N-able-N-central-Zero-Days_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days/hunt.yaral",
+     "download": "Able2Shell-N-able-N-central-Zero-Days_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days/iocs.csv",
+     "download": "Able2Shell-N-able-N-central-Zero-Days_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days",
+   "indicators": [
+    {
+     "value": "5.231.45.175",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Source of 68 Able2Shell exploitation attempts against Previdian's N-central decoy from 9 November, including XXE and /etc/passwd reads, and host of the a.dtd and svc.xml payload files.",
+     "source_url": "https://blog.previdian.com/n-able-n-central-critical-vulnerabilities-what-we-know-so-far/",
+     "source_label": "Previdian – N-able N-central critical vulnerabilities: what we know so far",
+     "source_name": "Previdian"
+    },
+    {
+     "value": "3.74.48.121",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Address Lupovis saw sending requests to the N-central SOAP endpoints targeted by Able2Shell.",
+     "source_url": "https://labs.beazley.security/advisories/BSL-A1242",
+     "source_label": "Beazley Security Labs – Emerging threat: critical vulnerabilities in N-able N-central (watchTowr and Lupovis observations)",
+     "source_name": "Beazley Security"
+    },
+    {
+     "value": "http://5.231.45.175:8097/a.dtd",
+     "type": "url",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "External DTD referenced in an XXE DOCTYPE posted to /dms/services/ServerUI on Previdian's N-central decoy.",
+     "source_url": "https://blog.previdian.com/n-able-n-central-critical-vulnerabilities-what-we-know-so-far/",
+     "source_label": "Previdian – N-able N-central critical vulnerabilities: what we know so far",
+     "source_name": "Previdian"
+    },
+    {
+     "value": "http://5.231.45.175:8097/svc.xml",
+     "type": "url",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Remote file supplied as the FilePath for importServiceFromFile in an Able2Shell exploitation attempt.",
+     "source_url": "https://blog.previdian.com/n-able-n-central-critical-vulnerabilities-what-we-know-so-far/",
+     "source_label": "Previdian – N-able N-central critical vulnerabilities: what we know so far",
+     "source_name": "Previdian"
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days/hunt.kql",
+     "download": "Able2Shell-N-able-N-central-Zero-Days_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days/hunt.spl",
+     "download": "Able2Shell-N-able-N-central-Zero-Days_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days/hunt_raw.spl",
+      "download": "Able2Shell-N-able-N-central-Zero-Days_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days/hunt.yaral",
+     "download": "Able2Shell-N-able-N-central-Zero-Days_hunt.yaral"
+    }
+   ]
+  },
   {
    "id": "GSocket-Linux-Web-Server-C2",
    "folder": "threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2",

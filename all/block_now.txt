@@ -1,5 +1,8 @@
 # All high-confidence indicators to block. Updated 2026-11-12 09:50.
 
+## 2026-11-09 Able2Shell N-able N-central Zero-Days
+5.231.45.175
+
 ## 2026-11-11 wfx: Hijacked GitHub Accounts Plant a CI Secret Stealer in Thousands of Repositories
 194.150.166.244
 http://194.150.166.244:8080/exfil

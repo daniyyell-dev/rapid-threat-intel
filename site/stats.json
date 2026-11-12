@@ -1,16 +1,31 @@
 {
- "updated": "2026-11-12T07:56:34Z",
- "last24h": 16,
+ "updated": "2026-11-12T09:53:19Z",
+ "last24h": 32,
  "top_countries": [
   {
    "code": "GB",
    "name": "United Kingdom",
-   "count": 13
+   "count": 18
+  },
+  {
+   "code": "IN",
+   "name": "India",
+   "count": 8
   },
   {
    "code": "DE",
    "name": "Germany",
-   "count": 2
+   "count": 3
+  },
+  {
+   "code": "AU",
+   "name": "Australia",
+   "count": 1
+  },
+  {
+   "code": "BD",
+   "name": "Bangladesh",
+   "count": 1
   },
   {
    "code": "NG",
@@ -19,5 +34,5 @@
   }
  ],
  "other_count": 0,
- "total": 16
+ "total": 32
 }

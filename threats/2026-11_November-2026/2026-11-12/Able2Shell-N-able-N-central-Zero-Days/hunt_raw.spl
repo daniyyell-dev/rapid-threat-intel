@@ -1,0 +1,82 @@
+``` Threat: Able2Shell N-able N-central Zero-Days
+    Author: Daniel Jeremiah | Date: 2026-11-12
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days ```
+| multisearch
+  [ search `rti_network(5.231.45.175 OR 3.74.48.121)`
+    | search dest_ip IN ("5.231.45.175", "3.74.48.121")
+    | eval data_model="network", ioc_type="ipv4", ioc=dest_ip, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_network(5.231.45.175 OR 3.74.48.121)`
+    | search src_ip IN ("5.231.45.175", "3.74.48.121")
+    | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_web(5.231.45.175)`
+    | search url IN ("*5.231.45.175:8097/a.dtd*", "*5.231.45.175:8097/svc.xml*") OR dest IN ("-")
+    | rex field=url "(?i)(?<ioc>5\.231\.45\.175:8097/a\.dtd|5\.231\.45\.175:8097/svc\.xml)"
+    | eval ioc=coalesce(ioc, dest), data_model="web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search `rti_web(ServerUI OR ServerMMS2)`
+    | where match(coalesce(url, uri_path, ""), "(?i)/dms/services/ServerUI|/dms2/services2/ServerMMS2")
+    | eval host=dest, user=user, src=src, dest=dest, detail="HTTP ".coalesce(status, "-")." ".coalesce(url, "-")." UA: ".coalesce(http_user_agent, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="web"
+    | eval ioc="N-central ServerUI or ServerMMS2 exploit requests", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_web(N-central-sec-audit)`
+    | where match(coalesce(http_user_agent, ""), "N-central-sec-audit/1\.0")
+    | eval host=dest, user=user, src=src, dest=dest, detail="HTTP ".coalesce(status, "-")." ".coalesce(url, "-")." UA: ".coalesce(http_user_agent, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="web"
+    | eval ioc="N-central-sec-audit/1.0 user agent", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(serverchild OR flag_default.json OR CodeDropMeta.xml)`
+    | where match(coalesce(file_path, file_name, ""), "(?i)n-central/tmp/serverchild-|n-central/flag/flag_default\.json|CodeDropMeta\.xml")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="serverchild, flag_default.json or CodeDropMeta.xml on the server", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(powershell EncodedCommand)`
+    | where match(coalesce(process, ""), "(?i)-NoProfile") AND match(coalesce(process, ""), "(?i)-NonInteractive") AND match(coalesce(process, ""), "(?i)-EncodedCommand") AND match(coalesce(parent_process_path, parent_process, ""), "(?i)N-able Technologies|Windows Agent|Windows Software Probe")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Encoded PowerShell as SYSTEM from the N-able Agent", ioc_type="behaviour (hunt)"
+]
+
+| append [
+    search `rti_endpoint(wsp.exe OR service.cfg OR CodeDropTmp)`
+    | where match(coalesce(file_path, file_name, ""), "(?i)Windows Software Probe.*(wsp\.exe|service\.cfg)|CodeDropTmp|ServiceBackup.*wsp\.exe")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Windows Software Probe binary or config replaced", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(wsp.exe OR "Windows Software Probe")`
+    | where match(coalesce(process_name, ""), "(?i)^(taskkill|net|net1|sc)\.exe$") AND match(coalesce(process, ""), "(?i)wsp\.exe|Windows Software Probe") AND match(coalesce(parent_process, ""), "(?i)\.cmd")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Probe service killed from a temp .cmd", ioc_type="behaviour (alert)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count
