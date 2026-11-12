@@ -1,4 +1,6 @@
 indicator,type,threat
+squidscript.com,domain,StrikeStub: ClickFix PowerShell Dropper and Modular RAT/Stealer
+http://squidscript.com/Cloudflare.exe,url,StrikeStub: ClickFix PowerShell Dropper and Modular RAT/Stealer
 91.210.109.118,ipv4,"Citrus Ransomware: Certighost AD CS Exploitation, Xray VLESS Tunnels and Sn00py"
 91.210.108.180,ipv4,"Citrus Ransomware: Certighost AD CS Exploitation, Xray VLESS Tunnels and Sn00py"
 pythonapischool.com,domain,"Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient"
@@ -67,6 +69,8 @@ sc.payproofkit.com,domain,ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed
 cdn007-digitaldownloads.com,domain,ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints
 https://ns.mo7sen.dev/EadF.php?p=4,url,ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints
 https://ns.mo7sen.dev/EadF.php?p=5,url,ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints
+ns.mo7sen.dev,domain,ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints
+https://ns.mo7sen.dev/EadF.php,url,ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints
 icagllmbt.space,domain,"Trigram: DPRK Dropper Chain Targeting AI, Blockchain and Logistics (Kimsuky / UNK_DeadDrop)"
 dashboard.asteara.org,domain,"Trigram: DPRK Dropper Chain Targeting AI, Blockchain and Logistics (Kimsuky / UNK_DeadDrop)"
 dashboard.gaganata.ink,domain,"Trigram: DPRK Dropper Chain Targeting AI, Blockchain and Logistics (Kimsuky / UNK_DeadDrop)"

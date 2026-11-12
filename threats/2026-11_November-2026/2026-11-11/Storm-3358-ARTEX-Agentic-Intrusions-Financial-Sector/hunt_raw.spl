@@ -75,6 +75,15 @@
 ]
 
 | append [
+    search index=* sourcetype="aws:cloudtrail" (eventName="GetSecretValue" OR eventName="GetSessionToken" OR eventName="AssumeRole" OR eventName="CreateAccessKey")
+    | eval host=coalesce(recipientAccountId, 'userIdentity.accountId'), user=coalesce('userIdentity.sessionContext.sessionIssuer.arn', 'userIdentity.arn'), src=sourceIPAddress, dest=eventName, detail=eventName." from ".sourceIPAddress
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="aws:cloudtrail"
+    | eval ioc="Cloud credential reused within 60 seconds from a new IP", ioc_type="behaviour (hunt)"
+]
+
+| append [
     search `rti_endpoint(("artx" OR "i*_*.ps1" OR "Windows\Temp"))`
     | where match(coalesce(file_path, file_name, ""), "(?i)Windows\\Temp") AND (match(coalesce(file_name, ""), "(?i)^artx") OR match(coalesce(file_name, ""), "(?i)^i[0-9]+_.*\.ps1$"))
     | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")

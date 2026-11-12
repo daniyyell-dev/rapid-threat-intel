@@ -2,10 +2,12 @@
 
 [Back to index](../../../README.md#latest-threats) · [November 2026](../README.md)
 
-13 threats, 134 indicators, 61 to block now. Newest first.
+15 threats, 148 indicators, 63 to block now. Newest first.
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
+| 2026-11-05 | [BBNet: Multi-Architecture Linux Botnet with Divergent Scanners](BBNet-Linux-Botnet-Multi-Arch-Scanners/) | Malware / botnet | 8 | 0 | Multi-arch Linux botnet that scans before it talks to C2, with no published C2 addresses or hashes |
+| 2026-11-12 | [StrikeStub: ClickFix PowerShell Dropper and Modular RAT/Stealer](StrikeStub-ClickFix-RAT-Stealer/) | Malware / RAT and stealer | 6 | 2 | ClickFix PowerShell that drops a modular WebSocket RAT and stealer, with attacker staging on squidscript.com |
 | 2026-11-11 | [Panzer RaaS: Self-Propagating Ransomware Spread Through Network Shares](Panzer-RaaS-Share-Propagation-Ransomware/) | Ransomware | 5 | 0 | Rust RaaS payload that copies itself to every share and runs as PanzerUpdateTask; names and behaviour only, no hashes |
 | 2026-11-11 | [Citrus Ransomware: Certighost AD CS Exploitation, Xray VLESS Tunnels and Sn00py](Citrus-Ransomware-Certighost-Sn00py/) | Ransomware | 14 | 2 | Contractor-account ransomware using Certighost AD CS certificates, Xray VLESS tunnels and a fake Kaspersky GPO to push Sn00py |
 | 2026-10-21 | [Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient](Lazarus-Operation-FlashHole-CrossWeb-EX/) | Espionage / APT | 22 | 9 | Lazarus abusing CrossWeb EX with GitHub-issue C2 (TechHub) and compromised Korean sites for Cubridge and ClientHub |

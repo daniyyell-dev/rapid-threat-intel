@@ -4,11 +4,11 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-06 | 2026-11-11 03:52 | 2026-11-12 09:50 | Financially motivated intrusion / financial sector | 8 | 8 |
+| 2026-11-06 | 2026-11-11 03:52 | 2026-11-12 15:11 | Financially motivated intrusion / financial sector | 8 | 8 |
 
 ## Summary
 
-Microsoft Threat Intelligence reports that Storm-3358, a financially motivated, Cambodia-based intrusion cluster, began targeting financial organisations in October 2026 with ARTEX, an open-source agentic penetration testing framework. Most targets are financial organisations in Southeast Asia, with a smaller number of large financial organisations globally. The ARTEX agents scan internet-facing systems at machine speed, exploit anonymous file upload and server-side request forgery (SSRF) flaws in web applications, then use curl and netcat to pull down the open-source WISP, vshell and AdaptixC2 remote access trojans for persistence and lateral movement. Microsoft listed the ARTEX servers and C2 nodes below as active on 6 November 2026; the actor rotates infrastructure, so behaviour-based hunting matters as much as blocking. On 11 November 2026 Unit 42 published a defender guide to ARTEX and similar agentic tools, describing the same class of machine-speed behaviour: short bursts of requests, a pause consistent with a model inference call, self-correction after failed requests, a GET after almost every successful write, and write-then-delete tests on storage buckets. Unit 42 did not publish new network indicators. Sophos X-Ops later described the same class of ARTEX tradecraft, including short-lived scripts under C:\Windows\Temp with names such as i12345_b2.ps1 or artx*, command markers such as MARKER123 and ARTX123, and Entra ID application credential and role changes. Sophos did not publish new network indicators.
+Microsoft Threat Intelligence reports that Storm-3358, a financially motivated, Cambodia-based intrusion cluster, began targeting financial organisations in October 2026 with ARTEX, an open-source agentic penetration testing framework. Most targets are financial organisations in Southeast Asia, with a smaller number of large financial organisations globally. The ARTEX agents scan internet-facing systems at machine speed, exploit anonymous file upload and server-side request forgery (SSRF) flaws in web applications, then use curl and netcat to pull down the open-source WISP, vshell and AdaptixC2 remote access trojans for persistence and lateral movement. Microsoft listed the ARTEX servers and C2 nodes below as active on 6 November 2026; the actor rotates infrastructure, so behaviour-based hunting matters as much as blocking. On 11 November 2026 Unit 42 published a defender guide to ARTEX and similar agentic tools, describing the same class of machine-speed behaviour: short bursts of one to 14 requests then a 25 to 31 second pause, self-correction after failed requests, a GET after almost every successful write, write-then-delete tests on storage buckets, canary usernames and placeholder values (research examples only, not indicators to block), and use of a stolen credential within about a minute of discovery. Unit 42 did not publish new network indicators. Sophos X-Ops later described the same class of ARTEX tradecraft, including short-lived scripts under C:\Windows\Temp with names such as i12345_b2.ps1 or artx*, command markers such as MARKER123 and ARTX123, and Entra ID application credential and role changes. Sophos did not publish new network indicators.
 
 ## Affected countries and sectors
 
@@ -51,7 +51,7 @@ Indicators by type: 8 IPv4. See `iocs.csv` for full details and descriptions.
 2. Inventory internet-facing upload endpoints and server-side URL fetch features (document portals, onboarding and KYC forms, webhooks, PDF and image processors); require authentication on uploads and restrict outbound destinations.
 3. Hunt for web server processes spawning a shell, curl, wget or nc, new binaries run from temp or world-writable paths, and new cron entries on web hosts.
 4. Watch for bursts of rapid, retried requests with default tool user agents (Nmap, curl, python-requests, headless Chromium) against public web applications.
-5. Hunt for ARTEX-like operator behaviour described by Unit 42: short request bursts with a 25-31 second pause, a GET after each successful write, write-then-delete tests on storage buckets, and placeholder inputs immediately before real credentials. Do not treat research examples as indicators.
+5. Hunt for ARTEX-like operator behaviour described by Unit 42: short request bursts with a 25-31 second pause, a GET after each successful write, write-then-delete tests on storage buckets, placeholder inputs immediately before real credentials, and a cloud credential used within about 60 seconds of being retrieved, often from a new IP. Do not treat research examples such as evil.com as indicators, and do not block them.
 6. Hunt for temporary files under C:\Windows\Temp whose names start with artx or match i<digits>_*.ps1, and for command lines containing MARKER123 or ARTX123 (Sophos X-Ops).
 7. Review Entra ID audit logs for application credentials added or roles assigned by an application, especially in financial tenants.
 
@@ -91,23 +91,29 @@ Indicators by type: 8 IPv4. See `iocs.csv` for full details and descriptions.
 
 6. **Hunt** · Canary inputs immediately before real credentials\
    Look for: Placeholder or canary usernames and values sent immediately before real credentials in the same authentication or API session\
-   Why it matters: Unit 42 saw ARTEX agents test canary inputs, such as bogus usernames, before real ones. Hunt that pattern in your logs; do not treat research examples as indicators.\
+   Why it matters: Unit 42 saw ARTEX agents test canary inputs, such as bogus usernames, before real ones. Published research examples included evil.com, test@example.com and deadbeefdeadbeefdeadbeef12; those are illustrations, not indicators to block. Hunt the pattern in your logs.\
    Log source: Web application, identity and API logs\
    Source: [Unit 42](https://unit42.paloaltonetworks.com/artex-and-ai-powered-red-teaming-tools/)
 
-7. **Hunt** · ARTEX temp scripts under Windows\Temp\
+7. **Hunt** · Cloud credential reused within 60 seconds from a new IP\
+   Look for: A stolen or newly retrieved cloud credential used within about 60 seconds of being discovered, often from a new IP address\
+   Why it matters: Unit 42 observed ARTEX operators pivot within about a minute of a credential download, including validating more than 200 client secrets in about three minutes, and recommended hunting first use of a cloud key from a new IP.\
+   Log source: AWS CloudTrail, identity-provider and cloud audit logs (Defender XDR CloudAppEvents)\
+   Source: [Unit 42](https://unit42.paloaltonetworks.com/artex-and-ai-powered-red-teaming-tools/)
+
+8. **Hunt** · ARTEX temp scripts under Windows\Temp\
    Look for: Temporary files under C:\Windows\Temp whose names start with artx or match i<digits>_*.ps1, such as i12345_b2.ps1\
    Why it matters: Sophos X-Ops describes ARTEX operators dropping short-lived PowerShell scripts under C:\Windows\Temp with names like i12345_b2.ps1 or artx*.\
    Log source: EDR file events on Windows endpoints, especially in financial tenants\
    Source: [Sophos](https://www.sophos.com/en-us/blog/artex-attackers-apply-agentic-ai)
 
-8. **Alert** · ARTEX MARKER123 or ARTX123 command markers\
+9. **Alert** · ARTEX MARKER123 or ARTX123 command markers\
    Look for: Command lines containing MARKER123 or ARTX123\
    Why it matters: Sophos X-Ops reported ARTEX operators using MARKER123 and ARTX123 as command markers during intrusions.\
    Log source: EDR process events\
    Source: [Sophos](https://www.sophos.com/en-us/blog/artex-attackers-apply-agentic-ai)
 
-9. **Hunt** · Entra app adding credentials or assigning roles\
+10. **Hunt** · Entra app adding credentials or assigning roles\
    Look for: An Entra ID application adding a credential or assigning a role\
    Why it matters: Sophos X-Ops describes ARTEX follow-on activity that adds application credentials and assigns roles in Entra ID, including against financial organisations.\
    Log source: Entra ID audit and directory logs\

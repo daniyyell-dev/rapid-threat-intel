@@ -61,6 +61,19 @@ union isfuzzy=true
     | where Timestamp > ago(Lookback)
     | where Application == "Amazon Web Services" and ActionType has_any ("PutObject", "DeleteObject", "CreateBucket", "DeleteBucket")
     | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(RawEventData.userIdentity.arn), Indicator = tostring(ActionType), Context = tostring(strcat(ActionType, " ", IPAddress, " ", tostring(RawEventData.requestParameters)))),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where Application == "Amazon Web Services"
+    | where ActionType has_any ("GetSecretValue", "GetSessionToken", "AssumeRole", "CreateAccessKey")
+    | project DownloadTime = Timestamp, Account = AccountObjectId, DownloadIP = IPAddress, DownloadAction = ActionType, DeviceName = AccountDisplayName
+    | join kind=inner (
+        CloudAppEvents
+        | where Timestamp > ago(Lookback)
+        | where Application == "Amazon Web Services"
+        | project UseTime = Timestamp, Account = AccountObjectId, UseIP = IPAddress, UseAction = ActionType
+    ) on Account
+    | where UseTime > DownloadTime and UseTime <= DownloadTime + 1m and UseIP != DownloadIP
+    | project Timestamp = UseTime, SourceTable = "CloudAppEvents", Entity = tostring(Account), Indicator = tostring(UseIP), Context = strcat(DownloadAction, " from ", DownloadIP, " then ", UseAction, " from ", UseIP, " within 60s")),
   (DeviceFileEvents
     | where Timestamp > ago(Lookback)
     | where FolderPath has @"\Windows\Temp" and (FileName startswith "artx" or FileName matches regex @"^i[0-9]+_.*\.ps1$")

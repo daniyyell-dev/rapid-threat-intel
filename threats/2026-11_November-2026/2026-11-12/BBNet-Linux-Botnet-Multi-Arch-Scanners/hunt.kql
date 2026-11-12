@@ -1,0 +1,38 @@
+// Threat: BBNet: Multi-Architecture Linux Botnet with Divergent Scanners
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners
+let Lookback = 30d;
+union isfuzzy=true
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in (".bbnet", ".bbnet.new", ".b", "infect.sh") or FolderPath has ".bbnet" or (ProcessCommandLine has_any ("/etc/crontab", "/etc/rc.local") and ProcessCommandLine has ".bbnet")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemotePort in (23, 2323)
+    | summarize Timestamp = max(Timestamp), Attempts = count(), Ports = make_set(RemotePort, 2) by DeviceName, RemoteIP, Window = bin(Timestamp, 5m)
+    | where Attempts >= 20
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = strcat(Attempts, " connections to TCP 23/2323 in 5m")),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in~ ("wget", "curl", "busybox", "toybox", "ftp", "tftp") and ProcessCommandLine has "infect.sh"
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", FileName, " ", ProcessCommandLine))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where (ProcessCommandLine has "/etc/crontab" or ProcessCommandLine has "/etc/rc.local") and ProcessCommandLine has_any (".bbnet", "@reboot")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(FileName, " ", ProcessCommandLine))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in~ ("crontab", "rc.local") and FolderPath has "/etc" and InitiatingProcessCommandLine has ".bbnet"
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " ", FolderPath, "/", FileName, " by ", InitiatingProcessFileName))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in (".bbnet", ".bbnet.new", ".bbnet_scan_on", ".bbnet_scan.stats", ".b", "infect.sh") or FolderPath has ".bbnet"
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(ActionType, " ", FolderPath, "/", FileName, " by ", InitiatingProcessFileName))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemotePort in (7778, 7779)
+    | where InitiatingProcessFileName has "bbnet" or InitiatingProcessFolderPath has ".bbnet" or InitiatingProcessFileName =~ ".b"
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = strcat(RemoteIP, ":", RemotePort), Context = strcat(InitiatingProcessFileName, " ", ActionType, " ", RemoteIP, ":", RemotePort))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

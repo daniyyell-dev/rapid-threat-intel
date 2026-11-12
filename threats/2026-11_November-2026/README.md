@@ -2,12 +2,14 @@
 
 [Back to index](../../README.md#latest-threats)
 
-31 threats, 1033 indicators, 366 to block now. Newest first.
+33 threats, 1059 indicators, 370 to block now. Newest first.
 
 ### [2026-11-12](2026-11-12/)
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
+| 2026-11-05 | [BBNet: Multi-Architecture Linux Botnet with Divergent Scanners](2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners/) | Malware / botnet | 8 | 0 | Multi-arch Linux botnet that scans before it talks to C2, with no published C2 addresses or hashes |
+| 2026-11-12 | [StrikeStub: ClickFix PowerShell Dropper and Modular RAT/Stealer](2026-11-12/StrikeStub-ClickFix-RAT-Stealer/) | Malware / RAT and stealer | 6 | 2 | ClickFix PowerShell that drops a modular WebSocket RAT and stealer, with attacker staging on squidscript.com |
 | 2026-11-11 | [Panzer RaaS: Self-Propagating Ransomware Spread Through Network Shares](2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware/) | Ransomware | 5 | 0 | Rust RaaS payload that copies itself to every share and runs as PanzerUpdateTask; names and behaviour only, no hashes |
 | 2026-11-11 | [Citrus Ransomware: Certighost AD CS Exploitation, Xray VLESS Tunnels and Sn00py](2026-11-12/Citrus-Ransomware-Certighost-Sn00py/) | Ransomware | 14 | 2 | Contractor-account ransomware using Certighost AD CS certificates, Xray VLESS tunnels and a fake Kaspersky GPO to push Sn00py |
 | 2026-10-21 | [Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient](2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX/) | Espionage / APT | 22 | 9 | Lazarus abusing CrossWeb EX with GitHub-issue C2 (TechHub) and compromised Korean sites for Cubridge and ClientHub |
@@ -26,7 +28,7 @@
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
-| 2026-11-11 | [ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints](2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/) | Supply chain / MSP remote access | 39 | 8 | Hijacked cloud ScreenConnect panels push rogue clients to MSP-managed endpoints and pivot back to technicians |
+| 2026-11-11 | [ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints](2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/) | Supply chain / MSP remote access | 51 | 10 | Hijacked cloud ScreenConnect panels push rogue clients to MSP-managed endpoints and pivot back to technicians |
 | 2026-11-11 | [Trigram: DPRK Dropper Chain Targeting AI, Blockchain and Logistics (Kimsuky / UNK_DeadDrop)](2026-11-11/Trigram-DPRK-Dropper-Kimsuky-UNK-DeadDrop/) | APT / infostealer | 275 | 11 | DPRK ClickFix and supply-chain dropper, tied to Kimsuky and UNK_DeadDrop, that steals wallets and credentials |
 | 2026-10-27 | [SkyW4lker: Microsoft 365 Device-Code Phishing Kit Targeting Enterprises](2026-11-11/SkyW4lker-Microsoft-365-Device-Code-Phishing/) | Phishing / identity | 90 | 0 | Microsoft 365 device-code phishing kit that obtains tokens through genuine sign-in and MFA |
 | 2026-10-05 | [Gentlemen Ransomware Affiliate Azazel: CI/CD Secret Theft, LEAKNED Extortion and MCP Command Execution](2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/) | Ransomware / data theft and extortion | 9 | 3 | Gentlemen ransomware affiliate stealing CI/CD secrets and leaking victims on its own LEAKNED site |

@@ -1,0 +1,46 @@
+// Threat: StrikeStub: ClickFix PowerShell Dropper and Modular RAT/Stealer
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer
+rule rti_strikestub_clickfix_rat_stealer {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-12"
+    description = "StrikeStub: ClickFix PowerShell Dropper and Modular RAT/Stealer"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer"
+
+  events:
+    (
+      $e.network.dns.questions.name = /(?:^|\.)(?:squidscript\.com|spiraldirect\.ch)\.?$/ nocase or
+      $e.target.hostname = /(?:^|\.)(?:squidscript\.com|spiraldirect\.ch)\.?$/ nocase or
+      $e.target.domain.name = /(?:^|\.)(?:squidscript\.com|spiraldirect\.ch)\.?$/ nocase or
+      re.regex($e.target.url, `^(?:[a-z][a-z0-9+.-]*://)?(?:[^/?#]*@)?(?:squidscript\.com/Cloudflare\.exe|(?:[^/?#@]*\.)?(?:squidscript\.com|spiraldirect\.ch)(?::\d+)?(?:[/?#]|$))`) nocase or
+      ($e.metadata.event_type = "PROCESS_LAUNCH" and re.regex($e.principal.process.file.full_path, `explorer\.exe$`) nocase and re.regex($e.target.process.file.full_path, `powershell\.exe$`) nocase and re.regex($e.target.process.command_line, `(-w hidden|-WindowStyle Hidden)`) nocase and re.regex($e.target.process.command_line, `(iwr|irm|Invoke-WebRequest|Invoke-RestMethod)`) nocase and re.regex($e.target.process.command_line, `(svc\.exe|Cloudflare\.exe|squidscript\.com)`) nocase) or
+      ($e.metadata.event_type = "PROCESS_LAUNCH" and re.regex($e.target.process.file.full_path, `RuntimeBroker\.exe$`) nocase and not re.regex($e.target.process.file.full_path, `Windows.(System32|SysWOW64|WinSxS)`) nocase) or
+      (($e.metadata.event_type = "REGISTRY_MODIFICATION" and re.regex($e.target.registry.registry_value_data, `WindowsUpdate\.exe`) nocase) or (($e.metadata.event_type = "FILE_CREATION" or $e.metadata.event_type = "FILE_MODIFICATION" or $e.metadata.event_type = "FILE_MOVE") and re.regex($e.target.file.full_path, `WindowsUpdate\.exe$`) nocase and re.regex($e.target.file.full_path, `Programs.Startup`) nocase))
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+    $dns_query = array_distinct($e.network.dns.questions.name)
+    $target_hostname = array_distinct($e.target.hostname)
+    $target_url = array_distinct($e.target.url)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}

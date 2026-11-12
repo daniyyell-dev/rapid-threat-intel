@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-12 13:45",
- "threat_count": 31,
- "indicator_count": 1033,
- "block_now_count": 366,
+ "last_updated": "2026-11-12 15:11",
+ "threat_count": 33,
+ "indicator_count": 1059,
+ "block_now_count": 370,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -102,6 +102,709 @@
   }
  ],
  "threats": [
+  {
+   "id": "BBNet-Linux-Botnet-Multi-Arch-Scanners",
+   "folder": "threats/2026-11_November-2026/2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners",
+   "name": "BBNet: Multi-Architecture Linux Botnet with Divergent Scanners",
+   "short": "BBNet Linux botnet",
+   "category": "Malware / botnet",
+   "published": "2026-11-05",
+   "entry_date": "2026-11-12 15:11",
+   "last_updated": "2026-11-12",
+   "seq": 33,
+   "headline": "Multi-arch Linux botnet that scans before it talks to C2, with no published C2 addresses or hashes",
+   "summary": "PRODAFT's Threat Intelligence team, in a report dated 5 November 2026 and summarised publicly on 12 November by Security Online, analysed a 13.65 MB package recovered from an open directory and labelled the family BBNet. The archive holds a loader named infect.sh and 13 statically linked ELF binaries for ARM, AArch64, x86, MIPS and PowerPC (10 unique SHA-256 hashes; three filename pairs are byte-identical). After a double fork the implant copies itself to /etc, /var/lib or /tmp as .bbnet, writes @reboot entries in /etc/crontab and /etc/rc.local, and starts scanning before it ever registers with its controller, so blocking the C2 will not stop propagation. The x86-64 build brute-forces Telnet on TCP 23 and 2323; the other builds add 11 exploit handlers, including React Server Components CVE-2025-55182 and GNU Inetutils telnetd CVE-2026-24061, plus Hikvision, D-Link, Netgear, GPON, Huawei and Realtek flaws. Default C2 is plaintext TCP port 7778, with HTTP updates on port 7779; both can be changed at runtime. PRODAFT did not publish C2 addresses or file hashes in the public coverage, and the recovered package had no victim telemetry, so this entry is behaviours and file-name leads only. Patch the two CVEs, disable exposed Telnet, and hunt the .bbnet artefacts.",
+   "caveat": "No C2 addresses or SHA-256 hashes were published in the public write-up of PRODAFT's report. File names such as infect.sh are generic; pair them with .bbnet artefacts. Ports 7778 and 7779 are defaults only and are not unique enough to block.",
+   "targets": {
+    "countries": [],
+    "regions": [],
+    "sectors": [
+     "Internet-facing Linux hosts",
+     "Routers and network cameras",
+     "React Server Components deployments"
+    ],
+    "note": "PRODAFT recovered the package from an open directory and published no victim telemetry; the scanners target Linux hosts, routers, cameras and React Server Components across ARM, AArch64, x86, MIPS and PowerPC.",
+    "source": {
+     "url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+     "label": "Security Online – Multi-Architecture BBNet Linux Botnet Pairs Divergent Scanners With React and Telnet Exploits",
+     "name": "Security Online"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1110",
+     "name": "Brute Force",
+     "url": "https://attack.mitre.org/techniques/T1110/"
+    },
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1105",
+     "name": "Ingress Tool Transfer",
+     "url": "https://attack.mitre.org/techniques/T1105/"
+    },
+    {
+     "id": "T1053.003",
+     "name": "Cron",
+     "url": "https://attack.mitre.org/techniques/T1053/003/"
+    },
+    {
+     "id": "T1037",
+     "name": "Boot or Logon Initialization Scripts",
+     "url": "https://attack.mitre.org/techniques/T1037/"
+    },
+    {
+     "id": "T1498",
+     "name": "Network Denial of Service",
+     "url": "https://attack.mitre.org/techniques/T1498/"
+    }
+   ],
+   "recommended_actions": [
+    "Hunt Linux and embedded hosts for hidden .bbnet binaries under /tmp, /var/lib and /etc, and for .bbnet.new, .bbnet_scan_on and .bbnet_scan.stats.",
+    "Audit /etc/crontab and /etc/rc.local for unauthorised @reboot entries that launch .bbnet, and remove the binary and its persistence together; a C2 block alone will not stop the scanner child.",
+    "Patch React Server Components (CVE-2025-55182) and GNU Inetutils telnetd (CVE-2026-24061), and disable exposed Telnet on ports 23 and 2323.",
+    "Review firewall and NetFlow for bursts of Telnet authentication to 23/2323 and for processes named .bbnet connecting to TCP 7778 or HTTP 7779; do not block those ports globally."
+   ],
+   "sources": [
+    {
+     "url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+     "label": "Security Online – Multi-Architecture BBNet Linux Botnet Pairs Divergent Scanners With React and Telnet Exploits",
+     "name": "Security Online"
+    }
+   ],
+   "indicator_count": 8,
+   "block_now_count": 0,
+   "hunt_count": 8,
+   "hunt_counts": {
+    "alert": 8
+   },
+   "indicator_counts": {
+    "filename": 8
+   },
+   "ioas": [
+    {
+     "artefact": "Telnet brute force against TCP ports 23 and 2323, including a SHELL_TEST echo check after a guessed credential",
+     "log_source": "Firewall, IDS, honeypot and Linux endpoint network logs; Defender XDR DeviceNetworkEvents",
+     "why": "The x86-64 BBNet build scans local /24 subnets on TCP 23 and 2323 with 20 credential pairs; the expanded scanner in the other builds uses 45 pairs. Blocking the C2 does not stop this pre-registration scanning.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+     "source_name": "Security Online",
+     "title": "Telnet brute force on TCP 23 and 2323",
+     "queries": [
+      "KQL"
+     ]
+    },
+    {
+     "artefact": "Exploitation attempts against React Server Components CVE-2025-55182 or GNU Inetutils telnetd CVE-2026-24061, or a follow-on fetch of infect.sh",
+     "log_source": "Web, WAF and Telnet service logs; Defender XDR DeviceNetworkEvents and DeviceProcessEvents on Linux hosts",
+     "why": "The expanded BBNet scanner includes 11 exploit handlers, among them CVE-2025-55182 (React Server Components multipart deserialisation) and CVE-2026-24061 (telnetd NEW-ENVIRON argument injection), plus Hikvision, D-Link, Netgear, GPON, Huawei and Realtek flaws. The HTTP helper marks a 'hit' as soon as the request is sent, so internal counts overstate successful exploitation. No unique exploit payload was published.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+     "source_name": "Security Online",
+     "title": "CVE-2025-55182 or CVE-2026-24061 exploitation, or infect.sh fetch",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "New @reboot or similar entries in /etc/crontab or /etc/rc.local that launch a hidden .bbnet binary, without preserving a runtime C2 argument",
+     "log_source": "Linux file integrity, auditd and Defender XDR DeviceFileEvents or DeviceProcessEvents",
+     "why": "After a double fork, BBNet writes reboot entries into /etc/crontab and /etc/rc.local. Those entries omit runtime server arguments, so a restarted implant falls back to its compiled default C2.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+     "source_name": "Security Online",
+     "title": "crontab or rc.local persistence launching .bbnet",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Multi-architecture ELF drops in /tmp, /var/tmp, /dev/shm or /var/run, saved as .b and then copied to /etc, /var/lib or /tmp as .bbnet, plus .bbnet.new, .bbnet_scan_on or .bbnet_scan.stats",
+     "log_source": "Defender XDR DeviceFileEvents on Linux hosts; file integrity monitoring",
+     "why": "infect.sh pulls 13 architecture binaries (ARM, AArch64, x86, MIPS and PowerPC; 10 unique SHA-256 hashes, unpublished in the public write-up), saves each candidate as .b, and runs it without checking the host CPU. The running implant then copies itself to .bbnet.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+     "source_name": "Security Online",
+     "title": "Hidden .bbnet ELF drops and scanner state files",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Outbound plaintext TCP to port 7778 with a registration string, or HTTP to port 7779 for 16-character build markers, especially from a process whose image is .bbnet",
+     "log_source": "Firewall, NetFlow and Defender XDR DeviceNetworkEvents on Linux hosts",
+     "why": "After starting its scanner, the parent process connects to a default C2 port 7778 and sends a registration string (a random 24-character hex ID, architecture, OS, hostname and version). An HTTP updater checks port 7779. Both ports can be changed at runtime, and no C2 address was published.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+     "source_name": "Security Online",
+     "title": "Default C2 on TCP 7778 or updates on 7779 from .bbnet",
+     "queries": [
+      "KQL"
+     ]
+    }
+   ],
+   "ioa_count": 5,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners/block_now.txt",
+     "download": "BBNet-Linux-Botnet-Multi-Arch-Scanners_block_now.txt"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners/hunt.kql",
+     "download": "BBNet-Linux-Botnet-Multi-Arch-Scanners_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners/hunt.spl",
+     "download": "BBNet-Linux-Botnet-Multi-Arch-Scanners_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners/hunt_raw.spl",
+     "download": "BBNet-Linux-Botnet-Multi-Arch-Scanners_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners/hunt.yaral",
+     "download": "BBNet-Linux-Botnet-Multi-Arch-Scanners_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners/iocs.csv",
+     "download": "BBNet-Linux-Botnet-Multi-Arch-Scanners_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners",
+   "indicators": [
+    {
+     "value": "/tmp/.bbnet",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Hidden BBNet ELF copy dropped in /tmp after the implant detaches.",
+     "source_url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+     "source_label": "Security Online – Multi-Architecture BBNet Linux Botnet Pairs Divergent Scanners With React and Telnet Exploits",
+     "source_name": "Security Online",
+     "sources": [
+      {
+       "url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+       "name": "Security Online"
+      }
+     ]
+    },
+    {
+     "value": "/etc/.bbnet",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Hidden BBNet ELF copy dropped in /etc when that directory is writable.",
+     "source_url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+     "source_label": "Security Online – Multi-Architecture BBNet Linux Botnet Pairs Divergent Scanners With React and Telnet Exploits",
+     "source_name": "Security Online",
+     "sources": [
+      {
+       "url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+       "name": "Security Online"
+      }
+     ]
+    },
+    {
+     "value": "/var/lib/.bbnet",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Hidden BBNet ELF copy dropped in /var/lib when that directory is writable.",
+     "source_url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+     "source_label": "Security Online – Multi-Architecture BBNet Linux Botnet Pairs Divergent Scanners With React and Telnet Exploits",
+     "source_name": "Security Online",
+     "sources": [
+      {
+       "url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+       "name": "Security Online"
+      }
+     ]
+    },
+    {
+     "value": "/tmp/.bbnet.new",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Staging path for an unsigned BBNet HTTP update (i686 builds use /tmp/.bbnet.new).",
+     "source_url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+     "source_label": "Security Online – Multi-Architecture BBNet Linux Botnet Pairs Divergent Scanners With React and Telnet Exploits",
+     "source_name": "Security Online",
+     "sources": [
+      {
+       "url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+       "name": "Security Online"
+      }
+     ]
+    },
+    {
+     "value": "/var/tmp/.bbnet.new",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Staging path for an unsigned BBNet HTTP update on x86-64 builds.",
+     "source_url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+     "source_label": "Security Online – Multi-Architecture BBNet Linux Botnet Pairs Divergent Scanners With React and Telnet Exploits",
+     "source_name": "Security Online",
+     "sources": [
+      {
+       "url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+       "name": "Security Online"
+      }
+     ]
+    },
+    {
+     "value": ".bbnet_scan_on",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "BBNet scanner state file left alongside the hidden .bbnet binary.",
+     "source_url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+     "source_label": "Security Online – Multi-Architecture BBNet Linux Botnet Pairs Divergent Scanners With React and Telnet Exploits",
+     "source_name": "Security Online",
+     "sources": [
+      {
+       "url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+       "name": "Security Online"
+      }
+     ]
+    },
+    {
+     "value": ".bbnet_scan.stats",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "BBNet scanner statistics file; internal 'hit' counts overstate successful exploits.",
+     "source_url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+     "source_label": "Security Online – Multi-Architecture BBNet Linux Botnet Pairs Divergent Scanners With React and Telnet Exploits",
+     "source_name": "Security Online",
+     "sources": [
+      {
+       "url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+       "name": "Security Online"
+      }
+     ]
+    },
+    {
+     "value": "infect.sh",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Loader script that walks /tmp, /var/tmp, /dev/shm and /var/run and tries 12 download methods to fetch the multi-arch BBNet binaries.",
+     "source_url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+     "source_label": "Security Online – Multi-Architecture BBNet Linux Botnet Pairs Divergent Scanners With React and Telnet Exploits",
+     "source_name": "Security Online",
+     "sources": [
+      {
+       "url": "https://securityonline.info/bbnet-linux-botnet-scanners-ddos/",
+       "name": "Security Online"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners/hunt.kql",
+     "download": "BBNet-Linux-Botnet-Multi-Arch-Scanners_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners/hunt.spl",
+     "download": "BBNet-Linux-Botnet-Multi-Arch-Scanners_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners/hunt_raw.spl",
+      "download": "BBNet-Linux-Botnet-Multi-Arch-Scanners_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners/hunt.yaral",
+     "download": "BBNet-Linux-Botnet-Multi-Arch-Scanners_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "StrikeStub-ClickFix-RAT-Stealer",
+   "folder": "threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer",
+   "name": "StrikeStub: ClickFix PowerShell Dropper and Modular RAT/Stealer",
+   "short": "StrikeStub ClickFix RAT/stealer",
+   "category": "Malware / RAT and stealer",
+   "published": "2026-11-12",
+   "entry_date": "2026-11-12 15:11",
+   "last_updated": "2026-11-12",
+   "seq": 32,
+   "headline": "ClickFix PowerShell that drops a modular WebSocket RAT and stealer, with attacker staging on squidscript.com",
+   "summary": "Akamai, writing on 12 November 2026, describes StrikeStub, a modular Windows remote access trojan and stealer likely sold as malware-as-a-service, delivered through a ClickFix lure on the compromised site spiraldirect.ch. A fake 'Verify you are human' prompt copies a hidden PowerShell command that downloads http://squidscript.com/Cloudflare.exe to %TEMP%\\svc.exe and runs it. The payload masquerades as RuntimeBroker.exe with spoofed Microsoft version resources, persists as Microsoft\\WindowsUpdate.exe through a Registry Run key and the user Startup folder, and talks to a config-driven C2 over WebSockets with the user agent StrikeStub/1.0. Operators can toggle hidden VNC, keylogging, webcam capture, live desktop streaming, clipboard monitoring and DPAPI theft of browser credentials. squidscript.com and the Cloudflare.exe URL are attacker infrastructure and are on the block list; spiraldirect.ch is a compromised legitimate site and is alert only. Akamai did not publish a sample hash or the C2 host, which is read from a runtime config, so hunt on the behaviours and the user agent as well as the staging URL.",
+   "caveat": "Single-source indicators (Akamai). The C2 host and port are config-driven and were not published. spiraldirect.ch is a compromised legitimate site: alert only, do not block it as attacker infrastructure.",
+   "targets": {
+    "countries": [],
+    "regions": [],
+    "sectors": [],
+    "note": "Akamai describes a ClickFix campaign delivered from a compromised Swiss site (spiraldirect.ch); no victim count or sector list was published.",
+    "source": {
+     "url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+     "label": "Akamai – Dissecting StrikeStub: ClickFix PowerShell Malware and Modular RAT",
+     "name": "Akamai"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1204.001",
+     "name": "Malicious Link",
+     "url": "https://attack.mitre.org/techniques/T1204/001/"
+    },
+    {
+     "id": "T1059.001",
+     "name": "PowerShell",
+     "url": "https://attack.mitre.org/techniques/T1059/001/"
+    },
+    {
+     "id": "T1105",
+     "name": "Ingress Tool Transfer",
+     "url": "https://attack.mitre.org/techniques/T1105/"
+    },
+    {
+     "id": "T1036.005",
+     "name": "Match Legitimate Name or Location",
+     "url": "https://attack.mitre.org/techniques/T1036/005/"
+    },
+    {
+     "id": "T1547.001",
+     "name": "Registry Run Keys / Startup Folder",
+     "url": "https://attack.mitre.org/techniques/T1547/001/"
+    },
+    {
+     "id": "T1071",
+     "name": "Application Layer Protocol",
+     "url": "https://attack.mitre.org/techniques/T1071/"
+    },
+    {
+     "id": "T1555.003",
+     "name": "Credentials from Web Browsers",
+     "url": "https://attack.mitre.org/techniques/T1555/003/"
+    },
+    {
+     "id": "T1056.001",
+     "name": "Keylogging",
+     "url": "https://attack.mitre.org/techniques/T1056/001/"
+    },
+    {
+     "id": "T1021",
+     "name": "Remote Services",
+     "url": "https://attack.mitre.org/techniques/T1021/"
+    }
+   ],
+   "recommended_actions": [
+    "Block squidscript.com and http://squidscript.com/Cloudflare.exe (they are in the Defender XDR import file).",
+    "Hunt for explorer.exe launching hidden PowerShell that uses iwr or irm to write %TEMP%\\svc.exe, for RuntimeBroker.exe running outside System32, and for WindowsUpdate.exe in a user Run key or Startup folder.",
+    "Search proxy, firewall and TLS-inspection logs for the WebSocket user agent StrikeStub/1.0; the C2 address was not published.",
+    "Treat spiraldirect.ch as a compromised site: alert on visits and review the host, but do not block the legitimate domain as if it were attacker infrastructure.",
+    "If confirmed, isolate the host, remove the Run-key and Startup persistence, and rotate browser and other credentials that may have been taken through DPAPI."
+   ],
+   "sources": [
+    {
+     "url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+     "label": "Akamai – Dissecting StrikeStub: ClickFix PowerShell Malware and Modular RAT",
+     "name": "Akamai"
+    }
+   ],
+   "indicator_count": 6,
+   "block_now_count": 2,
+   "hunt_count": 4,
+   "hunt_counts": {
+    "alert": 4
+   },
+   "indicator_counts": {
+    "domain": 2,
+    "filename": 2,
+    "other": 1,
+    "url": 1
+   },
+   "ioas": [
+    {
+     "artefact": "explorer.exe launching powershell.exe with -w hidden and Invoke-WebRequest or Invoke-RestMethod (iwr or irm) saving a payload to %TEMP%\\svc.exe",
+     "log_source": "Defender XDR DeviceProcessEvents",
+     "why": "Akamai saw the compromised site copy a hidden PowerShell one-liner to the clipboard; after the victim pasted it into Win+R, explorer.exe launched PowerShell, which downloaded http://squidscript.com/Cloudflare.exe to %TEMP%\\svc.exe and started it.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+     "source_name": "Akamai",
+     "title": "explorer.exe launching hidden PowerShell to drop svc.exe",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "RuntimeBroker.exe running from a path outside Windows\\System32, Windows\\SysWOW64 or WinSxS",
+     "log_source": "Defender XDR DeviceProcessEvents",
+     "why": "StrikeStub masquerades as RuntimeBroker.exe with spoofed Microsoft version resources, but it is a MinGW/GCC build. A genuine RuntimeBroker.exe lives under System32.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+     "source_name": "Akamai",
+     "title": "RuntimeBroker.exe running outside System32",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "WindowsUpdate.exe persisting through a Registry Run key and as Microsoft\\WindowsUpdate.exe under the user Startup folder",
+     "log_source": "Defender XDR DeviceRegistryEvents and DeviceFileEvents",
+     "why": "StrikeStub uses dual persistence: a Run key and a Startup-folder drop named Microsoft\\WindowsUpdate.exe, separate from the RuntimeBroker disguise of the main payload.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+     "source_name": "Akamai",
+     "title": "WindowsUpdate.exe Run-key and Startup persistence",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "WebSocket command-and-control traffic using the user agent StrikeStub/1.0",
+     "log_source": "Proxy, firewall, TLS-inspection and web logs; endpoint network telemetry if user-agent fields are collected",
+     "why": "Akamai recovered the StrikeStub/1.0 user agent from the RAT's WebSocket enrolment handshake. The C2 host and port are config-driven and were not published.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+     "source_name": "Akamai",
+     "title": "WebSocket C2 with user agent StrikeStub/1.0",
+     "queries": [
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Hidden VNC (hvnc_start), keylog files named keylog_YYYY-MM-DD.txt, or DPAPI / profile-cloning access to browser credential stores by a disguised RuntimeBroker.exe or WindowsUpdate.exe",
+     "log_source": "Defender XDR DeviceFileEvents and DeviceProcessEvents",
+     "why": "Operators can toggle hidden VNC, keylogging, webcam capture, live desktop streaming, clipboard monitoring and DPAPI theft of Chromium credentials, plus a Firefox profile-clone workaround for locked SQLite databases.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+     "source_name": "Akamai",
+     "title": "HVNC, dated keylog files or DPAPI browser theft",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    }
+   ],
+   "ioa_count": 5,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer/block_now.txt",
+     "download": "StrikeStub-ClickFix-RAT-Stealer_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer/defender_xdr_indicators.csv",
+     "download": "StrikeStub-ClickFix-RAT-Stealer_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer/hunt.kql",
+     "download": "StrikeStub-ClickFix-RAT-Stealer_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer/hunt.spl",
+     "download": "StrikeStub-ClickFix-RAT-Stealer_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer/hunt_raw.spl",
+     "download": "StrikeStub-ClickFix-RAT-Stealer_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer/hunt.yaral",
+     "download": "StrikeStub-ClickFix-RAT-Stealer_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer/iocs.csv",
+     "download": "StrikeStub-ClickFix-RAT-Stealer_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer",
+   "indicators": [
+    {
+     "value": "squidscript.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Attacker domain that hosted the StrikeStub ClickFix loader served as Cloudflare.exe.",
+     "source_url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+     "source_label": "Akamai – Dissecting StrikeStub: ClickFix PowerShell Malware and Modular RAT",
+     "source_name": "Akamai",
+     "sources": [
+      {
+       "url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+       "name": "Akamai"
+      }
+     ]
+    },
+    {
+     "value": "http://squidscript.com/Cloudflare.exe",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "URL of the StrikeStub loader that the ClickFix PowerShell command downloads to %TEMP%\\svc.exe.",
+     "source_url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+     "source_label": "Akamai – Dissecting StrikeStub: ClickFix PowerShell Malware and Modular RAT",
+     "source_name": "Akamai",
+     "sources": [
+      {
+       "url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+       "name": "Akamai"
+      }
+     ]
+    },
+    {
+     "value": "spiraldirect.ch",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Compromised legitimate website that presented a fake 'Verify you are human' ClickFix prompt and copied the StrikeStub PowerShell command to the clipboard.",
+     "source_url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+     "source_label": "Akamai – Dissecting StrikeStub: ClickFix PowerShell Malware and Modular RAT",
+     "source_name": "Akamai",
+     "sources": [
+      {
+       "url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+       "name": "Akamai"
+      }
+     ]
+    },
+    {
+     "value": "StrikeStub/1.0",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "WebSocket user agent used by the StrikeStub RAT during C2 enrolment.",
+     "source_url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+     "source_label": "Akamai – Dissecting StrikeStub: ClickFix PowerShell Malware and Modular RAT",
+     "source_name": "Akamai",
+     "sources": [
+      {
+       "url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+       "name": "Akamai"
+      }
+     ]
+    },
+    {
+     "value": "%TEMP%\\svc.exe",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Local path where the ClickFix PowerShell command saves Cloudflare.exe before launching it.",
+     "source_url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+     "source_label": "Akamai – Dissecting StrikeStub: ClickFix PowerShell Malware and Modular RAT",
+     "source_name": "Akamai",
+     "sources": [
+      {
+       "url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+       "name": "Akamai"
+      }
+     ]
+    },
+    {
+     "value": "\\Microsoft\\WindowsUpdate.exe",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Startup-folder persistence path used by StrikeStub, dropped under the user's Programs\\Startup tree as Microsoft\\WindowsUpdate.exe.",
+     "source_url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+     "source_label": "Akamai – Dissecting StrikeStub: ClickFix PowerShell Malware and Modular RAT",
+     "source_name": "Akamai",
+     "sources": [
+      {
+       "url": "https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat",
+       "name": "Akamai"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer/hunt.kql",
+     "download": "StrikeStub-ClickFix-RAT-Stealer_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer/hunt.spl",
+     "download": "StrikeStub-ClickFix-RAT-Stealer_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer/hunt_raw.spl",
+      "download": "StrikeStub-ClickFix-RAT-Stealer_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer/hunt.yaral",
+     "download": "StrikeStub-ClickFix-RAT-Stealer_hunt.yaral"
+    }
+   ]
+  },
   {
    "id": "Panzer-RaaS-Share-Propagation-Ransomware",
    "folder": "threats/2026-11_November-2026/2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware",
@@ -5711,10 +6414,10 @@
    "category": "Supply chain / MSP remote access",
    "published": "2026-11-11",
    "entry_date": "2026-11-11 22:05",
-   "last_updated": "2026-11-12 03:55",
+   "last_updated": "2026-11-12 15:11",
    "seq": 18,
    "headline": "Hijacked cloud ScreenConnect panels push rogue clients to MSP-managed endpoints and pivot back to technicians",
-   "summary": "Huntress's SOC is responding to an active campaign that began around 17:47 UTC on 11 November 2026 against managed service providers using cloud-hosted ConnectWise ScreenConnect. At the time of its update Huntress was tracking six compromised MSPs and more than 286 endpoints, with the numbers rising; the actor numbers each victim MSP and the observed tags start partway through the sequence, so other MSPs were probably hit first. Huntress has seen no evidence of a new vulnerability and has not confirmed how the panels were accessed; the evidence points to stolen credentials or hijacked operator sessions. With panel access, the actor uses Run Command to push a second, rogue ScreenConnect client to every managed endpoint, giving an independent backdoor that no longer needs the MSP's panel. If a technician then opens an interactive ScreenConnect session to investigate, the malware rides that session back onto the technician's workstation, drops sqlite3.exe to scrape saved browser sessions and tokens, and pivots into any other ScreenConnect panels the technician can reach. Persistence is a TrapWatch scheduled task running as SYSTEM every 10 seconds, files under C:\\ProgramData\\RelayTrap\\ and %TEMP%\\sckit-*, and a RelayTrapLiteAlert Run-key value; endpoints reinfect within minutes if isolation is lifted before these are removed. ConnectWise confirmed the campaign in a Trust Center advisory at 22:45 UTC on 11 November, said the actor appears to deploy the extra remote-access software through third-party extensions, and disabled five of them (Labtech Plus, RMM Plus, RMM+, RMM Plus Password Link and RMM+ Password Link) in about 400 partner environments; on-premises partners must disable them themselves. Sophos X-Ops independently observed the same activity: in one case curl.exe downloaded ScreenConnect.ClientSetup.msi from 185.99.255.28 to C:\\Windows\\TEMP\\sc.msi, msiexec.exe installed it silently, and PowerShell with execution-policy bypass fetched the second stage from the ns.mo7sen.dev stager. Sophos saw the commands come from three ScreenConnect instance IDs that are likely compromised MSP instances (d905b2b1b165d0a9, 4b8f4089ddaac6a9 and df1f7ef0cfacd0d8) and install the same two rogue client IDs Huntress reported. Huntress's customer advisory, updated at 00:29 UTC on 12 November, adds that the toolkit installs a modified client that impersonates the MSP's own client and waits for a technician to connect. Because two vendors saw them independently, the attacker relay 185.99.255.28 and the stager URL are now high confidence and on the block-now list, and the two rogue client IDs are high-confidence hunting leads; the secondary C2 server and the dynamic-DNS and payproofkit hostnames are listed by Huntress and ConnectWise and are on the block list. BleepingComputer found a July 2026 SSA-themed batch file on VirusTotal that installs ScreenConnect from cdn007-digitaldownloads.com, contacts amexsafekeyupdate.com and checks for rogue client ID ed630cc2c873b091; whether that earlier activity belongs to this campaign is not confirmed, so its domain, hash and file name are alert-only. Huntress's full SCKit write-up, published on its blog late on 11 November, puts the count at 288 endpoints in 48 organisations within 90 minutes, says the current ScreenConnect releases 26.6.6.9747 and 26.7.6.9783 are affected, and breaks down the 16-file toolkit: the dropper writes C:\\Windows\\Temp\\sckit-run.bat, fetches a host-keyed kit whose decryption key comes back in the server's response headers, and a later stage pulls sqlite3.exe from EadF.php?p=5 to read browser cookie databases. Huntress found that the worm's attempt to take over technician consoles failed in every host log it recovered, but it still advises against triaging over ScreenConnect. It also published 16 toolkit hashes; because the scripts are rebuilt per host and RelayTrap.exe is compiled on each machine, these are alert-only hunting leads, and the p=5 URL and cdn007-digitaldownloads.com (now listed by Huntress as C2, first flagged by Blackpoint) are on the block list.",
+   "summary": "Huntress's SOC is responding to an active campaign that began around 17:47 UTC on 11 November 2026 against managed service providers using cloud-hosted ConnectWise ScreenConnect. At the time of its update Huntress was tracking six compromised MSPs and more than 286 endpoints, with the numbers rising; the actor numbers each victim MSP and the observed tags start partway through the sequence, so other MSPs were probably hit first. Huntress has seen no evidence of a new vulnerability and has not confirmed how the panels were accessed; the evidence points to stolen credentials or hijacked operator sessions. With panel access, the actor uses Run Command to push a second, rogue ScreenConnect client to every managed endpoint, giving an independent backdoor that no longer needs the MSP's panel. If a technician then opens an interactive ScreenConnect session to investigate, the malware rides that session back onto the technician's workstation, drops sqlite3.exe to scrape saved browser sessions and tokens, and pivots into any other ScreenConnect panels the technician can reach. Persistence is a TrapWatch scheduled task running as SYSTEM every 10 seconds, files under C:\\ProgramData\\RelayTrap\\ and %TEMP%\\sckit-*, and a RelayTrapLiteAlert Run-key value; endpoints reinfect within minutes if isolation is lifted before these are removed. ConnectWise confirmed the campaign in a Trust Center advisory at 22:45 UTC on 11 November, said the actor appears to deploy the extra remote-access software through third-party extensions, and disabled five of them (Labtech Plus, RMM Plus, RMM+, RMM Plus Password Link and RMM+ Password Link) in about 400 partner environments; on-premises partners must disable them themselves. Sophos X-Ops independently observed the same activity: in one case curl.exe downloaded ScreenConnect.ClientSetup.msi from 185.99.255.28 to C:\\Windows\\TEMP\\sc.msi, msiexec.exe installed it silently, and PowerShell with execution-policy bypass fetched the second stage from the ns.mo7sen.dev stager. Sophos saw the commands come from three ScreenConnect instance IDs that are likely compromised MSP instances (d905b2b1b165d0a9, 4b8f4089ddaac6a9 and df1f7ef0cfacd0d8) and install the same two rogue client IDs Huntress reported. Huntress's customer advisory, updated at 00:29 UTC on 12 November, adds that the toolkit installs a modified client that impersonates the MSP's own client and waits for a technician to connect. Because Huntress, Sophos and now Blackpoint saw them independently, the attacker relay 185.99.255.28, the ns.mo7sen.dev stager and its EadF.php URLs are high confidence and on the block-now list, and the two rogue client IDs are high-confidence hunting leads; the secondary C2 server, the dynamic-DNS and payproofkit hostnames and cdn007-digitaldownloads.com are also listed by Blackpoint and are on the block list at high confidence. BleepingComputer found a July 2026 SSA-themed batch file on VirusTotal that installs ScreenConnect from cdn007-digitaldownloads.com, contacts amexsafekeyupdate.com and checks for rogue client ID ed630cc2c873b091; whether that earlier activity belongs to this campaign is not confirmed, so its domain, hash and file name are alert-only. Huntress's full SCKit write-up, published on its blog late on 11 November, puts the count at 288 endpoints in 48 organisations within 90 minutes, says the current ScreenConnect releases 26.6.6.9747 and 26.7.6.9783 are affected, and breaks down the 16-file toolkit: the dropper writes C:\\Windows\\Temp\\sckit-run.bat, fetches a host-keyed kit whose decryption key comes back in the server's response headers, and a later stage pulls sqlite3.exe from EadF.php?p=5 to read browser cookie databases. Huntress found that the worm's attempt to take over technician consoles failed in every host log it recovered, but it still advises against triaging over ScreenConnect. It also published 16 toolkit hashes; because the scripts are rebuilt per host and RelayTrap.exe is compiled on each machine, these are alert-only hunting leads, and the p=5 URL and cdn007-digitaldownloads.com (now listed by Huntress as C2 and recovered again by Blackpoint) are on the block list. Blackpoint Cyber's Adversary Pursuit Group, writing on 11 November, recovered the same toolkit from the ns.mo7sen.dev staging endpoint and showed that RelayTrap.cs exploits CVE-2026-84869 (CVSS 9.9), a Guest-to-Host file transfer and execute flaw fixed in ScreenConnect 26.6.5.9742 and later. In a controlled test a current patched Host never requested or executed the payload, and Blackpoint's SOC has not seen successful Guest-to-Host propagation; the trap still tries the transfer about 2.5 seconds after a technician session starts, sending Run-Lateral-Full.bat toward the Host and then pulling a loader from EadF.php. Follow-on scripts (Panel-Lateral.ps1 and LabConfig.ps1) try to recover the technician's .ASPXAUTH cookie from browser data and memory and replay it against the panel; the patch does not stop that session hijack, and no successful technician pivot has been observed. Because Blackpoint independently recovered the same relay, staging host, Access installer sources, dynamic-DNS hostnames and rogue client IDs, those indicators stay on the block list at high confidence. The Hacker News reported the same CVE attribution on 12 November.",
    "caveat": null,
    "targets": {
     "countries": [],
@@ -5786,9 +6489,10 @@
     "Check that the Labtech Plus, RMM Plus, RMM+, RMM Plus Password Link and RMM+ Password Link extensions are disabled (on-premises partners must do this themselves), keep their installation records and logs, and do not re-enable them until ConnectWise says it is safe.",
     "Do not triage suspected hosts through ScreenConnect: use your EDR live-response shell, WinRM or another out-of-band tool, because an interactive session can carry the infection back to the technician's workstation.",
     "Revoke all active ScreenConnect web sessions, rotate ScreenConnect credentials, verify MFA in your identity provider, and audit Run Command and Toolbox history for mass executions you did not start.",
-    "Block 185.99.255.28 and the ns.mo7sen.dev stager URL now (Huntress and Sophos both saw them), also block 155.94.150.39, newnewnew.gotdns.org, soxnewwork.homedns.org and sc.payproofkit.com in Defender XDR (Huntress and ConnectWise), plus cdn007-digitaldownloads.com and the EadF.php?p=5 URL (Huntress SCKit blog), block only these exact dynamic-DNS hostnames, not gotdns.org or homedns.org, and alert on amexsafekeyupdate.com.",
+    "Block 185.99.255.28, ns.mo7sen.dev and the EadF.php stager URLs now (Huntress, Sophos and Blackpoint all saw them), also block 155.94.150.39, newnewnew.gotdns.org, soxnewwork.homedns.org, sc.payproofkit.com and cdn007-digitaldownloads.com, block only these exact dynamic-DNS hostnames, not gotdns.org or homedns.org, and alert on amexsafekeyupdate.com.",
     "On endpoints, remove the rogue ScreenConnect client service (client IDs 2588ef5c15954b10 and ed630cc2c873b091), the TrapWatch scheduled task, C:\\ProgramData\\RelayTrap\\, %TEMP%\\sckit-* and the RelayTrapLiteAlert Run value before lifting isolation.",
-    "On technician workstations, look for sqlite3.exe reading browser profile data, for Panel-Lateral.ps1, Run-Lateral-Full.bat or %TEMP%\\sckit-decoder.ps1, and for the 16 SCKit hashes Huntress published (a miss does not clear a host, because they change per host), then reset browser-stored sessions and tokens."
+    "On technician workstations, look for sqlite3.exe or PowerShell reading browser cookie stores or .ASPXAUTH, for Panel-Lateral.ps1, LabConfig.ps1, Run-Lateral-Full.bat or %TEMP%\\sckit-decoder.ps1, and for the toolkit hashes Huntress and Blackpoint published (a miss does not clear a host, because they change per host), then reset browser-stored sessions and tokens.",
+    "Patch technician-side Host and endpoint-side Guest clients to ScreenConnect 26.6.5.9742 or later (CVE-2026-84869). The patch blocks RelayTrap's Guest-to-Host execution but does not protect a hijacked technician session; if a technician connected to a suspected host, revoke ScreenConnect web sessions from a clean device and rotate credentials."
    ],
    "sources": [
     {
@@ -5820,21 +6524,31 @@
      "url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
      "label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
      "name": "Huntress (2)"
+    },
+    {
+     "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+     "label": "Blackpoint Cyber – ScreenConnect Attack: SCKit Turns Remote Support Into an Attack Platform",
+     "name": "Blackpoint Cyber"
+    },
+    {
+     "url": "https://thehackernews.com/2026/11/sckit-malware-targets-screenconnect.html",
+     "label": "The Hacker News – SCKit Malware Turns ScreenConnect Support Sessions Into Potential MSP Attack Paths",
+     "name": "The Hacker News"
     }
    ],
-   "indicator_count": 39,
-   "block_now_count": 8,
-   "hunt_count": 31,
+   "indicator_count": 51,
+   "block_now_count": 10,
+   "hunt_count": 41,
    "hunt_counts": {
-    "alert": 31
+    "alert": 41
    },
    "indicator_counts": {
-    "sha256": 17,
-    "filename": 7,
+    "sha256": 21,
+    "filename": 13,
+    "domain": 6,
     "other": 6,
-    "domain": 5,
-    "ipv4": 2,
-    "url": 2
+    "url": 3,
+    "ipv4": 2
    },
    "ioas": [
     {
@@ -5936,9 +6650,61 @@
      "source_name": "Reddit r/msp",
      "title": "Unexpected mass Run Command or Toolbox use",
      "queries": []
+    },
+    {
+     "artefact": "A ScreenConnect Host client receiving a file transfer and a Run from a Guest within seconds of a session starting, often Run-Lateral-Full.bat about 2.5 seconds after connect",
+     "log_source": "ScreenConnect audit log (event ID 201 in session context); Defender XDR DeviceFileEvents and DeviceProcessEvents on technician workstations",
+     "why": "Blackpoint found that RelayTrap replaces the legitimate Guest and, after a 2.5-second delay, tries a Guest-to-Host file transfer and execute (CVE-2026-84869) toward the connecting technician, typically sending Run-Lateral-Full.bat, which then pulls a loader from ns.mo7sen.dev/EadF.php. A patched Host (26.6.5.9742 or later) blocks the exploit; Blackpoint and Huntress have not observed a successful Guest-to-Host. The trap still attempts the transfer against a patched Host.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+     "source_name": "Blackpoint Cyber",
+     "title": "Guest-to-Host file transfer and Run within seconds of connect",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": ".ASPXAUTH cookie access by a non-browser process, or PowerShell reading browser cookie stores (Cookies, Login Data, Web Data) on a technician workstation",
+     "log_source": "Defender XDR DeviceProcessEvents and DeviceFileEvents on technician workstations",
+     "why": "If RelayTrap lands on the technician's Host, Panel-Lateral.ps1 and LabConfig.ps1 search local browser data and process memory for ScreenConnect .ASPXAUTH cookies and replay them against the panel. Blackpoint has not confirmed a successful cookie recovery or panel fan-out.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+     "source_name": "Blackpoint Cyber",
+     "title": "Non-browser or PowerShell access to .ASPXAUTH or cookie stores",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "A ScreenConnect panel session replayed from a new IP address or user agent",
+     "log_source": "ScreenConnect audit and session logs; identity-provider sign-in logs for the panel",
+     "why": "After stealing an .ASPXAUTH cookie, SCKit is written to reuse the technician's already authenticated management session to push commands to other endpoints. A session that continues from a new IP or user agent, without a corresponding interactive login, is the fan-out signal. No successful technician pivot has been observed.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+     "source_name": "Blackpoint Cyber",
+     "title": "ScreenConnect panel session replayed from a new IP or user agent",
+     "queries": []
+    },
+    {
+     "artefact": "ScreenConnect Host or Guest clients older than 26.6.5.9742 (CVE-2026-84869). The patch blocks RelayTrap's Guest-to-Host execution but does not protect a hijacked technician session",
+     "log_source": "ScreenConnect inventory, package and agent version reports",
+     "why": "Blackpoint confirmed that RelayTrap targets CVE-2026-84869 (CVSS 9.9) and that a current patched Host does not request or execute the payload. Clients must be on 26.6.5.9742 or later, and Host clients may need a reinstall. Patching does not revoke a stolen .ASPXAUTH session.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+     "source_name": "Blackpoint Cyber",
+     "title": "Unpatched ScreenConnect clients (CVE-2026-84869)",
+     "queries": []
     }
    ],
-   "ioa_count": 7,
+   "ioa_count": 11,
    "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
    "files": [
     {
@@ -6000,6 +6766,14 @@
       {
        "url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
        "name": "Reddit r/msp"
+      },
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
+      },
+      {
+       "url": "https://thehackernews.com/2026/11/sckit-malware-targets-screenconnect.html",
+       "name": "The Hacker News"
       },
       {
        "url": "https://support.huntress.io/hc/en-us/articles/57422935234195-2026-November-ScreenConnect",
@@ -6070,6 +6844,10 @@
        "name": "Reddit r/msp"
       },
       {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
+      },
+      {
        "url": "https://support.huntress.io/hc/en-us/articles/57422935234195-2026-November-ScreenConnect",
        "name": "Huntress"
       },
@@ -6100,6 +6878,10 @@
       {
        "url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
        "name": "Reddit r/msp"
+      },
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
       },
       {
        "url": "https://support.huntress.io/hc/en-us/articles/57422935234195-2026-November-ScreenConnect",
@@ -6134,6 +6916,14 @@
        "name": "Reddit r/msp"
       },
       {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
+      },
+      {
+       "url": "https://thehackernews.com/2026/11/sckit-malware-targets-screenconnect.html",
+       "name": "The Hacker News"
+      },
+      {
        "url": "https://support.huntress.io/hc/en-us/articles/57422935234195-2026-November-ScreenConnect",
        "name": "Huntress"
       },
@@ -6156,7 +6946,7 @@
      "type": "domain",
      "confidence": "high",
      "recommended_action": "block",
-     "description": "C2 domain for the ScreenConnect panel-hijack campaign, listed in Huntress's SCKit IOC table and originally flagged by Blackpoint.",
+     "description": "Configured Access MSI source and C2 domain for the ScreenConnect panel-hijack campaign; Huntress listed it as C2 and Blackpoint APG retrieved a configured installer from it.",
      "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
      "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
      "source_name": "Huntress",
@@ -6164,6 +6954,10 @@
       {
        "url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
        "name": "Huntress"
+      },
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
       },
       {
        "url": "https://www.bleepingcomputer.com/news/security/active-screenconnect-attacks-breach-msps-impact-dozens-of-organizations/",
@@ -6188,6 +6982,14 @@
       {
        "url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
        "name": "Reddit r/msp"
+      },
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
+      },
+      {
+       "url": "https://thehackernews.com/2026/11/sckit-malware-targets-screenconnect.html",
+       "name": "The Hacker News"
       },
       {
        "url": "https://www.bleepingcomputer.com/news/security/active-screenconnect-attacks-breach-msps-impact-dozens-of-organizations/",
@@ -6284,6 +7086,14 @@
       {
        "url": "https://www.sophos.com/en-us/blog/malicious-screenconnect-deployments-observed",
        "name": "Sophos"
+      },
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
+      },
+      {
+       "url": "https://thehackernews.com/2026/11/sckit-malware-targets-screenconnect.html",
+       "name": "The Hacker News"
       }
      ]
     },
@@ -6300,6 +7110,14 @@
       {
        "url": "https://www.sophos.com/en-us/blog/malicious-screenconnect-deployments-observed",
        "name": "Sophos"
+      },
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
+      },
+      {
+       "url": "https://thehackernews.com/2026/11/sckit-malware-targets-screenconnect.html",
+       "name": "The Hacker News"
       }
      ]
     },
@@ -6450,7 +7268,7 @@
     {
      "value": "94b93c649b0ae0281352da9d01761fa9195ab1e6ac7010af3b9ba1646355eb11",
      "type": "sha256",
-     "confidence": "med",
+     "confidence": "high",
      "recommended_action": "alert",
      "description": "SHA256 of Panel-Lateral-free.ps1, the SCKit worm script without its config file; it lists the attacker's own panel on a skip list.",
      "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
@@ -6460,6 +7278,10 @@
       {
        "url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
        "name": "Huntress"
+      },
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
       }
      ]
     },
@@ -6498,7 +7320,7 @@
     {
      "value": "3c7a98f0fdb6235b8076319c74dc1085f7b349b6d750416dd0cadb07d7972ec4",
      "type": "sha256",
-     "confidence": "med",
+     "confidence": "high",
      "recommended_action": "alert",
      "description": "SHA256 of RelayTrap.cs, the C# source of the relay trap that takes the legitimate ScreenConnect client's place on the MSP relay; it is compiled per host into RelayTrap.exe.",
      "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
@@ -6508,13 +7330,17 @@
       {
        "url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
        "name": "Huntress"
+      },
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
       }
      ]
     },
     {
      "value": "d2ed7a7bf4f8ac9c7969e9b3a07ebd4dda0d858f372c876ac0a041611698de9a",
      "type": "sha256",
-     "confidence": "med",
+     "confidence": "high",
      "recommended_action": "alert",
      "description": "SHA256 of TrapWatch.ps1, which runs as SYSTEM every 10 seconds, stops the legitimate ScreenConnect client and takes over its connection slot.",
      "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
@@ -6524,6 +7350,10 @@
       {
        "url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
        "name": "Huntress"
+      },
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
       }
      ]
     },
@@ -6546,7 +7376,7 @@
     {
      "value": "8cb5f48bbe70b5248db7f327f3d1ad6649df5c767d2a7e0711ee147fd92e06af",
      "type": "sha256",
-     "confidence": "med",
+     "confidence": "high",
      "recommended_action": "alert",
      "description": "SHA256 of ToolboxRelayUploader.exe, a 32-bit .NET tool that joins a session as the technician with a stolen token, uploads a payload to the panel's Shared Toolbox and deletes it after the broadcast.",
      "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
@@ -6556,6 +7386,10 @@
       {
        "url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
        "name": "Huntress"
+      },
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
       }
      ]
     },
@@ -6578,7 +7412,7 @@
     {
      "value": "81cc2baa35b798d6084bd078662fa29ff28df02c46c6ccdb2b43bde97d19f781",
      "type": "sha256",
-     "confidence": "med",
+     "confidence": "high",
      "recommended_action": "alert",
      "description": "SHA256 of Stage0Loader.ps1, which fetches a host-keyed payload from EadF.php?p=1, decrypts it to %TEMP%\\k.ps1, runs it hidden and deletes it.",
      "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
@@ -6588,6 +7422,10 @@
       {
        "url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
        "name": "Huntress"
+      },
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
       }
      ]
     },
@@ -6716,6 +7554,274 @@
       {
        "url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
        "name": "Huntress"
+      },
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
+      },
+      {
+       "url": "https://thehackernews.com/2026/11/sckit-malware-targets-screenconnect.html",
+       "name": "The Hacker News"
+      }
+     ]
+    },
+    {
+     "value": "ns.mo7sen.dev",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Attacker staging host that serves the SCKit loader and later encrypted stages through EadF.php.",
+     "source_url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+     "source_label": "Blackpoint Cyber – ScreenConnect Attack: SCKit Turns Remote Support Into an Attack Platform",
+     "source_name": "Blackpoint Cyber",
+     "sources": [
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
+      },
+      {
+       "url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
+       "name": "Reddit r/msp"
+      },
+      {
+       "url": "https://www.sophos.com/en-us/blog/malicious-screenconnect-deployments-observed",
+       "name": "Sophos"
+      },
+      {
+       "url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+       "name": "Huntress"
+      },
+      {
+       "url": "https://thehackernews.com/2026/11/sckit-malware-targets-screenconnect.html",
+       "name": "The Hacker News"
+      },
+      {
+       "url": "https://support.huntress.io/hc/en-us/articles/57422935234195-2026-November-ScreenConnect",
+       "name": "Huntress (2)"
+      },
+      {
+       "url": "https://www.bleepingcomputer.com/news/security/active-screenconnect-attacks-breach-msps-impact-dozens-of-organizations/",
+       "name": "BleepingComputer"
+      },
+      {
+       "url": "https://www.connectwise.com/company/trust/advisories",
+       "name": "ConnectWise"
+      }
+     ]
+    },
+    {
+     "value": "https://ns.mo7sen.dev/EadF.php",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SCKit staging endpoint that serves the p=1, p=3, p=4, p=5 and p=6 payloads used to bootstrap the toolkit.",
+     "source_url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+     "source_label": "Blackpoint Cyber – ScreenConnect Attack: SCKit Turns Remote Support Into an Attack Platform",
+     "source_name": "Blackpoint Cyber",
+     "sources": [
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
+      },
+      {
+       "url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+       "name": "Huntress"
+      },
+      {
+       "url": "https://thehackernews.com/2026/11/sckit-malware-targets-screenconnect.html",
+       "name": "The Hacker News"
+      },
+      {
+       "url": "https://www.bleepingcomputer.com/news/security/active-screenconnect-attacks-breach-msps-impact-dozens-of-organizations/",
+       "name": "BleepingComputer"
+      },
+      {
+       "url": "https://www.connectwise.com/company/trust/advisories",
+       "name": "ConnectWise"
+      },
+      {
+       "url": "https://www.sophos.com/en-us/blog/malicious-screenconnect-deployments-observed",
+       "name": "Sophos"
+      }
+     ]
+    },
+    {
+     "value": "a1937467fd862916f89342cdd61f55c4bc405fb35b6e1379e27cfbfdba77dcdc",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of SilentForceInstall-WithUninstall.ps1, which deploys two unauthorised ScreenConnect Access clients and stages RelayTrap components.",
+     "source_url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+     "source_label": "Blackpoint Cyber – ScreenConnect Attack: SCKit Turns Remote Support Into an Attack Platform",
+     "source_name": "Blackpoint Cyber",
+     "sources": [
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
+      }
+     ]
+    },
+    {
+     "value": "338e37f58043635ebab64ee5fdc919935e55cb146ca97834b358f934e55e88ec",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of the p=4 decoder retrieved from EadF.php and saved as sckit-decoder.ps1.",
+     "source_url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+     "source_label": "Blackpoint Cyber – ScreenConnect Attack: SCKit Turns Remote Support Into an Attack Platform",
+     "source_name": "Blackpoint Cyber",
+     "sources": [
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
+      }
+     ]
+    },
+    {
+     "value": "8e6912deed82e80bb6bd66f73509d024b1f78b993515366d8317e69a97cff4f4",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of the decoded p=3 toolkit bundle that holds most SCKit archive members.",
+     "source_url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+     "source_label": "Blackpoint Cyber – ScreenConnect Attack: SCKit Turns Remote Support Into an Attack Platform",
+     "source_name": "Blackpoint Cyber",
+     "sources": [
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
+      }
+     ]
+    },
+    {
+     "value": "d85315bd7602b6f5c13dc0eada2c9cba0892c7cd3b1eb7dacb1bffdd536ceb21",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of a configured ScreenConnect.ClientSetup.msi that Blackpoint recovered from the campaign's staging infrastructure.",
+     "source_url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+     "source_label": "Blackpoint Cyber – ScreenConnect Attack: SCKit Turns Remote Support Into an Attack Platform",
+     "source_name": "Blackpoint Cyber",
+     "sources": [
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
+      }
+     ]
+    },
+    {
+     "value": "C:\\Windows\\Temp\\sckit-run.bat",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Batch dropper written during the initial SCKit deployment; it fetches the p=4 decoder from EadF.php.",
+     "source_url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+     "source_label": "Blackpoint Cyber – ScreenConnect Attack: SCKit Turns Remote Support Into an Attack Platform",
+     "source_name": "Blackpoint Cyber",
+     "sources": [
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
+      },
+      {
+       "url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+       "name": "Huntress"
+      },
+      {
+       "url": "https://thehackernews.com/2026/11/sckit-malware-targets-screenconnect.html",
+       "name": "The Hacker News"
+      }
+     ]
+    },
+    {
+     "value": "sckit-decoder.ps1",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "PowerShell decoder saved after the p=4 request to EadF.php; it then pulls the encrypted p=3 bundle.",
+     "source_url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+     "source_label": "Blackpoint Cyber – ScreenConnect Attack: SCKit Turns Remote Support Into an Attack Platform",
+     "source_name": "Blackpoint Cyber",
+     "sources": [
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
+      },
+      {
+       "url": "https://thehackernews.com/2026/11/sckit-malware-targets-screenconnect.html",
+       "name": "The Hacker News"
+      }
+     ]
+    },
+    {
+     "value": "SilentForceInstall-WithUninstall.ps1",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Installation script that deploys two unauthorised ScreenConnect Access clients and prepares RelayTrap.",
+     "source_url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+     "source_label": "Blackpoint Cyber – ScreenConnect Attack: SCKit Turns Remote Support Into an Attack Platform",
+     "source_name": "Blackpoint Cyber",
+     "sources": [
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
+      },
+      {
+       "url": "https://thehackernews.com/2026/11/sckit-malware-targets-screenconnect.html",
+       "name": "The Hacker News"
+      }
+     ]
+    },
+    {
+     "value": "Stop-LabTrap.ps1",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "PowerShell cleaner retrieved through EadF.php?p=6 and saved as Stop-LabTrap.ps1.",
+     "source_url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+     "source_label": "Blackpoint Cyber – ScreenConnect Attack: SCKit Turns Remote Support Into an Attack Platform",
+     "source_name": "Blackpoint Cyber",
+     "sources": [
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
+      }
+     ]
+    },
+    {
+     "value": "LabConfig.ps1",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Technician-side script in the p=3 archive that is used to recover ScreenConnect .ASPXAUTH cookies; it is not always copied in the active full delivery path.",
+     "source_url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+     "source_label": "Blackpoint Cyber – ScreenConnect Attack: SCKit Turns Remote Support Into an Attack Platform",
+     "source_name": "Blackpoint Cyber",
+     "sources": [
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
+      }
+     ]
+    },
+    {
+     "value": "Stage0Loader.ps1",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Stage-0 loader that requests a host-keyed payload from EadF.php?p=1 and decrypts it with a key derived from MachineGuid and the X-Lab-Half header.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+       "name": "Huntress"
+      },
+      {
+       "url": "https://blackpointcyber.com/blog/screenconnect-attack-sckit/",
+       "name": "Blackpoint Cyber"
       }
      ]
     }
@@ -14452,10 +15558,10 @@
    "category": "Financially motivated intrusion / financial sector",
    "published": "2026-11-06",
    "entry_date": "2026-11-11 03:52",
-   "last_updated": "2026-11-12 09:50",
+   "last_updated": "2026-11-12 15:11",
    "seq": 12,
    "headline": "Agentic AI framework used to exploit web apps at banks and drop WISP, vshell and AdaptixC2 RATs",
-   "summary": "Microsoft Threat Intelligence reports that Storm-3358, a financially motivated, Cambodia-based intrusion cluster, began targeting financial organisations in October 2026 with ARTEX, an open-source agentic penetration testing framework. Most targets are financial organisations in Southeast Asia, with a smaller number of large financial organisations globally. The ARTEX agents scan internet-facing systems at machine speed, exploit anonymous file upload and server-side request forgery (SSRF) flaws in web applications, then use curl and netcat to pull down the open-source WISP, vshell and AdaptixC2 remote access trojans for persistence and lateral movement. Microsoft listed the ARTEX servers and C2 nodes below as active on 6 November 2026; the actor rotates infrastructure, so behaviour-based hunting matters as much as blocking. On 11 November 2026 Unit 42 published a defender guide to ARTEX and similar agentic tools, describing the same class of machine-speed behaviour: short bursts of requests, a pause consistent with a model inference call, self-correction after failed requests, a GET after almost every successful write, and write-then-delete tests on storage buckets. Unit 42 did not publish new network indicators. Sophos X-Ops later described the same class of ARTEX tradecraft, including short-lived scripts under C:\\Windows\\Temp with names such as i12345_b2.ps1 or artx*, command markers such as MARKER123 and ARTX123, and Entra ID application credential and role changes. Sophos did not publish new network indicators.",
+   "summary": "Microsoft Threat Intelligence reports that Storm-3358, a financially motivated, Cambodia-based intrusion cluster, began targeting financial organisations in October 2026 with ARTEX, an open-source agentic penetration testing framework. Most targets are financial organisations in Southeast Asia, with a smaller number of large financial organisations globally. The ARTEX agents scan internet-facing systems at machine speed, exploit anonymous file upload and server-side request forgery (SSRF) flaws in web applications, then use curl and netcat to pull down the open-source WISP, vshell and AdaptixC2 remote access trojans for persistence and lateral movement. Microsoft listed the ARTEX servers and C2 nodes below as active on 6 November 2026; the actor rotates infrastructure, so behaviour-based hunting matters as much as blocking. On 11 November 2026 Unit 42 published a defender guide to ARTEX and similar agentic tools, describing the same class of machine-speed behaviour: short bursts of one to 14 requests then a 25 to 31 second pause, self-correction after failed requests, a GET after almost every successful write, write-then-delete tests on storage buckets, canary usernames and placeholder values (research examples only, not indicators to block), and use of a stolen credential within about a minute of discovery. Unit 42 did not publish new network indicators. Sophos X-Ops later described the same class of ARTEX tradecraft, including short-lived scripts under C:\\Windows\\Temp with names such as i12345_b2.ps1 or artx*, command markers such as MARKER123 and ARTX123, and Entra ID application credential and role changes. Sophos did not publish new network indicators.",
    "caveat": null,
    "targets": {
     "countries": [],
@@ -14520,7 +15626,7 @@
     "Inventory internet-facing upload endpoints and server-side URL fetch features (document portals, onboarding and KYC forms, webhooks, PDF and image processors); require authentication on uploads and restrict outbound destinations.",
     "Hunt for web server processes spawning a shell, curl, wget or nc, new binaries run from temp or world-writable paths, and new cron entries on web hosts.",
     "Watch for bursts of rapid, retried requests with default tool user agents (Nmap, curl, python-requests, headless Chromium) against public web applications.",
-    "Hunt for ARTEX-like operator behaviour described by Unit 42: short request bursts with a 25-31 second pause, a GET after each successful write, write-then-delete tests on storage buckets, and placeholder inputs immediately before real credentials. Do not treat research examples as indicators.",
+    "Hunt for ARTEX-like operator behaviour described by Unit 42: short request bursts with a 25-31 second pause, a GET after each successful write, write-then-delete tests on storage buckets, placeholder inputs immediately before real credentials, and a cloud credential used within about 60 seconds of being retrieved, often from a new IP. Do not treat research examples such as evil.com as indicators, and do not block them.",
     "Hunt for temporary files under C:\\Windows\\Temp whose names start with artx or match i<digits>_*.ps1, and for command lines containing MARKER123 or ARTX123 (Sophos X-Ops).",
     "Review Entra ID audit logs for application credentials added or roles assigned by an application, especially in financial tenants."
    ],
@@ -14627,13 +15733,27 @@
     {
      "artefact": "Placeholder or canary usernames and values sent immediately before real credentials in the same authentication or API session",
      "log_source": "Web application, identity and API logs",
-     "why": "Unit 42 saw ARTEX agents test canary inputs, such as bogus usernames, before real ones. Hunt that pattern in your logs; do not treat research examples as indicators.",
+     "why": "Unit 42 saw ARTEX agents test canary inputs, such as bogus usernames, before real ones. Published research examples included evil.com, test@example.com and deadbeefdeadbeefdeadbeef12; those are illustrations, not indicators to block. Hunt the pattern in your logs.",
      "action": "hunt",
      "has_query": false,
      "source_url": "https://unit42.paloaltonetworks.com/artex-and-ai-powered-red-teaming-tools/",
      "source_name": "Unit 42",
      "title": "Canary inputs immediately before real credentials",
      "queries": []
+    },
+    {
+     "artefact": "A stolen or newly retrieved cloud credential used within about 60 seconds of being discovered, often from a new IP address",
+     "log_source": "AWS CloudTrail, identity-provider and cloud audit logs (Defender XDR CloudAppEvents)",
+     "why": "Unit 42 observed ARTEX operators pivot within about a minute of a credential download, including validating more than 200 client secrets in about three minutes, and recommended hunting first use of a cloud key from a new IP.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://unit42.paloaltonetworks.com/artex-and-ai-powered-red-teaming-tools/",
+     "source_name": "Unit 42",
+     "title": "Cloud credential reused within 60 seconds from a new IP",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
     },
     {
      "artefact": "Temporary files under C:\\Windows\\Temp whose names start with artx or match i<digits>_*.ps1, such as i12345_b2.ps1",
@@ -14679,7 +15799,7 @@
      ]
     }
    ],
-   "ioa_count": 9,
+   "ioa_count": 10,
    "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
    "files": [
     {

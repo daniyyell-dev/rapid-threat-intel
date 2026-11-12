@@ -1,0 +1,77 @@
+``` Threat: StrikeStub: ClickFix PowerShell Dropper and Modular RAT/Stealer
+    Author: Daniel Jeremiah | Date: 2026-11-12
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer ```
+| multisearch
+  [ search `rti_dns(squidscript.com OR spiraldirect.ch)`
+    | search query IN ("squidscript.com", "*.squidscript.com", "spiraldirect.ch", "*.spiraldirect.ch")
+    | rex field=query "(?i)(?<ioc>(?:squidscript\.com|spiraldirect\.ch))\.?$"
+    | eval data_model="dns", ioc_type="domain", host=src, detail="DNS query ".query
+  ]
+  [ search `rti_web(squidscript.com OR spiraldirect.ch)`
+    | search url IN ("*://squidscript.com*", "*.squidscript.com*", "squidscript.com*", "*://spiraldirect.ch*", "*.spiraldirect.ch*", "spiraldirect.ch*", "*squidscript.com/Cloudflare.exe*") OR dest IN ("squidscript.com", "*.squidscript.com", "spiraldirect.ch", "*.spiraldirect.ch")
+    | rex field=url "(?i)(?<ioc>squidscript\.com/Cloudflare\.exe|squidscript\.com|spiraldirect\.ch)"
+    | eval ioc=coalesce(ioc, dest), data_model="web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search `rti_endpoint(explorer.exe OR powershell.exe OR svc.exe OR Cloudflare.exe OR squidscript.com)`
+    | where match(coalesce(parent_process_name, ""), "(?i)^explorer\.exe$") AND match(coalesce(process_name, ""), "(?i)^powershell\.exe$") AND match(coalesce(process, ""), "(?i)(-w hidden|-WindowStyle Hidden)") AND match(coalesce(process, ""), "(?i)(iwr|irm|Invoke-WebRequest|Invoke-RestMethod)") AND match(coalesce(process, ""), "(?i)(svc\.exe|Cloudflare\.exe|squidscript\.com)")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="explorer.exe launching hidden PowerShell to drop svc.exe", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(RuntimeBroker.exe)`
+    | where match(coalesce(process_name, ""), "(?i)^RuntimeBroker\.exe$") AND NOT match(coalesce(process_path, process, ""), "(?i)Windows.(System32|SysWOW64|WinSxS)")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="RuntimeBroker.exe running outside System32", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search index=* WindowsUpdate.exe AND (Run OR Startup)
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="raw events"
+    | eval ioc="WindowsUpdate.exe Run-key and Startup persistence", ioc_type="behaviour (alert)"
+]
+| append [
+    search `rti_endpoint(WindowsUpdate.exe)`
+    | where match(coalesce(file_name, ""), "(?i)^WindowsUpdate\.exe$") AND match(coalesce(file_path, ""), "(?i)(Start Menu.Programs.Startup|Programs.Startup)")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="WindowsUpdate.exe Run-key and Startup persistence", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_web(StrikeStub)`
+    | where like(http_user_agent, "%StrikeStub/1.0%") OR like(_raw, "%StrikeStub/1.0%")
+    | eval host=dest, user=user, src=src, dest=dest, detail="HTTP ".coalesce(status, "-")." ".coalesce(url, "-")." UA: ".coalesce(http_user_agent, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="web"
+    | eval ioc="WebSocket C2 with user agent StrikeStub/1.0", ioc_type="behaviour (hunt)"
+]
+
+| append [
+    search `rti_endpoint(keylog_)`
+    | where match(coalesce(file_name, ""), "^keylog_[0-9]{4}-[0-9]{2}-[0-9]{2}\.txt$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="HVNC, dated keylog files or DPAPI browser theft", ioc_type="behaviour (hunt)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

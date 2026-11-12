@@ -1,0 +1,54 @@
+// Threat: StrikeStub: ClickFix PowerShell Dropper and Modular RAT/Stealer
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer
+let Lookback = 30d;
+let Domains = dynamic(["squidscript.com", "spiraldirect.ch"]);
+let Urls = dynamic(["http://squidscript.com/Cloudflare.exe"]);
+let UrlKeys = dynamic(["squidscript.com/Cloudflare.exe"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (DeviceEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType == "DnsQueryResponse" and tostring(parse_json(AdditionalFields).DnsQueryString) has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(parse_json(AdditionalFields).DnsQueryString), Context = tostring(strcat("DNS ", InitiatingProcessFileName))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (UrlKeys)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (EmailUrlInfo
+    | where Timestamp > ago(Lookback)
+    | where UrlDomain has_any (Domains) or Url has_any (UrlKeys)
+    | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = tostring(Url), Context = tostring("URL in email")),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url has_any (Domains) or Url has_any (UrlKeys)
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where (InitiatingProcessFileName =~ "explorer.exe" and FileName =~ "powershell.exe" and ProcessCommandLine has_any ("svc.exe", "Cloudflare.exe", "squidscript.com")) or (FileName =~ "RuntimeBroker.exe" and FolderPath !has @"\Windows\System32") or (FileName =~ "WindowsUpdate.exe" and (FolderPath has "Startup" or ProcessCommandLine has "Startup")) or ProcessCommandLine has "StrikeStub/1.0"
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where InitiatingProcessFileName =~ "explorer.exe" and FileName =~ "powershell.exe" and ProcessCommandLine has_any ("-w hidden", "-WindowStyle Hidden", "-w h") and ProcessCommandLine has_any ("iwr", "irm", "Invoke-WebRequest", "Invoke-RestMethod") and ProcessCommandLine has_any ("svc.exe", "Cloudflare.exe", "squidscript.com")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", FileName, " ", ProcessCommandLine))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "RuntimeBroker.exe" and FolderPath !has @"\Windows\System32" and FolderPath !has @"\Windows\SysWOW64" and FolderPath !has @"\WinSxS"
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(FolderPath, "\\", FileName, " ", ProcessCommandLine))),
+  (DeviceRegistryEvents
+    | where Timestamp > ago(Lookback)
+    | where RegistryKey has @"CurrentVersion\Run" and RegistryValueData has "WindowsUpdate.exe"
+    | project Timestamp, SourceTable = "DeviceRegistryEvents", Entity = tostring(DeviceName), Indicator = tostring(RegistryValueData), Context = tostring(strcat(ActionType, " ", RegistryKey, " ", RegistryValueName, " = ", RegistryValueData))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "WindowsUpdate.exe" and (FolderPath has @"\Start Menu\Programs\Startup" or FolderPath has @"\Programs\Startup")
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " ", FolderPath, "\\", FileName, " by ", InitiatingProcessFileName))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName matches regex @"^keylog_\d{4}-\d{2}-\d{2}\.txt$"
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(ActionType, " ", FolderPath, "\\", FileName, " by ", InitiatingProcessFileName)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

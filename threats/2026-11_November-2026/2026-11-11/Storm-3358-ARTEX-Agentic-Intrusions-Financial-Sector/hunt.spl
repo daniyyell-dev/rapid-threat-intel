@@ -82,6 +82,15 @@
 ]
 
 | append [
+    search index=* sourcetype="aws:cloudtrail" (eventName="GetSecretValue" OR eventName="GetSessionToken" OR eventName="AssumeRole" OR eventName="CreateAccessKey")
+    | eval host=coalesce(recipientAccountId, 'userIdentity.accountId'), user=coalesce('userIdentity.sessionContext.sessionIssuer.arn', 'userIdentity.arn'), src=sourceIPAddress, dest=eventName, detail=eventName." from ".sourceIPAddress
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="aws:cloudtrail"
+    | eval ioc="Cloud credential reused within 60 seconds from a new IP", ioc_type="behaviour (hunt)"
+]
+
+| append [
     | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
         FROM datamodel=Endpoint.Filesystem
         WHERE Filesystem.file_path="*\\Windows\\Temp*artx*" OR Filesystem.file_name="i*_*.ps1"

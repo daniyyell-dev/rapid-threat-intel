@@ -1,0 +1,38 @@
+// Threat: BBNet: Multi-Architecture Linux Botnet with Divergent Scanners
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners
+rule rti_bbnet_linux_botnet_multi_arch_scanners {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-12"
+    description = "BBNet: Multi-Architecture Linux Botnet with Divergent Scanners"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners"
+
+  events:
+    (
+      ($e.metadata.event_type = "PROCESS_LAUNCH" and re.regex($e.target.process.command_line, `/etc/(crontab|rc\.local)`) and re.regex($e.target.process.command_line, `(\.bbnet|@reboot)`) nocase) or
+      re.regex($e.target.file.full_path, `(\.bbnet|infect\.sh|(^|[\/])\.b$)`) nocase
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(60)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}
