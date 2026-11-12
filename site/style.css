@@ -26,6 +26,10 @@
   --alert: #e58a10;
   --monitor: #3fa9cb;
   --ok: #3fa63f;
+  --sev-critical: #dc2626;
+  --sev-high: var(--block);
+  --sev-medium: #f2c14e;
+  --sev-low: var(--ink-2);
   --sans: -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", Arial, sans-serif;
   --mono: Monaco, Consolas, "Lucida Console", "Roboto Mono", monospace;
   --wrap: 1240px;
@@ -262,9 +266,15 @@ option, optgroup { background: var(--raise); color: var(--ink); }
 .conf { display: inline-flex; align-items: center; gap: 7px; font: 400 13px/1 var(--sans); color: var(--ink-2); white-space: nowrap; }
 .conf i { display: inline-flex; gap: 2px; }
 .conf i::before, .conf i::after, .conf i b { content: ""; display: block; width: 4px; height: 10px; background: var(--line-2); }
-.conf.low i::before { background: var(--ink-2); }
-.conf.med i::before, .conf.med i b { background: var(--ink-2); }
-.conf.high i::before, .conf.high i b, .conf.high i::after { background: var(--ink); }
+/* Confidence follows the risk scale: critical deep red, high red (Block), medium amber (kept yellower than the orange Alert label), low grey */
+.conf.low { color: var(--sev-low); }
+.conf.low i::before { background: var(--sev-low); }
+.conf.med, .conf.medium { color: var(--sev-medium); }
+.conf.med i::before, .conf.med i b, .conf.medium i::before, .conf.medium i b { background: var(--sev-medium); }
+.conf.high { color: var(--sev-high); }
+.conf.high i::before, .conf.high i b, .conf.high i::after { background: var(--sev-high); }
+.conf.critical { color: var(--sev-critical); font-weight: 700; }
+.conf.critical i::before, .conf.critical i b, .conf.critical i::after { background: var(--sev-critical); }
 .ty { font: 500 13px/1.3 var(--sans); color: var(--c, var(--ink-2)); white-space: nowrap; }
 .pill.block, .pill.alert, .pill.monitor, .pill.hunt, .conf { text-transform: capitalize; }
 
