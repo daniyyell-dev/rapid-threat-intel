@@ -1,5 +1,9 @@
 # All high-confidence indicators to block. Updated 2026-11-12 03:55.
 
+## 2026-11-11 wfx: Hijacked GitHub Accounts Plant a CI Secret Stealer in Thousands of Repositories
+194.150.166.244
+http://194.150.166.244:8080/exfil
+
 ## 2026-11-11 ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints
 185.99.255.28
 https://ns.mo7sen.dev/EadF.php?p=4

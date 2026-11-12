@@ -1,3 +1,4 @@
+http://194.150.166.244:8080/exfil
 https://ns.mo7sen.dev/EadF.php?p=4
 https://creepexplosiondarknight.com/d
 https://coeuzgoq.bahisbiz.com//update.sh

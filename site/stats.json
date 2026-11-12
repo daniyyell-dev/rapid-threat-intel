@@ -1,11 +1,11 @@
 {
- "updated": "2026-11-12T03:52:45Z",
- "last24h": 15,
+ "updated": "2026-11-12T07:56:34Z",
+ "last24h": 16,
  "top_countries": [
   {
    "code": "GB",
    "name": "United Kingdom",
-   "count": 12
+   "count": 13
   },
   {
    "code": "DE",
@@ -19,5 +19,5 @@
   }
  ],
  "other_count": 0,
- "total": 15
+ "total": 16
 }

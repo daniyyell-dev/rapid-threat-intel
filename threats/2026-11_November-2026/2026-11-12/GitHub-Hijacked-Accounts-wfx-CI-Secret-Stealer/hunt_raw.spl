@@ -1,0 +1,65 @@
+``` Threat: wfx: Hijacked GitHub Accounts Plant a CI Secret Stealer in Thousands of Repositories
+    Author: Daniel Jeremiah | Date: 2026-11-12
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer ```
+| multisearch
+  [ search `rti_network(194.150.166.244 OR 18.143.168.96 OR 153.75.82.159 OR 193.32.204.199)`
+    | search dest_ip IN ("194.150.166.244", "18.143.168.96", "153.75.82.159", "193.32.204.199")
+    | eval data_model="network", ioc_type="ipv4", ioc=dest_ip, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_network(194.150.166.244 OR 18.143.168.96 OR 153.75.82.159 OR 193.32.204.199)`
+    | search src_ip IN ("194.150.166.244", "18.143.168.96", "153.75.82.159", "193.32.204.199")
+    | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_web(194.150.166.244 OR 18.143.168.96)`
+    | search url IN ("*194.150.166.244:8080/exfil*", "*18.143.168.96:8080/exfil*") OR dest IN ("-")
+    | rex field=url "(?i)(?<ioc>194\.150\.166\.244:8080/exfil|18\.143\.168\.96:8080/exfil)"
+    | eval ioc=coalesce(ioc, dest), data_model="web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+  ]
+  [ search `rti_endpoint(89695abb392d5cfd4972672961e644bb46baa98aa1ed7173c2a2816c762735cf)`
+    | search file_hash IN ("*89695abb392d5cfd4972672961e644bb46baa98aa1ed7173c2a2816c762735cf*") OR process_hash IN ("*89695abb392d5cfd4972672961e644bb46baa98aa1ed7173c2a2816c762735cf*") OR parent_process_hash IN ("*89695abb392d5cfd4972672961e644bb46baa98aa1ed7173c2a2816c762735cf*")
+    | eval matched=file_hash." ".process_hash." ".parent_process_hash
+    | rex field=matched "(?i)(?<ioc>89695abb392d5cfd4972672961e644bb46baa98aa1ed7173c2a2816c762735cf)"
+    | eval data_model="endpoint", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, detail=coalesce(process, file_path)
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search `rti_endpoint("*.ci-*")`
+    | where match(coalesce(process_name, ""), "^(sh|bash|dash)$") AND match(coalesce(process, ""), "/\.ci-[a-z0-9]{6}\.sh")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="npm postinstall running a hidden .ci- script", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search index=* sourcetype="aws:cloudtrail" eventName IN ("AssumeRoleWithWebIdentity", "AssumeRole", "CreateAccessKey", "UpdateAssumeRolePolicy") "wfx-"
+    | eval host=coalesce(recipientAccountId, 'userIdentity.accountId'), user=coalesce('userIdentity.sessionContext.sessionIssuer.arn', 'userIdentity.arn'), src=sourceIPAddress, dest=coalesce('requestParameters.roleSessionName', 'requestParameters.userName', 'requestParameters.roleName', "-"), detail=eventName." UA: ".coalesce(userAgent, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="aws:cloudtrail"
+    | eval ioc="AWS wfx-* sessions creating keys or opening trust policies", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search index=* (sourcetype="azure:monitor:aad" OR sourcetype="mscs:azure:eventhub" OR sourcetype="azure:aad:signin" OR sourcetype="azure:aad:audit" OR sourcetype="ms:aad:signin" OR sourcetype="ms:aad:audit") "wfx-ci-"
+    | eval host="-", user=coalesce('properties.initiatedBy.user.userPrincipalName', 'properties.initiatedBy.app.displayName', "-"), src="-", dest=coalesce('properties.operationName', operationName, activityDisplayName, "-"), detail="Entra audit change mentioning wfx-ci-"
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="Entra audit logs"
+    | eval ioc="Entra app federated credentials named wfx-ci-*", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search index=* ("wfx-docs" OR "docs: dependency audit notes" OR "ci: refresh build cache" OR "chore: add ci helper" OR "chore: add dependency audit workflow")
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="GitHub audit and webhook logs"
+    | eval ioc="wfx-docs probe pull requests and payload commits", ioc_type="behaviour (hunt)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

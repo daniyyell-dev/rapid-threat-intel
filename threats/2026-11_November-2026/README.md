@@ -2,7 +2,13 @@
 
 [Back to index](../../README.md#latest-threats)
 
-18 threats, 899 indicators, 276 to block now. Newest first.
+19 threats, 910 indicators, 278 to block now. Newest first.
+
+### [2026-11-12](2026-11-12/)
+
+| Date | Threat | Category | IOCs | Block now | Summary |
+|---|---|---|---|---|---|
+| 2026-11-11 | [wfx: Hijacked GitHub Accounts Plant a CI Secret Stealer in Thousands of Repositories](2026-11-12/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer/) | Supply chain / CI/CD | 11 | 2 | Stolen GitHub accounts plant a CI secret stealer that exfiltrates repository secrets and backdoors cloud accounts |
 
 ### [2026-11-11](2026-11-11/)
 

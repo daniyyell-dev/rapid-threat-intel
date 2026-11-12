@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-12 03:55",
- "threat_count": 18,
- "indicator_count": 899,
- "block_now_count": 276,
+ "last_updated": "2026-11-12 08:05",
+ "threat_count": 19,
+ "indicator_count": 910,
+ "block_now_count": 278,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -102,6 +102,400 @@
   }
  ],
  "threats": [
+  {
+   "id": "GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer",
+   "folder": "threats/2026-11_November-2026/2026-11-12/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer",
+   "name": "wfx: Hijacked GitHub Accounts Plant a CI Secret Stealer in Thousands of Repositories",
+   "short": "wfx GitHub Actions CI secret stealer",
+   "category": "Supply chain / CI/CD",
+   "published": "2026-11-11",
+   "entry_date": "2026-11-12 08:05",
+   "last_updated": "2026-11-12",
+   "seq": 19,
+   "headline": "Stolen GitHub accounts plant a CI secret stealer that exfiltrates repository secrets and backdoors cloud accounts",
+   "summary": "From about 12:45 UTC on 10 November 2026 an attacker used stolen credentials for 4,837 GitHub accounts to plant a CI secret stealer, named wfx after the prefix it puts on its files, branches and cloud objects, in repositories those accounts could write to. Each attack starts with a probe pull request titled 'docs: dependency audit notes' from a wfx-docs branch; Aikido counted these in 61,764 repositories and treats any account that opened one as compromised. The payload, a single shell script of about 1,500 lines, then arrives in one of three ways: injected into an existing workflow ('ci: refresh build cache'), as an npm postinstall hook that runs a .ci-xxxxxx.sh script on every npm install, including on developer machines ('chore: add ci helper'), or as a new build-audit workflow on a short-lived chore/ branch. The actor usually reverts the change within minutes and deletes the workflow run and its logs, so a missing run number is often the only trace. Aikido says the stealer ran in at least 1,806 repositories; SafeDep counted 8,093 repositories that received malicious commits between 10 November 12:46 UTC and 12 November 04:36 UTC, and probe pull requests were still being opened early on 12 November. The script takes repository secrets and variables, GITHUB_TOKEN and Actions runtime tokens, keys found in runner memory, credential files for cloud, SSH, package registries and developer tools, and .env and Terraform state files, and sends them by HTTP POST to port 8080 on three servers or to a Telegram chat. It also swaps GitHub OIDC tokens for AWS, Azure and GCP sessions and leaves backdoors that survive rotation: new AWS access keys, role trust policies opened to any account, and Entra ID federated credentials named wfx-ci-*. The stealer reached the Packagist package digitalelvis/neuronai-studio 3.14.3 and Go module versions of vkuznet/gocurl and onuragtas/docker-env, and 28 WebdriverIO repositories through the project's release account. Aikido found that the accounts overlap with October's GhostAction wave but does not attribute the two to one actor. The first exfil server and its URL appear in both reports and sit in a network on Spamhaus's ASN-DROP list, so they are on the block-now list; the Amazon-hosted server is alert-only because the address may be reassigned, and indicators from one report stay at medium confidence.",
+   "caveat": null,
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Worldwide"
+    ],
+    "sectors": [
+     "Software development",
+     "Technology",
+     "Cloud services"
+    ],
+    "note": "Public and possibly private GitHub repositories reachable by 4,837 compromised accounts, plus downstream users of the affected Packagist and Go packages; no countries named.",
+    "source": {
+     "url": "https://www.aikido.dev/blog/compromised-github-accounts-push-ci-secret-stealer-to-tens-of-thousands-of-repositories",
+     "label": "Aikido – Compromised GitHub accounts push CI secret stealer to tens of thousands of repositories",
+     "name": "Aikido"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1078",
+     "name": "Valid Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/"
+    },
+    {
+     "id": "T1195.002",
+     "name": "Compromise Software Supply Chain",
+     "url": "https://attack.mitre.org/techniques/T1195/002/"
+    },
+    {
+     "id": "T1677",
+     "name": "Poisoned Pipeline Execution",
+     "url": "https://attack.mitre.org/techniques/T1677/"
+    },
+    {
+     "id": "T1059.004",
+     "name": "Unix Shell",
+     "url": "https://attack.mitre.org/techniques/T1059/004/"
+    },
+    {
+     "id": "T1552.001",
+     "name": "Credentials In Files",
+     "url": "https://attack.mitre.org/techniques/T1552/001/"
+    },
+    {
+     "id": "T1552.005",
+     "name": "Cloud Instance Metadata API",
+     "url": "https://attack.mitre.org/techniques/T1552/005/"
+    },
+    {
+     "id": "T1528",
+     "name": "Steal Application Access Token",
+     "url": "https://attack.mitre.org/techniques/T1528/"
+    },
+    {
+     "id": "T1098.001",
+     "name": "Additional Cloud Credentials",
+     "url": "https://attack.mitre.org/techniques/T1098/001/"
+    },
+    {
+     "id": "T1070",
+     "name": "Indicator Removal",
+     "url": "https://attack.mitre.org/techniques/T1070/"
+    },
+    {
+     "id": "T1041",
+     "name": "Exfiltration Over C2 Channel",
+     "url": "https://attack.mitre.org/techniques/T1041/"
+    },
+    {
+     "id": "T1567",
+     "name": "Exfiltration Over Web Service",
+     "url": "https://attack.mitre.org/techniques/T1567/"
+    }
+   ],
+   "recommended_actions": [
+    "Search every repository you can write to for a wfx-docs branch, pull requests titled 'docs: dependency audit notes', and commits 'ci: refresh build cache', 'chore: add ci helper', 'chore: add dependency audit workflow', 'ci: restore' or 'ci: cleanup' since 10 November; close the probe pull request and delete the branch.",
+    "For any account that opened a probe pull request, revoke its tokens, OAuth app grants, SSH keys and sessions and turn on 2FA; then rotate every secret and variable the affected repository can read, including environment and organisation secrets.",
+    "Check cloud accounts for backdoors that survive rotation: AWS sessions named wfx-* followed by CreateAccessKey or UpdateAssumeRolePolicy, Entra ID federated credentials named wfx-ci-*, GCP GenerateAccessToken or SignJwt from your GitHub workload identity pool, and Vault JWT logins from the GitHub OIDC issuer.",
+    "Block 194.150.166.244 and its /exfil URL now, block 153.75.82.159 in Defender, and alert on 18.143.168.96 (Amazon-hosted) and the older GhostAction server 193.32.204.199.",
+    "Remove neuronai-studio 3.14.3 (pin 3.14.2 or earlier) and the listed gocurl and docker-env versions; treat any machine that ran npm install on an affected commit as compromised and rotate its keys."
+   ],
+   "sources": [
+    {
+     "url": "https://www.aikido.dev/blog/compromised-github-accounts-push-ci-secret-stealer-to-tens-of-thousands-of-repositories",
+     "label": "Aikido – Compromised GitHub accounts push CI secret stealer to tens of thousands of repositories",
+     "name": "Aikido"
+    },
+    {
+     "url": "https://safedep.io/blog/github-actions-wfx-credential-stealer",
+     "label": "SafeDep – wfx: GitHub Actions credential stealer hits 8,000 repos",
+     "name": "SafeDep"
+    },
+    {
+     "url": "https://thehackernews.com/2026/11/4837-hijacked-github-accounts-ran-ci.html",
+     "label": "The Hacker News – Attacker used 4,837 hijacked GitHub accounts to run a CI secret stealer",
+     "name": "The Hacker News"
+    }
+   ],
+   "indicator_count": 11,
+   "block_now_count": 2,
+   "hunt_count": 9,
+   "hunt_counts": {
+    "alert": 7,
+    "block": 2
+   },
+   "indicator_counts": {
+    "filename": 4,
+    "ipv4": 4,
+    "url": 2,
+    "sha256": 1
+   },
+   "ioas": [
+    {
+     "artefact": "npm postinstall hook running a hidden ./.ci-xxxxxx.sh script (sh ./.ci-<6 characters>.sh) on a CI runner or developer machine",
+     "log_source": "Defender XDR DeviceProcessEvents (Linux and macOS developer machines, self-hosted runners)",
+     "why": "The 'chore: add ci helper' variant adds a .ci-<6>.sh script and a package.json postinstall hook, so the stealer runs on every npm install, including on developer laptops. Projects with their own dot-prefixed CI helper scripts can match; check the script name and the commit that added it.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://safedep.io/blog/github-actions-wfx-credential-stealer",
+     "source_name": "SafeDep",
+     "title": "npm postinstall running a hidden .ci- script",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "AWS role sessions named wfx-* (AssumeRoleWithWebIdentity or AssumeRole) followed by CreateAccessKey or UpdateAssumeRolePolicy",
+     "log_source": "AWS CloudTrail, or Defender XDR CloudAppEvents with the AWS connector",
+     "why": "The stealer swaps GitHub OIDC tokens for AWS sessions named wfx-<pid>, creates long-lived access keys for IAM users and can rewrite a role's trust policy to open it to any AWS account, so access survives secret rotation.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://safedep.io/blog/github-actions-wfx-credential-stealer",
+     "source_name": "SafeDep",
+     "title": "AWS wfx-* sessions creating keys or opening trust policies",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Federated identity credentials named wfx-ci-* added to Entra ID app registrations",
+     "log_source": "Entra ID audit logs (Update application, Certificates and secrets management)",
+     "why": "The stealer adds a federated credential named wfx-ci-<n> so workflows on the repository's main branch can sign in to Azure as that app without a stored secret, even after client secrets are rotated.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://safedep.io/blog/github-actions-wfx-credential-stealer",
+     "source_name": "SafeDep",
+     "title": "Entra app federated credentials named wfx-ci-*",
+     "queries": [
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "A wfx-docs branch or a pull request titled 'docs: dependency audit notes', followed by commits 'ci: refresh build cache', 'chore: add ci helper', 'chore: add dependency audit workflow', 'chore: initial commit', 'ci: restore' or 'ci: cleanup'",
+     "log_source": "GitHub audit log, repository history and pull requests",
+     "why": "The probe pull request confirms the stolen token can write to the repository, and Aikido and SafeDep treat any account that opened one as compromised even if no payload followed. The commit messages are generic, so verify the diff before acting.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://www.aikido.dev/blog/compromised-github-accounts-push-ci-secret-stealer-to-tens-of-thousands-of-repositories",
+     "source_name": "Aikido",
+     "title": "wfx-docs probe pull requests and payload commits",
+     "queries": [
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Workflow runs deleted, or missing run numbers, on commits pushed and reverted within minutes",
+     "log_source": "GitHub Actions run history and audit log (workflow run deletions)",
+     "why": "After the payload runs the actor reverts the commit and deletes the run and its logs, so a missing run number on the attacker's commit is the more reliable sign the stealer ran; the absence of wfx-loot artefacts, wfx- cache entries or WFX-BEGIN step summaries does not mean nothing was taken.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://www.aikido.dev/blog/compromised-github-accounts-push-ci-secret-stealer-to-tens-of-thousands-of-repositories",
+     "source_name": "Aikido",
+     "title": "Deleted workflow runs after reverted commits",
+     "queries": []
+    },
+    {
+     "artefact": "GCP GenerateAccessToken or SignJwt calls from your GitHub workload identity pool, and Vault or Kubernetes JWT logins from the GitHub OIDC issuer, from repositories that do not normally use them",
+     "log_source": "GCP Cloud Audit Logs, HashiCorp Vault audit logs, Kubernetes API audit logs",
+     "why": "The stealer requests GitHub OIDC tokens for AWS, Azure and GCP even when a repository has no cloud setup, and replays them against Vault and Kubernetes APIs.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://safedep.io/blog/github-actions-wfx-credential-stealer",
+     "source_name": "SafeDep",
+     "title": "GitHub OIDC tokens used against GCP, Vault or Kubernetes",
+     "queries": []
+    }
+   ],
+   "ioa_count": 6,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer/block_now.txt",
+     "download": "GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer/defender_xdr_indicators.csv",
+     "download": "GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer/hunt.kql",
+     "download": "GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer/hunt.spl",
+     "download": "GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer/hunt_raw.spl",
+     "download": "GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer/hunt.yaral",
+     "download": "GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer/iocs.csv",
+     "download": "GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer",
+   "indicators": [
+    {
+     "value": "194.150.166.244",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Exfil server that receives stolen CI secrets by HTTP POST on port 8080 (WF_CALLBACK); about half of 200 sampled payload commits sent data here.",
+     "source_url": "https://safedep.io/blog/github-actions-wfx-credential-stealer",
+     "source_label": "SafeDep – wfx: GitHub Actions credential stealer hits 8,000 repos",
+     "source_name": "SafeDep"
+    },
+    {
+     "value": "http://194.150.166.244:8080/exfil",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Exfil endpoint set as WF_CALLBACK in the injected workflow and install-hook payloads.",
+     "source_url": "https://safedep.io/blog/github-actions-wfx-credential-stealer",
+     "source_label": "SafeDep – wfx: GitHub Actions credential stealer hits 8,000 repos",
+     "source_name": "SafeDep"
+    },
+    {
+     "value": "18.143.168.96",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Second exfil server receiving stolen CI secrets by HTTP POST on port 8080, seen in the npm postinstall variant.",
+     "source_url": "https://safedep.io/blog/github-actions-wfx-credential-stealer",
+     "source_label": "SafeDep – wfx: GitHub Actions credential stealer hits 8,000 repos",
+     "source_name": "SafeDep"
+    },
+    {
+     "value": "http://18.143.168.96:8080/exfil",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Exfil endpoint set as WF_CALLBACK in the npm postinstall payload variant.",
+     "source_url": "https://safedep.io/blog/github-actions-wfx-credential-stealer",
+     "source_label": "SafeDep – wfx: GitHub Actions credential stealer hits 8,000 repos",
+     "source_name": "SafeDep"
+    },
+    {
+     "value": "153.75.82.159",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "Third exfil server receiving stolen CI secrets by HTTP POST on port 8080, found in SafeDep's second analysis.",
+     "source_url": "https://safedep.io/blog/github-actions-wfx-credential-stealer",
+     "source_label": "SafeDep – wfx: GitHub Actions credential stealer hits 8,000 repos",
+     "source_name": "SafeDep"
+    },
+    {
+     "value": "89695abb392d5cfd4972672961e644bb46baa98aa1ed7173c2a2816c762735cf",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of the roughly 1,500-line wfx stealer shell script that collects CI secrets, cloud credentials and runner memory.",
+     "source_url": "https://www.aikido.dev/blog/compromised-github-accounts-push-ci-secret-stealer-to-tens-of-thousands-of-repositories",
+     "source_label": "Aikido – Compromised GitHub accounts push CI secret stealer to tens of thousands of repositories",
+     "source_name": "Aikido"
+    },
+    {
+     "value": "193.32.204.199",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Exfil server used by the October GhostAction secret-scanning workflows that Aikido found left in place alongside this wave in over 100 repositories.",
+     "source_url": "https://www.aikido.dev/blog/compromised-github-accounts-push-ci-secret-stealer-to-tens-of-thousands-of-repositories",
+     "source_label": "Aikido – Compromised GitHub accounts push CI secret stealer to tens of thousands of repositories",
+     "source_name": "Aikido"
+    },
+    {
+     "value": "digitalelvis/neuronai-studio@3.14.3",
+     "type": "filename",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Malicious Packagist release that ships the wfx postinstall hook; pin 3.14.2 or earlier.",
+     "source_url": "https://safedep.io/blog/github-actions-wfx-credential-stealer",
+     "source_label": "SafeDep – wfx: GitHub Actions credential stealer hits 8,000 repos",
+     "source_name": "SafeDep"
+    },
+    {
+     "value": "github.com/vkuznet/gocurl@v0.0.0-20261111095532-8d5aad0cb0da",
+     "type": "filename",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Go module pseudo-version that carries the wfx stealer in a GitHub Actions workflow file.",
+     "source_url": "https://safedep.io/blog/github-actions-wfx-credential-stealer",
+     "source_label": "SafeDep – wfx: GitHub Actions credential stealer hits 8,000 repos",
+     "source_name": "SafeDep"
+    },
+    {
+     "value": "github.com/onuragtas/docker-env@v1.0.278",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Go module version whose GitHub Actions workflow file carries the wfx stealer; Go code and binaries are unchanged.",
+     "source_url": "https://thehackernews.com/2026/11/4837-hijacked-github-accounts-ran-ci.html",
+     "source_label": "The Hacker News – Attacker used 4,837 hijacked GitHub accounts to run a CI secret stealer",
+     "source_name": "The Hacker News"
+    },
+    {
+     "value": "github.com/onuragtas/docker-env@v1.0.280",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Go module version whose GitHub Actions workflow file carries the wfx stealer; Go code and binaries are unchanged.",
+     "source_url": "https://thehackernews.com/2026/11/4837-hijacked-github-accounts-ran-ci.html",
+     "source_label": "The Hacker News – Attacker used 4,837 hijacked GitHub accounts to run a CI secret stealer",
+     "source_name": "The Hacker News"
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer/hunt.kql",
+     "download": "GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer/hunt.spl",
+     "download": "GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer/hunt_raw.spl",
+      "download": "GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer/hunt.yaral",
+     "download": "GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer_hunt.yaral"
+    }
+   ]
+  },
   {
    "id": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign",
    "folder": "threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign",
