@@ -126,7 +126,7 @@
   }
   function iocCell(ind) {
     var b = h("button", { type: "button", class: "copy", title: "Copy the real (not defanged) value", "aria-label": "Copy indicator " + defang(ind.value, ind.type) }, "Copy");
-    b.addEventListener("click", function () { copyText(ind.value, b); trackEvent("copy/ioc", "Copy indicator"); });
+    b.addEventListener("click", function () { copyText(ind.value, b); trackClick("copy"); });
     return h("div", { class: "ioc" }, h("code", { text: defang(ind.value, ind.type) }), b);
   }
   function actionPill(a) { return h("span", { class: "pill " + a, text: a }); }
@@ -140,29 +140,60 @@
       h("b", { text: f.label }), h("small", { text: f.note || f.name }), h("span", { class: "ext", "aria-hidden": "true", text: ext }));
     return saveOnClick(a, f);
   }
-  // Downloads and copies are counted as anonymous GoatCounter events with a few fixed names:
-  // download/<file kind>, copy/query/<kql|spl|yaral> and copy/ioc. No indicator or query text is sent.
-  function trackEvent(path, title) {
+  // Downloads and copies: every click is counted by the stats endpoint (/hit) with just its kind
+  // ("download" or "copy") and this page's random id. No file name, indicator or query text is sent.
+  // The shown figure goes up at once, then the endpoint's reply sets the real totals.
+  var PAGE_ID = "";
+  function pageId() {
+    if (PAGE_ID) return PAGE_ID;
     try {
-      if (window.goatcounter && typeof window.goatcounter.count === "function")
-        window.goatcounter.count({ path: path, title: title, event: true });
+      var rnd = new Uint8Array(16); crypto.getRandomValues(rnd);
+      PAGE_ID = Array.prototype.map.call(rnd, function (b) { return ("0" + b.toString(16)).slice(-2); }).join("");
+    } catch (e) {
+      for (var i = 0; i < 32; i++) PAGE_ID += Math.floor(Math.random() * 16).toString(16);
+    }
+    return PAGE_ID;
+  }
+  var CLICKS = null;   // last totals: {downloads, downloads24h, copies, copies24h}
+  function showClicks(c) {
+    if (!c) return;
+    CLICKS = c;
+    var dl = toCount(c.downloads), cp = toCount(c.copies);
+    if (dl != null) {
+      $("visits-dl-n").textContent = fmtVisitors(dl);
+      $("visits-dl-24").textContent = toCount(c.downloads24h) ? "+" + fmtVisitors(toCount(c.downloads24h)) + " in 24h" : "";
+      $("visits-dl").hidden = false;
+    }
+    if (cp != null) {
+      $("visits-cp-n").textContent = fmtVisitors(cp);
+      $("visits-cp-24").textContent = toCount(c.copies24h) ? "+" + fmtVisitors(toCount(c.copies24h)) + " in 24h" : "";
+      $("visits-cp").hidden = false;
+    }
+  }
+  function trackClick(kind) {
+    var box = $("visits"), live = box && box.getAttribute("data-live");
+    if (CLICKS) {
+      var k = kind === "download" ? "downloads" : "copies", c = {};
+      for (var x in CLICKS) c[x] = CLICKS[x];
+      c[k] = (toCount(c[k]) || 0) + 1; c[k + "24h"] = (toCount(c[k + "24h"]) || 0) + 1;
+      showClicks(c);
+    }
+    if (!live || !window.fetch) return;
+    try {
+      fetch(live.replace(/\/?$/, "/") + "hit", { method: "POST", body: pageId() + " " + kind, keepalive: true,
+        headers: { "Content-Type": "text/plain" }, cache: "no-store", credentials: "omit" })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) { if (j && j.downloads != null) showClicks(j); }, function () {});
     } catch (e) {}
   }
-  function trackDownload(name) {
-    var n = String(name || "file").replace(/^.*\//, "").toLowerCase().replace(/[^a-z0-9._-]/g, "");
-    trackEvent("download/" + n, "Download " + n);
-  }
-  function trackQueryCopy(name) {
-    var ext = (String(name || "").split(".").pop() || "query").toLowerCase().replace(/[^a-z0-9-]/g, "");
-    trackEvent("copy/query/" + ext, "Copy " + ext + " query");
-  }
+  function trackDownload() { trackClick("download"); }
   document.addEventListener("click", function (e) {
     var a = e.target && e.target.closest && e.target.closest("a[data-dl]");
     if (a) trackDownload(a.getAttribute("data-dl"));
   });
   function saveOnClick(a, f) {
     a.addEventListener("click", function (e) {
-      trackDownload(f.name);
+      trackDownload();
       if (!window.fetch || !window.URL || !URL.createObjectURL) return;
       e.preventDefault();
       a.classList.add("busy");
@@ -369,7 +400,7 @@
     c.addEventListener("click", function () {
       qText(q).then(function (x) {
         copyText(x, null, "Copied " + q.name);
-        trackQueryCopy(q.name);
+        trackClick("copy");
         c.textContent = "Copied"; c.classList.add("done");
         setTimeout(function () { c.textContent = "Copy " + q.name; c.classList.remove("done"); }, 1400);
       }, function () { toast("Could not load " + q.name + ". Use Download."); });
@@ -828,16 +859,7 @@
     $("visits-total").hidden = false;
     $("visits-24h-n").textContent = fmtVisitors(day);
     $("visits-24h").hidden = false;
-    if (cp != null) {
-      $("visits-cp-n").textContent = fmtVisitors(cp);
-      $("visits-cp-24").textContent = cp24 ? "+" + fmtVisitors(cp24) + " in 24h" : "";
-      $("visits-cp").hidden = false;
-    }
-    if (dl != null) {
-      $("visits-dl-n").textContent = fmtVisitors(dl);
-      $("visits-dl-24").textContent = dl24 ? "+" + fmtVisitors(dl24) + " in 24h" : "";
-      $("visits-dl").hidden = false;
-    }
+    if (dl != null || cp != null) showClicks({ downloads: dl, downloads24h: dl24, copies: cp, copies24h: cp24 });
     var geo = clear($("visits-geo")), rows = [];
     (countries || []).forEach(function (c) {
       var n = c && toCount(c.count);
@@ -891,11 +913,7 @@
   }
   // Online now: this page sends a random id (new on every page load, never stored) to /online every
   // 30 seconds while the tab is visible; the endpoint answers with how many pages checked in recently.
-  var ONLINE_EVERY = 30000, onlineTimer = null, onlineFails = 0, onlineId = "";
-  try {
-    var rnd = new Uint8Array(16); crypto.getRandomValues(rnd);
-    onlineId = Array.prototype.map.call(rnd, function (b) { return ("0" + b.toString(16)).slice(-2); }).join("");
-  } catch (e) {}
+  var ONLINE_EVERY = 30000, onlineTimer = null, onlineFails = 0, onlineId = pageId();
   function onlineURL() {
     var live = ($("visits") && $("visits").getAttribute("data-live")) || "";
     return live && onlineId ? live.replace(/\/?$/, "/") + "online" : "";
