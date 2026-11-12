@@ -1,0 +1,54 @@
+// Threat: Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX
+let Lookback = 30d;
+let Domains = dynamic(["pythonapischool.com", "javadevhouse.co.kr"]);
+let Urls = dynamic(["https://pythonapischool.com/api/detach", "https://javadevhouse.co.kr/ajax/libs/jquery/1.7.3/jquery.min.js", "https://cubedesign.co.kr/news", "https://cubedesign.co.kr/mobile/fashion", "https://fp-news.co.kr/shop/cart", "https://k-wbc.co.kr/skin/social/social_view.php", "https://rcsh.co.kr/modules/bbs/tiles/bbs_div/inputForm.php", "https://www.ksog.org/insert_file/handle.php"]);
+let UrlKeys = dynamic(["pythonapischool.com/api/detach", "javadevhouse.co.kr/ajax/libs/jquery/1.7.3/jquery.min.js", "cubedesign.co.kr/news", "cubedesign.co.kr/mobile/fashion", "fp-news.co.kr/shop/cart", "k-wbc.co.kr/skin/social/social_view.php", "rcsh.co.kr/modules/bbs/tiles/bbs_div/inputForm.php", "www.ksog.org/insert_file/handle.php"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (DeviceEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType == "DnsQueryResponse" and tostring(parse_json(AdditionalFields).DnsQueryString) has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(parse_json(AdditionalFields).DnsQueryString), Context = tostring(strcat("DNS ", InitiatingProcessFileName))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (UrlKeys)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (EmailUrlInfo
+    | where Timestamp > ago(Lookback)
+    | where UrlDomain has_any (Domains) or Url has_any (UrlKeys)
+    | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = tostring(Url), Context = tostring("URL in email")),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url has_any (Domains) or Url has_any (UrlKeys)
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where InitiatingProcessFileName =~ "INISAFECrossWebEXSvc.exe" and FileName in~ ("fsquirt.exe", "cmd.exe", "powershell.exe", "pwsh.exe", "rundll32.exe", "regsvr32.exe", "mshta.exe", "wscript.exe", "cscript.exe")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(InitiatingProcessFileName, " > ", FileName, " | ", ProcessCommandLine))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "fsquirt.exe" and not(InitiatingProcessFileName in~ ("explorer.exe", "svchost.exe", "fsquirt.exe"))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(InitiatingProcessFileName), Context = tostring(strcat(InitiatingProcessFileName, " > ", FileName, " | ", AccountName))),
+  (DeviceImageLoadEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "mscoree.dll" and FolderPath has_any (@"\System32\RasConv\", @"\System32\DrvConh\", @"\ProgramData\RasConv\", @"\ProgramData\Apple\", @"\ProgramData\ssh\", @"\ProgramData\qorestor\", @"\ProgramData\Dell\")
+    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat("loaded by ", InitiatingProcessFileName, " | SHA256 ", SHA256))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where (FileName in~ ("mscoree.dll", "ActivationStore.dat") and FolderPath has_any (@"\System32\RasConv\", @"\System32\DrvConh\", @"\ProgramData\RasConv\", @"\ProgramData\Apple\", @"\ProgramData\ssh\", @"\ProgramData\qorestor\", @"\ProgramData\Dell\")) or (FileName =~ "msadc.inc" and FolderPath has @"\Common Files\System\msadc\") or FolderPath in~ (@"C:\ProgramData\desktops.ini", @"C:\ProgramData\Package.txt", @"C:\ProgramData\Dell\Dell1.tmp", @"C:\ProgramData\Dell\Dell3.tmp") or MD5 in~ ("ec84d6cb2ae7974767aedac246b50a3e", "a28cba214058fcae2883d8cffc883abd", "c105d6b16f544582772de0159f24c00a", "2f8475a90a25624ed02f1d18d4e6d65d", "676fabe30a28b53925fba98e34b35986", "b4a7eff35f048f06fb0a2d7631f23a7d", "ff07641dc56914dd90ee0bd7404d7ad7")
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " by ", InitiatingProcessFileName, " | MD5 ", MD5))),
+  (DeviceRegistryEvents
+    | where Timestamp > ago(Lookback)
+    | where RegistryKey has @"\CurrentControlSet\Services\" and RegistryValueData has_any (@"\System32\RasConv\", @"\System32\DrvConh\")
+    | project Timestamp, SourceTable = "DeviceRegistryEvents", Entity = tostring(DeviceName), Indicator = tostring(RegistryKey), Context = tostring(strcat(ActionType, " ", RegistryValueName, " = ", RegistryValueData, " | by ", InitiatingProcessFileName))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any ("api.github.com", "api.dropboxapi.com", "content.dropboxapi.com") and InitiatingProcessFileName in~ ("fsquirt.exe", "rundll32.exe", "dllhost.exe", "svchost.exe", "regsvr32.exe", "INISAFECrossWebEXSvc.exe")
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(InitiatingProcessFileName, " | ", InitiatingProcessCommandLine)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

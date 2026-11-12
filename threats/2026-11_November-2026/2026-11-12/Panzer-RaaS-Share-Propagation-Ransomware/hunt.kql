@@ -1,0 +1,27 @@
+// Threat: Panzer RaaS: Self-Propagating Ransomware Spread Through Network Shares
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware
+let Lookback = 30d;
+union isfuzzy=true
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where ProcessCommandLine has_any ("PanzerUpdateTask", "panzer.exe", "panzer.bat") or FileName in~ ("panzer.exe")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", FileName, " | ", AccountName))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in~ ("panzer.exe", "panzer.bat", "Panzer.jpg") or (FileName =~ "Recovery.md" and InitiatingProcessFileName =~ "panzer.exe")
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " by ", InitiatingProcessFileName, " | SHA256 ", SHA256))),
+  (DeviceRegistryEvents
+    | where Timestamp > ago(Lookback)
+    | where RegistryKey has @"Control Panel\Desktop" and RegistryValueName =~ "Wallpaper" and RegistryValueData has "Panzer.jpg"
+    | project Timestamp, SourceTable = "DeviceRegistryEvents", Entity = tostring(DeviceName), Indicator = tostring(RegistryValueData), Context = tostring(strcat(ActionType, " by ", InitiatingProcessFileName))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "schtasks.exe" and ProcessCommandLine matches regex @"(?i)/(create|run)\b" and ProcessCommandLine matches regex @"(?i)\s/s\s+\S+"
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", FileName, " | ", AccountName))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in~ ("net.exe", "net1.exe") and ProcessCommandLine has "view" and InitiatingProcessFileName in~ ("cmd.exe", "panzer.exe")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", FileName, " | ", AccountName)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

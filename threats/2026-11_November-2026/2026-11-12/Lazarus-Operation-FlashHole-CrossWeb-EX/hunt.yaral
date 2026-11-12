@@ -1,0 +1,46 @@
+// Threat: Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX
+rule rti_lazarus_operation_flashhole_crossweb_ex {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-12"
+    description = "Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX"
+
+  events:
+    (
+      $e.network.dns.questions.name = /(?:^|\.)(?:pythonapischool\.com|javadevhouse\.co\.kr)\.?$/ nocase or
+      $e.target.hostname = /(?:^|\.)(?:pythonapischool\.com|javadevhouse\.co\.kr)\.?$/ nocase or
+      $e.target.domain.name = /(?:^|\.)(?:pythonapischool\.com|javadevhouse\.co\.kr)\.?$/ nocase or
+      re.regex($e.target.url, `^(?:[a-z][a-z0-9+.-]*://)?(?:[^/?#]*@)?(?:pythonapischool\.com/api/detach|javadevhouse\.co\.kr/ajax/libs/jquery/1\.7\.3/jquery\.min\.js|cubedesign\.co\.kr/news|cubedesign\.co\.kr/mobile/fashion|fp\-news\.co\.kr/shop/cart|k\-wbc\.co\.kr/skin/social/social_view\.php|rcsh\.co\.kr/modules/bbs/tiles/bbs_div/inputForm\.php|www\.ksog\.org/insert_file/handle\.php|(?:[^/?#@]*\.)?(?:pythonapischool\.com|javadevhouse\.co\.kr)(?::\d+)?(?:[/?#]|$))`) nocase or
+      re.regex($e.principal.process.file.full_path, `INISAFECrossWebEXSvc\.exe$`) nocase or
+      re.regex($e.target.file.full_path, `\\(System32|ProgramData)\\(RasConv|DrvConh|Apple|ssh|qorestor|Dell)\\(mscoree\.dll|ActivationStore\.dat)$|\\Common Files\\System\\msadc\\msadc\.inc$`) nocase or
+      re.regex($e.target.registry.registry_value_data, `\\System32\\(RasConv|DrvConh)\\`) nocase
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+    $dns_query = array_distinct($e.network.dns.questions.name)
+    $target_hostname = array_distinct($e.target.hostname)
+    $target_url = array_distinct($e.target.url)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}

@@ -1,0 +1,93 @@
+``` Threat: Citrus Ransomware: Certighost AD CS Exploitation, Xray VLESS Tunnels and Sn00py
+    Author: Daniel Jeremiah | Date: 2026-11-12
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Citrus-Ransomware-Certighost-Sn00py ```
+| multisearch
+  [ search `rti_network(91.210.109.118 OR 91.210.108.180)`
+    | search dest_ip IN ("91.210.109.118", "91.210.108.180")
+    | eval data_model="network", ioc_type="ipv4", ioc=dest_ip, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_network(91.210.109.118 OR 91.210.108.180)`
+    | search src_ip IN ("91.210.109.118", "91.210.108.180")
+    | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search index=* (EventCode=4741 OR EventCode=4886 OR EventCode=4887) GHOST*
+    | where match(_raw, "(?i)GHOST[A-Z]{8}\$?|cdc:\s*\d")
+    | eval host=coalesce(host, ComputerName, "-"), user=coalesce(SubjectUserName, user, "-"), src="-", dest=coalesce(TargetUserName, "-"), detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="wineventlog"
+    | eval ioc="Certighost GHOST computer account or cdc certificate request", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint((KasperskyGPO OR "Deploy-KasperskyGPO" OR KasperskyAgentInstallTask OR Kaspersky_GPO_Deployment OR rpchost OR Sysvc))`
+    | where match(coalesce(process, process_name, ""), "(?i)KasperskyGPO_Deploy|Deploy-KasperskyGPO|KasperskyAgentInstallTask|Kaspersky_GPO_Deployment|Java rpchost agent|/tn\s+\W?Sysvc\b")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Fake Kaspersky GPO or task deploying ransomware", ioc_type="behaviour (alert)"
+]
+| append [
+    search `rti_endpoint((SYSVOL))`
+    | where match(coalesce(file_path, ""), "(?i)SYSVOL") AND match(coalesce(file_name, file_path, ""), "(?i)(build_64\.exe|KasperskyAgent\.exe|agent\.exe|wallpaper\.bmp)$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Fake Kaspersky GPO or task deploying ransomware", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint((xray OR mst.exe OR sabycenter OR webex.exe OR rpchost OR 2341.exe OR 3777.exe OR jhost OR certutil OR bitsadmin))`
+    | where match(coalesce(process_path, process, ""), "(?i)C:\\ProgramData\\(xray|mst|sabycenter|webex|rpchost|2341|3777|jhost)\.exe") OR (match(coalesce(process_name, ""), "(?i)^(certutil|bitsadmin)\.exe$") AND match(coalesce(process, ""), "(?i)ProgramData") AND match(coalesce(process, ""), "(?i)urlcache|/transfer"))
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Xray tunnel binary in ProgramData or Citrus server traffic", ioc_type="behaviour (alert)"
+]
+| append [
+    search `rti_network("91.210.109.118" OR "91.210.108.180")`
+    | search dest_ip IN ("91.210.109.118", "91.210.108.180")
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY src_ip dest_ip dvc
+    | eval host=dvc, user="-", src=src_ip, dest=dest_ip, detail="connections to Citrus servers", data_model="network"
+    | fields - src_ip dest_ip dvc
+    | eval ioc="Xray tunnel binary in ProgramData or Citrus server traffic", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint((".citrus" OR CITRUS_README))`
+    | where match(coalesce(file_name, file_path, ""), "(?i)\.citrus$|CITRUS_README\.txt$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Citrus .citrus files, ransom note or bcedit", ioc_type="behaviour (alert)"
+]
+| append [
+    search `rti_endpoint((bcedit OR Sn00py))`
+    | where match(coalesce(process, ""), "(?i)\bbcedit\b|Sn00py")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Citrus .citrus files, ransom note or bcedit", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint((cmd.exe ".tmp"))`
+    | where match(coalesce(parent_process_name, ""), "(?i)^svchost\.exe$") AND match(coalesce(process, ""), "(?i)/C .*>\s*\S*Temp\\[A-Za-z]{8}\.tmp 2>&1")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Impacket atexec scheduled-task command", ioc_type="behaviour (hunt)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

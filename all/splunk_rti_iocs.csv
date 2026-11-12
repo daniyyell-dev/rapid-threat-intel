@@ -1,4 +1,15 @@
 indicator,type,threat
+91.210.109.118,ipv4,"Citrus Ransomware: Certighost AD CS Exploitation, Xray VLESS Tunnels and Sn00py"
+91.210.108.180,ipv4,"Citrus Ransomware: Certighost AD CS Exploitation, Xray VLESS Tunnels and Sn00py"
+pythonapischool.com,domain,"Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient"
+https://pythonapischool.com/api/detach,url,"Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient"
+https://javadevhouse.co.kr/ajax/libs/jquery/1.7.3/jquery.min.js,url,"Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient"
+https://cubedesign.co.kr/news,url,"Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient"
+https://cubedesign.co.kr/mobile/fashion,url,"Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient"
+https://fp-news.co.kr/shop/cart,url,"Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient"
+https://k-wbc.co.kr/skin/social/social_view.php,url,"Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient"
+https://rcsh.co.kr/modules/bbs/tiles/bbs_div/inputForm.php,url,"Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient"
+https://www.ksog.org/insert_file/handle.php,url,"Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient"
 89.125.213.123,ipv4,Silent Lynx Strix AI-Agent Espionage Against Tajikistan
 http://89.125.213.123:8080/P.ps1,url,Silent Lynx Strix AI-Agent Espionage Against Tajikistan
 http://89.125.213.123:8080/decoy.pdf,url,Silent Lynx Strix AI-Agent Espionage Against Tajikistan

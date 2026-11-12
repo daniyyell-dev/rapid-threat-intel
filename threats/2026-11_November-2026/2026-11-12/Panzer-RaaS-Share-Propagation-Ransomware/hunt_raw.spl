@@ -1,0 +1,42 @@
+``` Threat: Panzer RaaS: Self-Propagating Ransomware Spread Through Network Shares
+    Author: Daniel Jeremiah | Date: 2026-11-12
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware ```
+search `rti_endpoint((PanzerUpdateTask OR panzer.exe OR panzer.bat))`
+| where match(coalesce(process, process_name, ""), "(?i)PanzerUpdateTask|panzer\.(exe|bat)")
+| eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+| eval data_model="endpoint"
+| eval ioc="PanzerUpdateTask, panzer.exe or panzer.bat", ioc_type="behaviour (alert)"
+| append [
+    search `rti_endpoint((panzer.exe OR panzer.bat OR Panzer.jpg))`
+    | where match(coalesce(file_name, file_path, ""), "(?i)panzer\.(exe|bat|jpg)$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="PanzerUpdateTask, panzer.exe or panzer.bat", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint((schtasks))`
+    | where match(coalesce(process_name, ""), "(?i)^schtasks\.exe$") AND match(coalesce(process, ""), "(?i)/(create|run)\b") AND match(coalesce(process, ""), "(?i)\s/s\s+\S+")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Remote schtasks create or run", ioc_type="behaviour (hunt)"
+]
+
+| append [
+    search `rti_endpoint((net.exe OR net1.exe) view)`
+    | where match(coalesce(process_name, ""), "(?i)^net1?\.exe$") AND match(coalesce(process, ""), "(?i)\bview\b")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="net view bursts", ioc_type="behaviour (hunt)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

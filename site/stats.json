@@ -1,20 +1,25 @@
 {
- "updated": "2026-11-12T09:53:19Z",
- "last24h": 32,
+ "updated": "2026-11-12T12:04:41Z",
+ "last24h": 45,
  "top_countries": [
   {
    "code": "GB",
    "name": "United Kingdom",
-   "count": 18
+   "count": 28
   },
   {
    "code": "IN",
    "name": "India",
-   "count": 8
+   "count": 11
   },
   {
    "code": "DE",
    "name": "Germany",
+   "count": 3
+  },
+  {
+   "code": "NG",
+   "name": "Nigeria",
    "count": 3
   },
   {
@@ -28,11 +33,21 @@
    "count": 1
   },
   {
-   "code": "NG",
-   "name": "Nigeria",
+   "code": "ET",
+   "name": "Ethiopia",
+   "count": 1
+  },
+  {
+   "code": "MX",
+   "name": "Mexico",
+   "count": 1
+  },
+  {
+   "code": "US",
+   "name": "United States",
    "count": 1
   }
  ],
  "other_count": 0,
- "total": 32
+ "total": 50
 }

@@ -1,3 +1,11 @@
+https://pythonapischool.com/api/detach
+https://javadevhouse.co.kr/ajax/libs/jquery/1.7.3/jquery.min.js
+https://cubedesign.co.kr/news
+https://cubedesign.co.kr/mobile/fashion
+https://fp-news.co.kr/shop/cart
+https://k-wbc.co.kr/skin/social/social_view.php
+https://rcsh.co.kr/modules/bbs/tiles/bbs_div/inputForm.php
+https://www.ksog.org/insert_file/handle.php
 http://89.125.213.123:8080/P.ps1
 http://89.125.213.123:8080/decoy.pdf
 http://194.150.166.244:8080/exfil

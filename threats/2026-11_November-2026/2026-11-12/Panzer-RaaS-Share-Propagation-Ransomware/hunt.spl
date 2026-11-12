@@ -1,0 +1,42 @@
+``` Threat: Panzer RaaS: Self-Propagating Ransomware Spread Through Network Shares
+    Author: Daniel Jeremiah | Date: 2026-11-12
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware ```
+| tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+    FROM datamodel=Endpoint.Processes
+    WHERE Processes.process IN ("*PanzerUpdateTask*", "*panzer.exe*", "*panzer.bat*") OR Processes.process_name="panzer.exe"
+    BY Processes.dest Processes.user Processes.parent_process_name Processes.process_name Processes.process
+| rename "Processes.*" AS *
+| eval host=dest, src="-", detail=parent_process_name." > ".process, data_model="Endpoint.Processes"
+| eval ioc="PanzerUpdateTask, panzer.exe or panzer.bat", ioc_type="behaviour (alert)"
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Filesystem
+        WHERE Filesystem.file_name IN ("panzer.exe", "panzer.bat", "Panzer.jpg")
+        BY Filesystem.dest Filesystem.user Filesystem.file_path Filesystem.file_name Filesystem.action
+    | rename "Filesystem.*" AS *
+    | eval host=dest, src="-", detail="file ".action." ".file_path, data_model="Endpoint.Filesystem"
+    | eval ioc="PanzerUpdateTask, panzer.exe or panzer.bat", ioc_type="behaviour (alert)"
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.process_name="schtasks.exe" Processes.process IN ("*/create*", "*/run*") Processes.process="* /s *"
+        BY Processes.dest Processes.user Processes.parent_process_name Processes.process_name Processes.process
+    | rename "Processes.*" AS *
+    | eval host=dest, src="-", detail=parent_process_name." > ".process, data_model="Endpoint.Processes"
+    | eval ioc="Remote schtasks create or run", ioc_type="behaviour (hunt)"
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.process_name IN ("net.exe", "net1.exe") Processes.process="*view*"
+        BY Processes.dest Processes.user Processes.parent_process_name Processes.process_name Processes.process
+    | rename "Processes.*" AS *
+    | eval host=dest, src="-", detail=parent_process_name." > ".process, data_model="Endpoint.Processes"
+    | eval ioc="net view bursts", ioc_type="behaviour (hunt)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

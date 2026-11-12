@@ -1,0 +1,68 @@
+// Threat: Citrus Ransomware: Certighost AD CS Exploitation, Xray VLESS Tunnels and Sn00py
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Citrus-Ransomware-Certighost-Sn00py
+let Lookback = 30d;
+let IPs = dynamic(["91.210.109.118", "91.210.108.180"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " port ", RemotePort))),
+  (DeviceLogonEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceLogonEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", LogonType, " ", AccountName))),
+  (EntraIdSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSignInEvents", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (AADSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSignInEventsBeta", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (EntraIdSpnSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSpnSignInEvents", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (AADSpnSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSpnSignInEventsBeta", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(AccountDisplayName), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ActionType))),
+  (IdentityDirectoryEvents
+    | where Timestamp > ago(Lookback)
+    | where TargetDeviceName matches regex @"(?i)^GHOST[A-Z]{8}\$?$" or TargetAccountDisplayName matches regex @"(?i)^GHOST[A-Z]{8}\$?$"
+    | project Timestamp, SourceTable = "IdentityDirectoryEvents", Entity = tostring(DeviceName), Indicator = tostring(TargetDeviceName), Context = tostring(strcat(ActionType, " by ", AccountName, " | ", tostring(AdditionalFields)))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in~ ("KasperskyGPO_Deploy_64.exe", "KasperskyGPO_Deploy_64_FIXED.exe") or ProcessCommandLine has_any ("Deploy-KasperskyGPO", "KasperskyAgentInstallTask", "Kaspersky_GPO_Deployment") or ProcessCommandLine contains "Java rpchost agent" or (FileName =~ "schtasks.exe" and ProcessCommandLine matches regex @"(?i)/tn\s+\W?Sysvc\b")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", FileName, " | ", AccountName))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FolderPath has "SYSVOL" and FileName in~ ("build_64.exe", "KasperskyAgent.exe", "agent.exe", "wallpaper.bmp")
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " by ", InitiatingProcessFileName, " | SHA256 ", SHA256))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where (FolderPath startswith @"C:\ProgramData\" and FileName in~ ("xray.exe", "mst.exe", "sabycenter.exe", "webex.exe", "rpchost.exe", "2341.exe", "3777.exe", "jhost.exe")) or MD5 in~ ("d631627131b90d576d77f4bf530e1abe", "7107fb029e7c63523e3aca5fc8e56b38", "e251df2d0b7c3682965efb4d2009a2f4", "17b29b6c9de80402a45e321bbe1168fa") or (FileName in~ ("certutil.exe", "bitsadmin.exe") and ProcessCommandLine has "ProgramData" and ProcessCommandLine has_any ("urlcache", "/transfer"))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(FolderPath, " | ", ProcessCommandLine, " | MD5 ", MD5))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in ("91.210.109.118", "91.210.108.180") or (RemotePort == 443 and InitiatingProcessFileName in~ ("xray.exe", "mst.exe", "sabycenter.exe", "rpchost.exe") and InitiatingProcessCommandLine has "config.json")
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(InitiatingProcessFileName, " to ", RemoteIP, ":", tostring(RemotePort), " | ", InitiatingProcessCommandLine))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName endswith ".citrus" or FileName =~ "CITRUS_README.txt" or MD5 =~ "17b29b6c9de80402a45e321bbe1168fa"
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(ActionType, " ", FolderPath, " by ", InitiatingProcessFileName))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where ProcessCommandLine matches regex @"(?i)\bbcedit\b" or ProcessCommandLine has "Sn00py"
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", FileName, " | ", AccountName))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "cmd.exe" and InitiatingProcessFileName =~ "svchost.exe" and ProcessCommandLine matches regex @"(?i)/C .*>\s*%?\w*%?\\?(Windows\\)?Temp\\[A-Za-z]{8}\.tmp 2>&1"
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", FileName, " | ", AccountName)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

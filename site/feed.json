@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-12 11:30",
- "threat_count": 28,
- "indicator_count": 991,
- "block_now_count": 354,
+ "last_updated": "2026-11-12 12:25",
+ "threat_count": 31,
+ "indicator_count": 1032,
+ "block_now_count": 365,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -102,6 +102,1528 @@
   }
  ],
  "threats": [
+  {
+   "id": "Panzer-RaaS-Share-Propagation-Ransomware",
+   "folder": "threats/2026-11_November-2026/2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware",
+   "name": "Panzer RaaS: Self-Propagating Ransomware Spread Through Network Shares",
+   "short": "Panzer self-propagating ransomware",
+   "category": "Ransomware",
+   "published": "2026-11-11",
+   "entry_date": "2026-11-12 12:25",
+   "last_updated": "2026-11-12",
+   "seq": 31,
+   "headline": "Rust RaaS payload that copies itself to every share and runs as PanzerUpdateTask; names and behaviour only, no hashes",
+   "summary": "Cynet's CyOps team analysed the Windows payload of Panzer, a ransomware-as-a-service operation first seen in August 2026 that has listed 46 victims in 20 countries, most of them in the European Union. One run of the Rust binary does the whole job: it runs net view to list hosts in the domain and then their shares, copies itself as panzer.exe into every reachable share, creates a scheduled task named PanzerUpdateTask on each remote host with schtasks /CREATE /S and fires it with schtasks /RUN. It then encrypts the local machine, appending .LOCKED, drops the Recovery.md ransom note, sets Panzer.jpg from the Temp folder as the wallpaper, and runs panzer.bat to delete itself. The note threatens GDPR complaints to regulators and blackmail of the victim's customers. No hashes or network indicators have been published, so this entry is hunt and alert only.",
+   "caveat": "Cynet published behaviour and file names but no hashes or network indicators, and FortiGuard notes that no Panzer indicator has yet been confirmed by a second source. Everything here is alert or hunt only. The .LOCKED extension and the Recovery.md note name are used by other families, so pair them with the Panzer-specific names.",
+   "targets": {
+    "countries": [
+     {
+      "code": "IT",
+      "name": "Italy"
+     }
+    ],
+    "regions": [
+     "Europe"
+    ],
+    "sectors": [
+     "Manufacturing",
+     "Telecommunications",
+     "Multiple sectors"
+    ],
+    "note": "Cynet counts 46 Panzer victims in 20 countries, most of them in the European Union; Cyware reported Italian manufacturing and telecommunications victims. Halcyon says the group avoids the United States so far.",
+    "source": {
+     "url": "https://www.cynet.com/blog/panzer-ransomware-spreads-itself-across-network-shares-then-deletes-the-evidence/",
+     "label": "Cynet – Panzer ransomware spreads itself across network shares, then deletes the evidence",
+     "name": "Cynet"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1018",
+     "name": "Remote System Discovery",
+     "url": "https://attack.mitre.org/techniques/T1018/"
+    },
+    {
+     "id": "T1135",
+     "name": "Network Share Discovery",
+     "url": "https://attack.mitre.org/techniques/T1135/"
+    },
+    {
+     "id": "T1570",
+     "name": "Lateral Tool Transfer",
+     "url": "https://attack.mitre.org/techniques/T1570/"
+    },
+    {
+     "id": "T1053.005",
+     "name": "Scheduled Task",
+     "url": "https://attack.mitre.org/techniques/T1053/005/"
+    },
+    {
+     "id": "T1497.003",
+     "name": "Time Based Evasion",
+     "url": "https://attack.mitre.org/techniques/T1497/003/"
+    },
+    {
+     "id": "T1622",
+     "name": "Debugger Evasion",
+     "url": "https://attack.mitre.org/techniques/T1622/"
+    },
+    {
+     "id": "T1486",
+     "name": "Data Encrypted for Impact",
+     "url": "https://attack.mitre.org/techniques/T1486/"
+    },
+    {
+     "id": "T1491.001",
+     "name": "Internal Defacement",
+     "url": "https://attack.mitre.org/techniques/T1491/001/"
+    },
+    {
+     "id": "T1070.004",
+     "name": "File Deletion",
+     "url": "https://attack.mitre.org/techniques/T1070/004/"
+    }
+   ],
+   "recommended_actions": [
+    "Alert on any scheduled task named PanzerUpdateTask and on panzer.exe or panzer.bat anywhere, including network shares.",
+    "Hunt for workstations running net view against many hosts in a short time, and for schtasks /CREATE or /RUN with /S from machines that do not normally administer other hosts.",
+    "Watch file servers for a new executable written to many shares by one account, followed by remote scheduled tasks that run it.",
+    "Remove write access to shares for standard users where it is not needed, and require phishing-resistant MFA on remote gateways (the only documented Panzer access path is a gateway without MFA)."
+   ],
+   "sources": [
+    {
+     "url": "https://www.cynet.com/blog/panzer-ransomware-spreads-itself-across-network-shares-then-deletes-the-evidence/",
+     "label": "Cynet – Panzer ransomware spreads itself across network shares, then deletes the evidence",
+     "name": "Cynet"
+    },
+    {
+     "url": "https://www.halcyon.ai/threat-group/panzer",
+     "label": "Halcyon – Panzer threat group profile (background)",
+     "name": "Halcyon"
+    },
+    {
+     "url": "https://fortiguard.fortinet.com/threat-actor/6570/panzer",
+     "label": "FortiGuard Labs – Panzer threat actor profile (background)",
+     "name": "Fortinet"
+    }
+   ],
+   "indicator_count": 5,
+   "block_now_count": 0,
+   "hunt_count": 5,
+   "hunt_counts": {
+    "alert": 5
+   },
+   "indicator_counts": {
+    "filename": 4,
+    "other": 1
+   },
+   "ioas": [
+    {
+     "artefact": "A scheduled task named PanzerUpdateTask, or panzer.exe, panzer.bat or Panzer.jpg on a host or share",
+     "log_source": "EDR process, file and registry events; Task Scheduler 4698; file-server audit logs",
+     "why": "Panzer copies itself as panzer.exe into every share, runs it remotely through the PanzerUpdateTask task, sets Panzer.jpg from Temp as the wallpaper after encryption, and deletes itself with panzer.bat.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.cynet.com/blog/panzer-ransomware-spreads-itself-across-network-shares-then-deletes-the-evidence/",
+     "source_name": "Cynet",
+     "title": "PanzerUpdateTask, panzer.exe or panzer.bat",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "schtasks /CREATE or /RUN against a remote host (/S) from a workstation that does not normally administer other machines",
+     "log_source": "EDR process events; Task Scheduler 4698 on the target",
+     "why": "Panzer needs no lateral-movement toolkit: it uses schtasks with /S to create and immediately run a task on each remote host. The same pattern is used by other ransomware, so it is a hunt lead rather than proof.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.cynet.com/blog/panzer-ransomware-spreads-itself-across-network-shares-then-deletes-the-evidence/",
+     "source_name": "Cynet",
+     "title": "Remote schtasks create or run",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Bursts of net view from one workstation against many hosts",
+     "log_source": "EDR process events",
+     "why": "Panzer lists domain hosts with net view and then runs net view against each one to find shares. Many net view commands from one user workstation in minutes is unusual.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.cynet.com/blog/panzer-ransomware-spreads-itself-across-network-shares-then-deletes-the-evidence/",
+     "source_name": "Cynet",
+     "title": "net view bursts",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "A batch file that deletes an executable in a loop and then deletes itself",
+     "log_source": "EDR process events",
+     "why": "Panzer's last step runs panzer.bat, which deletes the ransomware binary, checks each second until it is gone, then removes itself to leave less for responders.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://www.cynet.com/blog/panzer-ransomware-spreads-itself-across-network-shares-then-deletes-the-evidence/",
+     "source_name": "Cynet",
+     "title": "Self-deleting cleanup batch file",
+     "queries": []
+    }
+   ],
+   "ioa_count": 4,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware/block_now.txt",
+     "download": "Panzer-RaaS-Share-Propagation-Ransomware_block_now.txt"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware/hunt.kql",
+     "download": "Panzer-RaaS-Share-Propagation-Ransomware_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware/hunt.spl",
+     "download": "Panzer-RaaS-Share-Propagation-Ransomware_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware/hunt_raw.spl",
+     "download": "Panzer-RaaS-Share-Propagation-Ransomware_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware/hunt.yaral",
+     "download": "Panzer-RaaS-Share-Propagation-Ransomware_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware/iocs.csv",
+     "download": "Panzer-RaaS-Share-Propagation-Ransomware_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware",
+   "indicators": [
+    {
+     "value": "panzer.exe",
+     "type": "filename",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Panzer ransomware file name; it copies itself under this name into every reachable network share.",
+     "source_url": "https://www.cynet.com/blog/panzer-ransomware-spreads-itself-across-network-shares-then-deletes-the-evidence/",
+     "source_label": "Cynet – Panzer ransomware spreads itself across network shares, then deletes the evidence",
+     "source_name": "Cynet",
+     "sources": [
+      {
+       "url": "https://www.cynet.com/blog/panzer-ransomware-spreads-itself-across-network-shares-then-deletes-the-evidence/",
+       "name": "Cynet"
+      }
+     ]
+    },
+    {
+     "value": "PanzerUpdateTask",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Scheduled task Panzer creates on each remote host with schtasks /CREATE /S and runs at once with schtasks /RUN.",
+     "source_url": "https://www.cynet.com/blog/panzer-ransomware-spreads-itself-across-network-shares-then-deletes-the-evidence/",
+     "source_label": "Cynet – Panzer ransomware spreads itself across network shares, then deletes the evidence",
+     "source_name": "Cynet",
+     "sources": [
+      {
+       "url": "https://www.cynet.com/blog/panzer-ransomware-spreads-itself-across-network-shares-then-deletes-the-evidence/",
+       "name": "Cynet"
+      }
+     ]
+    },
+    {
+     "value": "panzer.bat",
+     "type": "filename",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Cleanup batch file that deletes the ransomware binary in a loop and then deletes itself.",
+     "source_url": "https://www.cynet.com/blog/panzer-ransomware-spreads-itself-across-network-shares-then-deletes-the-evidence/",
+     "source_label": "Cynet – Panzer ransomware spreads itself across network shares, then deletes the evidence",
+     "source_name": "Cynet",
+     "sources": [
+      {
+       "url": "https://www.cynet.com/blog/panzer-ransomware-spreads-itself-across-network-shares-then-deletes-the-evidence/",
+       "name": "Cynet"
+      }
+     ]
+    },
+    {
+     "value": "Panzer.jpg",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Wallpaper image written to the user's Temp folder and set through HKCU\\Control Panel\\Desktop\\Wallpaper after encryption.",
+     "source_url": "https://www.cynet.com/blog/panzer-ransomware-spreads-itself-across-network-shares-then-deletes-the-evidence/",
+     "source_label": "Cynet – Panzer ransomware spreads itself across network shares, then deletes the evidence",
+     "source_name": "Cynet",
+     "sources": [
+      {
+       "url": "https://www.cynet.com/blog/panzer-ransomware-spreads-itself-across-network-shares-then-deletes-the-evidence/",
+       "name": "Cynet"
+      }
+     ]
+    },
+    {
+     "value": "Recovery.md",
+     "type": "filename",
+     "confidence": "low",
+     "recommended_action": "alert",
+     "description": "Panzer ransom note name; generic, so match it with panzer.exe or .LOCKED files.",
+     "source_url": "https://www.cynet.com/blog/panzer-ransomware-spreads-itself-across-network-shares-then-deletes-the-evidence/",
+     "source_label": "Cynet – Panzer ransomware spreads itself across network shares, then deletes the evidence",
+     "source_name": "Cynet",
+     "sources": [
+      {
+       "url": "https://www.cynet.com/blog/panzer-ransomware-spreads-itself-across-network-shares-then-deletes-the-evidence/",
+       "name": "Cynet"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware/hunt.kql",
+     "download": "Panzer-RaaS-Share-Propagation-Ransomware_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware/hunt.spl",
+     "download": "Panzer-RaaS-Share-Propagation-Ransomware_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware/hunt_raw.spl",
+      "download": "Panzer-RaaS-Share-Propagation-Ransomware_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware/hunt.yaral",
+     "download": "Panzer-RaaS-Share-Propagation-Ransomware_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "Citrus-Ransomware-Certighost-Sn00py",
+   "folder": "threats/2026-11_November-2026/2026-11-12/Citrus-Ransomware-Certighost-Sn00py",
+   "name": "Citrus Ransomware: Certighost AD CS Exploitation, Xray VLESS Tunnels and Sn00py",
+   "short": "Citrus ransomware",
+   "category": "Ransomware",
+   "published": "2026-11-11",
+   "entry_date": "2026-11-12 12:25",
+   "last_updated": "2026-11-12",
+   "seq": 30,
+   "headline": "Contractor-account ransomware using Certighost AD CS certificates, Xray VLESS tunnels and a fake Kaspersky GPO to push Sn00py",
+   "summary": "Kaspersky describes Citrus, a previously undocumented Russian-speaking ransomware group that has hit Russian organisations, mainly in finance, agriculture and retail. Citrus logs in with stolen contractor accounts over VPN or internet-facing RDP, then tries to escalate with CVE-2026-54121 (Certighost), an AD CS flaw patched in July 2026: each attempt creates a computer account named GHOST plus eight capital letters and requests a Machine-template certificate whose cdc attribute points the CA at the attacker's server 91.210.109.118, so a success gives a certificate for a domain controller. The group also used Impacket atexec, Metasploit and weak 1C:Enterprise servers, PowerShell written with large language models, and Xray reverse VLESS tunnels on port 443 disguised with REALITY as traffic to mirror.yandex.ru. It stole messenger data with 7-Zip, then pushed the Go-based Sn00py ransomware through a malicious GPO named Kaspersky GPO, created by KasperskyGPO_Deploy_64.exe, which runs it through the KasperskyAgentInstallTask or Sysvc scheduled task; files get the .citrus extension and a CITRUS_README.txt note. Both Citrus servers are on the block list.",
+   "caveat": "Kaspersky published MD5 hashes only, so the four hashes are listed as alert items and are not in the SHA-256 block list. Victims so far are in Russia, but the Certighost technique works against any unpatched Enterprise CA. Xray and 7-Zip are legitimate tools and mirror.yandex.ru is a legitimate site: hunt for them in unusual places, never block them.",
+   "targets": {
+    "countries": [
+     {
+      "code": "RU",
+      "name": "Russia"
+     }
+    ],
+    "regions": [
+     "Eastern Europe"
+    ],
+    "sectors": [
+     "Financial services",
+     "Agriculture",
+     "Retail"
+    ],
+    "note": "Kaspersky says Citrus has hit organisations in Russia, mainly in finance, agriculture and retail, entering through compromised contractor accounts. The Certighost technique works against any unpatched Enterprise CA.",
+    "source": {
+     "url": "https://securelist.com/citrus-ransomware/121879/",
+     "label": "Kaspersky Securelist – Citrus ransomware: VLESS for traffic, Sn00py for encryption, and LLMs lending a hand",
+     "name": "Kaspersky"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1199",
+     "name": "Trusted Relationship",
+     "url": "https://attack.mitre.org/techniques/T1199/"
+    },
+    {
+     "id": "T1133",
+     "name": "External Remote Services",
+     "url": "https://attack.mitre.org/techniques/T1133/"
+    },
+    {
+     "id": "T1078",
+     "name": "Valid Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/"
+    },
+    {
+     "id": "T1068",
+     "name": "Exploitation for Privilege Escalation",
+     "url": "https://attack.mitre.org/techniques/T1068/"
+    },
+    {
+     "id": "T1649",
+     "name": "Steal or Forge Authentication Certificates",
+     "url": "https://attack.mitre.org/techniques/T1649/"
+    },
+    {
+     "id": "T1136.002",
+     "name": "Domain Account",
+     "url": "https://attack.mitre.org/techniques/T1136/002/"
+    },
+    {
+     "id": "T1053.005",
+     "name": "Scheduled Task",
+     "url": "https://attack.mitre.org/techniques/T1053/005/"
+    },
+    {
+     "id": "T1484.001",
+     "name": "Group Policy Modification",
+     "url": "https://attack.mitre.org/techniques/T1484/001/"
+    },
+    {
+     "id": "T1105",
+     "name": "Ingress Tool Transfer",
+     "url": "https://attack.mitre.org/techniques/T1105/"
+    },
+    {
+     "id": "T1572",
+     "name": "Protocol Tunneling",
+     "url": "https://attack.mitre.org/techniques/T1572/"
+    },
+    {
+     "id": "T1036.005",
+     "name": "Match Legitimate Name or Location",
+     "url": "https://attack.mitre.org/techniques/T1036/005/"
+    },
+    {
+     "id": "T1056.001",
+     "name": "Keylogging",
+     "url": "https://attack.mitre.org/techniques/T1056/001/"
+    },
+    {
+     "id": "T1560.001",
+     "name": "Archive via Utility",
+     "url": "https://attack.mitre.org/techniques/T1560/001/"
+    },
+    {
+     "id": "T1486",
+     "name": "Data Encrypted for Impact",
+     "url": "https://attack.mitre.org/techniques/T1486/"
+    }
+   ],
+   "recommended_actions": [
+    "Patch every Enterprise CA for CVE-2026-54121 and turn on AD CS auditing (events 4886 and 4887); Defender for Identity raises a Potential Certighost alert for attempts.",
+    "Block 91.210.109.118 and 91.210.108.180 and search 90 days of firewall, VPN and proxy logs for them.",
+    "Alert on new computer accounts named GHOST plus eight capital letters (event 4741). If one exists, revoke every certificate issued to it, delete the account, and treat the domain as compromised if a certificate was issued.",
+    "Hunt for GPOs or scheduled tasks named after Kaspersky that are not from your Kaspersky deployment, for build_64.exe or KasperskyAgent.exe in SYSVOL, and for KasperskyAgentInstallTask, Sysvc and Java rpchost agent tasks.",
+    "Hunt for Xray or renamed binaries (mst.exe, sabycenter.exe, webex.exe, rpchost.exe) running from C:\\ProgramData, certutil or BITS downloading executables, and files ending .citrus.",
+    "Review contractor accounts: require MFA on VPN and RDP, limit their logon hours and hosts, and reset any that show unusual activity."
+   ],
+   "sources": [
+    {
+     "url": "https://securelist.com/citrus-ransomware/121879/",
+     "label": "Kaspersky Securelist – Citrus ransomware: VLESS for traffic, Sn00py for encryption, and LLMs lending a hand",
+     "name": "Kaspersky"
+    },
+    {
+     "url": "https://www.kaspersky.ru/about/press-releases/novaya-gruppa-shifrovalshikov-citrus-atakovala-rossijskie-organizacii-cherez-podryadchikov",
+     "label": "Kaspersky – press release on the Citrus ransomware group (Russian)",
+     "name": "Kaspersky (2)"
+    },
+    {
+     "url": "https://gbhackers.com/citrus-ransomware-attack/",
+     "label": "GBHackers – New Citrus ransomware hides malicious traffic as HTTPS",
+     "name": "GBHackers"
+    }
+   ],
+   "indicator_count": 14,
+   "block_now_count": 2,
+   "hunt_count": 12,
+   "hunt_counts": {
+    "alert": 12
+   },
+   "indicator_counts": {
+    "other": 8,
+    "filename": 4,
+    "ipv4": 2
+   },
+   "ioas": [
+    {
+     "artefact": "Computer accounts named GHOST plus eight capital letters, or Machine-template certificate requests whose cdc attribute points at an outside address",
+     "log_source": "Defender for Identity directory events; domain controller Security log 4741; AD CS CA log 4886/4887",
+     "why": "The public Certighost (CVE-2026-54121) exploit creates a GHOST computer account for each attempt and asks the CA to verify the request against a server the attacker controls (cdc:91.210.109.118 in Citrus intrusions). An issued certificate lets the attacker log in as a domain controller.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_name": "Kaspersky",
+     "title": "Certighost GHOST computer account or cdc certificate request",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "A Group Policy Object or scheduled task named after Kaspersky that deploys an executable from SYSVOL (KasperskyGPO_Deploy_64.exe, Deploy-KasperskyGPO.ps1, KasperskyAgentInstallTask, Sysvc)",
+     "log_source": "EDR process and file events on domain controllers and endpoints; Windows Security 5136/5137 (GPO changes); Task Scheduler 4698",
+     "why": "Citrus pushes Sn00py through a malicious GPO called Kaspersky GPO: a self-extracting archive copies the ransomware to SYSVOL, imports and links the GPO, and the GPO creates a scheduled task on every machine.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_name": "Kaspersky",
+     "title": "Fake Kaspersky GPO or task deploying ransomware",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Xray or a renamed tunnel binary (mst.exe, sabycenter.exe, webex.exe, rpchost.exe) running from C:\\ProgramData, or certutil and BITS downloading executables there",
+     "log_source": "EDR process and network events on Windows",
+     "why": "Citrus fetches Xray with certutil or BITS, renames it after familiar software, and runs reverse VLESS tunnels on port 443 that use REALITY to look like traffic to mirror.yandex.ru.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_name": "Kaspersky",
+     "title": "Xray tunnel binary in ProgramData or Citrus server traffic",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Files renamed with the .citrus extension, CITRUS_README.txt notes, or a process calling bcedit",
+     "log_source": "EDR file and process events",
+     "why": "Sn00py encrypts user files with RSA-2048 and ChaCha20, appends .citrus, drops CITRUS_README.txt and tries to change boot settings by calling bcedit (a typo for bcdedit).",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_name": "Kaspersky",
+     "title": "Citrus .citrus files, ransom note or bcedit",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Impacket atexec: cmd.exe started by the Task Scheduler service writing its output to a random .tmp file in C:\\Windows\\Temp",
+     "log_source": "EDR process events; Task Scheduler 4698/4699",
+     "why": "Citrus used Impacket atexec to run commands on other hosts through short-lived scheduled tasks. The tool's default command line redirects output to an eight-character .tmp file in Windows\\Temp.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_name": "Kaspersky",
+     "title": "Impacket atexec scheduled-task command",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    }
+   ],
+   "ioa_count": 5,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Citrus-Ransomware-Certighost-Sn00py/block_now.txt",
+     "download": "Citrus-Ransomware-Certighost-Sn00py_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Citrus-Ransomware-Certighost-Sn00py/defender_xdr_indicators.csv",
+     "download": "Citrus-Ransomware-Certighost-Sn00py_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Citrus-Ransomware-Certighost-Sn00py/hunt.kql",
+     "download": "Citrus-Ransomware-Certighost-Sn00py_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Citrus-Ransomware-Certighost-Sn00py/hunt.spl",
+     "download": "Citrus-Ransomware-Certighost-Sn00py_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Citrus-Ransomware-Certighost-Sn00py/hunt_raw.spl",
+     "download": "Citrus-Ransomware-Certighost-Sn00py_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Citrus-Ransomware-Certighost-Sn00py/hunt.yaral",
+     "download": "Citrus-Ransomware-Certighost-Sn00py_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Citrus-Ransomware-Certighost-Sn00py/iocs.csv",
+     "download": "Citrus-Ransomware-Certighost-Sn00py_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Citrus-Ransomware-Certighost-Sn00py",
+   "indicators": [
+    {
+     "value": "91.210.109.118",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Citrus-controlled server (BlueVPS, Estonia). It was named in the cdc attribute of Certighost (CVE-2026-54121) certificate requests so the CA fetched forged data from it, and it received data stolen by the Citrus keylogger.",
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_label": "Kaspersky Securelist – Citrus ransomware: VLESS for traffic, Sn00py for encryption, and LLMs lending a hand",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/citrus-ransomware/121879/",
+       "name": "Kaspersky"
+      },
+      {
+       "url": "https://gbhackers.com/citrus-ransomware-attack/",
+       "name": "GBHackers"
+      }
+     ]
+    },
+    {
+     "value": "91.210.108.180",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Second Citrus server in Kaspersky's indicator list, on the same BlueVPS range; it exposes a self-signed service on TCP 8443.",
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_label": "Kaspersky Securelist – Citrus ransomware: VLESS for traffic, Sn00py for encryption, and LLMs lending a hand",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/citrus-ransomware/121879/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "d631627131b90d576d77f4bf530e1abe",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "MD5 of the Xray build Citrus drops in C:\\ProgramData as mst.exe, sabycenter.exe, webex.exe or rpchost.exe to run reverse VLESS tunnels on port 443 that imitate mirror.yandex.ru.",
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_label": "Kaspersky Securelist – Citrus ransomware: VLESS for traffic, Sn00py for encryption, and LLMs lending a hand",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/citrus-ransomware/121879/",
+       "name": "Kaspersky"
+      },
+      {
+       "url": "https://gbhackers.com/citrus-ransomware-attack/",
+       "name": "GBHackers"
+      }
+     ]
+    },
+    {
+     "value": "7107fb029e7c63523e3aca5fc8e56b38",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "MD5 of the Meterpreter stager 2341.exe used by Citrus.",
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_label": "Kaspersky Securelist – Citrus ransomware: VLESS for traffic, Sn00py for encryption, and LLMs lending a hand",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/citrus-ransomware/121879/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "e251df2d0b7c3682965efb4d2009a2f4",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "MD5 of the Citrus keylogger jhost.exe, which sends captured data to 91.210.109.118.",
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_label": "Kaspersky Securelist – Citrus ransomware: VLESS for traffic, Sn00py for encryption, and LLMs lending a hand",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/citrus-ransomware/121879/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "17b29b6c9de80402a45e321bbe1168fa",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "MD5 of the Sn00py ransomware build build_64.exe that encrypts user files and appends .citrus.",
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_label": "Kaspersky Securelist – Citrus ransomware: VLESS for traffic, Sn00py for encryption, and LLMs lending a hand",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/citrus-ransomware/121879/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "KasperskyGPO_Deploy_64.exe",
+     "type": "filename",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Self-extracting archive that creates the malicious Kaspersky GPO which pushes the ransomware across the domain; it impersonates a Kaspersky deployment tool.",
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_label": "Kaspersky Securelist – Citrus ransomware: VLESS for traffic, Sn00py for encryption, and LLMs lending a hand",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/citrus-ransomware/121879/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "Deploy-KasperskyGPO.ps1",
+     "type": "filename",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "PowerShell script inside the self-extracting archive that copies the ransomware to SYSVOL and imports and links the malicious GPO.",
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_label": "Kaspersky Securelist – Citrus ransomware: VLESS for traffic, Sn00py for encryption, and LLMs lending a hand",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/citrus-ransomware/121879/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "build_64.exe",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Sn00py ransomware file name, copied to C:\\Windows and the domain SYSVOL share.",
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_label": "Kaspersky Securelist – Citrus ransomware: VLESS for traffic, Sn00py for encryption, and LLMs lending a hand",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/citrus-ransomware/121879/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "CITRUS_README.txt",
+     "type": "filename",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Ransom note dropped next to encrypted files.",
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_label": "Kaspersky Securelist – Citrus ransomware: VLESS for traffic, Sn00py for encryption, and LLMs lending a hand",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/citrus-ransomware/121879/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": ".citrus",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Extension appended to files encrypted by the Citrus Sn00py build.",
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_label": "Kaspersky Securelist – Citrus ransomware: VLESS for traffic, Sn00py for encryption, and LLMs lending a hand",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/citrus-ransomware/121879/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "KasperskyAgentInstallTask",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Scheduled task name the malicious GPO uses to run the ransomware archive (Sysvc is the other name seen).",
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_label": "Kaspersky Securelist – Citrus ransomware: VLESS for traffic, Sn00py for encryption, and LLMs lending a hand",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/citrus-ransomware/121879/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "Java rpchost agent",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Scheduled task name used for persistence of the Xray tunnel binary rpchost.exe.",
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_label": "Kaspersky Securelist – Citrus ransomware: VLESS for traffic, Sn00py for encryption, and LLMs lending a hand",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/citrus-ransomware/121879/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "GHOST[A-Z]{8}",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Computer accounts named GHOST followed by eight random capital letters (e.g. GHOSTAUFTAFGS) are created by the public Certighost exploit; each one is a CVE-2026-54121 attempt.",
+     "source_url": "https://securelist.com/citrus-ransomware/121879/",
+     "source_label": "Kaspersky Securelist – Citrus ransomware: VLESS for traffic, Sn00py for encryption, and LLMs lending a hand",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/citrus-ransomware/121879/",
+       "name": "Kaspersky"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Citrus-Ransomware-Certighost-Sn00py/hunt.kql",
+     "download": "Citrus-Ransomware-Certighost-Sn00py_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Citrus-Ransomware-Certighost-Sn00py/hunt.spl",
+     "download": "Citrus-Ransomware-Certighost-Sn00py_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Citrus-Ransomware-Certighost-Sn00py/hunt_raw.spl",
+      "download": "Citrus-Ransomware-Certighost-Sn00py_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Citrus-Ransomware-Certighost-Sn00py/hunt.yaral",
+     "download": "Citrus-Ransomware-Certighost-Sn00py_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "Lazarus-Operation-FlashHole-CrossWeb-EX",
+   "folder": "threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX",
+   "name": "Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient",
+   "short": "Lazarus Operation FlashHole",
+   "category": "Espionage / APT",
+   "published": "2026-10-21",
+   "entry_date": "2026-11-12 12:25",
+   "last_updated": "2026-11-12",
+   "seq": 29,
+   "headline": "Lazarus abusing CrossWeb EX with GitHub-issue C2 (TechHub) and compromised Korean sites for Cubridge and ClientHub",
+   "summary": "Kaspersky's GReAT documented Operation FlashHole, a Lazarus Group follow-up to Operation SyncHole that it presented at SAS on 11 November 2026. Targets in South Korea's software, construction and wired-communication equipment sectors received tailored phishing links to fake résumé and portfolio sites on GitHub Pages; the sites loaded scripts from javadevhouse.co.kr and pythonapischool.com, and the infection ran through INISAFE CrossWeb EX 3.4.1.2, a security plug-in that Korean banking and government sites require. Under INISAFECrossWebEXSvc.exe, the Windows binary fsquirt.exe was injected with the TechHub downloader, which uses a private GitHub repository as C2: it opens an issue titled 1 plus a host ID with the body hel, swaps keys through repository files and changes the body to hey when ready. TechHub loads the Cubridge orchestrator, TouchHub installs a service for the TouchShift loader (side-loaded as mscoree.dll), and a second TechHub brings in ClientHub, which uses SNOW-encrypted config and compromised Korean websites or Dropbox as C2, and LPEClient, which now uses ML-KEM-1024. The two script hosts' URLs, pythonapischool.com and six C2 paths on compromised sites are on the block list.",
+   "caveat": "Kaspersky's report was published on 21 October 2026 and presented at SAS on 11 November; the January activity may be older than the indicators suggest. Six C2 URLs sit on compromised legitimate South Korean sites, so block the exact URLs, not the domains. javadevhouse.co.kr no longer resolves and its ownership is unconfirmed, so it is alert only. Hashes are MD5 only. Do not block GitHub, GitHub Pages, Dropbox or CrossWeb EX; hunt for unusual processes using them.",
+   "targets": {
+    "countries": [
+     {
+      "code": "KR",
+      "name": "South Korea"
+     }
+    ],
+    "regions": [
+     "East Asia"
+    ],
+    "sectors": [
+     "Software",
+     "Construction",
+     "Telecommunications equipment"
+    ],
+    "note": "Kaspersky identified at least three South Korean firms in software, construction and wired communication equipment, and expects many more organisations were affected.",
+    "source": {
+     "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "name": "Kaspersky"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1566.002",
+     "name": "Spearphishing Link",
+     "url": "https://attack.mitre.org/techniques/T1566/002/"
+    },
+    {
+     "id": "T1189",
+     "name": "Drive-by Compromise",
+     "url": "https://attack.mitre.org/techniques/T1189/"
+    },
+    {
+     "id": "T1203",
+     "name": "Exploitation for Client Execution",
+     "url": "https://attack.mitre.org/techniques/T1203/"
+    },
+    {
+     "id": "T1055",
+     "name": "Process Injection",
+     "url": "https://attack.mitre.org/techniques/T1055/"
+    },
+    {
+     "id": "T1574.002",
+     "name": "DLL Side-Loading",
+     "url": "https://attack.mitre.org/techniques/T1574/002/"
+    },
+    {
+     "id": "T1543.003",
+     "name": "Windows Service",
+     "url": "https://attack.mitre.org/techniques/T1543/003/"
+    },
+    {
+     "id": "T1102.002",
+     "name": "Bidirectional Communication",
+     "url": "https://attack.mitre.org/techniques/T1102/002/"
+    },
+    {
+     "id": "T1071.001",
+     "name": "Web Protocols",
+     "url": "https://attack.mitre.org/techniques/T1071/001/"
+    },
+    {
+     "id": "T1573",
+     "name": "Encrypted Channel",
+     "url": "https://attack.mitre.org/techniques/T1573/"
+    },
+    {
+     "id": "T1027",
+     "name": "Obfuscated Files or Information",
+     "url": "https://attack.mitre.org/techniques/T1027/"
+    },
+    {
+     "id": "T1068",
+     "name": "Exploitation for Privilege Escalation",
+     "url": "https://attack.mitre.org/techniques/T1068/"
+    }
+   ],
+   "recommended_actions": [
+    "Block the eight URLs and pythonapischool.com, alert on javadevhouse.co.kr, and search 90 days of proxy and DNS logs for all of them.",
+    "Update INISAFE CrossWeb EX to the vendor's latest release or remove it where it is not required, and alert on INISAFECrossWebEXSvc.exe starting fsquirt.exe, a shell or any unsigned process.",
+    "Hunt for mscoree.dll and ActivationStore.dat in System32\\RasConv, System32\\DrvConh and the ProgramData folders listed, and for services whose binary sits in those folders.",
+    "Hunt for non-browser processes (fsquirt.exe, svchost.exe, rundll32.exe) calling api.github.com or the Dropbox API.",
+    "If anything matches, isolate the host and collect memory: the first stage runs only in memory."
+   ],
+   "sources": [
+    {
+     "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "name": "Kaspersky"
+    },
+    {
+     "url": "https://safeguard.sh/resources/blog/lazarus-flashhole-post-quantum-ml-kem-malware",
+     "label": "Safeguard – Lazarus FlashHole: ML-KEM-1024 malware delivery, IOCs and hunting",
+     "name": "Safeguard"
+    }
+   ],
+   "indicator_count": 22,
+   "block_now_count": 9,
+   "hunt_count": 13,
+   "hunt_counts": {
+    "alert": 13
+   },
+   "indicator_counts": {
+    "other": 12,
+    "url": 8,
+    "domain": 2
+   },
+   "ioas": [
+    {
+     "artefact": "INISAFE CrossWeb EX service (INISAFECrossWebEXSvc.exe) starting fsquirt.exe, a shell or another unexpected child process",
+     "log_source": "EDR process events on Windows endpoints with CrossWeb EX installed",
+     "why": "In FlashHole the chain began under INISAFECrossWebEXSvc.exe (CrossWeb EX V3 3.4.1.2) at high integrity, and the Bluetooth transfer tool fsquirt.exe was injected with the TechHub downloader. fsquirt.exe has no reason to run under that service.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_name": "Kaspersky",
+     "title": "CrossWeb EX service starting fsquirt or a shell",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "mscoree.dll, ActivationStore.dat or msadc.inc in System32\\RasConv, System32\\DrvConh, Common Files\\System\\msadc or the ProgramData folders RasConv, Apple, ssh, qorestor and Dell",
+     "log_source": "EDR file and image-load events",
+     "why": "TouchShift is side-loaded as mscoree.dll from these folders, the service-based TechHub reads ActivationStore.dat, and ClientHub keeps its SNOW-encrypted C2 list in msadc.inc. The real mscoree.dll lives in System32 itself, not in these subfolders.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_name": "Kaspersky",
+     "title": "FlashHole side-loading DLL or payload file in odd folders",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "A new service whose binary or ServiceDll sits in System32\\RasConv or System32\\DrvConh, named after a netsvcs service with two extra letters",
+     "log_source": "EDR registry events; Windows System 7045 (service installed)",
+     "why": "TouchHub copies a legitimate netsvcs service name, adds two random letters and registers a service that loads the side-loaded TouchShift DLL, so the service looks almost genuine.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_name": "Kaspersky",
+     "title": "Service pointing into System32 RasConv or DrvConh",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Non-browser processes such as fsquirt.exe, rundll32.exe or a service host calling api.github.com or the Dropbox API",
+     "log_source": "EDR network events; proxy logs",
+     "why": "TechHub uses a private GitHub repository and its issues as C2 (an issue titled 1 plus the host ID, body hel then hey), and one ClientHub build uses the Dropbox API. GitHub and Dropbox are legitimate, so the lead is the calling process.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_name": "Kaspersky",
+     "title": "Non-browser process calling GitHub or Dropbox APIs",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    }
+   ],
+   "ioa_count": 4,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX/block_now.txt",
+     "download": "Lazarus-Operation-FlashHole-CrossWeb-EX_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX/defender_xdr_indicators.csv",
+     "download": "Lazarus-Operation-FlashHole-CrossWeb-EX_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX/hunt.kql",
+     "download": "Lazarus-Operation-FlashHole-CrossWeb-EX_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX/hunt.spl",
+     "download": "Lazarus-Operation-FlashHole-CrossWeb-EX_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX/hunt_raw.spl",
+     "download": "Lazarus-Operation-FlashHole-CrossWeb-EX_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX/hunt.yaral",
+     "download": "Lazarus-Operation-FlashHole-CrossWeb-EX_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX/iocs.csv",
+     "download": "Lazarus-Operation-FlashHole-CrossWeb-EX_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX",
+   "indicators": [
+    {
+     "value": "pythonapischool.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Lazarus-controlled host for the script embedded in the fake interior-design site on GitHub Pages; registered on 7 January 2026, when the January wave began.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      },
+      {
+       "url": "https://safeguard.sh/resources/blog/lazarus-flashhole-post-quantum-ml-kem-malware",
+       "name": "Safeguard"
+      }
+     ]
+    },
+    {
+     "value": "https://pythonapischool.com/api/detach",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Script URL embedded in the fake interior-design portfolio site used to start the infection.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      },
+      {
+       "url": "https://safeguard.sh/resources/blog/lazarus-flashhole-post-quantum-ml-kem-malware",
+       "name": "Safeguard"
+      }
+     ]
+    },
+    {
+     "value": "javadevhouse.co.kr",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Host of the script embedded in the fake résumé site; Kaspersky lists it as Lazarus C2, but it no longer resolves and ownership is not confirmed, so alert on the domain and block the exact URL.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      },
+      {
+       "url": "https://safeguard.sh/resources/blog/lazarus-flashhole-post-quantum-ml-kem-malware",
+       "name": "Safeguard"
+      }
+     ]
+    },
+    {
+     "value": "https://javadevhouse.co.kr/ajax/libs/jquery/1.7.3/jquery.min.js",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Fake jQuery script embedded in the fake résumé site on GitHub Pages used to start the infection.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      },
+      {
+       "url": "https://safeguard.sh/resources/blog/lazarus-flashhole-post-quantum-ml-kem-malware",
+       "name": "Safeguard"
+      }
+     ]
+    },
+    {
+     "value": "https://cubedesign.co.kr/news",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Cubridge C2 path on a compromised legitimate South Korean website.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      },
+      {
+       "url": "https://safeguard.sh/resources/blog/lazarus-flashhole-post-quantum-ml-kem-malware",
+       "name": "Safeguard"
+      }
+     ]
+    },
+    {
+     "value": "https://cubedesign.co.kr/mobile/fashion",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Cubridge C2 path on a compromised legitimate South Korean website.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      },
+      {
+       "url": "https://safeguard.sh/resources/blog/lazarus-flashhole-post-quantum-ml-kem-malware",
+       "name": "Safeguard"
+      }
+     ]
+    },
+    {
+     "value": "https://fp-news.co.kr/shop/cart",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Cubridge C2 path on a compromised legitimate South Korean media website.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      },
+      {
+       "url": "https://safeguard.sh/resources/blog/lazarus-flashhole-post-quantum-ml-kem-malware",
+       "name": "Safeguard"
+      }
+     ]
+    },
+    {
+     "value": "https://k-wbc.co.kr/skin/social/social_view.php",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "ClientHub C2 path on a compromised legitimate South Korean website.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      },
+      {
+       "url": "https://safeguard.sh/resources/blog/lazarus-flashhole-post-quantum-ml-kem-malware",
+       "name": "Safeguard"
+      }
+     ]
+    },
+    {
+     "value": "https://rcsh.co.kr/modules/bbs/tiles/bbs_div/inputForm.php",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "ClientHub C2 path on a compromised legitimate South Korean website.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      },
+      {
+       "url": "https://safeguard.sh/resources/blog/lazarus-flashhole-post-quantum-ml-kem-malware",
+       "name": "Safeguard"
+      }
+     ]
+    },
+    {
+     "value": "https://www.ksog.org/insert_file/handle.php",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "ClientHub C2 path on a compromised legitimate website.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      },
+      {
+       "url": "https://safeguard.sh/resources/blog/lazarus-flashhole-post-quantum-ml-kem-malware",
+       "name": "Safeguard"
+      }
+     ]
+    },
+    {
+     "value": "ec84d6cb2ae7974767aedac246b50a3e",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "MD5 of a TouchShift loader dropped as mscoree.dll for DLL side-loading.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      },
+      {
+       "url": "https://safeguard.sh/resources/blog/lazarus-flashhole-post-quantum-ml-kem-malware",
+       "name": "Safeguard"
+      }
+     ]
+    },
+    {
+     "value": "a28cba214058fcae2883d8cffc883abd",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "MD5 of a TouchShift loader dropped as mscoree.dll.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      },
+      {
+       "url": "https://safeguard.sh/resources/blog/lazarus-flashhole-post-quantum-ml-kem-malware",
+       "name": "Safeguard"
+      }
+     ]
+    },
+    {
+     "value": "c105d6b16f544582772de0159f24c00a",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "MD5 of a TouchShift loader dropped as mscoree.dll.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "2f8475a90a25624ed02f1d18d4e6d65d",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "MD5 of a TouchShift loader dropped as mscoree.dll.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "676fabe30a28b53925fba98e34b35986",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "MD5 of a TouchShift loader dropped as mscoree.dll.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "b4a7eff35f048f06fb0a2d7631f23a7d",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "MD5 of a TouchShift loader dropped as mscoree.dll.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "ff07641dc56914dd90ee0bd7404d7ad7",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "MD5 of the ClientHub loader dropped as liblzma.dll.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      },
+      {
+       "url": "https://safeguard.sh/resources/blog/lazarus-flashhole-post-quantum-ml-kem-malware",
+       "name": "Safeguard"
+      }
+     ]
+    },
+    {
+     "value": "C:\\Windows\\System32\\RasConv\\mscoree.dll",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "TouchShift side-loading DLL in a non-standard System32 subfolder; mscoree.dll is a real .NET file name, so only this path is suspicious.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "C:\\Windows\\System32\\DrvConh\\mscoree.dll",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "TouchShift side-loading DLL in a non-standard System32 subfolder.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "C:\\Windows\\System32\\RasConv\\ActivationStore.dat",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Encrypted payload file read by the side-loaded TechHub service variant.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "C:\\Program Files\\Common Files\\System\\msadc\\msadc.inc",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Encrypted ClientHub configuration file (SNOW-encrypted C2 list).",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "C:\\ProgramData\\desktops.ini",
+     "type": "other",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File path from Kaspersky's FlashHole indicator list; the name imitates desktop.ini.",
+     "source_url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+     "source_label": "Kaspersky Securelist – Dissecting Operation FlashHole, a complex attack by Lazarus",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/lazarus-operation-flashhole/121541/",
+       "name": "Kaspersky"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX/hunt.kql",
+     "download": "Lazarus-Operation-FlashHole-CrossWeb-EX_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX/hunt.spl",
+     "download": "Lazarus-Operation-FlashHole-CrossWeb-EX_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX/hunt_raw.spl",
+      "download": "Lazarus-Operation-FlashHole-CrossWeb-EX_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX/hunt.yaral",
+     "download": "Lazarus-Operation-FlashHole-CrossWeb-EX_hunt.yaral"
+    }
+   ]
+  },
   {
    "id": "Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan",
    "folder": "threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan",

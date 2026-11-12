@@ -1,0 +1,72 @@
+``` Threat: Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient
+    Author: Daniel Jeremiah | Date: 2026-11-12
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX ```
+| tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+    FROM datamodel=Network_Resolution.DNS
+    WHERE DNS.query IN ("pythonapischool.com", "*.pythonapischool.com", "javadevhouse.co.kr", "*.javadevhouse.co.kr")
+    BY DNS.src DNS.dest DNS.query DNS.reply_code
+| rename "DNS.*" AS *
+| rex field=query "(?i)(?<ioc>(?:pythonapischool\.com|javadevhouse\.co\.kr))\.?$"
+| eval data_model="Network_Resolution", ioc_type="domain", host=src, user="-", detail="DNS query ".query." (".reply_code.")"
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Web.Web
+        WHERE (Web.url IN ("*://pythonapischool.com*", "*.pythonapischool.com*", "pythonapischool.com*", "*://javadevhouse.co.kr*", "*.javadevhouse.co.kr*", "javadevhouse.co.kr*") OR Web.dest IN ("pythonapischool.com", "*.pythonapischool.com", "javadevhouse.co.kr", "*.javadevhouse.co.kr") OR Web.url IN ("*pythonapischool.com/api/detach*", "*javadevhouse.co.kr/ajax/libs/jquery/1.7.3/jquery.min.js*", "*cubedesign.co.kr/news*", "*cubedesign.co.kr/mobile/fashion*", "*fp-news.co.kr/shop/cart*", "*k-wbc.co.kr/skin/social/social_view.php*", "*rcsh.co.kr/modules/bbs/tiles/bbs_div/inputForm.php*", "*www.ksog.org/insert_file/handle.php*"))
+        BY Web.src Web.user Web.dest Web.url Web.http_user_agent Web.status
+    | rename "Web.*" AS *
+    | rex field=url "(?i)(?<ioc>pythonapischool\.com/api/detach|javadevhouse\.co\.kr/ajax/libs/jquery/1\.7\.3/jquery\.min\.js|cubedesign\.co\.kr/news|cubedesign\.co\.kr/mobile/fashion|fp\-news\.co\.kr/shop/cart|k\-wbc\.co\.kr/skin/social/social_view\.php|rcsh\.co\.kr/modules/bbs/tiles/bbs_div/inputForm\.php|www\.ksog\.org/insert_file/handle\.php|pythonapischool\.com|javadevhouse\.co\.kr)"
+    | eval ioc=coalesce(ioc, dest), data_model="Web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Email.All_Email
+        WHERE (All_Email.url IN ("*pythonapischool.com/api/detach*", "*javadevhouse.co.kr/ajax/libs/jquery/1.7.3/jquery.min.js*", "*cubedesign.co.kr/news*", "*cubedesign.co.kr/mobile/fashion*", "*fp-news.co.kr/shop/cart*", "*k-wbc.co.kr/skin/social/social_view.php*", "*rcsh.co.kr/modules/bbs/tiles/bbs_div/inputForm.php*", "*www.ksog.org/insert_file/handle.php*", "*://pythonapischool.com*", "*.pythonapischool.com*", "pythonapischool.com*", "*://javadevhouse.co.kr*", "*.javadevhouse.co.kr*", "javadevhouse.co.kr*"))
+        BY All_Email.src_user All_Email.recipient All_Email.subject All_Email.file_name All_Email.file_hash All_Email.url
+    | rename "All_Email.*" AS *
+    | eval matched=file_hash." ".url
+    | rex field=matched "(?i)(?<ioc>pythonapischool\.com/api/detach|javadevhouse\.co\.kr/ajax/libs/jquery/1\.7\.3/jquery\.min\.js|cubedesign\.co\.kr/news|cubedesign\.co\.kr/mobile/fashion|fp\-news\.co\.kr/shop/cart|k\-wbc\.co\.kr/skin/social/social_view\.php|rcsh\.co\.kr/modules/bbs/tiles/bbs_div/inputForm\.php|www\.ksog\.org/insert_file/handle\.php|pythonapischool\.com|javadevhouse\.co\.kr)"
+    | eval data_model="Email", ioc_type=case(match(ioc, "^[0-9a-fA-F]{64}$"), "sha256", match(ioc, "^[0-9a-fA-F]{40}$"), "sha1", match(ioc, "^[0-9a-fA-F]{32}$"), "md5", match(ioc, "/"), "url", 1==1, "domain"), host="-", user=recipient, src=src_user, dest=recipient, detail="email '".subject."' ".file_name
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE (Processes.parent_process_name="INISAFECrossWebEXSvc.exe" Processes.process_name IN ("fsquirt.exe", "cmd.exe", "powershell.exe", "pwsh.exe", "rundll32.exe", "regsvr32.exe", "mshta.exe", "wscript.exe", "cscript.exe")) OR (Processes.process_name="fsquirt.exe" NOT Processes.parent_process_name IN ("explorer.exe", "svchost.exe", "fsquirt.exe"))
+        BY Processes.dest Processes.user Processes.parent_process_name Processes.process_name Processes.process
+    | rename "Processes.*" AS *
+    | eval host=dest, src="-", detail=parent_process_name." > ".process, data_model="Endpoint.Processes"
+    | eval ioc="CrossWeb EX service starting fsquirt or a shell", ioc_type="behaviour (alert)"
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Filesystem
+        WHERE Filesystem.file_name IN ("mscoree.dll", "ActivationStore.dat", "msadc.inc", "desktops.ini", "Package.txt", "Dell1.tmp", "Dell3.tmp") Filesystem.file_path IN ("*\\System32\\RasConv\\*", "*\\System32\\DrvConh\\*", "*\\ProgramData\\RasConv\\*", "*\\ProgramData\\Apple\\*", "*\\ProgramData\\ssh\\*", "*\\ProgramData\\qorestor\\*", "*\\ProgramData\\Dell\\*", "*\\Common Files\\System\\msadc\\*", "C:\\ProgramData\\desktops.ini", "C:\\ProgramData\\Package.txt")
+        BY Filesystem.dest Filesystem.user Filesystem.file_path Filesystem.file_name Filesystem.action
+    | rename "Filesystem.*" AS *
+    | eval host=dest, src="-", detail="file ".action." ".file_path, data_model="Endpoint.Filesystem"
+    | eval ioc="FlashHole side-loading DLL or payload file in odd folders", ioc_type="behaviour (alert)"
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Registry
+        WHERE Registry.registry_path="*\\CurrentControlSet\\Services\\*" Registry.registry_value_data IN ("*\\System32\\RasConv\\*", "*\\System32\\DrvConh\\*")
+        BY Registry.dest Registry.user Registry.registry_path Registry.registry_value_data
+    | rename "Registry.*" AS *
+    | eval host=dest, src="-", detail=registry_path." = ".registry_value_data, data_model="Endpoint.Registry"
+    | eval ioc="Service pointing into System32 RasConv or DrvConh", ioc_type="behaviour (alert)"
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.process_name IN ("fsquirt.exe", "rundll32.exe", "dllhost.exe", "regsvr32.exe") Processes.process IN ("*api.github.com*", "*dropboxapi.com*")
+        BY Processes.dest Processes.user Processes.parent_process_name Processes.process_name Processes.process
+    | rename "Processes.*" AS *
+    | eval host=dest, src="-", detail=parent_process_name." > ".process, data_model="Endpoint.Processes"
+    | eval ioc="Non-browser process calling GitHub or Dropbox APIs", ioc_type="behaviour (hunt)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

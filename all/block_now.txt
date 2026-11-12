@@ -1,5 +1,20 @@
 # All high-confidence indicators to block. Updated 2026-11-12 09:50.
 
+## 2026-11-11 Citrus Ransomware: Certighost AD CS Exploitation, Xray VLESS Tunnels and Sn00py
+91.210.109.118
+91.210.108.180
+
+## 2026-10-21 Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient
+pythonapischool.com
+https://pythonapischool.com/api/detach
+https://javadevhouse.co.kr/ajax/libs/jquery/1.7.3/jquery.min.js
+https://cubedesign.co.kr/news
+https://cubedesign.co.kr/mobile/fashion
+https://fp-news.co.kr/shop/cart
+https://k-wbc.co.kr/skin/social/social_view.php
+https://rcsh.co.kr/modules/bbs/tiles/bbs_div/inputForm.php
+https://www.ksog.org/insert_file/handle.php
+
 ## 2026-11-11 Silent Lynx Strix AI-Agent Espionage Against Tajikistan
 89.125.213.123
 http://89.125.213.123:8080/P.ps1
