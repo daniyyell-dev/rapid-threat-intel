@@ -2,12 +2,14 @@
 
 [Back to index](../../README.md#latest-threats)
 
-34 threats, 1069 indicators, 380 to block now. Newest first.
+36 threats, 1089 indicators, 400 to block now. Newest first.
 
 ### [2026-11-12](2026-11-12/)
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
+| 2026-11-12 | [CL-STA-1238: Autonomous AI Intrusions with the Cairn Framework Against Semiconductor, Defence and Civil Society](2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions/) | Nation-state / AI-driven intrusion | 2 | 2 | China-nexus operator running the Cairn AI pentest framework autonomously against semiconductor, defence and civil-society targets |
+| 2026-11-02 | [BITTER PapRAT and WmRAT: ftp.exe, VHDX and WebDAV MSI Espionage Chains](2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage/) | Nation-state / espionage | 18 | 18 | BITTER espionage chains using ftp.exe, VHDX and WebDAV MSI installs to drop PapRAT and WmRAT |
 | 2026-11-12 | [PHP2Shell on Check Point Gateways: TSGA Backdoor, TSProxy and destroy_v6 ESXi Wiper](2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/) | Exploitation / edge device | 10 | 10 | PHP2Shell exploitation of Check Point Mobile Access gateways leading to the TSGA backdoor and a destroy_v6 wiper on ESXi |
 | 2026-11-05 | [BBNet: Multi-Architecture Linux Botnet with Divergent Scanners](2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners/) | Malware / botnet | 8 | 0 | Multi-arch Linux botnet that scans before it talks to C2, with no published C2 addresses or hashes |
 | 2026-11-12 | [StrikeStub: ClickFix PowerShell Dropper and Modular RAT/Stealer](2026-11-12/StrikeStub-ClickFix-RAT-Stealer/) | Malware / RAT and stealer | 6 | 2 | ClickFix PowerShell that drops a modular WebSocket RAT and stealer, with attacker staging on squidscript.com |

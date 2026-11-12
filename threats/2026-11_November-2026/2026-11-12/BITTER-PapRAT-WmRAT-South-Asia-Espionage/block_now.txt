@@ -1,0 +1,26 @@
+# BITTER PapRAT and WmRAT: ftp.exe, VHDX and WebDAV MSI Espionage Chains
+# Published 2026-11-02. High-confidence indicators to block. Updated 2026-11-12.
+
+## domain (8)
+netmansrvdns.com
+rappellingaart.com
+techtalkhelp.com
+rivingtonclarks.com
+goodnfortunes.com
+felixfuturenext.com
+gomescareerplans.com
+chestergreenfarming.com
+
+## url (5)
+https://techtalkhelp.com/talk.log
+http://www.rivingtonclarks.com/beautiQuewonders/banaNa.php
+https://goodnfortunes.com/ucl.php
+https://felixfuturenext.com/Epistemological/
+http://gomescareerplans.com/docs
+
+## sha256 (5)
+a3081df333ca7f18bd90d10a45125ab5011dcf9d2806feae2935f09cab07da4c
+e3992f8c945b0761242377cba32d91b0a390c7cecd79478439843d93e6d2b76b
+ccefbdec2718d864d9d33c743aabfcef88a8d7904d1c598bfcf15cf5f3591c88
+569a21b519aaac8c92f653d708ab6ef34e3f38ea967f47e041d1e2425f6a4b33
+411c0b9a2f98b927d806a685faf0c1ab1005647b4816157008892347fb88546b

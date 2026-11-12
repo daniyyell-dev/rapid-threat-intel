@@ -1,0 +1,89 @@
+// Threat: BITTER PapRAT and WmRAT: ftp.exe, VHDX and WebDAV MSI Espionage Chains
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage
+let Lookback = 30d;
+let Domains = dynamic(["netmansrvdns.com", "rappellingaart.com", "techtalkhelp.com", "rivingtonclarks.com", "goodnfortunes.com", "felixfuturenext.com", "gomescareerplans.com", "chestergreenfarming.com"]);
+let Urls = dynamic(["https://techtalkhelp.com/talk.log", "http://www.rivingtonclarks.com/beautiQuewonders/banaNa.php", "https://goodnfortunes.com/ucl.php", "https://felixfuturenext.com/Epistemological/", "http://gomescareerplans.com/docs"]);
+let UrlKeys = dynamic(["techtalkhelp.com/talk.log", "www.rivingtonclarks.com/beautiQuewonders/banaNa.php", "goodnfortunes.com/ucl.php", "felixfuturenext.com/Epistemological/", "gomescareerplans.com/docs"]);
+let SHA256s = dynamic(["a3081df333ca7f18bd90d10a45125ab5011dcf9d2806feae2935f09cab07da4c", "e3992f8c945b0761242377cba32d91b0a390c7cecd79478439843d93e6d2b76b", "ccefbdec2718d864d9d33c743aabfcef88a8d7904d1c598bfcf15cf5f3591c88", "569a21b519aaac8c92f653d708ab6ef34e3f38ea967f47e041d1e2425f6a4b33", "411c0b9a2f98b927d806a685faf0c1ab1005647b4816157008892347fb88546b"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (DeviceEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType == "DnsQueryResponse" and tostring(parse_json(AdditionalFields).DnsQueryString) has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(parse_json(AdditionalFields).DnsQueryString), Context = tostring(strcat("DNS ", InitiatingProcessFileName))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (UrlKeys)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (EmailUrlInfo
+    | where Timestamp > ago(Lookback)
+    | where UrlDomain has_any (Domains) or Url has_any (UrlKeys)
+    | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = tostring(Url), Context = tostring("URL in email")),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url has_any (Domains) or Url has_any (UrlKeys)
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(ActionType, " ", FolderPath))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceImageLoadEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " loaded by ", InitiatingProcessFileName))),
+  (EmailAttachmentInfo
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "EmailAttachmentInfo", Entity = tostring(RecipientEmailAddress), Indicator = tostring(SHA256), Context = tostring(strcat(FileName, " from ", SenderFromAddress))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where (FileName =~ "ftp.exe" and InitiatingProcessFileName in~ ("explorer.exe", "cmd.exe")) or (InitiatingProcessFileName =~ "ftp.exe" and FileName in~ ("cmd.exe", "more.com", "conhost.exe")) or (FileName =~ "schtasks.exe" and ProcessCommandLine has "/create" and ProcessCommandLine has_any (@"MicrosoftUpdates\updates", @"BiosUpdates\update", "err.log", "talk.log")) or (ProcessCommandLine has "conhost" and ProcessCommandLine has "--headless" and ProcessCommandLine has "more" and ProcessCommandLine has_any ("err.log", "talk.log")) or (FileName =~ "msiexec.exe" and ProcessCommandLine has "@SSL") or FileName in~ ("bruzsvc.exe", "vnces.exe")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where InitiatingProcessFileName =~ "ftp.exe" and FileName in~ ("cmd.exe", "more.com", "conhost.exe")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(InitiatingProcessCommandLine, " > ", ProcessCommandLine))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where InitiatingProcessFileName =~ "ftp.exe" and FileName in~ ("cmd.exe", "more.com", "conhost.exe")
+    | project DeviceId, DeviceName, FtpTime = Timestamp, FtpCmd = ProcessCommandLine
+    | join kind=inner (DeviceProcessEvents
+        | where Timestamp > ago(Lookback)
+        | where FileName =~ "schtasks.exe" and ProcessCommandLine has "/create"
+        | project DeviceId, TaskTime = Timestamp, TaskCmd = ProcessCommandLine) on DeviceId
+    | where TaskTime between (FtpTime .. (FtpTime + 10m))
+    | project Timestamp = TaskTime, SourceTable = "DeviceProcessEvents", Entity = DeviceName, Indicator = "ftp.exe > cmd then schtasks /create within 10m", Context = strcat(FtpCmd, " | ", TaskCmd)),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where (FileName =~ "schtasks.exe" and ProcessCommandLine has "/create" and ProcessCommandLine has_any (@"MicrosoftUpdates\updates", @"BiosUpdates\update", "err.log", "talk.log")) or (ProcessCommandLine has "--headless" and ProcessCommandLine has "more" and ProcessCommandLine has_any ("err.log", "talk.log"))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(ProcessCommandLine)),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "curl.exe" and (ProcessCommandLine has_any (@"public\music\err.log", @"programdata\talk.log", "ucl.php", "abc.pdf") or (ProcessCommandLine has "--ssl-no-revoke" and (ProcessCommandLine contains "?kq=" or ProcessCommandLine contains "?vid=")))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(ProcessCommandLine)),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FolderPath has_any (@"\Users\Public\Music\err.log", @"\ProgramData\talk.log")
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " by ", InitiatingProcessFileName, " | ", InitiatingProcessCommandLine))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "msiexec.exe" and ProcessCommandLine has "@SSL"
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(ProcessCommandLine)),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "cmd.exe" and ProcessCommandLine has ".msi" and ProcessCommandLine has_any (".xls", ".xlsx") and ProcessCommandLine has "&"
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(InitiatingProcessFileName, " > ", ProcessCommandLine))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in~ ("bruzsvc.exe", "vnces.exe") or (ProcessVersionInfoProductName =~ "Microsoft redistributables" and ProcessVersionInfoOriginalFileName =~ "bruzsvc.exe")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " | ", ProcessVersionInfoProductName, " | ", SHA256)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

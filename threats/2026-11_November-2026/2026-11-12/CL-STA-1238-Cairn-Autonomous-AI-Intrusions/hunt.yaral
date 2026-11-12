@@ -1,0 +1,36 @@
+// Threat: CL-STA-1238: Autonomous AI Intrusions with the Cairn Framework Against Semiconductor, Defence and Civil Society
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions
+rule rti_cl_sta_1238_cairn_autonomous_ai_intrusions {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-12"
+    description = "CL-STA-1238: Autonomous AI Intrusions with the Cairn Framework Against Semiconductor, Defence and Civil Society"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions"
+
+  events:
+    (
+      $e.principal.ip = /^(?:154\.44\.31\.4|82\.29\.129\.54)$/ or
+      $e.target.ip = /^(?:154\.44\.31\.4|82\.29\.129\.54)$/ or
+      $e.network.dns.answers.data = /^(?:154\.44\.31\.4|82\.29\.129\.54)$/
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}

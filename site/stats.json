@@ -1,21 +1,21 @@
 {
- "updated": "2026-11-12T15:54:56Z",
- "last24h": 55,
+ "updated": "2026-11-12T18:02:18Z",
+ "last24h": 57,
  "top_countries": [
   {
    "code": "GB",
    "name": "United Kingdom",
-   "count": 41
+   "count": 43
   },
   {
    "code": "IN",
    "name": "India",
-   "count": 11
+   "count": 12
   },
   {
    "code": "US",
    "name": "United States",
-   "count": 4
+   "count": 5
   },
   {
    "code": "DE",
@@ -64,9 +64,9 @@
   }
  ],
  "other_count": 0,
- "total": 66,
- "downloads": 6,
- "downloads24h": 6,
- "copies": 9,
- "copies24h": 9
+ "total": 70,
+ "downloads": 7,
+ "downloads24h": 7,
+ "copies": 11,
+ "copies24h": 11
 }
