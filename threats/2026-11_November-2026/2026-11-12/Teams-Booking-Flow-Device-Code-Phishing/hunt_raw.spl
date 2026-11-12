@@ -1,0 +1,19 @@
+``` Threat: Microsoft Teams Booking-Flow Device-Code Phishing
+    Author: Daniel Jeremiah | Date: 2026-11-12
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing ```
+| multisearch
+  [ search `rti_dns(gpimmlgration.com)`
+    | search query IN ("gpimmlgration.com", "*.gpimmlgration.com")
+    | rex field=query "(?i)(?<ioc>(?:gpimmlgration\.com))\.?$"
+    | eval data_model="dns", ioc_type="domain", host=src, detail="DNS query ".query
+  ]
+  [ search `rti_web(gpimmlgration.com OR share.google)`
+    | search url IN ("*://gpimmlgration.com*", "*.gpimmlgration.com*", "gpimmlgration.com*", "*gpimmlgration.com/static-export*", "*share.google/?q=UltJkMsVWI5V9GJM1*") OR dest IN ("gpimmlgration.com", "*.gpimmlgration.com")
+    | rex field=url "(?i)(?<ioc>gpimmlgration\.com/static\-export|share\.google/\?q=UltJkMsVWI5V9GJM1|gpimmlgration\.com)"
+    | eval ioc=coalesce(ioc, dest), data_model="web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

@@ -8,7 +8,7 @@
 **Agentic AI collects it. Analysts verify it. Community acts on it.**<br>
 <sub>AI threat intel from defenders, for defenders.</sub>
 
-[![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-36-informational)](#latest-threats) ![IOCs](https://img.shields.io/badge/IOCs-1089-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--12_15:11-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
+[![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-39-informational)](#latest-threats) ![IOCs](https://img.shields.io/badge/IOCs-1140-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--12_22:55-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
 </div>
 
@@ -41,7 +41,7 @@ Threats move fast. Defenders have to as well.
 
 ## Latest threats
 
-Grouped by the month and day they were added, newest first. The date column is when the main source report was published. Last updated 2026-11-12 15:11.
+Grouped by the month and day they were added, newest first. The date column is when the main source report was published. Last updated 2026-11-12 22:55.
 
 ### [November 2026](threats/2026-11_November-2026/)
 
@@ -49,6 +49,9 @@ Grouped by the month and day they were added, newest first. The date column is w
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
+| 2026-11-12 | [MSSQL T-SQL Brute-Force Campaign Delivering an XMRig Miner and Gh0st RAT](threats/2026-11_November-2026/2026-11-12/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT/) | Crimeware / cryptomining | 23 | 19 | Exposed SQL Servers brute-forced then abused with T-SQL to drop an XMRig miner and Gh0st RAT |
+| 2026-11-12 | [NIKKE Launcher Abused to Deliver the k2f-agent Stealer](threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft/) | Supply chain / information stealer | 9 | 5 | NIKKE PC launcher task channel abused to deliver a Lua stealer targeting browsers, wallets and developer secrets |
+| 2026-11-12 | [Microsoft Teams Booking-Flow Device-Code Phishing](threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing/) | Phishing / identity | 4 | 2 | Device-code phishing hidden inside a fake Microsoft Teams meeting-booking flow, with backend on gpimmlgration.com |
 | 2026-11-12 | [CL-STA-1238: Autonomous AI Intrusions with the Cairn Framework Against Semiconductor, Defence and Civil Society](threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions/) | Nation-state / AI-driven intrusion | 2 | 2 | China-nexus operator running the Cairn AI pentest framework autonomously against semiconductor, defence and civil-society targets |
 | 2026-11-02 | [BITTER PapRAT and WmRAT: ftp.exe, VHDX and WebDAV MSI Espionage Chains](threats/2026-11_November-2026/2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage/) | Nation-state / espionage | 18 | 18 | BITTER espionage chains using ftp.exe, VHDX and WebDAV MSI installs to drop PapRAT and WmRAT |
 | 2026-11-12 | [PHP2Shell on Check Point Gateways: TSGA Backdoor, TSProxy and destroy_v6 ESXi Wiper](threats/2026-11_November-2026/2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/) | Exploitation / edge device | 10 | 10 | PHP2Shell exploitation of Check Point Mobile Access gateways leading to the TSGA backdoor and a destroy_v6 wiper on ESXi |
@@ -58,7 +61,7 @@ Grouped by the month and day they were added, newest first. The date column is w
 | 2026-11-11 | [Citrus Ransomware: Certighost AD CS Exploitation, Xray VLESS Tunnels and Sn00py](threats/2026-11_November-2026/2026-11-12/Citrus-Ransomware-Certighost-Sn00py/) | Ransomware | 14 | 2 | Contractor-account ransomware using Certighost AD CS certificates, Xray VLESS tunnels and a fake Kaspersky GPO to push Sn00py |
 | 2026-10-21 | [Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient](threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX/) | Espionage / APT | 22 | 9 | Lazarus abusing CrossWeb EX with GitHub-issue C2 (TechHub) and compromised Korean sites for Cubridge and ClientHub |
 | 2026-11-11 | [Silent Lynx Strix AI-Agent Espionage Against Tajikistan](threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan/) | Espionage / APT | 22 | 13 | CloudSEK found an exposed server belonging to Silent Lynx (UAT-6275 at Cisco Talos, TAG-193 at Recorded Future), a Ka... |
-| 2026-11-09 | [Able2Shell N-able N-central Zero-Days](threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days/) | Exploitation / MSP RMM | 5 | 2 | Public N-central RCE chains that still work on HF2, honeypot exploitation seen; hunt the server and N-able Agent activity |
+| 2026-11-09 | [Able2Shell N-able N-central Zero-Days](threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days/) | Exploitation / MSP RMM | 20 | 8 | 4EverAble2Shell is installing XMRig on live N-central servers, including hosts already on HF2; block 157.20.241.16 and hunt xvd artefacts |
 | 2026-11-11 | [GSocket Linux Web-Server C2](threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2/) | Post-exploitation / Linux C2 | 9 | 4 | GSocket relay clients on compromised Linux web servers, with hashes and paths only — do not block the public relay |
 | 2026-11-09 | [ARTEX AWS Financial-Data Hunting](threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting/) | Financially motivated intrusion / cloud | 10 | 0 | ARTEX operators in AWS hunting financial logs and Cognito, with hunt-only operator IPs |
 | 2026-10-13 | [Ivanti Connect Secure UTA0576 CVE-2026-118527](threats/2026-11_November-2026/2026-11-12/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527/) | Exploitation / VPN appliance | 2 | 0 | UTA0576 chaining Ivanti Connect Secure zero-days to steal LAPS, BitLocker and AD credentials |
@@ -96,7 +99,7 @@ Grouped by the month and day they were added, newest first. The date column is w
 | 2026-11-05 | [FreeSWITCH CVE-2026-116779 SIP Command Injection Cryptominer Campaign](threats/2026-11_November-2026/2026-11-10/FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/) | Exploitation / cryptomining | 12 | 6 | SIP MESSAGE command injection used to install a cryptominer |
 | 2026-11-04 | [APT29 Watering Holes Targeting iOS and Android with N-Day Exploits](threats/2026-11_November-2026/2026-11-10/APT29-Mobile-Watering-Hole-Exploit-Chains/) | APT / espionage | 27 | 25 | Watering holes serving n-day exploit chains to iOS and Android visitors |
 
-To block everything at once, use [`all/`](all/): 400 high-confidence block indicators across all threats.
+To block everything at once, use [`all/`](all/): 432 high-confidence block indicators across all threats.
 
 <a id="how-to-use"></a>
 ## Use the data

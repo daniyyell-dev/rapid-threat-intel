@@ -1,0 +1,8 @@
+# Microsoft Teams Booking-Flow Device-Code Phishing
+# Published 2026-11-12. High-confidence indicators to block. Updated 2026-11-12.
+
+## domain (1)
+gpimmlgration.com
+
+## url (1)
+https://gpimmlgration.com/static-export

@@ -1,0 +1,40 @@
+// Threat: Microsoft Teams Booking-Flow Device-Code Phishing
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing
+rule rti_teams_booking_flow_device_code_phishing {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-12"
+    description = "Microsoft Teams Booking-Flow Device-Code Phishing"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing"
+
+  events:
+    (
+      $e.network.dns.questions.name = /(?:^|\.)(?:gpimmlgration\.com)\.?$/ nocase or
+      $e.target.hostname = /(?:^|\.)(?:gpimmlgration\.com)\.?$/ nocase or
+      $e.target.domain.name = /(?:^|\.)(?:gpimmlgration\.com)\.?$/ nocase or
+      re.regex($e.target.url, `^(?:[a-z][a-z0-9+.-]*://)?(?:[^/?#]*@)?(?:gpimmlgration\.com/static\-export|share\.google/\?q=UltJkMsVWI5V9GJM1|(?:[^/?#@]*\.)?(?:gpimmlgration\.com)(?::\d+)?(?:[/?#]|$))`) nocase
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $dns_query = array_distinct($e.network.dns.questions.name)
+    $target_hostname = array_distinct($e.target.hostname)
+    $target_url = array_distinct($e.target.url)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}

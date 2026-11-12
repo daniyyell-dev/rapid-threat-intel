@@ -1,6 +1,16 @@
 # Able2Shell N-able N-central Zero-Days
-# Published 2026-11-09. High-confidence indicators to block. Updated 2026-11-12 13:45.
+# Published 2026-11-09. High-confidence indicators to block. Updated 2026-11-12 22:55.
 
 ## ipv4 (2)
 5.231.45.175
 157.20.241.16
+
+## url (5)
+http://157.20.241.16:8080/jup.sh
+http://157.20.241.16:8080/xvgz
+http://157.20.241.16:8080/xmrig.tgz
+http://157.20.241.16:8080/ob/cronhit
+http://157.20.241.16:8080/ob/fcheck
+
+## sha256 (1)
+fc4c01fd11bc301cf312830460cfdccc3af9dcfe50c910b86d6a1117bc76c747

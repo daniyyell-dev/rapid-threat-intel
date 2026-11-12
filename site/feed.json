@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-12 18:20",
- "threat_count": 36,
- "indicator_count": 1089,
- "block_now_count": 400,
+ "last_updated": "2026-11-12 22:55",
+ "threat_count": 39,
+ "indicator_count": 1140,
+ "block_now_count": 432,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -102,6 +102,1226 @@
   }
  ],
  "threats": [
+  {
+   "id": "MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT",
+   "folder": "threats/2026-11_November-2026/2026-11-12/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT",
+   "name": "MSSQL T-SQL Brute-Force Campaign Delivering an XMRig Miner and Gh0st RAT",
+   "short": "MSSQL T-SQL miner and Gh0st RAT",
+   "category": "Crimeware / cryptomining",
+   "published": "2026-11-12",
+   "entry_date": "2026-11-12 22:55",
+   "last_updated": "2026-11-12",
+   "seq": 39,
+   "headline": "Exposed SQL Servers brute-forced then abused with T-SQL to drop an XMRig miner and Gh0st RAT",
+   "summary": "FortiGuard Labs reports an early-October 2026 campaign against internet-facing Microsoft SQL Server instances that brute-forces logins and then abuses T-SQL to deploy malware. A UPX-packed Go orchestrator, named dllhost.exe and embedding the Naabu scanner, fetches a target range from site.vietnam852.com:88/ip.php, probes TCP 1433, writes hits to %TEMP%\\Result.txt and hands them to dwm.exe with user and password lists. After a successful login, 2018.sql enables xp_cmdshell and downloads a loader from the same site or from ftp.vietnam852.com, saving it under C:\\Users\\Public as Google.exe or payload.exe. Later stages drop an XMRig miner disguised as MicrosoftEdgeUpdate.exe and a Themida-packed Gh0st RAT as winlogon.exe, which talks to server.vietnam852.com:8000 and www.swordaa.com:8000. Persistence uses scheduled tasks that imitate Microsoft Edge Update. The attacker domains, payload URLs and published hashes are on the block list. Do not block public Kryptex mining pools; hunt the XMRig Reporter check-ins to site.vietnam852.com instead.",
+   "caveat": "FortiGuard Labs did not name victims. sqlcmd.exe was among the files downloaded from the attacker server but that hash is omitted here because it may be a copy of the legitimate Microsoft tool. xmr-ru.kryptex.network is a public mining pool and is not listed as a block.",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Global"
+    ],
+    "sectors": [
+     "Any internet-facing Microsoft SQL Server"
+    ],
+    "note": "FortiGuard Labs describes a campaign against exposed SQL Server instances and does not name victim organisations or countries.",
+    "source": {
+     "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "name": "Fortinet"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1110",
+     "name": "Brute Force",
+     "url": "https://attack.mitre.org/techniques/T1110/"
+    },
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1059.001",
+     "name": "PowerShell",
+     "url": "https://attack.mitre.org/techniques/T1059/001/"
+    },
+    {
+     "id": "T1059.003",
+     "name": "Windows Command Shell",
+     "url": "https://attack.mitre.org/techniques/T1059/003/"
+    },
+    {
+     "id": "T1053.005",
+     "name": "Scheduled Task",
+     "url": "https://attack.mitre.org/techniques/T1053/005/"
+    },
+    {
+     "id": "T1105",
+     "name": "Ingress Tool Transfer",
+     "url": "https://attack.mitre.org/techniques/T1105/"
+    },
+    {
+     "id": "T1036.004",
+     "name": "Masquerade Task or Service",
+     "url": "https://attack.mitre.org/techniques/T1036/004/"
+    },
+    {
+     "id": "T1496.001",
+     "name": "Compute Hijacking",
+     "url": "https://attack.mitre.org/techniques/T1496/001/"
+    },
+    {
+     "id": "T1219",
+     "name": "Remote Access Software",
+     "url": "https://attack.mitre.org/techniques/T1219/"
+    }
+   ],
+   "recommended_actions": [
+    "Block vietnam852.com, site.vietnam852.com, ftp.vietnam852.com, server.vietnam852.com and swordaa.com, and the published payload URLs and SHA-256 hashes, and search 90 days of proxy, firewall, DNS and EDR logs for them.",
+    "Hunt internet-facing SQL Server hosts for xp_cmdshell being enabled, sqlservr.exe writing executables under C:\\Users\\Public, and the scheduled-task names MicrosoftEdgeUpdateTaskMachineUA{CEC15D9B-F4BB-446A-B6E1-C61E74B016A2} and MicrosoftEdgeUpdateTaskMachineCore{4C33CE3F-7722-4257-AF83-351A4911C159}.",
+    "If confirmed, isolate the SQL Server, rotate its credentials and any accounts in the dumped lists, remove the fake Edge Update tasks and dropped binaries, and check for the Gh0st RAT and miner stages.",
+    "Do not block public Kryptex mining pools; use the attacker domains and the XMRig Reporter user-agent as the network hunt."
+   ],
+   "sources": [
+    {
+     "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "name": "Fortinet"
+    },
+    {
+     "url": "https://urlhaus.abuse.ch/host/ftp.vietnam852.com/",
+     "label": "urlhaus.abuse.ch",
+     "name": "URLhaus"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/8ce2cd98ef6ceeece8239936e4aea042c41807f632cd691d5091705bf6c0076d/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar"
+    }
+   ],
+   "indicator_count": 23,
+   "block_now_count": 19,
+   "hunt_count": 4,
+   "hunt_counts": {
+    "alert": 4
+   },
+   "indicator_counts": {
+    "sha256": 12,
+    "domain": 5,
+    "filename": 2,
+    "other": 2,
+    "url": 2
+   },
+   "ioas": [
+    {
+     "artefact": "sqlservr.exe enabling xp_cmdshell, then downloading a file from site.vietnam852.com or ftp.vietnam852.com and writing Google.exe, payload.exe or Secs.exe under C:\\Users\\Public",
+     "log_source": "SQL Server logs, EDR process and file events, proxy and firewall logs",
+     "why": "After a successful brute force, the campaign's 2018.sql T-SQL enables xp_cmdshell and pulls a loader that drops a miner and a Gh0st RAT. FortiGuard Labs observed this chain against internet-facing SQL Server instances in early October 2026.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_name": "Fortinet",
+     "title": "sqlservr.exe enabling xp_cmdshell",
+     "queries": []
+    },
+    {
+     "artefact": "Scheduled tasks named MicrosoftEdgeUpdateTaskMachineUA{CEC15D9B-F4BB-446A-B6E1-C61E74B016A2} (every 30 minutes) or MicrosoftEdgeUpdateTaskMachineCore{4C33CE3F-7722-4257-AF83-351A4911C159} (daily 01:00 running C:\\Users\\Public\\Secs.exe)",
+     "log_source": "Windows scheduled-task events (4698), EDR process events, schtasks queries",
+     "why": "The orchestrator and later stage persist under fake Microsoft Edge Update task names. These GUIDs are specific to this campaign.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_name": "Fortinet",
+     "title": "Scheduled tasks named...",
+     "queries": []
+    },
+    {
+     "artefact": "Outbound HTTP to site.vietnam852.com:88/ip.php or /tj/xmr.php, FTP to ftp.vietnam852.com, or TCP 8000 to server.vietnam852.com or www.swordaa.com, and a user-agent XMRig Reporter",
+     "log_source": "Proxy, firewall and DNS logs",
+     "why": "ip.php supplies scan ranges, the FTP host stages payloads, /tj/xmr.php is the miner reporter, and port 8000 is the Gh0st C2. Do not block public Kryptex mining pools; hunt the reporter and the attacker domains instead.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_name": "Fortinet",
+     "title": "Outbound HTTP to site.vietnam852.com:88/ip.php or /tj/xmr.php",
+     "queries": []
+    }
+   ],
+   "ioa_count": 3,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT/block_now.txt",
+     "download": "MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT/defender_xdr_indicators.csv",
+     "download": "MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT/hunt.kql",
+     "download": "MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT/hunt.spl",
+     "download": "MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT/hunt_raw.spl",
+     "download": "MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT/hunt.yaral",
+     "download": "MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT/iocs.csv",
+     "download": "MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT",
+   "indicators": [
+    {
+     "value": "vietnam852.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Attacker-controlled zone used as the campaign file server, scanner C2 and miner reporter (site.vietnam852.com) and as an FTP staging host (ftp.vietnam852.com).",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "site.vietnam852.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "HTTP file server and C2 on port 88: it serves ip.php (target ranges), down.exe, and the /tj/xmr.php miner reporter.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "ftp.vietnam852.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "FTP staging host the loader uses (FtpGetFileW) to pull MicrosoftEdgeUpdate.exe, winlogon.exe and other payloads.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      },
+      {
+       "url": "https://urlhaus.abuse.ch/host/ftp.vietnam852.com/",
+       "name": "URLhaus"
+      }
+     ]
+    },
+    {
+     "value": "server.vietnam852.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Hardcoded Gh0st RAT C2 endpoint on TCP 8000 inside winlogon.exe.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "swordaa.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Second hardcoded Gh0st RAT C2 (www.swordaa.com:8000) inside winlogon.exe.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "http://site.vietnam852.com:88/ip.php",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "URL the scanner queries to obtain the next IP range, which it then converts to a /16 and probes on TCP 1433.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "http://site.vietnam852.com:88/down.exe",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Loader URL the malicious T-SQL downloads into C:\\Users\\Public as Google.exe or payload.exe after enabling xp_cmdshell. A copy is also served from ftp.vietnam852.com/down.exe.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "8ce2cd98ef6ceeece8239936e4aea042c41807f632cd691d5091705bf6c0076d",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of dllhost.exe, the UPX-packed Go scanner and orchestrator that uses embedded Naabu to find exposed SQL Server instances.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/8ce2cd98ef6ceeece8239936e4aea042c41807f632cd691d5091705bf6c0076d/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "f5444e8e9e9e019693aacb363b7441ac0b8ecfe96a77fd94b9c312a017588eb4",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of 2018.sql, the malicious T-SQL script that enables xp_cmdshell and deploys the next-stage loader.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "2a0d2889241885d5ea6fe7dd1b1adc83653a0c07b8aaa1b0832e5f9c0225b379",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of go.bat, a supporting script downloaded into %TEMP%.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "79596cf6e267ef5cb658bd97d04e42a41001d36595e370441adb3c2b5dd5666c",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of go.vbs, a supporting script downloaded into %TEMP%.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "e9d3fd9093c476b8b5de19aa00c50758568649def6491f54fa3e0aba4ea31ac9",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of out.bat, a supporting script downloaded into %TEMP%.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "124774698fd3ede0800015d19c2bd6c1869d03bbc2e6e8dbe2f69d2978f7f4d0",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of dwm.exe, the SQL Server brute-force tool that tries user.txt and pass.txt against hosts in Result.txt.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "125d3a0efe7699bb20397c13f0f4993ad893952727487b4d190e386a5b14c427",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of a down.exe / google.exe / payload.exe loader dropped onto the compromised SQL Server.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "20983573b840447e1aacd6d3f6dd240732b15037d268d6456f0d3c4ec5051cb0",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of a second down.exe / google.exe / payload.exe loader variant.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "58db0ca2054abe2989412d7a1c8ed16718577f893c196825c848fcd56c7e8f05",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of the malware downloader embedded inside 2018.sql.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "2a23e10bfc097e98295cbff8124bd403c4cb677e709b48ccc53d6aca216c3061",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of MicrosoftEdgeUpdate.exe, an XMRig miner dropped in this campaign.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "da4128aa5d006e05c58f0d240c2d8e5fb02774b6acf314f1230059c7a3498724",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of a second MicrosoftEdgeUpdate.exe XMRig miner sample.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "3f64b0146b323c5716043360e84384a5a197a897f46088df93a910470a29e1a0",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of winlogon.exe, a Themida-packed Gh0st RAT variant whose C2 was already down when FortiGuard Labs analysed it.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "2018.sql",
+     "type": "filename",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Malicious T-SQL filename dropped into %TEMP% and run against the compromised SQL Server to enable xp_cmdshell and deliver the loader.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "%TEMP%\\Result.txt",
+     "type": "filename",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "File where the scanner records each host that answers on TCP 1433, later fed to dwm.exe for brute force.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "MicrosoftEdgeUpdateTaskMachineUA{CEC15D9B-F4BB-446A-B6E1-C61E74B016A2}",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Scheduled task the orchestrator creates to rerun dllhost.exe every 30 minutes, imitating a Microsoft Edge Update task.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    },
+    {
+     "value": "MicrosoftEdgeUpdateTaskMachineCore{4C33CE3F-7722-4257-AF83-351A4911C159}",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Scheduled task the later stage creates to run C:\\Users\\Public\\Secs.exe daily at 01:00.",
+     "source_url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+     "source_label": "FortiGuard Labs – T-SQL Being Abused to Deliver Malware on Compromised MS SQL Servers",
+     "source_name": "Fortinet",
+     "sources": [
+      {
+       "url": "https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers",
+       "name": "Fortinet"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT/hunt.kql",
+     "download": "MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT/hunt.spl",
+     "download": "MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT/hunt_raw.spl",
+      "download": "MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT/hunt.yaral",
+     "download": "MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "NIKKE-Launcher-k2f-agent-Credential-Theft",
+   "folder": "threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft",
+   "name": "NIKKE Launcher Abused to Deliver the k2f-agent Stealer",
+   "short": "NIKKE launcher k2f-agent",
+   "category": "Supply chain / information stealer",
+   "published": "2026-11-12",
+   "entry_date": "2026-11-12 22:55",
+   "last_updated": "2026-11-12",
+   "seq": 38,
+   "headline": "NIKKE PC launcher task channel abused to deliver a Lua stealer targeting browsers, wallets and developer secrets",
+   "summary": "Bitdefender reports that from 30 October 2026 attackers abused the Goddess of Victory: NIKKE PC launcher's server-pushed task channel to deliver k2f-agent, a 46-module Lua stealer, without patching the signed launcher or the game distribution. The payload arrived as obfuscated LuaJIT bytecode disguised as a log file, ran inside the launcher's embedded browser, and harvested Chrome, Edge and Opera passwords and cookies, including those protected by Chrome App-Bound Encryption, plus MetaMask, Phantom, Coinbase Wallet, Keplr and TronLink extension data and developer secrets such as SSH and GPG keys, Git credentials and Kubernetes configs. Stolen data left through the launcher's normal telemetry, and the download, collection, exfiltration and cleanup finished in under ten minutes. The delivery domain insightjs.com was registered on 27 September 2026 and hosted in Iceland at 89.127.233.127; the provider has taken the server down. The domains, IP, payload URL and SHA-256 hash are on the block list. Bitdefender has no evidence that Shift Up or Level Infinite took part in the attack; do not block the game vendor's own infrastructure.",
+   "caveat": "The malicious delivery server has been taken down, but a suspension can be lifted. The NIKKE launcher is legitimate software that was abused; do not block Shift Up, Level Infinite or other official game domains. Treat a machine that ran the launcher during the attack window as compromised and rotate browser, wallet and developer secrets from a clean device.",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Global"
+    ],
+    "sectors": [
+     "Consumers",
+     "Gaming",
+     "Software developers"
+    ],
+    "note": "Bitdefender observed the k2f-agent stealer being delivered to NIKKE PC launcher users from 30 October 2026. The game has more than 45 million downloads; Bitdefender does not name victim organisations and has no evidence the developer or publisher was involved.",
+    "source": {
+     "url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+     "label": "Bitdefender Labs – Attackers turn NIKKE's game launcher into malware",
+     "name": "Bitdefender"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1195.002",
+     "name": "Compromise Software Supply Chain",
+     "url": "https://attack.mitre.org/techniques/T1195/002/"
+    },
+    {
+     "id": "T1059",
+     "name": "Command and Scripting Interpreter",
+     "url": "https://attack.mitre.org/techniques/T1059/"
+    },
+    {
+     "id": "T1555.003",
+     "name": "Credentials from Web Browsers",
+     "url": "https://attack.mitre.org/techniques/T1555/003/"
+    },
+    {
+     "id": "T1539",
+     "name": "Steal Web Session Cookie",
+     "url": "https://attack.mitre.org/techniques/T1539/"
+    },
+    {
+     "id": "T1555",
+     "name": "Credentials from Password Stores",
+     "url": "https://attack.mitre.org/techniques/T1555/"
+    },
+    {
+     "id": "T1552.001",
+     "name": "Credentials In Files",
+     "url": "https://attack.mitre.org/techniques/T1552/001/"
+    },
+    {
+     "id": "T1071.001",
+     "name": "Web Protocols",
+     "url": "https://attack.mitre.org/techniques/T1071/001/"
+    },
+    {
+     "id": "T1070.004",
+     "name": "File Deletion",
+     "url": "https://attack.mitre.org/techniques/T1070/004/"
+    }
+   ],
+   "recommended_actions": [
+    "Block insightjs.com, analytics.insightjs.com and 89.127.233.127, and the payload URL and SHA-256 hash, and search 90 days of DNS, proxy and firewall logs for them.",
+    "On PCs that ran the NIKKE launcher from late October, look for k2f_chan registered in Launcher\\intl_service\\debug.log, LuaJIT bytecode in Launcher\\log\\tinyget\\tinyget.*.log, and %TEMP%\\k2f-bcreds-*.db, and for the signed launcher opening browser credential stores.",
+    "If the agent ran, rotate passwords stored in Chrome, Edge and Opera, move assets from the targeted wallet extensions onto new seed phrases generated on a clean machine, and rotate SSH, GPG, Git, Kubernetes and Windows Credential Manager secrets.",
+    "Do not block official NIKKE, Shift Up or Level Infinite domains or the signed launcher by name alone."
+   ],
+   "sources": [
+    {
+     "url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+     "label": "Bitdefender Labs – Attackers turn NIKKE's game launcher into malware",
+     "name": "Bitdefender"
+    }
+   ],
+   "indicator_count": 9,
+   "block_now_count": 5,
+   "hunt_count": 4,
+   "hunt_counts": {
+    "alert": 4
+   },
+   "indicator_counts": {
+    "domain": 2,
+    "filename": 2,
+    "other": 2,
+    "ipv4": 1,
+    "sha256": 1,
+    "url": 1
+   },
+   "ioas": [
+    {
+     "artefact": "A signed NIKKE game-launcher process opening Chrome, Edge or Opera Login Data, Login Data For Account, Local State, or cryptocurrency-wallet extension Local Extension Settings .ldb files",
+     "log_source": "EDR file and process events (DeviceFileEvents, DeviceProcessEvents), Sysmon 11 and 1",
+     "why": "k2f-agent runs inside the legitimate launcher and harvests browser passwords, cookies (including Chrome App-Bound Encryption) and wallet extensions (MetaMask, Phantom, Coinbase Wallet, Keplr, TronLink), plus developer secrets. The whole collection and cleanup can finish in under ten minutes.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+     "source_name": "Bitdefender",
+     "title": "A signed NIKKE game-launcher process opening Chrome",
+     "queries": []
+    },
+    {
+     "artefact": "A .log file under Launcher\\log\\tinyget, especially tinyget.*.log larger than about 50 KB, whose first bytes are LuaJIT bytecode (\\x1bLJ\\x01) rather than text",
+     "log_source": "Endpoint file events, forensic collection of the NIKKE Launcher log folder",
+     "why": "The stealer arrived as obfuscated LuaJIT bytecode disguised as an ordinary log file, fetched through the launcher's server-pushed task channel. The file is usually deleted quickly.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+     "source_name": "Bitdefender",
+     "title": "A .log file under Launcher\\log\\tinyget",
+     "queries": []
+    },
+    {
+     "artefact": "The launcher process connecting to insightjs.com or analytics.insightjs.com, or the string k2f_chan registered in Launcher\\intl_service\\debug.log, or %TEMP%\\k2f-bcreds-*.db",
+     "log_source": "Proxy, DNS and firewall logs; launcher debug.log; endpoint file events",
+     "why": "Those domains hosted the payload. k2f_chan registered shows the Lua agent executed. The temporary database holds stolen browser credentials. Do not block NIKKE, Shift Up or Level Infinite infrastructure; the launcher itself was abused, not trojanised in the game distribution.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+     "source_name": "Bitdefender",
+     "title": "The launcher process connecting to insightjs.com or analytics.insightjs.com",
+     "queries": []
+    }
+   ],
+   "ioa_count": 3,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft/block_now.txt",
+     "download": "NIKKE-Launcher-k2f-agent-Credential-Theft_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft/defender_xdr_indicators.csv",
+     "download": "NIKKE-Launcher-k2f-agent-Credential-Theft_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft/hunt.kql",
+     "download": "NIKKE-Launcher-k2f-agent-Credential-Theft_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft/hunt.spl",
+     "download": "NIKKE-Launcher-k2f-agent-Credential-Theft_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft/hunt_raw.spl",
+     "download": "NIKKE-Launcher-k2f-agent-Credential-Theft_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft/hunt.yaral",
+     "download": "NIKKE-Launcher-k2f-agent-Credential-Theft_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft/iocs.csv",
+     "download": "NIKKE-Launcher-k2f-agent-Credential-Theft_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft",
+   "indicators": [
+    {
+     "value": "insightjs.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Attacker domain that hosted the k2f-agent delivery server. Registered 27 September 2026, about five weeks before the attacks; the Icelandic host was taken down.",
+     "source_url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+     "source_label": "Bitdefender Labs – Attackers turn NIKKE's game launcher into malware",
+     "source_name": "Bitdefender",
+     "sources": [
+      {
+       "url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+       "name": "Bitdefender"
+      }
+     ]
+    },
+    {
+     "value": "analytics.insightjs.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Payload host that served /comm/assets/insight.bundle, the LuaJIT k2f-agent bundle, and resolved to 89.127.233.127 during the attack.",
+     "source_url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+     "source_label": "Bitdefender Labs – Attackers turn NIKKE's game launcher into malware",
+     "source_name": "Bitdefender",
+     "sources": [
+      {
+       "url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+       "name": "Bitdefender"
+      }
+     ]
+    },
+    {
+     "value": "89.127.233.127",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Icelandic address that resolved for analytics.insightjs.com while the stealer was being delivered. The hosting provider has since taken the server down.",
+     "source_url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+     "source_label": "Bitdefender Labs – Attackers turn NIKKE's game launcher into malware",
+     "source_name": "Bitdefender",
+     "sources": [
+      {
+       "url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+       "name": "Bitdefender"
+      }
+     ]
+    },
+    {
+     "value": "https://analytics.insightjs.com/comm/assets/insight.bundle",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "URL of the k2f-agent payload bundle fetched through the launcher's server-pushed task channel.",
+     "source_url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+     "source_label": "Bitdefender Labs – Attackers turn NIKKE's game launcher into malware",
+     "source_name": "Bitdefender",
+     "sources": [
+      {
+       "url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+       "name": "Bitdefender"
+      }
+     ]
+    },
+    {
+     "value": "cc0ad05bfe85940a6067b3a72c182d3953339129206634141926d5d0b35973ec",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of the k2f-agent payload Bitdefender recovered from the campaign.",
+     "source_url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+     "source_label": "Bitdefender Labs – Attackers turn NIKKE's game launcher into malware",
+     "source_name": "Bitdefender",
+     "sources": [
+      {
+       "url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+       "name": "Bitdefender"
+      }
+     ]
+    },
+    {
+     "value": "Launcher\\log\\tinyget\\tinyget.*.log",
+     "type": "filename",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Path of the disguised log file that held the LuaJIT bytecode payload under the NIKKE Launcher log folder. The file is usually deleted within minutes.",
+     "source_url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+     "source_label": "Bitdefender Labs – Attackers turn NIKKE's game launcher into malware",
+     "source_name": "Bitdefender",
+     "sources": [
+      {
+       "url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+       "name": "Bitdefender"
+      }
+     ]
+    },
+    {
+     "value": "%TEMP%\\k2f-bcreds-*.db",
+     "type": "filename",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Temporary database the stealer writes with collected browser credentials, including -wal, -shm and -journal siblings.",
+     "source_url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+     "source_label": "Bitdefender Labs – Attackers turn NIKKE's game launcher into malware",
+     "source_name": "Bitdefender",
+     "sources": [
+      {
+       "url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+       "name": "Bitdefender"
+      }
+     ]
+    },
+    {
+     "value": "722b99d8d0e9",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Payload build tag K2F_LUA_BUILD = \"722b99d8d0e9\" recovered from the decompiled k2f-agent source.",
+     "source_url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+     "source_label": "Bitdefender Labs – Attackers turn NIKKE's game launcher into malware",
+     "source_name": "Bitdefender",
+     "sources": [
+      {
+       "url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+       "name": "Bitdefender"
+      }
+     ]
+    },
+    {
+     "value": "k2f_chan registered",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Log string indicating the malicious Lua agent registered its k2f_chan service on the launcher's JS bridge and executed.",
+     "source_url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+     "source_label": "Bitdefender Labs – Attackers turn NIKKE's game launcher into malware",
+     "source_name": "Bitdefender",
+     "sources": [
+      {
+       "url": "https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware",
+       "name": "Bitdefender"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft/hunt.kql",
+     "download": "NIKKE-Launcher-k2f-agent-Credential-Theft_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft/hunt.spl",
+     "download": "NIKKE-Launcher-k2f-agent-Credential-Theft_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft/hunt_raw.spl",
+      "download": "NIKKE-Launcher-k2f-agent-Credential-Theft_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft/hunt.yaral",
+     "download": "NIKKE-Launcher-k2f-agent-Credential-Theft_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "Teams-Booking-Flow-Device-Code-Phishing",
+   "folder": "threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing",
+   "name": "Microsoft Teams Booking-Flow Device-Code Phishing",
+   "short": "Teams booking-flow device-code phishing",
+   "category": "Phishing / identity",
+   "published": "2026-11-12",
+   "entry_date": "2026-11-12 22:55",
+   "last_updated": "2026-11-12",
+   "seq": 37,
+   "headline": "Device-code phishing hidden inside a fake Microsoft Teams meeting-booking flow, with backend on gpimmlgration.com",
+   "summary": "Huntress reports a mid-October device-code phishing incident against a construction-sector company that hid the Microsoft device-code flow inside a convincing Microsoft Teams meeting-booking page. The spear-phishing email impersonated a real senior vice president at another construction firm, using a typo-squatted domain that Huntress has redacted, and a Microsoft Safe Links-wrapped Google short link to reach a lure that looked like a Teams Meeting Scheduler. Behind the scenes the page started a device-code sign-in; when the target clicked Confirm Meeting the user code was copied to the clipboard and Microsoft's real device-login page opened. Completing that step authorised a Cmsi:Cmsi Microsoft Authentication Broker session, which the attacker then replayed through a residential proxy. The phishing kit was delivered as AES-256-GCM ciphertext and talked to gpimmlgration.com/static-export. That domain and URL are on the block list. Do not block Microsoft or Google; the specific short-link query is alert only.",
+   "caveat": "Huntress redacted the typo-squatted lure domain, so it is not listed. The Google short link sits on a legitimate service: alert on the specific query, do not block share.google. Microsoft's device-login page is genuine and must not be blocked.",
+   "targets": {
+    "countries": [],
+    "regions": [],
+    "sectors": [
+     "Construction"
+    ],
+    "note": "Huntress observed the mid-October incident at a company in the construction sector and redacted the impersonated firm and typo-squatted domain. No other victims are named.",
+    "source": {
+     "url": "https://www.huntress.com/blog/crafty-microsoft-teams-booking-flow-disguises-device-code-phishing",
+     "label": "Huntress – Crafty Microsoft Teams Booking Flow Disguises Device Code Phishing",
+     "name": "Huntress"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1583.001",
+     "name": "Domains",
+     "url": "https://attack.mitre.org/techniques/T1583/001/"
+    },
+    {
+     "id": "T1566.002",
+     "name": "Spearphishing Link",
+     "url": "https://attack.mitre.org/techniques/T1566/002/"
+    },
+    {
+     "id": "T1204.001",
+     "name": "Malicious Link",
+     "url": "https://attack.mitre.org/techniques/T1204/001/"
+    },
+    {
+     "id": "T1528",
+     "name": "Steal Application Access Token",
+     "url": "https://attack.mitre.org/techniques/T1528/"
+    },
+    {
+     "id": "T1557",
+     "name": "Adversary-in-the-Middle",
+     "url": "https://attack.mitre.org/techniques/T1557/"
+    },
+    {
+     "id": "T1550.004",
+     "name": "Web Session Cookie",
+     "url": "https://attack.mitre.org/techniques/T1550/004/"
+    },
+    {
+     "id": "T1090",
+     "name": "Proxy",
+     "url": "https://attack.mitre.org/techniques/T1090/"
+    },
+    {
+     "id": "T1078.004",
+     "name": "Cloud Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/004/"
+    }
+   ],
+   "recommended_actions": [
+    "Block gpimmlgration.com and https://gpimmlgration.com/static-export, and search email, proxy and DNS logs for them and for the short-link query UltJkMsVWI5V9GJM1.",
+    "Hunt Entra ID sign-in logs for unexpected Cmsi:Cmsi or device-code authentications after a meeting-booking lure, for programmatic user agents such as python-requests or node, and for a mid-session change of ASN or region.",
+    "Restrict or monitor device-code authentication where it is not required, enforce phishing-resistant MFA, and after a confirmed hit check for rogue MFA methods, unrecognised devices, app consents, mailbox rules and unusual outbound mail.",
+    "Train staff that a meeting-booking page which asks them to copy or enter a Microsoft code should be verified out of band before they approve it."
+   ],
+   "sources": [
+    {
+     "url": "https://www.huntress.com/blog/crafty-microsoft-teams-booking-flow-disguises-device-code-phishing",
+     "label": "Huntress – Crafty Microsoft Teams Booking Flow Disguises Device Code Phishing",
+     "name": "Huntress"
+    }
+   ],
+   "indicator_count": 4,
+   "block_now_count": 2,
+   "hunt_count": 2,
+   "hunt_counts": {
+    "alert": 2
+   },
+   "indicator_counts": {
+    "url": 2,
+    "domain": 1,
+    "other": 1
+   },
+   "ioas": [
+    {
+     "artefact": "An unexpected Microsoft device-code or Cmsi:Cmsi Authentication Broker sign-in that follows a Teams meeting-booking page, a Confirm Meeting control that copies a code to the clipboard, or a link through share.google/?q=UltJkMsVWI5V9GJM1",
+     "log_source": "Entra ID / Microsoft 365 sign-in logs, email safe-link and URL logs, endpoint clipboard or browser events",
+     "why": "Huntress saw a typo-squatted executive lure that walked the target through a fake Microsoft Teams Meeting Scheduler, silently started a device-code request, copied the user code when they confirmed the meeting, then opened Microsoft's real device-login page. Completing that step hands the attacker the session.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://www.huntress.com/blog/crafty-microsoft-teams-booking-flow-disguises-device-code-phishing",
+     "source_name": "Huntress",
+     "title": "An unexpected Microsoft device-code or Cmsi:Cmsi Authentication Broker...",
+     "queries": []
+    },
+    {
+     "artefact": "Device-code or Cmsi:Cmsi sign-ins from programmatic user agents such as python-requests or node, or a mid-session change of ASN or region consistent with a residential proxy",
+     "log_source": "Entra ID interactive and non-interactive sign-in logs",
+     "why": "Huntress saw the captured session replayed through a residential callback proxy so it looked like ordinary consumer traffic, and noted programmatic user agents in the sign-in logs. The kit also restarts the device-code flow when Microsoft returns AADSTS50076 or interaction_required.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://www.huntress.com/blog/crafty-microsoft-teams-booking-flow-disguises-device-code-phishing",
+     "source_name": "Huntress",
+     "title": "Device-code or Cmsi:Cmsi sign-ins from programmatic user agents such as...",
+     "queries": []
+    }
+   ],
+   "ioa_count": 2,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing/block_now.txt",
+     "download": "Teams-Booking-Flow-Device-Code-Phishing_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing/defender_xdr_indicators.csv",
+     "download": "Teams-Booking-Flow-Device-Code-Phishing_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing/hunt.kql",
+     "download": "Teams-Booking-Flow-Device-Code-Phishing_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing/hunt.spl",
+     "download": "Teams-Booking-Flow-Device-Code-Phishing_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing/hunt_raw.spl",
+     "download": "Teams-Booking-Flow-Device-Code-Phishing_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing/hunt.yaral",
+     "download": "Teams-Booking-Flow-Device-Code-Phishing_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing/iocs.csv",
+     "download": "Teams-Booking-Flow-Device-Code-Phishing_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing",
+   "indicators": [
+    {
+     "value": "gpimmlgration.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Attacker-controlled backend that hosted the encrypted Teams booking-flow phishing kit at /static-export.",
+     "source_url": "https://www.huntress.com/blog/crafty-microsoft-teams-booking-flow-disguises-device-code-phishing",
+     "source_label": "Huntress – Crafty Microsoft Teams Booking Flow Disguises Device Code Phishing",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/crafty-microsoft-teams-booking-flow-disguises-device-code-phishing",
+       "name": "Huntress"
+      }
+     ]
+    },
+    {
+     "value": "https://gpimmlgration.com/static-export",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Backend URL the decrypted phishing kit's fetch hooks used for API calls during the fake Microsoft Teams meeting-booking flow.",
+     "source_url": "https://www.huntress.com/blog/crafty-microsoft-teams-booking-flow-disguises-device-code-phishing",
+     "source_label": "Huntress – Crafty Microsoft Teams Booking Flow Disguises Device Code Phishing",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/crafty-microsoft-teams-booking-flow-disguises-device-code-phishing",
+       "name": "Huntress"
+      }
+     ]
+    },
+    {
+     "value": "https://share.google/?q=UltJkMsVWI5V9GJM1",
+     "type": "url",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Google short link used in the spear-phishing email, wrapped by Microsoft Safe Links, which redirected to the typo-squatted lure page.",
+     "source_url": "https://www.huntress.com/blog/crafty-microsoft-teams-booking-flow-disguises-device-code-phishing",
+     "source_label": "Huntress – Crafty Microsoft Teams Booking Flow Disguises Device Code Phishing",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/crafty-microsoft-teams-booking-flow-disguises-device-code-phishing",
+       "name": "Huntress"
+      }
+     ]
+    },
+    {
+     "value": "Cmsi:Cmsi",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Microsoft Authentication Broker device-code login type observed once the victim entered the copied booking-reference code on Microsoft's real device sign-in page.",
+     "source_url": "https://www.huntress.com/blog/crafty-microsoft-teams-booking-flow-disguises-device-code-phishing",
+     "source_label": "Huntress – Crafty Microsoft Teams Booking Flow Disguises Device Code Phishing",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/crafty-microsoft-teams-booking-flow-disguises-device-code-phishing",
+       "name": "Huntress"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing/hunt.kql",
+     "download": "Teams-Booking-Flow-Device-Code-Phishing_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing/hunt.spl",
+     "download": "Teams-Booking-Flow-Device-Code-Phishing_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing/hunt_raw.spl",
+      "download": "Teams-Booking-Flow-Device-Code-Phishing_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing/hunt.yaral",
+     "download": "Teams-Booking-Flow-Device-Code-Phishing_hunt.yaral"
+    }
+   ]
+  },
   {
    "id": "CL-STA-1238-Cairn-Autonomous-AI-Intrusions",
    "folder": "threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions",
@@ -4350,11 +5570,11 @@
    "category": "Exploitation / MSP RMM",
    "published": "2026-11-09",
    "entry_date": "2026-11-12 09:55",
-   "last_updated": "2026-11-12 13:45",
+   "last_updated": "2026-11-12 22:55",
    "seq": 27,
-   "headline": "Public N-central RCE chains that still work on HF2, honeypot exploitation seen; hunt the server and N-able Agent activity",
-   "summary": "An independent researcher published proof-of-concept code for 33 flaws in N-able N-central, the remote monitoring and management platform used by MSPs and IT teams, under the name Able2Shell. N-able took Hosted N-central offline on 9 November and shipped 2026.4 HF2 on 10 November, but late on 11 November the researcher released two more chains, 4EverAble2Shell (unauthenticated root RCE on the server) and Agent2Shell (commands as SYSTEM on managed Windows endpoints), which Huntress says work against HF2, so a fully patched server should be treated as vulnerable. watchTowr, Lupovis and Previdian have seen exploitation attempts against N-central honeypots, and N-able reports scanning tied to the public code; no customer compromise has been confirmed. Earlier N-central zero-days were exploited and are in CISA KEV, and Beazley notes past state-sponsored targeting. 5.231.45.175 is reported by both Previdian and Lupovis and is a block candidate; Previdian later reported 157.20.241.16, a Joy Services VPS in Mumbai, attempting Apache Axis CVE-2026-90436, then 4EverAble2Shell for root, then curling a shell script from that address, so it is also a block candidate; the AWS address 3.74.48.121 is alert-only. watchTowr has also seen 4EverAble2Shell probes against builds with the Legacy API enabled. Most of the value here is in the behaviours: hunt N-central web logs, the appliance file system and N-able Agent child processes on managed endpoints.",
-   "caveat": "Exploitation attempts are from honeypots; no confirmed customer compromise yet. Huntress's file and process indicators come from static analysis of the public code and may not match modified exploits. 3.74.48.121 is AWS: alert only.",
+   "headline": "4EverAble2Shell is installing XMRig on live N-central servers, including hosts already on HF2; block 157.20.241.16 and hunt xvd artefacts",
+   "summary": "An independent researcher published proof-of-concept code for 33 flaws in N-able N-central, the remote monitoring and management platform used by MSPs and IT teams, under the name Able2Shell. N-able took Hosted N-central offline on 9 November and shipped 2026.4 HF2 on 10 November, but late on 11 November the researcher released two more chains, 4EverAble2Shell (unauthenticated root RCE on the server) and Agent2Shell (commands as SYSTEM on managed Windows endpoints), which Huntress says work against HF2, so a fully patched server should be treated as vulnerable. On 12 November, about four and a half hours after 4EverAble2Shell was published, huntback Research saw 157.20.241.16 probe its decoys and then run the full chain, installing an XMRig miner via jup.sh. By 12:50 UTC that operator's public mining pool listed 21 production N-central servers as nc_ rigs, all submitting shares; 19 of them reported build 2026.4.1.26 (HF2). The servers were in the United States, South Africa, Canada, the United Kingdom, Germany, France and Sweden; huntback has not published the addresses. Applying HF2 is not enough: keep the Legacy API disabled and follow N-able's current guidance. Earlier N-central zero-days were exploited and are in CISA KEV, and Beazley notes past state-sponsored targeting. 5.231.45.175 remains a block candidate for earlier Able2Shell probing reported by Previdian and Lupovis; 157.20.241.16 is the live exploitation and payload host and is on the block list, along with its installer URLs and the nable-to-root script hash; the mining-pool addresses are alert only because they are public pool endpoints; the AWS address 3.74.48.121 is alert-only. Hunt N-central web logs for SOAP faults naming jline.internal.TerminalLineSettings, and the appliance for /tmp/.xvd, xvd.service and --rig-id nc_ miners, as well as N-able Agent child processes on managed endpoints.",
+   "caveat": "huntback confirmed 21 live N-central servers mining on 12 November but did not publish their addresses, including one in the United Kingdom. 139.99.69.109 and 79.76.51.56 are mining-pool endpoints used by this operator; alert on them, do not block the whole addresses without reviewing impact. Huntress's Agent2Shell file and process indicators come from static analysis of the public code and may not match modified exploits. 3.74.48.121 is AWS: alert only.",
    "targets": {
     "countries": [],
     "regions": [
@@ -4364,11 +5584,11 @@
      "Managed service providers",
      "IT operations"
     ],
-    "note": "Any MSP or IT team running N-central is exposed, along with the customer networks it manages; Censys counts about 1,728 internet-exposed instances. No victim organisations have been named.",
+    "note": "Any MSP or IT team running N-central is exposed, along with the customer networks it manages; Censys counts about 1,728 internet-exposed instances. On 12 November huntback identified 21 production N-central servers mining as nc_ rigs, including one in the United Kingdom, and has not published the addresses. 19 of those hosts were already on 2026.4 HF2.",
     "source": {
-     "url": "https://www.huntress.com/blog/n-able-disables-cloud-services-following-disclosure-of-able2shell-exploit-chains",
-     "label": "Huntress – N-able disables cloud services following disclosure of Able2Shell exploit chains",
-     "name": "Huntress"
+     "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "label": "huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central",
+     "name": "huntback.io"
     }
    },
    "mitre": [
@@ -4415,7 +5635,7 @@
    ],
    "recommended_actions": [
     "Take on-premises N-central servers off the internet, even on 2026.4 HF2, until N-able publishes a fix for 4EverAble2Shell and Agent2Shell; do not rely on IP allowlisting alone, because agents and probes use the same endpoints.",
-    "Block 5.231.45.175 and 157.20.241.16 and alert on 3.74.48.121 at the perimeter, and search N-central web and proxy logs from 8 November for these addresses and for requests to /dms/services/ServerUI and /dms2/services2/ServerMMS2 from unexpected external sources.",
+    "Block 5.231.45.175 and 157.20.241.16, and the installer URLs on http://157.20.241.16:8080/, at the perimeter; alert on 3.74.48.121 and on the mining-pool addresses 139.99.69.109 and 79.76.51.56, and search N-central web and proxy logs from 8 November for these addresses, for jline.internal.TerminalLineSettings in /dms/services/ServerUI requests, and for /tmp/.xvd, xvd.service and --rig-id nc_ miners.",
     "On the server, look for new or enabled Default Administrator accounts, unexpected password resets, new scripts, software or policy deployments and remote sessions, plus serverchild-* files under /var/opt/n-central/tmp and CodeDropMeta.xml ZIPs.",
     "On managed Windows endpoints, hunt for encoded PowerShell run as SYSTEM by the N-able Agent, wsp.exe or service.cfg written to the Windows Software Probe folder, and taskkill of wsp.exe from a .cmd in %TEMP%. If anything is confirmed, treat every network managed by that server as in scope."
    ],
@@ -4459,17 +5679,30 @@
      "url": "https://x.com/TheHackersNews/status/2120834921241694544",
      "label": "The Hacker News – Recently patched N-central servers remain exploitable (X)",
      "name": "X"
+    },
+    {
+     "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "label": "huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central",
+     "name": "huntback.io"
+    },
+    {
+     "url": "https://www.bleepingcomputer.com/news/security/new-n-able-4everable2shell-zero-day-exploited-hours-after-poc-released/",
+     "label": "BleepingComputer – New N-able 4EverAble2Shell zero-day exploited hours after PoC released",
+     "name": "BleepingComputer"
     }
    ],
-   "indicator_count": 5,
-   "block_now_count": 2,
-   "hunt_count": 3,
+   "indicator_count": 20,
+   "block_now_count": 8,
+   "hunt_count": 12,
    "hunt_counts": {
-    "alert": 3
+    "alert": 12
    },
    "indicator_counts": {
-    "ipv4": 3,
-    "url": 2
+    "url": 7,
+    "ipv4": 5,
+    "filename": 4,
+    "other": 3,
+    "sha256": 1
    },
    "ioas": [
     {
@@ -4571,22 +5804,42 @@
      "queries": []
     },
     {
-     "artefact": "Apache Axis CVE-2026-90436 probe, then 4EverAble2Shell root, then curl of a shell script from attacker IP",
+     "artefact": "Apache Axis CVE-2026-90436 or 4EverAble2Shell probe, then root, then curl of jup.sh from 157.20.241.16 and an XMRig miner under /tmp/.xvd",
      "log_source": "N-central web, process and proxy logs",
-     "why": "Previdian told The Hacker News that 157.20.241.16 tried this chain, and that it is the first documented exploitation attempt against CVE-2026-90436, which was patched on 6 November. watchTowr has also seen 4EverAble2Shell probes against N-central builds with the Legacy API enabled. No successful compromise has been confirmed.",
+     "why": "Previdian first reported 157.20.241.16 attempting this chain. On 12 November huntback saw the same address weaponise 4EverAble2Shell against live N-central servers, curling http://157.20.241.16:8080/jup.sh to install XMRig and report 21 nc_ rigs on a public pool by 12:50 UTC, 19 of them already on 2026.4 HF2.",
      "action": "alert",
      "has_query": true,
-     "source_url": "https://thehackernews.com/2026/11/new-n-central-exploits-work-against.html",
+     "source_url": "https://thehackernews.com/2026/11/new-n-central-exploits-work-against.html https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers https://www.bleepingcomputer.com/news/security/new-n-able-4everable2shell-zero-day-exploited-hours-after-poc-released/",
      "source_name": "The Hacker News",
-     "title": "Apache Axis CVE-2026-90436, then 4EverAble2Shell and curl",
+     "title": "Apache Axis CVE-2026-90436 or 4EverAble2Shell probe",
      "queries": [
-      "KQL",
-      "SPL",
-      "YARA-L"
+      "KQL"
      ]
+    },
+    {
+     "artefact": "POST /dms/services/ServerUI with a SOAP fault whose exceptionName is jline.internal.TerminalLineSettings",
+     "log_source": "N-central web or reverse-proxy logs",
+     "why": "This is the 4EverAble2Shell check and exploit. A vulnerable Axis stack instantiates the class and runs a shell command from the data field. huntback saw the word probe used for checks and a base64 Python root chain in weaponised requests, with user-agent python-requests/2.31.0.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "source_name": "huntback.io",
+     "title": "POST /dms/services/ServerUI with a SOAP fault whose exceptionName is...",
+     "queries": []
+    },
+    {
+     "artefact": "After a 4EverAble2Shell hit, files under /tmp/.xvd or /var/tmp/.xvd, a systemd unit xvd.service or cron tagged # xvkeep, and a process with --rig-id nc_ or a binary named x running from .xvd",
+     "log_source": "N-central host filesystem, systemd, crontab, process and outbound network logs",
+     "why": "jup.sh installs XMRig this way, using half the CPU cores to stay quiet, and persists with keep.sh. Treat a hit as a full root compromise of a server that manages customer endpoints, not just a miner cleanup. Do not block the public mining-pool addresses without reviewing impact.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "source_name": "huntback.io",
+     "title": "After a 4EverAble2Shell hit",
+     "queries": []
     }
    ],
-   "ioa_count": 8,
+   "ioa_count": 10,
    "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
    "files": [
     {
@@ -4660,7 +5913,7 @@
      "type": "ipv4",
      "confidence": "high",
      "recommended_action": "block",
-     "description": "Source of 4EverAble2Shell probing observed by Previdian, including an attempted chain of Apache Axis CVE-2026-90436, privilege escalation to root, and a curl of a shell script from this address. No successful compromise has been confirmed.",
+     "description": "Source of 4EverAble2Shell exploitation against live N-central servers on 12 November, and of earlier probing seen by Previdian. huntback saw this address probe its decoys, then run the full chain (code execution as the nable user, root through nable_wrapper.pl, then curl of jup.sh to install an XMRig miner). It also hosts the installer on TCP 8080 and opens a TCP callback on ports 19202 to 19418. By 12:50 UTC, 21 production N-central servers, 19 already on 2026.4 HF2, were listed as nc_ rigs on the operator's mining pool.",
      "source_url": "https://thehackernews.com/2026/11/new-n-central-exploits-work-against.html",
      "source_label": "The Hacker News – New N-central exploits work against patched servers, enable root RCE and Windows SYSTEM access",
      "source_name": "The Hacker News",
@@ -4672,6 +5925,14 @@
       {
        "url": "https://x.com/TheHackersNews/status/2120834921241694544",
        "name": "X"
+      },
+      {
+       "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+       "name": "huntback.io"
+      },
+      {
+       "url": "https://www.bleepingcomputer.com/news/security/new-n-able-4everable2shell-zero-day-exploited-hours-after-poc-released/",
+       "name": "BleepingComputer"
       }
      ]
     },
@@ -4720,6 +5981,254 @@
       {
        "url": "https://blog.previdian.com/n-able-n-central-critical-vulnerabilities-what-we-know-so-far/",
        "name": "Previdian"
+      }
+     ]
+    },
+    {
+     "value": "http://157.20.241.16:8080/jup.sh",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Miner installer the 4EverAble2Shell root command fetches with curl | sh -s nc_<target-ip>.",
+     "source_url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "source_label": "huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central",
+     "source_name": "huntback.io",
+     "sources": [
+      {
+       "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+       "name": "huntback.io"
+      },
+      {
+       "url": "https://www.bleepingcomputer.com/news/security/new-n-able-4everable2shell-zero-day-exploited-hours-after-poc-released/",
+       "name": "BleepingComputer"
+      }
+     ]
+    },
+    {
+     "value": "http://157.20.241.16:8080/xvgz",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Gzip-compressed miner binary that jup.sh fetches from the same host.",
+     "source_url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "source_label": "huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central",
+     "source_name": "huntback.io",
+     "sources": [
+      {
+       "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+       "name": "huntback.io"
+      }
+     ]
+    },
+    {
+     "value": "http://157.20.241.16:8080/xmrig.tgz",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Fallback stock XMRig 6.26.0 tarball that jup.sh fetches if xvgz is unavailable.",
+     "source_url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "source_label": "huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central",
+     "source_name": "huntback.io",
+     "sources": [
+      {
+       "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+       "name": "huntback.io"
+      }
+     ]
+    },
+    {
+     "value": "http://157.20.241.16:8080/ob/cronhit",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "HTTP start beacon the miner installer calls as /ob/cronhit?h=jup_start_... when it begins.",
+     "source_url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "source_label": "huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central",
+     "source_name": "huntback.io",
+     "sources": [
+      {
+       "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+       "name": "huntback.io"
+      }
+     ]
+    },
+    {
+     "value": "http://157.20.241.16:8080/ob/fcheck",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "HTTP check-in the installer uses to report the miner PID, core count, free memory and persistence method.",
+     "source_url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "source_label": "huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central",
+     "source_name": "huntback.io",
+     "sources": [
+      {
+       "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+       "name": "huntback.io"
+      }
+     ]
+    },
+    {
+     "value": "fc4c01fd11bc301cf312830460cfdccc3af9dcfe50c910b86d6a1117bc76c747",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of the Python script that escalates from the nable user to root through nable_wrapper.pl and ServerChild.sh, then runs the operator's command.",
+     "source_url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "source_label": "huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central",
+     "source_name": "huntback.io",
+     "sources": [
+      {
+       "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+       "name": "huntback.io"
+      }
+     ]
+    },
+    {
+     "value": "139.99.69.109",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Primary mining-pool endpoint (TCP 10128) that jup.sh configures for the XMRig miner.",
+     "source_url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "source_label": "huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central",
+     "source_name": "huntback.io",
+     "sources": [
+      {
+       "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+       "name": "huntback.io"
+      }
+     ]
+    },
+    {
+     "value": "79.76.51.56",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Fallback mining endpoint (TCP 39100) used if the primary pool does not answer within six seconds.",
+     "source_url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "source_label": "huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central",
+     "source_name": "huntback.io",
+     "sources": [
+      {
+       "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+       "name": "huntback.io"
+      }
+     ]
+    },
+    {
+     "value": "41wx2Pv3FzfRvX11jQgzM4bRbgvr6GViRXCKkHhXhLVQ64mgUR5ks4CEzHx8zqUJ8MgsWwTaWiS3uiZbCgJQnNXoB19mGtr",
+     "type": "other",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Monero wallet the 4EverAble2Shell miner pays into; huntback counted 21 nc_ rigs on this wallet at 12:50 UTC on 12 November.",
+     "source_url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "source_label": "huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central",
+     "source_name": "huntback.io",
+     "sources": [
+      {
+       "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+       "name": "huntback.io"
+      }
+     ]
+    },
+    {
+     "value": "jline.internal.TerminalLineSettings",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "exceptionName in the SOAP fault posted to /dms/services/ServerUI; a vulnerable Axis stack instantiates this class and runs a shell command from the data field.",
+     "source_url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "source_label": "huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central",
+     "source_name": "huntback.io",
+     "sources": [
+      {
+       "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+       "name": "huntback.io"
+      },
+      {
+       "url": "https://www.bleepingcomputer.com/news/security/new-n-able-4everable2shell-zero-day-exploited-hours-after-poc-released/",
+       "name": "BleepingComputer"
+      }
+     ]
+    },
+    {
+     "value": "/tmp/.xvd",
+     "type": "filename",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Working directory jup.sh uses for the miner binary, keep.sh watchdog and xm.log, remounted exec when running as root.",
+     "source_url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "source_label": "huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central",
+     "source_name": "huntback.io",
+     "sources": [
+      {
+       "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+       "name": "huntback.io"
+      }
+     ]
+    },
+    {
+     "value": "/var/tmp/.xvd",
+     "type": "filename",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Fallback miner working directory if /tmp is unusable.",
+     "source_url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "source_label": "huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central",
+     "source_name": "huntback.io",
+     "sources": [
+      {
+       "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+       "name": "huntback.io"
+      }
+     ]
+    },
+    {
+     "value": "/etc/systemd/system/xvd.service",
+     "type": "filename",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "systemd unit the installer writes so keep.sh relaunches the miner every 10 minutes if it has died.",
+     "source_url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "source_label": "huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central",
+     "source_name": "huntback.io",
+     "sources": [
+      {
+       "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+       "name": "huntback.io"
+      }
+     ]
+    },
+    {
+     "value": "/etc/cron.d/xvd",
+     "type": "filename",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "cron.d persistence used when the installer cannot write a systemd unit.",
+     "source_url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "source_label": "huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central",
+     "source_name": "huntback.io",
+     "sources": [
+      {
+       "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+       "name": "huntback.io"
+      }
+     ]
+    },
+    {
+     "value": "# xvkeep",
+     "type": "other",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Tag on a user crontab line the installer adds for nable or root when it cannot write xvd.service or /etc/cron.d/xvd.",
+     "source_url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+     "source_label": "huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central",
+     "source_name": "huntback.io",
+     "sources": [
+      {
+       "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
+       "name": "huntback.io"
       }
      ]
     }

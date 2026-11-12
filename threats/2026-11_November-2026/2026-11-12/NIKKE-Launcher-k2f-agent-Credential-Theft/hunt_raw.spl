@@ -1,0 +1,33 @@
+``` Threat: NIKKE Launcher Abused to Deliver the k2f-agent Stealer
+    Author: Daniel Jeremiah | Date: 2026-11-12
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft ```
+| multisearch
+  [ search `rti_network(89.127.233.127)`
+    | search dest_ip IN ("89.127.233.127")
+    | eval data_model="network", ioc_type="ipv4", ioc=dest_ip, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_network(89.127.233.127)`
+    | search src_ip IN ("89.127.233.127")
+    | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_dns(insightjs.com OR analytics.insightjs.com)`
+    | search query IN ("insightjs.com", "*.insightjs.com", "analytics.insightjs.com", "*.analytics.insightjs.com")
+    | rex field=query "(?i)(?<ioc>(?:insightjs\.com|analytics\.insightjs\.com))\.?$"
+    | eval data_model="dns", ioc_type="domain", host=src, detail="DNS query ".query
+  ]
+  [ search `rti_web(insightjs.com OR analytics.insightjs.com)`
+    | search url IN ("*://insightjs.com*", "*.insightjs.com*", "insightjs.com*", "*://analytics.insightjs.com*", "*.analytics.insightjs.com*", "analytics.insightjs.com*", "*analytics.insightjs.com/comm/assets/insight.bundle*") OR dest IN ("insightjs.com", "*.insightjs.com", "analytics.insightjs.com", "*.analytics.insightjs.com")
+    | rex field=url "(?i)(?<ioc>analytics\.insightjs\.com/comm/assets/insight\.bundle|insightjs\.com|analytics\.insightjs\.com)"
+    | eval ioc=coalesce(ioc, dest), data_model="web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+  ]
+  [ search `rti_endpoint(cc0ad05bfe85940a6067b3a72c182d3953339129206634141926d5d0b35973ec)`
+    | search file_hash IN ("*cc0ad05bfe85940a6067b3a72c182d3953339129206634141926d5d0b35973ec*") OR process_hash IN ("*cc0ad05bfe85940a6067b3a72c182d3953339129206634141926d5d0b35973ec*") OR parent_process_hash IN ("*cc0ad05bfe85940a6067b3a72c182d3953339129206634141926d5d0b35973ec*")
+    | eval matched=file_hash." ".process_hash." ".parent_process_hash
+    | rex field=matched "(?i)(?<ioc>cc0ad05bfe85940a6067b3a72c182d3953339129206634141926d5d0b35973ec)"
+    | eval data_model="endpoint", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, detail=coalesce(process, file_path)
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

@@ -2,18 +2,24 @@
     Author: Daniel Jeremiah | Date: 2026-11-12
     Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days ```
 | multisearch
-  [ search `rti_network(5.231.45.175 OR 157.20.241.16 OR 3.74.48.121)`
-    | search dest_ip IN ("5.231.45.175", "157.20.241.16", "3.74.48.121")
+  [ search `rti_network(5.231.45.175 OR 157.20.241.16 OR 3.74.48.121 OR 139.99.69.109 OR 79.76.51.56)`
+    | search dest_ip IN ("5.231.45.175", "157.20.241.16", "3.74.48.121", "139.99.69.109", "79.76.51.56")
     | eval data_model="network", ioc_type="ipv4", ioc=dest_ip, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
   ]
-  [ search `rti_network(5.231.45.175 OR 157.20.241.16 OR 3.74.48.121)`
-    | search src_ip IN ("5.231.45.175", "157.20.241.16", "3.74.48.121")
+  [ search `rti_network(5.231.45.175 OR 157.20.241.16 OR 3.74.48.121 OR 139.99.69.109 OR 79.76.51.56)`
+    | search src_ip IN ("5.231.45.175", "157.20.241.16", "3.74.48.121", "139.99.69.109", "79.76.51.56")
     | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
   ]
-  [ search `rti_web(5.231.45.175)`
-    | search url IN ("*5.231.45.175:8097/a.dtd*", "*5.231.45.175:8097/svc.xml*") OR dest IN ("-")
-    | rex field=url "(?i)(?<ioc>5\.231\.45\.175:8097/a\.dtd|5\.231\.45\.175:8097/svc\.xml)"
+  [ search `rti_web(5.231.45.175 OR 157.20.241.16)`
+    | search url IN ("*5.231.45.175:8097/a.dtd*", "*5.231.45.175:8097/svc.xml*", "*157.20.241.16:8080/jup.sh*", "*157.20.241.16:8080/xvgz*", "*157.20.241.16:8080/xmrig.tgz*", "*157.20.241.16:8080/ob/cronhit*", "*157.20.241.16:8080/ob/fcheck*") OR dest IN ("-")
+    | rex field=url "(?i)(?<ioc>5\.231\.45\.175:8097/a\.dtd|5\.231\.45\.175:8097/svc\.xml|157\.20\.241\.16:8080/jup\.sh|157\.20\.241\.16:8080/xvgz|157\.20\.241\.16:8080/xmrig\.tgz|157\.20\.241\.16:8080/ob/cronhit|157\.20\.241\.16:8080/ob/fcheck)"
     | eval ioc=coalesce(ioc, dest), data_model="web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+  ]
+  [ search `rti_endpoint(fc4c01fd11bc301cf312830460cfdccc3af9dcfe50c910b86d6a1117bc76c747)`
+    | search file_hash IN ("*fc4c01fd11bc301cf312830460cfdccc3af9dcfe50c910b86d6a1117bc76c747*") OR process_hash IN ("*fc4c01fd11bc301cf312830460cfdccc3af9dcfe50c910b86d6a1117bc76c747*") OR parent_process_hash IN ("*fc4c01fd11bc301cf312830460cfdccc3af9dcfe50c910b86d6a1117bc76c747*")
+    | eval matched=file_hash." ".process_hash." ".parent_process_hash
+    | rex field=matched "(?i)(?<ioc>fc4c01fd11bc301cf312830460cfdccc3af9dcfe50c910b86d6a1117bc76c747)"
+    | eval data_model="endpoint", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, detail=coalesce(process, file_path)
   ]
 | fillnull value="-" host user src dest detail
 | stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
@@ -76,24 +82,6 @@
     | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
     | eval data_model="endpoint"
     | eval ioc="Probe service killed from a temp .cmd", ioc_type="behaviour (alert)"
-]
-
-| append [
-    search `rti_network("157.20.241.16")`
-    | search dest_ip="157.20.241.16"
-    | stats count min(_time) AS first_seen max(_time) AS last_seen BY src_ip dest_ip dvc
-    | eval host=dvc, user="-", src=src_ip, dest=dest_ip, detail="connections to 4EverAble2Shell probing host", data_model="network"
-    | fields - src_ip dest_ip dvc
-    | eval ioc="Apache Axis CVE-2026-90436, then 4EverAble2Shell and curl", ioc_type="behaviour (alert)"
-]
-| append [
-    search `rti_endpoint((curl OR wget) 157.20.241.16)`
-    | where match(coalesce(process_name, ""), "(?i)^(curl|wget)(\.exe)?$") AND match(coalesce(process, ""), "157\.20\.241\.16")
-    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
-    | fillnull value="-" host user src dest detail
-    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
-    | eval data_model="endpoint"
-    | eval ioc="Apache Axis CVE-2026-90436, then 4EverAble2Shell and curl", ioc_type="behaviour (alert)"
 ]
 | sort 0 - last_seen
 | eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")

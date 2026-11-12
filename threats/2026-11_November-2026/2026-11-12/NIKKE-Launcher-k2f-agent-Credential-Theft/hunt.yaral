@@ -1,0 +1,50 @@
+// Threat: NIKKE Launcher Abused to Deliver the k2f-agent Stealer
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft
+rule rti_nikke_launcher_k2f_agent_credential_theft {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-12"
+    description = "NIKKE Launcher Abused to Deliver the k2f-agent Stealer"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft"
+
+  events:
+    (
+      $e.principal.ip = /^(?:89\.127\.233\.127)$/ or
+      $e.target.ip = /^(?:89\.127\.233\.127)$/ or
+      $e.network.dns.answers.data = /^(?:89\.127\.233\.127)$/ or
+      $e.network.dns.questions.name = /(?:^|\.)(?:insightjs\.com|analytics\.insightjs\.com)\.?$/ nocase or
+      $e.target.hostname = /(?:^|\.)(?:insightjs\.com|analytics\.insightjs\.com)\.?$/ nocase or
+      $e.target.domain.name = /(?:^|\.)(?:insightjs\.com|analytics\.insightjs\.com)\.?$/ nocase or
+      re.regex($e.target.url, `^(?:[a-z][a-z0-9+.-]*://)?(?:[^/?#]*@)?(?:analytics\.insightjs\.com/comm/assets/insight\.bundle|(?:[^/?#@]*\.)?(?:insightjs\.com|analytics\.insightjs\.com)(?::\d+)?(?:[/?#]|$))`) nocase or
+      $e.target.file.sha256 = /^(?:cc0ad05bfe85940a6067b3a72c182d3953339129206634141926d5d0b35973ec)$/ nocase or
+      $e.target.process.file.sha256 = /^(?:cc0ad05bfe85940a6067b3a72c182d3953339129206634141926d5d0b35973ec)$/ nocase or
+      $e.principal.process.file.sha256 = /^(?:cc0ad05bfe85940a6067b3a72c182d3953339129206634141926d5d0b35973ec)$/ nocase or
+      $e.principal.process.parent_process.file.sha256 = /^(?:cc0ad05bfe85940a6067b3a72c182d3953339129206634141926d5d0b35973ec)$/ nocase
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $dns_query = array_distinct($e.network.dns.questions.name)
+    $target_hostname = array_distinct($e.target.hostname)
+    $target_url = array_distinct($e.target.url)
+    $file_sha256 = array_distinct($e.target.file.sha256)
+    $process_sha256 = array_distinct($e.target.process.file.sha256)
+    $process_path = array_distinct($e.target.process.file.full_path)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}

@@ -2,9 +2,10 @@
 // Author: Daniel Jeremiah | Date: 2026-11-12
 // Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days
 let Lookback = 30d;
-let IPs = dynamic(["5.231.45.175", "157.20.241.16", "3.74.48.121"]);
-let Urls = dynamic(["http://5.231.45.175:8097/a.dtd", "http://5.231.45.175:8097/svc.xml"]);
-let UrlKeys = dynamic(["5.231.45.175:8097/a.dtd", "5.231.45.175:8097/svc.xml"]);
+let IPs = dynamic(["5.231.45.175", "157.20.241.16", "3.74.48.121", "139.99.69.109", "79.76.51.56"]);
+let Urls = dynamic(["http://5.231.45.175:8097/a.dtd", "http://5.231.45.175:8097/svc.xml", "http://157.20.241.16:8080/jup.sh", "http://157.20.241.16:8080/xvgz", "http://157.20.241.16:8080/xmrig.tgz", "http://157.20.241.16:8080/ob/cronhit", "http://157.20.241.16:8080/ob/fcheck"]);
+let UrlKeys = dynamic(["5.231.45.175:8097/a.dtd", "5.231.45.175:8097/svc.xml", "157.20.241.16:8080/jup.sh", "157.20.241.16:8080/xvgz", "157.20.241.16:8080/xmrig.tgz", "157.20.241.16:8080/ob/cronhit", "157.20.241.16:8080/ob/fcheck"]);
+let SHA256s = dynamic(["fc4c01fd11bc301cf312830460cfdccc3af9dcfe50c910b86d6a1117bc76c747"]);
 union isfuzzy=true
   (DeviceNetworkEvents
     | where Timestamp > ago(Lookback)
@@ -46,6 +47,22 @@ union isfuzzy=true
     | where Timestamp > ago(Lookback)
     | where Url has_any (UrlKeys)
     | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(ActionType, " ", FolderPath))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceImageLoadEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " loaded by ", InitiatingProcessFileName))),
+  (EmailAttachmentInfo
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "EmailAttachmentInfo", Entity = tostring(RecipientEmailAddress), Indicator = tostring(SHA256), Context = tostring(strcat(FileName, " from ", SenderFromAddress))),
   (DeviceFileEvents
     | where Timestamp > ago(Lookback)
     | where FolderPath has "/var/opt/n-central/tmp/serverchild-" or FolderPath has "/var/opt/n-central/flag/flag_default.json" or FileName =~ "CodeDropMeta.xml" or (FolderPath has "/download/scheduled_tasks/output_files/" and FileName endswith ".zip")

@@ -1,0 +1,15 @@
+# NIKKE Launcher Abused to Deliver the k2f-agent Stealer
+# Published 2026-11-12. High-confidence indicators to block. Updated 2026-11-12.
+
+## ipv4 (1)
+89.127.233.127
+
+## domain (2)
+insightjs.com
+analytics.insightjs.com
+
+## url (1)
+https://analytics.insightjs.com/comm/assets/insight.bundle
+
+## sha256 (1)
+cc0ad05bfe85940a6067b3a72c182d3953339129206634141926d5d0b35973ec

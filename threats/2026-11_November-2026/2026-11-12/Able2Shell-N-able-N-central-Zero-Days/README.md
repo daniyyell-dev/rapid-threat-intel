@@ -4,36 +4,36 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-09 | 2026-11-12 09:55 | 2026-11-12 13:45 | Exploitation / MSP RMM | 5 | 2 |
+| 2026-11-09 | 2026-11-12 09:55 | 2026-11-12 22:55 | Exploitation / MSP RMM | 20 | 8 |
 
 ## Summary
 
-An independent researcher published proof-of-concept code for 33 flaws in N-able N-central, the remote monitoring and management platform used by MSPs and IT teams, under the name Able2Shell. N-able took Hosted N-central offline on 9 November and shipped 2026.4 HF2 on 10 November, but late on 11 November the researcher released two more chains, 4EverAble2Shell (unauthenticated root RCE on the server) and Agent2Shell (commands as SYSTEM on managed Windows endpoints), which Huntress says work against HF2, so a fully patched server should be treated as vulnerable. watchTowr, Lupovis and Previdian have seen exploitation attempts against N-central honeypots, and N-able reports scanning tied to the public code; no customer compromise has been confirmed. Earlier N-central zero-days were exploited and are in CISA KEV, and Beazley notes past state-sponsored targeting. 5.231.45.175 is reported by both Previdian and Lupovis and is a block candidate; Previdian later reported 157.20.241.16, a Joy Services VPS in Mumbai, attempting Apache Axis CVE-2026-90436, then 4EverAble2Shell for root, then curling a shell script from that address, so it is also a block candidate; the AWS address 3.74.48.121 is alert-only. watchTowr has also seen 4EverAble2Shell probes against builds with the Legacy API enabled. Most of the value here is in the behaviours: hunt N-central web logs, the appliance file system and N-able Agent child processes on managed endpoints.
+An independent researcher published proof-of-concept code for 33 flaws in N-able N-central, the remote monitoring and management platform used by MSPs and IT teams, under the name Able2Shell. N-able took Hosted N-central offline on 9 November and shipped 2026.4 HF2 on 10 November, but late on 11 November the researcher released two more chains, 4EverAble2Shell (unauthenticated root RCE on the server) and Agent2Shell (commands as SYSTEM on managed Windows endpoints), which Huntress says work against HF2, so a fully patched server should be treated as vulnerable. On 12 November, about four and a half hours after 4EverAble2Shell was published, huntback Research saw 157.20.241.16 probe its decoys and then run the full chain, installing an XMRig miner via jup.sh. By 12:50 UTC that operator's public mining pool listed 21 production N-central servers as nc_ rigs, all submitting shares; 19 of them reported build 2026.4.1.26 (HF2). The servers were in the United States, South Africa, Canada, the United Kingdom, Germany, France and Sweden; huntback has not published the addresses. Applying HF2 is not enough: keep the Legacy API disabled and follow N-able's current guidance. Earlier N-central zero-days were exploited and are in CISA KEV, and Beazley notes past state-sponsored targeting. 5.231.45.175 remains a block candidate for earlier Able2Shell probing reported by Previdian and Lupovis; 157.20.241.16 is the live exploitation and payload host and is on the block list, along with its installer URLs and the nable-to-root script hash; the mining-pool addresses are alert only because they are public pool endpoints; the AWS address 3.74.48.121 is alert-only. Hunt N-central web logs for SOAP faults naming jline.internal.TerminalLineSettings, and the appliance for /tmp/.xvd, xvd.service and --rig-id nc_ miners, as well as N-able Agent child processes on managed endpoints.
 
 > [!WARNING]
-> Exploitation attempts are from honeypots; no confirmed customer compromise yet. Huntress's file and process indicators come from static analysis of the public code and may not match modified exploits. 3.74.48.121 is AWS: alert only.
+> huntback confirmed 21 live N-central servers mining on 12 November but did not publish their addresses, including one in the United Kingdom. 139.99.69.109 and 79.76.51.56 are mining-pool endpoints used by this operator; alert on them, do not block the whole addresses without reviewing impact. Huntress's Agent2Shell file and process indicators come from static analysis of the public code and may not match modified exploits. 3.74.48.121 is AWS: alert only.
 
 ## Affected countries and sectors
 
 - **Countries:** Not stated in the sources
 - **Regions:** Global
 - **Sectors:** Managed service providers, IT operations
-- **Note:** Any MSP or IT team running N-central is exposed, along with the customer networks it manages; Censys counts about 1,728 internet-exposed instances. No victim organisations have been named.
-- **Source:** [Huntress – N-able disables cloud services following disclosure of Able2Shell exploit chains](https://www.huntress.com/blog/n-able-disables-cloud-services-following-disclosure-of-able2shell-exploit-chains)
+- **Note:** Any MSP or IT team running N-central is exposed, along with the customer networks it manages; Censys counts about 1,728 internet-exposed instances. On 12 November huntback identified 21 production N-central servers mining as nc_ rigs, including one in the United Kingdom, and has not published the addresses. 19 of those hosts were already on 2026.4 HF2.
+- **Source:** [huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central](https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers)
 
 ## At a glance
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days/block_now.txt) (raw) | 2 high-confidence indicators to block now |
-| [`iocs.csv`](iocs.csv) | All 5 indicators with description, confidence, action and source |
-| [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 5 rows for Defender XDR bulk import |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days/block_now.txt) (raw) | 8 high-confidence indicators to block now |
+| [`iocs.csv`](iocs.csv) | All 20 indicators with description, confidence, action and source |
+| [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 13 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
 | [`hunt.spl`](hunt.spl) | Splunk hunt over the CIM data models |
 | [`hunt_raw.spl`](hunt_raw.spl) | Splunk hunt for data not mapped to CIM ([macros](../../../../all/splunk_macros.conf)) |
 | [`hunt.yaral`](hunt.yaral) | Google SecOps YARA-L 2.0 detection rule |
 
-Indicators by type: 3 IPv4, 2 URLs. See `iocs.csv` for full details and descriptions.
+Indicators by type: 7 URLs, 5 IPv4, 4 file names, 3 other, 1 SHA256. See `iocs.csv` for full details and descriptions.
 
 ## MITRE ATT&CK
 
@@ -51,7 +51,7 @@ Indicators by type: 3 IPv4, 2 URLs. See `iocs.csv` for full details and descript
 ## Recommended actions
 
 1. Take on-premises N-central servers off the internet, even on 2026.4 HF2, until N-able publishes a fix for 4EverAble2Shell and Agent2Shell; do not rely on IP allowlisting alone, because agents and probes use the same endpoints.
-2. Block 5.231.45.175 and 157.20.241.16 and alert on 3.74.48.121 at the perimeter, and search N-central web and proxy logs from 8 November for these addresses and for requests to /dms/services/ServerUI and /dms2/services2/ServerMMS2 from unexpected external sources.
+2. Block 5.231.45.175 and 157.20.241.16, and the installer URLs on http://157.20.241.16:8080/, at the perimeter; alert on 3.74.48.121 and on the mining-pool addresses 139.99.69.109 and 79.76.51.56, and search N-central web and proxy logs from 8 November for these addresses, for jline.internal.TerminalLineSettings in /dms/services/ServerUI requests, and for /tmp/.xvd, xvd.service and --rig-id nc_ miners.
 3. On the server, look for new or enabled Default Administrator accounts, unexpected password resets, new scripts, software or policy deployments and remote sessions, plus serverchild-* files under /var/opt/n-central/tmp and CodeDropMeta.xml ZIPs.
 4. On managed Windows endpoints, hunt for encoded PowerShell run as SYSTEM by the N-able Agent, wsp.exe or service.cfg written to the Windows Software Probe folder, and taskkill of wsp.exe from a .cmd in %TEMP%. If anything is confirmed, treat every network managed by that server as in scope.
 
@@ -101,11 +101,23 @@ Indicators by type: 3 IPv4, 2 URLs. See `iocs.csv` for full details and descript
    Log source: N-central audit and login logs\
    Source: [Beazley Security](https://labs.beazley.security/advisories/BSL-A1242)
 
-8. **Alert** · Apache Axis CVE-2026-90436, then 4EverAble2Shell and curl\
-   Look for: Apache Axis CVE-2026-90436 probe, then 4EverAble2Shell root, then curl of a shell script from attacker IP\
-   Why it matters: Previdian told The Hacker News that 157.20.241.16 tried this chain, and that it is the first documented exploitation attempt against CVE-2026-90436, which was patched on 6 November. watchTowr has also seen 4EverAble2Shell probes against N-central builds with the Legacy API enabled. No successful compromise has been confirmed.\
+8. **Alert** · Apache Axis CVE-2026-90436 or 4EverAble2Shell probe\
+   Look for: Apache Axis CVE-2026-90436 or 4EverAble2Shell probe, then root, then curl of jup.sh from 157.20.241.16 and an XMRig miner under /tmp/.xvd\
+   Why it matters: Previdian first reported 157.20.241.16 attempting this chain. On 12 November huntback saw the same address weaponise 4EverAble2Shell against live N-central servers, curling http://157.20.241.16:8080/jup.sh to install XMRig and report 21 nc_ rigs on a public pool by 12:50 UTC, 19 of them already on 2026.4 HF2.\
    Log source: N-central web, process and proxy logs\
-   Source: [The Hacker News](https://thehackernews.com/2026/11/new-n-central-exploits-work-against.html)
+   Source: [The Hacker News](https://thehackernews.com/2026/11/new-n-central-exploits-work-against.html https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers https://www.bleepingcomputer.com/news/security/new-n-able-4everable2shell-zero-day-exploited-hours-after-poc-released/)
+
+9. **Alert** · POST /dms/services/ServerUI with a SOAP fault whose exceptionName is...\
+   Look for: POST /dms/services/ServerUI with a SOAP fault whose exceptionName is jline.internal.TerminalLineSettings\
+   Why it matters: This is the 4EverAble2Shell check and exploit. A vulnerable Axis stack instantiates the class and runs a shell command from the data field. huntback saw the word probe used for checks and a base64 Python root chain in weaponised requests, with user-agent python-requests/2.31.0.\
+   Log source: N-central web or reverse-proxy logs\
+   Source: [huntback.io](https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers)
+
+10. **Alert** · After a 4EverAble2Shell hit\
+   Look for: After a 4EverAble2Shell hit, files under /tmp/.xvd or /var/tmp/.xvd, a systemd unit xvd.service or cron tagged # xvkeep, and a process with --rig-id nc_ or a binary named x running from .xvd\
+   Why it matters: jup.sh installs XMRig this way, using half the CPU cores to stay quiet, and persists with keep.sh. Treat a hit as a full root compromise of a server that manages customer endpoints, not just a miner cleanup. Do not block the public mining-pool addresses without reviewing impact.\
+   Log source: N-central host filesystem, systemd, crontab, process and outbound network logs\
+   Source: [huntback.io](https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
 
@@ -132,6 +144,8 @@ Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and
 - [Rapid7 – Critical vulnerabilities in N-able N-central prompt hosted shutdown](https://www.rapid7.com/blog/post/etr-critical-vulnerabilities-in-n-able-n-central-prompt-hosted-shutdown/)
 - [The Hacker News – New N-central exploits work against patched servers, enable root RCE and Windows SYSTEM access](https://thehackernews.com/2026/11/new-n-central-exploits-work-against.html)
 - [The Hacker News – Recently patched N-central servers remain exploitable (X)](https://x.com/TheHackersNews/status/2120834921241694544)
+- [huntback Research – 4EverAble2Shell exploited: Monero miners on live N-central](https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers)
+- [BleepingComputer – New N-able 4EverAble2Shell zero-day exploited hours after PoC released](https://www.bleepingcomputer.com/news/security/new-n-able-4everable2shell-zero-day-exploited-hours-after-poc-released/)
 
 ---
 

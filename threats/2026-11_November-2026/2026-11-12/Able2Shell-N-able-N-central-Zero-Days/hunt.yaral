@@ -10,16 +10,19 @@ rule rti_able2shell_n_able_n_central_zero_days {
 
   events:
     (
-      $e.principal.ip = /^(?:5\.231\.45\.175|157\.20\.241\.16|3\.74\.48\.121)$/ or
-      $e.target.ip = /^(?:5\.231\.45\.175|157\.20\.241\.16|3\.74\.48\.121)$/ or
-      $e.network.dns.answers.data = /^(?:5\.231\.45\.175|157\.20\.241\.16|3\.74\.48\.121)$/ or
-      re.regex($e.target.url, `^(?:[a-z][a-z0-9+.-]*://)?(?:[^/?#]*@)?(?:5\.231\.45\.175:8097/a\.dtd|5\.231\.45\.175:8097/svc\.xml)`) nocase or
+      $e.principal.ip = /^(?:5\.231\.45\.175|157\.20\.241\.16|3\.74\.48\.121|139\.99\.69\.109|79\.76\.51\.56)$/ or
+      $e.target.ip = /^(?:5\.231\.45\.175|157\.20\.241\.16|3\.74\.48\.121|139\.99\.69\.109|79\.76\.51\.56)$/ or
+      $e.network.dns.answers.data = /^(?:5\.231\.45\.175|157\.20\.241\.16|3\.74\.48\.121|139\.99\.69\.109|79\.76\.51\.56)$/ or
+      re.regex($e.target.url, `^(?:[a-z][a-z0-9+.-]*://)?(?:[^/?#]*@)?(?:5\.231\.45\.175:8097/a\.dtd|5\.231\.45\.175:8097/svc\.xml|157\.20\.241\.16:8080/jup\.sh|157\.20\.241\.16:8080/xvgz|157\.20\.241\.16:8080/xmrig\.tgz|157\.20\.241\.16:8080/ob/cronhit|157\.20\.241\.16:8080/ob/fcheck)`) nocase or
+      $e.target.file.sha256 = /^(?:fc4c01fd11bc301cf312830460cfdccc3af9dcfe50c910b86d6a1117bc76c747)$/ nocase or
+      $e.target.process.file.sha256 = /^(?:fc4c01fd11bc301cf312830460cfdccc3af9dcfe50c910b86d6a1117bc76c747)$/ nocase or
+      $e.principal.process.file.sha256 = /^(?:fc4c01fd11bc301cf312830460cfdccc3af9dcfe50c910b86d6a1117bc76c747)$/ nocase or
+      $e.principal.process.parent_process.file.sha256 = /^(?:fc4c01fd11bc301cf312830460cfdccc3af9dcfe50c910b86d6a1117bc76c747)$/ nocase or
       re.regex($e.target.url, `dms/services/ServerUI|dms2/services2/ServerMMS2`) nocase or
       re.regex($e.network.http.user_agent, `N-central-sec-audit/1\.0`) or
       re.regex($e.target.file.full_path, `n-central/tmp/serverchild-|n-central/flag/flag_default\.json|CodeDropMeta\.xml`) nocase or
       re.regex($e.target.file.full_path, `Windows Software Probe.*(wsp\.exe|service\.cfg)|CodeDropTmp|ServiceBackup.*wsp\.exe`) nocase or
-      re.regex($e.target.process.command_line, `wsp\.exe|Windows Software Probe`) nocase and re.regex($e.principal.process.command_line, `.+\.cmd`) nocase or
-      $e.target.ip = "157.20.241.16" or re.regex($e.target.process.command_line, `157\.20\.241\.16`) nocase
+      re.regex($e.target.process.command_line, `wsp\.exe|Windows Software Probe`) nocase and re.regex($e.principal.process.command_line, `.+\.cmd`) nocase
     )
     $host = $e.principal.hostname
 
@@ -38,6 +41,9 @@ rule rti_able2shell_n_able_n_central_zero_days {
     $process_command_line = array_distinct($e.target.process.command_line)
     $target_file_path = array_distinct($e.target.file.full_path)
     $target_url = array_distinct($e.target.url)
+    $file_sha256 = array_distinct($e.target.file.sha256)
+    $process_sha256 = array_distinct($e.target.process.file.sha256)
+    $process_path = array_distinct($e.target.process.file.full_path)
 
   condition:
     $e
