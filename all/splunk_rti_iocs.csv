@@ -1,4 +1,6 @@
 indicator,type,threat
+185.99.255.28,ipv4,ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints
+https://ns.mo7sen.dev/EadF.php?p=4,url,ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints
 icagllmbt.space,domain,"Trigram: DPRK Dropper Chain Targeting AI, Blockchain and Logistics (Kimsuky / UNK_DeadDrop)"
 dashboard.asteara.org,domain,"Trigram: DPRK Dropper Chain Targeting AI, Blockchain and Logistics (Kimsuky / UNK_DeadDrop)"
 dashboard.gaganata.ink,domain,"Trigram: DPRK Dropper Chain Targeting AI, Blockchain and Logistics (Kimsuky / UNK_DeadDrop)"

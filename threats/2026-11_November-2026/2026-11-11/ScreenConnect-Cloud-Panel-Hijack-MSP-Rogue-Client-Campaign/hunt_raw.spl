@@ -10,15 +10,21 @@
     | search src_ip IN ("185.99.255.28", "155.94.150.39")
     | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
   ]
-  [ search `rti_dns(newnewnew.gotdns.org OR soxnewwork.homedns.org OR sc.payproofkit.com OR cdn007-digitaldownloads.com)`
-    | search query IN ("newnewnew.gotdns.org", "*.newnewnew.gotdns.org", "soxnewwork.homedns.org", "*.soxnewwork.homedns.org", "sc.payproofkit.com", "*.sc.payproofkit.com", "cdn007-digitaldownloads.com", "*.cdn007-digitaldownloads.com")
-    | rex field=query "(?i)(?<ioc>(?:newnewnew\.gotdns\.org|soxnewwork\.homedns\.org|sc\.payproofkit\.com|cdn007\-digitaldownloads\.com))\.?$"
+  [ search `rti_dns(newnewnew.gotdns.org OR soxnewwork.homedns.org OR sc.payproofkit.com OR cdn007-digitaldownloads.com OR amexsafekeyupdate.com)`
+    | search query IN ("newnewnew.gotdns.org", "*.newnewnew.gotdns.org", "soxnewwork.homedns.org", "*.soxnewwork.homedns.org", "sc.payproofkit.com", "*.sc.payproofkit.com", "cdn007-digitaldownloads.com", "*.cdn007-digitaldownloads.com", "amexsafekeyupdate.com", "*.amexsafekeyupdate.com")
+    | rex field=query "(?i)(?<ioc>(?:newnewnew\.gotdns\.org|soxnewwork\.homedns\.org|sc\.payproofkit\.com|cdn007\-digitaldownloads\.com|amexsafekeyupdate\.com))\.?$"
     | eval data_model="dns", ioc_type="domain", host=src, detail="DNS query ".query
   ]
-  [ search `rti_web(newnewnew.gotdns.org OR soxnewwork.homedns.org OR sc.payproofkit.com OR cdn007-digitaldownloads.com OR ns.mo7sen.dev)`
-    | search url IN ("*://newnewnew.gotdns.org*", "*.newnewnew.gotdns.org*", "newnewnew.gotdns.org*", "*://soxnewwork.homedns.org*", "*.soxnewwork.homedns.org*", "soxnewwork.homedns.org*", "*://sc.payproofkit.com*", "*.sc.payproofkit.com*", "sc.payproofkit.com*", "*://cdn007-digitaldownloads.com*", "*.cdn007-digitaldownloads.com*", "cdn007-digitaldownloads.com*", "*ns.mo7sen.dev/EadF.php?p=4*") OR dest IN ("newnewnew.gotdns.org", "*.newnewnew.gotdns.org", "soxnewwork.homedns.org", "*.soxnewwork.homedns.org", "sc.payproofkit.com", "*.sc.payproofkit.com", "cdn007-digitaldownloads.com", "*.cdn007-digitaldownloads.com")
-    | rex field=url "(?i)(?<ioc>ns\.mo7sen\.dev/EadF\.php\?p=4|newnewnew\.gotdns\.org|soxnewwork\.homedns\.org|sc\.payproofkit\.com|cdn007\-digitaldownloads\.com)"
+  [ search `rti_web(newnewnew.gotdns.org OR soxnewwork.homedns.org OR sc.payproofkit.com OR cdn007-digitaldownloads.com OR amexsafekeyupdate.com OR ns.mo7sen.dev)`
+    | search url IN ("*://newnewnew.gotdns.org*", "*.newnewnew.gotdns.org*", "newnewnew.gotdns.org*", "*://soxnewwork.homedns.org*", "*.soxnewwork.homedns.org*", "soxnewwork.homedns.org*", "*://sc.payproofkit.com*", "*.sc.payproofkit.com*", "sc.payproofkit.com*", "*://cdn007-digitaldownloads.com*", "*.cdn007-digitaldownloads.com*", "cdn007-digitaldownloads.com*", "*://amexsafekeyupdate.com*", "*.amexsafekeyupdate.com*", "amexsafekeyupdate.com*", "*ns.mo7sen.dev/EadF.php?p=4*") OR dest IN ("newnewnew.gotdns.org", "*.newnewnew.gotdns.org", "soxnewwork.homedns.org", "*.soxnewwork.homedns.org", "sc.payproofkit.com", "*.sc.payproofkit.com", "cdn007-digitaldownloads.com", "*.cdn007-digitaldownloads.com", "amexsafekeyupdate.com", "*.amexsafekeyupdate.com")
+    | rex field=url "(?i)(?<ioc>ns\.mo7sen\.dev/EadF\.php\?p=4|newnewnew\.gotdns\.org|soxnewwork\.homedns\.org|sc\.payproofkit\.com|cdn007\-digitaldownloads\.com|amexsafekeyupdate\.com)"
     | eval ioc=coalesce(ioc, dest), data_model="web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+  ]
+  [ search `rti_endpoint(60142ea5daebbf94a2dec4009f673d9822a2fd796ac55478be1edea3136ef4bb)`
+    | search file_hash IN ("*60142ea5daebbf94a2dec4009f673d9822a2fd796ac55478be1edea3136ef4bb*") OR process_hash IN ("*60142ea5daebbf94a2dec4009f673d9822a2fd796ac55478be1edea3136ef4bb*") OR parent_process_hash IN ("*60142ea5daebbf94a2dec4009f673d9822a2fd796ac55478be1edea3136ef4bb*")
+    | eval matched=file_hash." ".process_hash." ".parent_process_hash
+    | rex field=matched "(?i)(?<ioc>60142ea5daebbf94a2dec4009f673d9822a2fd796ac55478be1edea3136ef4bb)"
+    | eval data_model="endpoint", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, detail=coalesce(process, file_path)
   ]
 | fillnull value="-" host user src dest detail
 | stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail

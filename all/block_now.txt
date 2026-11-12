@@ -1,4 +1,8 @@
-# All high-confidence indicators to block. Updated 2026-11-11.
+# All high-confidence indicators to block. Updated 2026-11-12 02:05.
+
+## 2026-11-11 ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints
+185.99.255.28
+https://ns.mo7sen.dev/EadF.php?p=4
 
 ## 2026-11-11 Trigram: DPRK Dropper Chain Targeting AI, Blockchain and Logistics (Kimsuky / UNK_DeadDrop)
 icagllmbt.space

@@ -4,32 +4,32 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-11 | 2026-11-11 22:05 | 2026-11-11 | Supply chain / MSP remote access | 11 | 0 |
+| 2026-11-11 | 2026-11-11 22:05 | 2026-11-12 02:05 | Supply chain / MSP remote access | 22 | 2 |
 
 ## Summary
 
-Huntress's SOC is responding to an active campaign that began around 17:47 UTC on 11 November 2026 against managed service providers using cloud-hosted ConnectWise ScreenConnect. At the time of its update Huntress was tracking six compromised MSPs and more than 286 endpoints, with the numbers rising; the actor numbers each victim MSP and the observed tags start partway through the sequence, so other MSPs were probably hit first. Huntress has seen no evidence of a new vulnerability and has not confirmed how the panels were accessed; the evidence points to stolen credentials or hijacked operator sessions. With panel access, the actor uses Run Command to push a second, rogue ScreenConnect client to every managed endpoint, giving an independent backdoor that no longer needs the MSP's panel. If a technician then opens an interactive ScreenConnect session to investigate, the malware rides that session back onto the technician's workstation, drops sqlite3.exe to scrape saved browser sessions and tokens, and pivots into any other ScreenConnect panels the technician can reach. Persistence is a TrapWatch scheduled task running as SYSTEM every 10 seconds, files under C:\ProgramData\RelayTrap\ and %TEMP%\sckit-*, and a RelayTrapLiteAlert Run-key value; endpoints reinfect within minutes if isolation is lifted before these are removed. ConnectWise confirmed the campaign in a Trust Center advisory at 22:45 UTC on 11 November, said the actor appears to deploy the extra remote-access software through third-party extensions, and disabled five of them (Labtech Plus, RMM Plus, RMM+, RMM Plus Password Link and RMM+ Password Link) in about 400 partner environments; on-premises partners must disable them themselves. ConnectWise did not publish indicators, so the indicators still come from a single vendor's incident response and are published at medium confidence: the attacker relay, C2 hostnames and stager URL are set to Block in the Defender import file but stay off the block-now list until a second source confirms them, and a possible C2 domain contributed by another responder is alert-only.
+Huntress's SOC is responding to an active campaign that began around 17:47 UTC on 11 November 2026 against managed service providers using cloud-hosted ConnectWise ScreenConnect. At the time of its update Huntress was tracking six compromised MSPs and more than 286 endpoints, with the numbers rising; the actor numbers each victim MSP and the observed tags start partway through the sequence, so other MSPs were probably hit first. Huntress has seen no evidence of a new vulnerability and has not confirmed how the panels were accessed; the evidence points to stolen credentials or hijacked operator sessions. With panel access, the actor uses Run Command to push a second, rogue ScreenConnect client to every managed endpoint, giving an independent backdoor that no longer needs the MSP's panel. If a technician then opens an interactive ScreenConnect session to investigate, the malware rides that session back onto the technician's workstation, drops sqlite3.exe to scrape saved browser sessions and tokens, and pivots into any other ScreenConnect panels the technician can reach. Persistence is a TrapWatch scheduled task running as SYSTEM every 10 seconds, files under C:\ProgramData\RelayTrap\ and %TEMP%\sckit-*, and a RelayTrapLiteAlert Run-key value; endpoints reinfect within minutes if isolation is lifted before these are removed. ConnectWise confirmed the campaign in a Trust Center advisory at 22:45 UTC on 11 November, said the actor appears to deploy the extra remote-access software through third-party extensions, and disabled five of them (Labtech Plus, RMM Plus, RMM+, RMM Plus Password Link and RMM+ Password Link) in about 400 partner environments; on-premises partners must disable them themselves. Sophos X-Ops independently observed the same activity: in one case curl.exe downloaded ScreenConnect.ClientSetup.msi from 185.99.255.28 to C:\Windows\TEMP\sc.msi, msiexec.exe installed it silently, and PowerShell with execution-policy bypass fetched the second stage from the ns.mo7sen.dev stager. Sophos saw the commands come from three ScreenConnect instance IDs that are likely compromised MSP instances (d905b2b1b165d0a9, 4b8f4089ddaac6a9 and df1f7ef0cfacd0d8) and install the same two rogue client IDs Huntress reported. Huntress's customer advisory, updated at 00:29 UTC on 12 November, adds that the toolkit installs a modified client that impersonates the MSP's own client and waits for a technician to connect. Because two vendors saw them independently, the attacker relay 185.99.255.28 and the stager URL are now high confidence and on the block-now list, and the two rogue client IDs are high-confidence hunting leads; the secondary C2 server and the dynamic-DNS and payproofkit hostnames come only from Huntress, so they stay Block in the Defender import file at medium confidence. BleepingComputer found a July 2026 SSA-themed batch file on VirusTotal that installs ScreenConnect from cdn007-digitaldownloads.com, contacts amexsafekeyupdate.com and checks for rogue client ID ed630cc2c873b091; whether that earlier activity belongs to this campaign is not confirmed, so its domain, hash and file name, and the possible C2 domain, are alert-only.
 
 ## Affected countries and sectors
 
 - **Countries:** Not stated in the sources
 - **Sectors:** Managed service providers (MSPs), MSP-managed customer organisations
-- **Note:** Huntress tracks six compromised MSPs and more than 286 managed endpoints using cloud-hosted ScreenConnect, with more victims likely; no countries are named.
+- **Note:** Huntress tracks six compromised MSPs and more than 286 endpoints across 47 organisations using cloud-hosted ScreenConnect, with more victims likely; Sophos saw the same activity; no countries are named.
 - **Source:** [Huntress SOC on r/msp – Active malware campaign abusing ScreenConnect](https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/)
 
 ## At a glance
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/block_now.txt) (raw) | None yet: no indicator is high-confidence enough to block, so use the files below to hunt |
-| [`iocs.csv`](iocs.csv) | All 11 indicators with description, confidence, action and source |
-| [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 7 rows for Defender XDR bulk import |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/block_now.txt) (raw) | 2 high-confidence indicators to block now |
+| [`iocs.csv`](iocs.csv) | All 22 indicators with description, confidence, action and source |
+| [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 9 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
 | [`hunt.spl`](hunt.spl) | Splunk hunt over the CIM data models |
 | [`hunt_raw.spl`](hunt_raw.spl) | Splunk hunt for data not mapped to CIM ([macros](../../../../all/splunk_macros.conf)) |
 | [`hunt.yaral`](hunt.yaral) | Google SecOps YARA-L 2.0 detection rule |
 
-Indicators by type: 4 domains, 4 file names, 2 IPv4, 1 URL. See `iocs.csv` for full details and descriptions.
+Indicators by type: 7 file names, 6 other, 5 domains, 2 IPv4, 1 URL, 1 SHA256. See `iocs.csv` for full details and descriptions.
 
 ## MITRE ATT&CK
 
@@ -51,7 +51,7 @@ Indicators by type: 4 domains, 4 file names, 2 IPv4, 1 URL. See `iocs.csv` for f
 1. Check that the Labtech Plus, RMM Plus, RMM+, RMM Plus Password Link and RMM+ Password Link extensions are disabled (on-premises partners must do this themselves), keep their installation records and logs, and do not re-enable them until ConnectWise says it is safe.
 2. Do not triage suspected hosts through ScreenConnect: use your EDR live-response shell, WinRM or another out-of-band tool, because an interactive session can carry the infection back to the technician's workstation.
 3. Revoke all active ScreenConnect web sessions, rotate ScreenConnect credentials, verify MFA in your identity provider, and audit Run Command and Toolbox history for mass executions you did not start.
-4. Block 185.99.255.28, 155.94.150.39, newnewnew.gotdns.org, soxnewwork.homedns.org, sc.payproofkit.com and the ns.mo7sen.dev stager URL in Defender XDR (they come from one vendor's incident response, so follow your own policy for single-source blocks), block only these exact dynamic-DNS hostnames, not gotdns.org or homedns.org, and alert on cdn007-digitaldownloads.com.
+4. Block 185.99.255.28 and the ns.mo7sen.dev stager URL now (Huntress and Sophos both saw them), also block 155.94.150.39, newnewnew.gotdns.org, soxnewwork.homedns.org and sc.payproofkit.com in Defender XDR (Huntress only, so follow your own policy for single-source blocks), block only these exact dynamic-DNS hostnames, not gotdns.org or homedns.org, and alert on cdn007-digitaldownloads.com and amexsafekeyupdate.com.
 5. On endpoints, remove the rogue ScreenConnect client service (client IDs 2588ef5c15954b10 and ed630cc2c873b091), the TrapWatch scheduled task, C:\ProgramData\RelayTrap\, %TEMP%\sckit-* and the RelayTrapLiteAlert Run value before lifting isolation.
 6. On technician workstations, look for sqlite3.exe reading browser profile data and for Panel-Lateral.ps1 or Run-Lateral-Full.bat, then reset browser-stored sessions and tokens.
 
@@ -105,7 +105,7 @@ Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql)
 
 ## Hunt
 
-Run one of these to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
 
 | File | Platform | How to run it |
 |---|---|---|
@@ -120,6 +120,9 @@ Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and
 
 - [Huntress SOC on r/msp – Active malware campaign abusing ScreenConnect](https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/)
 - [ConnectWise Trust Center – ScreenConnect security advisory (11 Nov 2026)](https://www.connectwise.com/company/trust/advisories)
+- [Sophos X-Ops – Malicious ScreenConnect deployments observed](https://www.sophos.com/en-us/blog/malicious-screenconnect-deployments-observed)
+- [Huntress Support – 2026 November ScreenConnect advisory](https://support.huntress.io/hc/en-us/articles/57422935234195-2026-November-ScreenConnect)
+- [BleepingComputer – Active ScreenConnect attacks breach MSPs, impact dozens of organizations](https://www.bleepingcomputer.com/news/security/active-screenconnect-attacks-breach-msps-impact-dozens-of-organizations/)
 
 ---
 

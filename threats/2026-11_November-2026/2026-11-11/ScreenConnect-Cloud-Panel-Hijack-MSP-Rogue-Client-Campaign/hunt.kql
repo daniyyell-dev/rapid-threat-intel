@@ -3,9 +3,10 @@
 // Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign
 let Lookback = 30d;
 let IPs = dynamic(["185.99.255.28", "155.94.150.39"]);
-let Domains = dynamic(["newnewnew.gotdns.org", "soxnewwork.homedns.org", "sc.payproofkit.com", "cdn007-digitaldownloads.com"]);
+let Domains = dynamic(["newnewnew.gotdns.org", "soxnewwork.homedns.org", "sc.payproofkit.com", "cdn007-digitaldownloads.com", "amexsafekeyupdate.com"]);
 let Urls = dynamic(["https://ns.mo7sen.dev/EadF.php?p=4"]);
 let UrlKeys = dynamic(["ns.mo7sen.dev/EadF.php?p=4"]);
+let SHA256s = dynamic(["60142ea5daebbf94a2dec4009f673d9822a2fd796ac55478be1edea3136ef4bb"]);
 union isfuzzy=true
   (DeviceNetworkEvents
     | where Timestamp > ago(Lookback)
@@ -55,9 +56,25 @@ union isfuzzy=true
     | where Timestamp > ago(Lookback)
     | where Url has_any (Domains) or Url has_any (UrlKeys)
     | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(ActionType, " ", FolderPath))),
   (DeviceProcessEvents
     | where Timestamp > ago(Lookback)
-    | where ProcessCommandLine has_any ("TrapWatch", "RelayTrap", "sckit-", "Panel-Lateral.ps1", "Run-Lateral-Full.bat", "ToolboxRelayUploader", "2588ef5c15954b10", "ed630cc2c873b091", "c=Exploited") or FileName in~ ("ToolboxRelayUploader.exe", "runnew.cmd")
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceImageLoadEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " loaded by ", InitiatingProcessFileName))),
+  (EmailAttachmentInfo
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "EmailAttachmentInfo", Entity = tostring(RecipientEmailAddress), Indicator = tostring(SHA256), Context = tostring(strcat(FileName, " from ", SenderFromAddress))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where ProcessCommandLine has_any ("TrapWatch", "RelayTrap", "sckit-", "Panel-Lateral.ps1", "Run-Lateral-Full.bat", "ToolboxRelayUploader", "2588ef5c15954b10", "ed630cc2c873b091", "d905b2b1b165d0a9", "4b8f4089ddaac6a9", "df1f7ef0cfacd0d8", "c=Exploited") or FileName in~ ("ToolboxRelayUploader.exe", "runnew.cmd")
     | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
   (DeviceProcessEvents
     | where Timestamp > ago(Lookback)

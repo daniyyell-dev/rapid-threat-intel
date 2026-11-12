@@ -13,10 +13,14 @@ rule rti_screenconnect_cloud_panel_hijack_msp_rogue_client_campaign {
       $e.principal.ip = /^(?:185\.99\.255\.28|155\.94\.150\.39)$/ or
       $e.target.ip = /^(?:185\.99\.255\.28|155\.94\.150\.39)$/ or
       $e.network.dns.answers.data = /^(?:185\.99\.255\.28|155\.94\.150\.39)$/ or
-      $e.network.dns.questions.name = /(?:^|\.)(?:newnewnew\.gotdns\.org|soxnewwork\.homedns\.org|sc\.payproofkit\.com|cdn007\-digitaldownloads\.com)\.?$/ nocase or
-      $e.target.hostname = /(?:^|\.)(?:newnewnew\.gotdns\.org|soxnewwork\.homedns\.org|sc\.payproofkit\.com|cdn007\-digitaldownloads\.com)\.?$/ nocase or
-      $e.target.domain.name = /(?:^|\.)(?:newnewnew\.gotdns\.org|soxnewwork\.homedns\.org|sc\.payproofkit\.com|cdn007\-digitaldownloads\.com)\.?$/ nocase or
-      re.regex($e.target.url, `^(?:[a-z][a-z0-9+.-]*://)?(?:[^/?#]*@)?(?:ns\.mo7sen\.dev/EadF\.php\?p=4|(?:[^/?#@]*\.)?(?:newnewnew\.gotdns\.org|soxnewwork\.homedns\.org|sc\.payproofkit\.com|cdn007\-digitaldownloads\.com)(?::\d+)?(?:[/?#]|$))`) nocase or
+      $e.network.dns.questions.name = /(?:^|\.)(?:newnewnew\.gotdns\.org|soxnewwork\.homedns\.org|sc\.payproofkit\.com|cdn007\-digitaldownloads\.com|amexsafekeyupdate\.com)\.?$/ nocase or
+      $e.target.hostname = /(?:^|\.)(?:newnewnew\.gotdns\.org|soxnewwork\.homedns\.org|sc\.payproofkit\.com|cdn007\-digitaldownloads\.com|amexsafekeyupdate\.com)\.?$/ nocase or
+      $e.target.domain.name = /(?:^|\.)(?:newnewnew\.gotdns\.org|soxnewwork\.homedns\.org|sc\.payproofkit\.com|cdn007\-digitaldownloads\.com|amexsafekeyupdate\.com)\.?$/ nocase or
+      re.regex($e.target.url, `^(?:[a-z][a-z0-9+.-]*://)?(?:[^/?#]*@)?(?:ns\.mo7sen\.dev/EadF\.php\?p=4|(?:[^/?#@]*\.)?(?:newnewnew\.gotdns\.org|soxnewwork\.homedns\.org|sc\.payproofkit\.com|cdn007\-digitaldownloads\.com|amexsafekeyupdate\.com)(?::\d+)?(?:[/?#]|$))`) nocase or
+      $e.target.file.sha256 = /^(?:60142ea5daebbf94a2dec4009f673d9822a2fd796ac55478be1edea3136ef4bb)$/ nocase or
+      $e.target.process.file.sha256 = /^(?:60142ea5daebbf94a2dec4009f673d9822a2fd796ac55478be1edea3136ef4bb)$/ nocase or
+      $e.principal.process.file.sha256 = /^(?:60142ea5daebbf94a2dec4009f673d9822a2fd796ac55478be1edea3136ef4bb)$/ nocase or
+      $e.principal.process.parent_process.file.sha256 = /^(?:60142ea5daebbf94a2dec4009f673d9822a2fd796ac55478be1edea3136ef4bb)$/ nocase or
       ($e.metadata.event_type = "PROCESS_LAUNCH" and re.regex($e.principal.process.file.full_path, `screenconnect`) nocase and re.regex($e.target.process.command_line, `ScreenConnect\.ClientSetup`) nocase) or
       ($e.metadata.event_type = "PROCESS_LAUNCH" and re.regex($e.target.process.command_line, `2588ef5c15954b10|ed630cc2c873b091|185\.99\.255\.28|newnewnew\.gotdns\.org|soxnewwork\.homedns\.org|sc\.payproofkit\.com|c=Exploited`) nocase) or
       ($e.metadata.event_type = "PROCESS_LAUNCH" and re.regex($e.target.process.command_line, `TrapWatch`) nocase) or
@@ -29,7 +33,7 @@ rule rti_screenconnect_cloud_panel_hijack_msp_rogue_client_campaign {
     $host over 1h
 
   outcome:
-    $risk_score = max(60)
+    $risk_score = max(80)
     $event_count = count($e.metadata.id)
     $event_types = array_distinct($e.metadata.event_type)
     $log_types = array_distinct($e.metadata.log_type)
@@ -42,6 +46,9 @@ rule rti_screenconnect_cloud_panel_hijack_msp_rogue_client_campaign {
     $dns_query = array_distinct($e.network.dns.questions.name)
     $target_hostname = array_distinct($e.target.hostname)
     $target_url = array_distinct($e.target.url)
+    $file_sha256 = array_distinct($e.target.file.sha256)
+    $process_sha256 = array_distinct($e.target.process.file.sha256)
+    $process_path = array_distinct($e.target.process.file.full_path)
 
   condition:
     $e
