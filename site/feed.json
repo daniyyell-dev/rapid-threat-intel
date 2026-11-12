@@ -4,9 +4,9 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-12 09:25",
- "threat_count": 23,
- "indicator_count": 944,
+ "last_updated": "2026-11-12 09:50",
+ "threat_count": 26,
+ "indicator_count": 965,
  "block_now_count": 278,
  "combined_files": [
   {
@@ -102,6 +102,919 @@
   }
  ],
  "threats": [
+  {
+   "id": "GSocket-Linux-Web-Server-C2",
+   "folder": "threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2",
+   "name": "GSocket Linux Web-Server C2",
+   "short": "GSocket Linux web-server C2",
+   "category": "Post-exploitation / Linux C2",
+   "published": "2026-11-11",
+   "entry_date": "2026-11-12 09:50",
+   "last_updated": "2026-11-12",
+   "seq": 26,
+   "headline": "GSocket relay clients on compromised Linux web servers, with hashes and paths only — do not block the public relay",
+   "summary": "Microsoft Threat Intelligence reports that threat actors have been deploying GSocket, a legitimate open-source relay tool, as stealthy command and control on compromised Linux web servers after internet-facing application breaches. The host and the operator each connect outbound to the public Global Socket Relay Network, so there is no attacker-owned IP address or domain to block. Operators stage gs-netcat under /dev/shm, persist as systemd-remount-d or /usr/bin/defunct, launch the payload with a kernel-thread-like argument-zero name such as [kaluad], and timestomp the files. The four SHA-256 hashes below were published by Microsoft and are medium confidence: they appear as BlockAndRemediate in the Defender import file, not on the high-confidence block-now list. Do not block gsocket.io, cdn.gsocket.io, gsgg.b-cdn.net or the public relay; hunt web-server processes that retrieve or install GSocket instead. Sansec has independently described the same class of GSocket web-server abuse.",
+   "caveat": "GSocket is a legitimate project also used by administrators. Do not block gsocket.io, its CDN, or the public Global Socket Relay Network. Hashes and paths are medium confidence (Microsoft).",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Global"
+    ],
+    "sectors": [
+     "Hosting",
+     "Internet-facing web applications"
+    ],
+    "note": "Microsoft observed GSocket deployments on compromised Linux web servers after internet-facing application breaches, concentrated in web applications and hosting environments. Specific victim organisations were not named.",
+    "source": {
+     "url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/",
+     "label": "Microsoft Threat Intelligence – Global Socket: how threat actors are weaponizing GSocket for stealthy C2",
+     "name": "Microsoft"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1105",
+     "name": "Ingress Tool Transfer",
+     "url": "https://attack.mitre.org/techniques/T1105/"
+    },
+    {
+     "id": "T1059.004",
+     "name": "Unix Shell",
+     "url": "https://attack.mitre.org/techniques/T1059/004/"
+    },
+    {
+     "id": "T1036.005",
+     "name": "Match Legitimate Name or Location",
+     "url": "https://attack.mitre.org/techniques/T1036/005/"
+    },
+    {
+     "id": "T1543.002",
+     "name": "Systemd Service",
+     "url": "https://attack.mitre.org/techniques/T1543/002/"
+    },
+    {
+     "id": "T1053.003",
+     "name": "Cron",
+     "url": "https://attack.mitre.org/techniques/T1053/003/"
+    },
+    {
+     "id": "T1070.006",
+     "name": "Timestomp",
+     "url": "https://attack.mitre.org/techniques/T1070/006/"
+    },
+    {
+     "id": "T1090.002",
+     "name": "External Proxy",
+     "url": "https://attack.mitre.org/techniques/T1090/002/"
+    },
+    {
+     "id": "T1573",
+     "name": "Encrypted Channel",
+     "url": "https://attack.mitre.org/techniques/T1573/"
+    }
+   ],
+   "recommended_actions": [
+    "Import the four GSocket SHA-256 hashes in Defender XDR at medium confidence, and hunt 30 days of endpoint logs for them and for the listed file paths.",
+    "Hunt internet-facing Linux web servers for web-server processes (nginx, httpd, php-fpm, java, node) running curl or bash against gsocket.io, files under /dev/shm/.gs-*, systemd-remount-d, /usr/bin/defunct and defunct.service. Do not block gsocket.io or the public relay.",
+    "Look for bash exec -a launching a payload as [kaluad] or another kernel-thread-like name, chmod 700 on /usr/bin/defunct, and touch used to timestomp those files.",
+    "If confirmed, remove the relay client and its persistence, rotate credentials reachable from the host, and verify that outbound sessions to the relay have stopped. Patching the original web-app flaw does not remove GSocket."
+   ],
+   "sources": [
+    {
+     "url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/",
+     "label": "Microsoft Threat Intelligence – Global Socket: how threat actors are weaponizing GSocket for stealthy C2",
+     "name": "Microsoft"
+    },
+    {
+     "url": "https://sansec.io/research/gsocket",
+     "label": "Sansec – Found defunct.dat on your site? You have a problem",
+     "name": "Sansec"
+    }
+   ],
+   "indicator_count": 9,
+   "block_now_count": 0,
+   "hunt_count": 9,
+   "hunt_counts": {
+    "alert": 5,
+    "block": 4
+   },
+   "indicator_counts": {
+    "filename": 5,
+    "sha256": 4
+   },
+   "ioas": [
+    {
+     "artefact": "A web-server process running curl or bash against gsocket.io, including /y or /install.sh",
+     "log_source": "EDR process events on internet-facing Linux web servers",
+     "why": "Microsoft saw compromised web applications retrieve and install GSocket from the legitimate project site. Do not block gsocket.io; hunt the process ancestry.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/",
+     "source_name": "Microsoft",
+     "title": "Web server retrieving GSocket from gsocket.io",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Files under /dev/shm/.gs-* or named gs-netcat_mini-linux-x86_64, gs-netcat_mini-linux-aarch64 or .gsn_ora",
+     "log_source": "EDR file events on Linux servers",
+     "why": "Microsoft observed GSocket clients staged under /dev/shm/.gs-0/ and a .gsn_ora staging file under /tmp.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/",
+     "source_name": "Microsoft",
+     "title": "GSocket staging under /dev/shm or .gsn_ora",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "A systemd-remount-d binary, /usr/bin/defunct, or a defunct.service unit",
+     "log_source": "EDR file, process and systemd events on Linux servers",
+     "why": "Microsoft observed GSocket persisted as systemd-remount-d or /usr/bin/defunct, with a defunct.service unit and a multi-user.target.wants link.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/",
+     "source_name": "Microsoft",
+     "title": "GSocket persistence as systemd-remount-d or defunct",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "bash using exec -a to present a payload as [kaluad], or chmod 700 and touch against /usr/bin/defunct or defunct.service",
+     "log_source": "EDR process events on Linux servers",
+     "why": "Microsoft saw bash exec -a launch /usr/bin/defunct with the argument-zero name [kaluad], then chmod 700 and touch used to hide the payload.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/",
+     "source_name": "Microsoft",
+     "title": "exec -a [kaluad] or timestomp of defunct",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    }
+   ],
+   "ioa_count": 4,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2/block_now.txt",
+     "download": "GSocket-Linux-Web-Server-C2_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2/defender_xdr_indicators.csv",
+     "download": "GSocket-Linux-Web-Server-C2_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2/hunt.kql",
+     "download": "GSocket-Linux-Web-Server-C2_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2/hunt.spl",
+     "download": "GSocket-Linux-Web-Server-C2_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2/hunt_raw.spl",
+     "download": "GSocket-Linux-Web-Server-C2_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2/hunt.yaral",
+     "download": "GSocket-Linux-Web-Server-C2_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2/iocs.csv",
+     "download": "GSocket-Linux-Web-Server-C2_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2",
+   "indicators": [
+    {
+     "value": "d94f75a70b5cabaf786ac57177ed841732e62bdcc9a29e06e5b41d9be567bcfa",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "gs-netcat_mini-linux-x86_64 staged under /dev/shm/.gs-0/ (Microsoft). Medium confidence.",
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/",
+     "source_label": "Microsoft Threat Intelligence – Global Socket: how threat actors are weaponizing GSocket for stealthy C2",
+     "source_name": "Microsoft"
+    },
+    {
+     "value": "f95c4d029e6784e3849b4d1e2e2ae1a661187236ef7c5d487c71158a290a03b5",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "gs-netcat_mini-linux-aarch64 staged under /dev/shm (Microsoft). Medium confidence.",
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/",
+     "source_label": "Microsoft Threat Intelligence – Global Socket: how threat actors are weaponizing GSocket for stealthy C2",
+     "source_name": "Microsoft"
+    },
+    {
+     "value": "55d141bb2f62c527c3fea3413b8429fed7d52633d0b123b5e611bfa42165229f",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "systemd-remount-d persistence payload, seen as /tmp/systemd-remount-d and /usr/bin/systemd-remount-d (Microsoft). Medium confidence.",
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/",
+     "source_label": "Microsoft Threat Intelligence – Global Socket: how threat actors are weaponizing GSocket for stealthy C2",
+     "source_name": "Microsoft"
+    },
+    {
+     "value": "12450bafc7a4398040e1ad3a16dbf4dbc79b6a8f83ef306c4f0f73f59886f06c",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": ".gsn_ora staging file under /tmp (Microsoft). Medium confidence.",
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/",
+     "source_label": "Microsoft Threat Intelligence – Global Socket: how threat actors are weaponizing GSocket for stealthy C2",
+     "source_name": "Microsoft"
+    },
+    {
+     "value": "gs-netcat_mini-linux-x86_64",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "GSocket client filename observed under /dev/shm/.gs-0/ (Microsoft). Alert only.",
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/",
+     "source_label": "Microsoft Threat Intelligence – Global Socket: how threat actors are weaponizing GSocket for stealthy C2",
+     "source_name": "Microsoft"
+    },
+    {
+     "value": "gs-netcat_mini-linux-aarch64",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "GSocket client filename (aarch64) observed under /dev/shm (Microsoft). Alert only.",
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/",
+     "source_label": "Microsoft Threat Intelligence – Global Socket: how threat actors are weaponizing GSocket for stealthy C2",
+     "source_name": "Microsoft"
+    },
+    {
+     "value": "systemd-remount-d",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Persistence name for a renamed GSocket payload (Microsoft). Alert only; confirm it is not a legitimate unit.",
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/",
+     "source_label": "Microsoft Threat Intelligence – Global Socket: how threat actors are weaponizing GSocket for stealthy C2",
+     "source_name": "Microsoft"
+    },
+    {
+     "value": ".gsn_ora",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "GSocket staging filename under /tmp (Microsoft). Alert only.",
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/",
+     "source_label": "Microsoft Threat Intelligence – Global Socket: how threat actors are weaponizing GSocket for stealthy C2",
+     "source_name": "Microsoft"
+    },
+    {
+     "value": "defunct.service",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Systemd unit name used to persist a renamed GSocket payload (Microsoft). Alert only.",
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/",
+     "source_label": "Microsoft Threat Intelligence – Global Socket: how threat actors are weaponizing GSocket for stealthy C2",
+     "source_name": "Microsoft"
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2/hunt.kql",
+     "download": "GSocket-Linux-Web-Server-C2_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2/hunt.spl",
+     "download": "GSocket-Linux-Web-Server-C2_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2/hunt_raw.spl",
+      "download": "GSocket-Linux-Web-Server-C2_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2/hunt.yaral",
+     "download": "GSocket-Linux-Web-Server-C2_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "ARTEX-AWS-Financial-Data-Hunting",
+   "folder": "threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting",
+   "name": "ARTEX AWS Financial-Data Hunting",
+   "short": "ARTEX AWS financial-data hunting",
+   "category": "Financially motivated intrusion / cloud",
+   "published": "2026-11-09",
+   "entry_date": "2026-11-12 09:50",
+   "last_updated": "2026-11-12",
+   "seq": 25,
+   "headline": "ARTEX operators in AWS hunting financial logs and Cognito, with hunt-only operator IPs",
+   "summary": "Datadog Security Labs documented ARTEX operators in the Storm-0940 cluster hunting financial data in AWS environments. The agents call CloudWatch FilterLogEvents for card, payment and invoice terms with a 1,000-event limit, probe S3 anonymously then move into Amazon Cognito (SignUp and InitiateAuth), and send distinctive ARTEX user agents such as artex-readonly/1.0 and ARTeX-authorized-pentest. Ten operator IP addresses were published by Datadog only, so they are medium confidence and for hunt and alert only; do not block whole hosting ASNs or unrelated hosts on the same networks. This activity is distinct from the Cambodia-based Storm-3358 web-RAT campaign, which has its own entry. Sophos X-Ops has also described ARTEX tradecraft against financial organisations, without publishing these AWS addresses.",
+   "caveat": "Single-source network indicators (Datadog). Alert and hunt only; do not block entire ASNs or shared hosting ranges. Distinct from Storm-3358.",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Global"
+    ],
+    "sectors": [
+     "Financial services"
+    ],
+    "note": "Datadog documented ARTEX operators (Storm-0940 cluster) hunting financial data in AWS, including card, payment and invoice log content. Specific victim organisations were not named.",
+    "source": {
+     "url": "https://securitylabs.datadoghq.com/articles/artex-agentic-attacks-aws-environments/",
+     "label": "Datadog Security Labs – ARTEX agentic attacks in AWS environments",
+     "name": "Datadog Security Labs"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1595",
+     "name": "Active Scanning",
+     "url": "https://attack.mitre.org/techniques/T1595/"
+    },
+    {
+     "id": "T1526",
+     "name": "Cloud Service Discovery",
+     "url": "https://attack.mitre.org/techniques/T1526/"
+    },
+    {
+     "id": "T1530",
+     "name": "Data from Cloud Storage",
+     "url": "https://attack.mitre.org/techniques/T1530/"
+    },
+    {
+     "id": "T1213",
+     "name": "Data from Information Repositories",
+     "url": "https://attack.mitre.org/techniques/T1213/"
+    },
+    {
+     "id": "T1078",
+     "name": "Valid Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/"
+    },
+    {
+     "id": "T1136.003",
+     "name": "Create Cloud Account",
+     "url": "https://attack.mitre.org/techniques/T1136/003/"
+    },
+    {
+     "id": "T1071",
+     "name": "Application Layer Protocol",
+     "url": "https://attack.mitre.org/techniques/T1071/"
+    }
+   ],
+   "recommended_actions": [
+    "Alert on the ten operator IP addresses in CloudTrail, VPC flow, WAF and perimeter logs; do not block whole ASNs.",
+    "Hunt CloudTrail for FilterLogEvents calls whose filter patterns include financial terms (card, payment, invoice, transaction) and a limit of 1,000, and for anonymous S3 access followed by Cognito SignUp or InitiateAuth.",
+    "Hunt proxy, WAF and application logs for ARTEX user agents (artex-readonly/1.0, artex-pentest/1.0, artex-audit/1.0, artex-spawn/1, artex-verify/1.0, ARTEX-worker/1.0, ARTeX-authorized-pentest, Mozilla/5.0 ARTeX, artex-i21861-canary).",
+    "Look for canary GetObject keys such as zzz_nonexistent_abc.txt immediately before real object reads, and review IAM and Cognito changes in the same window."
+   ],
+   "sources": [
+    {
+     "url": "https://securitylabs.datadoghq.com/articles/artex-agentic-attacks-aws-environments/",
+     "label": "Datadog Security Labs – ARTEX agentic attacks in AWS environments",
+     "name": "Datadog Security Labs"
+    },
+    {
+     "url": "https://www.sophos.com/en-us/blog/artex-attackers-apply-agentic-ai",
+     "label": "Sophos X-Ops – ARTEX attackers apply agentic AI (tradecraft corroboration, no AWS addresses)",
+     "name": "Sophos"
+    }
+   ],
+   "indicator_count": 10,
+   "block_now_count": 0,
+   "hunt_count": 10,
+   "hunt_counts": {
+    "alert": 10
+   },
+   "indicator_counts": {
+    "ipv4": 10
+   },
+   "ioas": [
+    {
+     "artefact": "CloudWatch FilterLogEvents calls whose filter patterns include financial terms and a limit of 1,000",
+     "log_source": "AWS CloudTrail",
+     "why": "Datadog saw ARTEX agents search CloudWatch logs for card, payment and invoice terms with FilterLogEvents and a 1,000-event limit.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://securitylabs.datadoghq.com/articles/artex-agentic-attacks-aws-environments/",
+     "source_name": "Datadog Security Labs",
+     "title": "CloudWatch FilterLogEvents for financial terms",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Anonymous S3 access followed by Cognito SignUp or InitiateAuth from the same identity or address",
+     "log_source": "AWS CloudTrail",
+     "why": "Datadog documented ARTEX operators probing S3 anonymously, then creating or authenticating Cognito users to reach further data.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://securitylabs.datadoghq.com/articles/artex-agentic-attacks-aws-environments/",
+     "source_name": "Datadog Security Labs",
+     "title": "Anonymous S3 then Cognito SignUp or InitiateAuth",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "HTTP or AWS API requests with ARTEX user agents such as artex-readonly/1.0, ARTeX-authorized-pentest or ARTEX-worker/1.0",
+     "log_source": "AWS CloudTrail, WAF, proxy and application logs",
+     "why": "Datadog published distinctive ARTEX user agents used during AWS financial-data hunting, including artex-readonly/1.0, artex-pentest/1.0, artex-audit/1.0, artex-spawn/1, artex-verify/1.0, ARTEX-worker/1.0, Mozilla/5.0 ARTeX, ARTeX-authorized-pentest and artex-i21861-canary.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://securitylabs.datadoghq.com/articles/artex-agentic-attacks-aws-environments/",
+     "source_name": "Datadog Security Labs",
+     "title": "ARTEX user agents in AWS or proxy logs",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "S3 GetObject or HeadObject for canary keys such as zzz_nonexistent_abc.txt or Notexist-xyz immediately before real object reads",
+     "log_source": "AWS CloudTrail",
+     "why": "Datadog observed ARTEX agents probing non-existent canary object keys before reading real financial data.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://securitylabs.datadoghq.com/articles/artex-agentic-attacks-aws-environments/",
+     "source_name": "Datadog Security Labs",
+     "title": "ARTEX canary S3 object keys",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    }
+   ],
+   "ioa_count": 4,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting/block_now.txt",
+     "download": "ARTEX-AWS-Financial-Data-Hunting_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting/defender_xdr_indicators.csv",
+     "download": "ARTEX-AWS-Financial-Data-Hunting_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting/hunt.kql",
+     "download": "ARTEX-AWS-Financial-Data-Hunting_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting/hunt.spl",
+     "download": "ARTEX-AWS-Financial-Data-Hunting_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting/hunt_raw.spl",
+     "download": "ARTEX-AWS-Financial-Data-Hunting_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting/hunt.yaral",
+     "download": "ARTEX-AWS-Financial-Data-Hunting_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting/iocs.csv",
+     "download": "ARTEX-AWS-Financial-Data-Hunting_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting",
+   "indicators": [
+    {
+     "value": "169.128.55.214",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "ARTEX operator IP listed by Datadog Security Labs. Medium confidence, alert/hunt only.",
+     "source_url": "https://securitylabs.datadoghq.com/articles/artex-agentic-attacks-aws-environments/",
+     "source_label": "Datadog Security Labs – ARTEX agentic attacks in AWS environments",
+     "source_name": "Datadog Security Labs"
+    },
+    {
+     "value": "154.64.252.77",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "ARTEX operator IP listed by Datadog Security Labs. Medium confidence, alert/hunt only.",
+     "source_url": "https://securitylabs.datadoghq.com/articles/artex-agentic-attacks-aws-environments/",
+     "source_label": "Datadog Security Labs – ARTEX agentic attacks in AWS environments",
+     "source_name": "Datadog Security Labs"
+    },
+    {
+     "value": "154.36.136.197",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "ARTEX operator IP listed by Datadog Security Labs. Medium confidence, alert/hunt only.",
+     "source_url": "https://securitylabs.datadoghq.com/articles/artex-agentic-attacks-aws-environments/",
+     "source_label": "Datadog Security Labs – ARTEX agentic attacks in AWS environments",
+     "source_name": "Datadog Security Labs"
+    },
+    {
+     "value": "154.36.136.23",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "ARTEX operator IP listed by Datadog Security Labs. Medium confidence, alert/hunt only.",
+     "source_url": "https://securitylabs.datadoghq.com/articles/artex-agentic-attacks-aws-environments/",
+     "source_label": "Datadog Security Labs – ARTEX agentic attacks in AWS environments",
+     "source_name": "Datadog Security Labs"
+    },
+    {
+     "value": "102.216.154.102",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "ARTEX operator IP listed by Datadog Security Labs. Medium confidence, alert/hunt only.",
+     "source_url": "https://securitylabs.datadoghq.com/articles/artex-agentic-attacks-aws-environments/",
+     "source_label": "Datadog Security Labs – ARTEX agentic attacks in AWS environments",
+     "source_name": "Datadog Security Labs"
+    },
+    {
+     "value": "82.158.88.233",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "ARTEX operator IP listed by Datadog Security Labs. Medium confidence, alert/hunt only.",
+     "source_url": "https://securitylabs.datadoghq.com/articles/artex-agentic-attacks-aws-environments/",
+     "source_label": "Datadog Security Labs – ARTEX agentic attacks in AWS environments",
+     "source_name": "Datadog Security Labs"
+    },
+    {
+     "value": "88.229.22.232",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "ARTEX operator IP listed by Datadog Security Labs. Medium confidence, alert/hunt only.",
+     "source_url": "https://securitylabs.datadoghq.com/articles/artex-agentic-attacks-aws-environments/",
+     "source_label": "Datadog Security Labs – ARTEX agentic attacks in AWS environments",
+     "source_name": "Datadog Security Labs"
+    },
+    {
+     "value": "103.54.154.40",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "ARTEX operator IP listed by Datadog Security Labs (associated in the report with zeofast.cn). Medium confidence, alert/hunt only. Do not block the whole zone.",
+     "source_url": "https://securitylabs.datadoghq.com/articles/artex-agentic-attacks-aws-environments/",
+     "source_label": "Datadog Security Labs – ARTEX agentic attacks in AWS environments",
+     "source_name": "Datadog Security Labs"
+    },
+    {
+     "value": "103.54.154.32",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "ARTEX operator IP listed by Datadog Security Labs. Medium confidence, alert/hunt only.",
+     "source_url": "https://securitylabs.datadoghq.com/articles/artex-agentic-attacks-aws-environments/",
+     "source_label": "Datadog Security Labs – ARTEX agentic attacks in AWS environments",
+     "source_name": "Datadog Security Labs"
+    },
+    {
+     "value": "45.145.228.25",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "ARTEX operator IP listed by Datadog Security Labs. Medium confidence, alert/hunt only.",
+     "source_url": "https://securitylabs.datadoghq.com/articles/artex-agentic-attacks-aws-environments/",
+     "source_label": "Datadog Security Labs – ARTEX agentic attacks in AWS environments",
+     "source_name": "Datadog Security Labs"
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting/hunt.kql",
+     "download": "ARTEX-AWS-Financial-Data-Hunting_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting/hunt.spl",
+     "download": "ARTEX-AWS-Financial-Data-Hunting_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting/hunt_raw.spl",
+      "download": "ARTEX-AWS-Financial-Data-Hunting_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting/hunt.yaral",
+     "download": "ARTEX-AWS-Financial-Data-Hunting_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "Ivanti-Connect-Secure-UTA0576-CVE-2026-118527",
+   "folder": "threats/2026-11_November-2026/2026-11-12/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527",
+   "name": "Ivanti Connect Secure UTA0576 CVE-2026-118527",
+   "short": "Ivanti Connect Secure UTA0576 CVE-2026-118527",
+   "category": "Exploitation / VPN appliance",
+   "published": "2026-10-13",
+   "entry_date": "2026-11-12 09:50",
+   "last_updated": "2026-11-12",
+   "seq": 24,
+   "headline": "UTA0576 chaining Ivanti Connect Secure zero-days to steal LAPS, BitLocker and AD credentials",
+   "summary": "Volexity, Rapid7, CISA and CERT-FR have documented UTA0576 chaining unauthenticated Ivanti Connect Secure flaws CVE-2026-104935, CVE-2026-111357 and CVE-2026-118527. Operators abuse /dana-na/auth/url_default/welcome.cgi with a custom X-DSCGI-PATH header to run code, leave Python tooling under /tmp and /data/.icscap/, and steal LAPS, BitLocker and Active Directory credentials. The Integrity Checker Tool can miss this activity. CISA listed CVE-2026-118527 in the Known Exploited Vulnerabilities catalog with a due date of 13 November 2026. The operator address 108.165.147.64 was observed by Volexity on an Evoxt VPS and republished by Rapid7, so it is medium confidence and for hunt and alert only.",
+   "caveat": "The operator IP is a Volexity observation republished by Rapid7 (medium confidence). File names such as ml.py are too generic to block estate-wide; hunt them on Connect Secure appliances only. Patching does not remove planted files.",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Global",
+     "Europe"
+    ],
+    "sectors": [
+     "Remote access",
+     "Critical infrastructure",
+     "Enterprise VPN"
+    ],
+    "note": "Any organisation running internet-facing Ivanti Connect Secure is in scope. CISA added CVE-2026-118527 to the KEV catalog (due 13 November 2026). CERT-FR issued alerte CERTFR-2026-ALE-013.",
+    "source": {
+     "url": "https://www.volexity.com/blog/2026/10/13/a-series-of-unauthenticated-events-chained-exploitation-of-ivanti-connect-secure-zero-days/",
+     "label": "Volexity – A series of unauthenticated events: chained exploitation of Ivanti Connect Secure zero-days",
+     "name": "Volexity"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1059.006",
+     "name": "Python",
+     "url": "https://attack.mitre.org/techniques/T1059/006/"
+    },
+    {
+     "id": "T1003",
+     "name": "OS Credential Dumping",
+     "url": "https://attack.mitre.org/techniques/T1003/"
+    },
+    {
+     "id": "T1552",
+     "name": "Unsecured Credentials",
+     "url": "https://attack.mitre.org/techniques/T1552/"
+    },
+    {
+     "id": "T1087",
+     "name": "Account Discovery",
+     "url": "https://attack.mitre.org/techniques/T1087/"
+    },
+    {
+     "id": "T1078",
+     "name": "Valid Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/"
+    }
+   ],
+   "recommended_actions": [
+    "Patch Ivanti Connect Secure for CVE-2026-104935, CVE-2026-111357 and CVE-2026-118527 before the CISA due date of 13 November 2026, and take management interfaces off the internet where possible.",
+    "Alert on 108.165.147.64 at the perimeter, and hunt appliance and proxy logs for /dana-na/auth/url_default/welcome.cgi requests that carry an X-DSCGI-PATH header (values seen include /home/webserver/htdocs/dana/fb/smb/wu.cgi and /home/runtime/tmp/<MD5>).",
+    "On Connect Secure appliances, hunt /tmp/ml.py, rq5.py, mk.py, rr.py, pu.txt, sp_out.txt and spray_hits.json; /data/.icscap/ (dsstatmond, cap*, h.py); and /home/runtime/tmp/ics-root-run-inband-*.pl. Do not treat those short file names as estate-wide block list entries.",
+    "If compromise is suspected, do not rely on the Integrity Checker Tool alone. Rebuild the appliance from trusted media and rotate LAPS, BitLocker, Active Directory and any other credentials stored on or reachable from the gateway."
+   ],
+   "sources": [
+    {
+     "url": "https://www.volexity.com/blog/2026/10/13/a-series-of-unauthenticated-events-chained-exploitation-of-ivanti-connect-secure-zero-days/",
+     "label": "Volexity – A series of unauthenticated events: chained exploitation of Ivanti Connect Secure zero-days",
+     "name": "Volexity"
+    },
+    {
+     "url": "https://www.rapid7.com/blog/post/etr-additional-ivanti-connect-secure-zero-days-exploited-in-the-wild-cve-2026-111357-cve-2026-118527/",
+     "label": "Rapid7 – Additional Ivanti Connect Secure zero-days exploited in the wild (CVE-2026-111357, CVE-2026-118527)",
+     "name": "Rapid7"
+    },
+    {
+     "url": "https://www.cert.cyber.gouv.fr/alerte/CERTFR-2026-ALE-013/",
+     "label": "CERT-FR – Alerte CERTFR-2026-ALE-013, Ivanti Connect Secure exploitation",
+     "name": "CERT-FR"
+    },
+    {
+     "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+     "label": "CISA – Known Exploited Vulnerabilities catalog (CVE-2026-118527, due 13 November 2026)",
+     "name": "CISA"
+    }
+   ],
+   "indicator_count": 2,
+   "block_now_count": 0,
+   "hunt_count": 2,
+   "hunt_counts": {
+    "alert": 1,
+    "monitor": 1
+   },
+   "indicator_counts": {
+    "ipv4": 1,
+    "other": 1
+   },
+   "ioas": [
+    {
+     "artefact": "Requests to /dana-na/auth/url_default/welcome.cgi that include an X-DSCGI-PATH header",
+     "log_source": "Ivanti Connect Secure, reverse-proxy and WAF logs",
+     "why": "Volexity and Rapid7 describe UTA0576 abusing welcome.cgi with X-DSCGI-PATH values such as /home/webserver/htdocs/dana/fb/smb/wu.cgi or /home/runtime/tmp/<MD5> to run unauthenticated code.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.volexity.com/blog/2026/10/13/a-series-of-unauthenticated-events-chained-exploitation-of-ivanti-connect-secure-zero-days/",
+     "source_name": "Volexity",
+     "title": "Connect Secure welcome.cgi with X-DSCGI-PATH",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Files /tmp/ml.py, rq5.py, mk.py, rr.py, pu.txt, sp_out.txt or spray_hits.json on an Ivanti Connect Secure appliance",
+     "log_source": "Appliance file integrity or EDR events on Connect Secure (not estate-wide endpoints)",
+     "why": "Volexity reported these Python tools and output files under /tmp on compromised Connect Secure appliances. The short names are too generic to hunt on every workstation.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.volexity.com/blog/2026/10/13/a-series-of-unauthenticated-events-chained-exploitation-of-ivanti-connect-secure-zero-days/",
+     "source_name": "Volexity",
+     "title": "Connect Secure /tmp implant files",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Files under /data/.icscap/ (dsstatmond, cap*, h.py) or /home/runtime/tmp/ics-root-run-inband-*.pl on a Connect Secure appliance",
+     "log_source": "Appliance file integrity or EDR events on Connect Secure",
+     "why": "Volexity documented persistence and helper scripts under /data/.icscap/ and ics-root-run-inband-*.pl under /home/runtime/tmp/. The Integrity Checker Tool may miss them.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.volexity.com/blog/2026/10/13/a-series-of-unauthenticated-events-chained-exploitation-of-ivanti-connect-secure-zero-days/",
+     "source_name": "Volexity",
+     "title": "Files under /data/.icscap/",
+     "queries": [
+      "KQL"
+     ]
+    }
+   ],
+   "ioa_count": 3,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527/block_now.txt",
+     "download": "Ivanti-Connect-Secure-UTA0576-CVE-2026-118527_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527/defender_xdr_indicators.csv",
+     "download": "Ivanti-Connect-Secure-UTA0576-CVE-2026-118527_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527/hunt.kql",
+     "download": "Ivanti-Connect-Secure-UTA0576-CVE-2026-118527_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527/hunt.spl",
+     "download": "Ivanti-Connect-Secure-UTA0576-CVE-2026-118527_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527/hunt_raw.spl",
+     "download": "Ivanti-Connect-Secure-UTA0576-CVE-2026-118527_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527/hunt.yaral",
+     "download": "Ivanti-Connect-Secure-UTA0576-CVE-2026-118527_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527/iocs.csv",
+     "download": "Ivanti-Connect-Secure-UTA0576-CVE-2026-118527_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527",
+   "indicators": [
+    {
+     "value": "108.165.147.64",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "UTA0576 operator host on an Evoxt VPS, observed by Volexity and republished by Rapid7. Medium confidence, alert/hunt only.",
+     "source_url": "https://www.volexity.com/blog/2026/10/13/a-series-of-unauthenticated-events-chained-exploitation-of-ivanti-connect-secure-zero-days/",
+     "source_label": "Volexity – A series of unauthenticated events: chained exploitation of Ivanti Connect Secure zero-days",
+     "source_name": "Volexity"
+    },
+    {
+     "value": "CVE-2026-118527",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "monitor",
+     "description": "CISA Known Exploited Vulnerabilities identifier for an Ivanti Connect Secure flaw in the UTA0576 chain, due 13 November 2026. The operator IP is a separate medium-confidence indicator.",
+     "source_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+     "source_label": "CISA – Known Exploited Vulnerabilities catalog (CVE-2026-118527, due 13 November 2026)",
+     "source_name": "CISA"
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527/hunt.kql",
+     "download": "Ivanti-Connect-Secure-UTA0576-CVE-2026-118527_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527/hunt.spl",
+     "download": "Ivanti-Connect-Secure-UTA0576-CVE-2026-118527_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527/hunt_raw.spl",
+      "download": "Ivanti-Connect-Secure-UTA0576-CVE-2026-118527_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527/hunt.yaral",
+     "download": "Ivanti-Connect-Secure-UTA0576-CVE-2026-118527_hunt.yaral"
+    }
+   ]
+  },
   {
    "id": "Falcon-C2-XG-Antino-Browser-Implant",
    "folder": "threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant",
@@ -7630,10 +8543,10 @@
    "category": "Financially motivated intrusion / financial sector",
    "published": "2026-11-06",
    "entry_date": "2026-11-11 03:52",
-   "last_updated": "2026-11-12 09:25",
+   "last_updated": "2026-11-12 09:50",
    "seq": 12,
    "headline": "Agentic AI framework used to exploit web apps at banks and drop WISP, vshell and AdaptixC2 RATs",
-   "summary": "Microsoft Threat Intelligence reports that Storm-3358, a financially motivated, Cambodia-based intrusion cluster, began targeting financial organisations in October 2026 with ARTEX, an open-source agentic penetration testing framework. Most targets are financial organisations in Southeast Asia, with a smaller number of large financial organisations globally. The ARTEX agents scan internet-facing systems at machine speed, exploit anonymous file upload and server-side request forgery (SSRF) flaws in web applications, then use curl and netcat to pull down the open-source WISP, vshell and AdaptixC2 remote access trojans for persistence and lateral movement. Microsoft listed the ARTEX servers and C2 nodes below as active on 6 November 2026; the actor rotates infrastructure, so behaviour-based hunting matters as much as blocking. On 11 November 2026 Unit 42 published a defender guide to ARTEX and similar agentic tools, describing the same class of machine-speed behaviour: short bursts of requests, a pause consistent with a model inference call, self-correction after failed requests, a GET after almost every successful write, and write-then-delete tests on storage buckets. Unit 42 did not publish new network indicators.",
+   "summary": "Microsoft Threat Intelligence reports that Storm-3358, a financially motivated, Cambodia-based intrusion cluster, began targeting financial organisations in October 2026 with ARTEX, an open-source agentic penetration testing framework. Most targets are financial organisations in Southeast Asia, with a smaller number of large financial organisations globally. The ARTEX agents scan internet-facing systems at machine speed, exploit anonymous file upload and server-side request forgery (SSRF) flaws in web applications, then use curl and netcat to pull down the open-source WISP, vshell and AdaptixC2 remote access trojans for persistence and lateral movement. Microsoft listed the ARTEX servers and C2 nodes below as active on 6 November 2026; the actor rotates infrastructure, so behaviour-based hunting matters as much as blocking. On 11 November 2026 Unit 42 published a defender guide to ARTEX and similar agentic tools, describing the same class of machine-speed behaviour: short bursts of requests, a pause consistent with a model inference call, self-correction after failed requests, a GET after almost every successful write, and write-then-delete tests on storage buckets. Unit 42 did not publish new network indicators. Sophos X-Ops later described the same class of ARTEX tradecraft, including short-lived scripts under C:\\Windows\\Temp with names such as i12345_b2.ps1 or artx*, command markers such as MARKER123 and ARTX123, and Entra ID application credential and role changes. Sophos did not publish new network indicators.",
    "caveat": null,
    "targets": {
     "countries": [],
@@ -7698,7 +8611,9 @@
     "Inventory internet-facing upload endpoints and server-side URL fetch features (document portals, onboarding and KYC forms, webhooks, PDF and image processors); require authentication on uploads and restrict outbound destinations.",
     "Hunt for web server processes spawning a shell, curl, wget or nc, new binaries run from temp or world-writable paths, and new cron entries on web hosts.",
     "Watch for bursts of rapid, retried requests with default tool user agents (Nmap, curl, python-requests, headless Chromium) against public web applications.",
-    "Hunt for ARTEX-like operator behaviour described by Unit 42: short request bursts with a 25-31 second pause, a GET after each successful write, write-then-delete tests on storage buckets, and placeholder inputs immediately before real credentials. Do not treat research examples as indicators."
+    "Hunt for ARTEX-like operator behaviour described by Unit 42: short request bursts with a 25-31 second pause, a GET after each successful write, write-then-delete tests on storage buckets, and placeholder inputs immediately before real credentials. Do not treat research examples as indicators.",
+    "Hunt for temporary files under C:\\Windows\\Temp whose names start with artx or match i<digits>_*.ps1, and for command lines containing MARKER123 or ARTX123 (Sophos X-Ops).",
+    "Review Entra ID audit logs for application credentials added or roles assigned by an application, especially in financial tenants."
    ],
    "sources": [
     {
@@ -7710,6 +8625,11 @@
      "url": "https://unit42.paloaltonetworks.com/artex-and-ai-powered-red-teaming-tools/",
      "label": "Unit 42 – ARTEX and AI-Powered Red Teaming Tools: What Defenders Need to Know",
      "name": "Unit 42"
+    },
+    {
+     "url": "https://www.sophos.com/en-us/blog/artex-attackers-apply-agentic-ai",
+     "label": "Sophos X-Ops – ARTEX attackers apply agentic AI",
+     "name": "Sophos"
     }
    ],
    "indicator_count": 8,
@@ -7800,9 +8720,52 @@
      "source_name": "Unit 42",
      "title": "Canary inputs immediately before real credentials",
      "queries": []
+    },
+    {
+     "artefact": "Temporary files under C:\\Windows\\Temp whose names start with artx or match i<digits>_*.ps1, such as i12345_b2.ps1",
+     "log_source": "EDR file events on Windows endpoints, especially in financial tenants",
+     "why": "Sophos X-Ops describes ARTEX operators dropping short-lived PowerShell scripts under C:\\Windows\\Temp with names like i12345_b2.ps1 or artx*.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.sophos.com/en-us/blog/artex-attackers-apply-agentic-ai",
+     "source_name": "Sophos",
+     "title": "ARTEX temp scripts under Windows\\Temp",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Command lines containing MARKER123 or ARTX123",
+     "log_source": "EDR process events",
+     "why": "Sophos X-Ops reported ARTEX operators using MARKER123 and ARTX123 as command markers during intrusions.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.sophos.com/en-us/blog/artex-attackers-apply-agentic-ai",
+     "source_name": "Sophos",
+     "title": "ARTEX MARKER123 or ARTX123 command markers",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "An Entra ID application adding a credential or assigning a role",
+     "log_source": "Entra ID audit and directory logs",
+     "why": "Sophos X-Ops describes ARTEX follow-on activity that adds application credentials and assigns roles in Entra ID, including against financial organisations.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.sophos.com/en-us/blog/artex-attackers-apply-agentic-ai",
+     "source_name": "Sophos",
+     "title": "Entra app adding credentials or assigning roles",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
     }
    ],
-   "ioa_count": 6,
+   "ioa_count": 9,
    "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
    "files": [
     {

@@ -1,0 +1,62 @@
+``` Threat: GSocket Linux Web-Server C2
+    Author: Daniel Jeremiah | Date: 2026-11-12
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2 ```
+search `rti_endpoint(d94f75a70b5cabaf786ac57177ed841732e62bdcc9a29e06e5b41d9be567bcfa OR f95c4d029e6784e3849b4d1e2e2ae1a661187236ef7c5d487c71158a290a03b5 OR 55d141bb2f62c527c3fea3413b8429fed7d52633d0b123b5e611bfa42165229f OR 12450bafc7a4398040e1ad3a16dbf4dbc79b6a8f83ef306c4f0f73f59886f06c)`
+| search file_hash IN ("*d94f75a70b5cabaf786ac57177ed841732e62bdcc9a29e06e5b41d9be567bcfa*", "*f95c4d029e6784e3849b4d1e2e2ae1a661187236ef7c5d487c71158a290a03b5*", "*55d141bb2f62c527c3fea3413b8429fed7d52633d0b123b5e611bfa42165229f*", "*12450bafc7a4398040e1ad3a16dbf4dbc79b6a8f83ef306c4f0f73f59886f06c*") OR process_hash IN ("*d94f75a70b5cabaf786ac57177ed841732e62bdcc9a29e06e5b41d9be567bcfa*", "*f95c4d029e6784e3849b4d1e2e2ae1a661187236ef7c5d487c71158a290a03b5*", "*55d141bb2f62c527c3fea3413b8429fed7d52633d0b123b5e611bfa42165229f*", "*12450bafc7a4398040e1ad3a16dbf4dbc79b6a8f83ef306c4f0f73f59886f06c*") OR parent_process_hash IN ("*d94f75a70b5cabaf786ac57177ed841732e62bdcc9a29e06e5b41d9be567bcfa*", "*f95c4d029e6784e3849b4d1e2e2ae1a661187236ef7c5d487c71158a290a03b5*", "*55d141bb2f62c527c3fea3413b8429fed7d52633d0b123b5e611bfa42165229f*", "*12450bafc7a4398040e1ad3a16dbf4dbc79b6a8f83ef306c4f0f73f59886f06c*")
+| eval matched=file_hash." ".process_hash." ".parent_process_hash
+| rex field=matched "(?i)(?<ioc>d94f75a70b5cabaf786ac57177ed841732e62bdcc9a29e06e5b41d9be567bcfa|f95c4d029e6784e3849b4d1e2e2ae1a661187236ef7c5d487c71158a290a03b5|55d141bb2f62c527c3fea3413b8429fed7d52633d0b123b5e611bfa42165229f|12450bafc7a4398040e1ad3a16dbf4dbc79b6a8f83ef306c4f0f73f59886f06c)"
+| eval data_model="endpoint", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, detail=coalesce(process, file_path)
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search `rti_endpoint(gsocket.io from a web server)`
+    | where match(coalesce(process, process_path, ""), "(?i)gsocket\.io") AND match(coalesce(parent_process_name, ""), "(?i)^(nginx|httpd|apache2|php-fpm|php|java|node|tomcat|python|python3)$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Web server retrieving GSocket from gsocket.io", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(/dev/shm/.gs- or gs-netcat_mini-linux)`
+    | where match(coalesce(file_path, file_name, ""), "(?i)/dev/shm/\.gs-|gs-netcat_mini-linux|\.gsn_ora")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="GSocket staging under /dev/shm or .gsn_ora", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(systemd-remount-d or defunct.service)`
+    | where match(coalesce(file_path, file_name, ""), "(?i)systemd-remount-d|defunct\.service|/usr/bin/defunct")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="GSocket persistence as systemd-remount-d or defunct", ioc_type="behaviour (alert)"
+]
+| append [
+    search `rti_endpoint(systemd-remount-d or defunct)`
+    | where match(coalesce(process, process_path, process_name, ""), "(?i)systemd-remount-d|defunct\.service|/usr/bin/defunct")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="GSocket persistence as systemd-remount-d or defunct", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(exec -a [kaluad] or timestomp defunct)`
+    | where match(coalesce(process, process_path, ""), "(?i)exec -a|\[kaluad\]") OR (match(coalesce(process_name, ""), "(?i)^(chmod|touch)$") AND match(coalesce(process, process_path, ""), "(?i)defunct|systemd-remount-d"))
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="exec -a [kaluad] or timestomp of defunct", ioc_type="behaviour (hunt)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

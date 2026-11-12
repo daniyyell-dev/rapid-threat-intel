@@ -14,7 +14,8 @@ rule rti_storm_3358_artex_agentic_intrusions_financial_sector {
       $e.target.ip = /^(?:199\.19\.95\.66|199\.19\.95\.67|199\.19\.95\.68|91\.92\.240\.238|85\.11\.168\.45|85\.11\.167\.52|178\.16\.54\.129|31\.77\.229\.35)$/ or
       $e.network.dns.answers.data = /^(?:199\.19\.95\.66|199\.19\.95\.67|199\.19\.95\.68|91\.92\.240\.238|85\.11\.168\.45|85\.11\.167\.52|178\.16\.54\.129|31\.77\.229\.35)$/ or
       ($e.metadata.event_type = "PROCESS_LAUNCH" and $e.principal.process.file.full_path = /(^|[\\\/])(w3wp\.exe|httpd|apache2|nginx|php-fpm|php|java|node|tomcat)$/ nocase and
-        $e.target.process.file.full_path = /(^|[\\\/])(curl|curl\.exe|wget|nc|ncat|netcat|sh|bash|cmd\.exe|powershell\.exe)$/ nocase)
+        $e.target.process.file.full_path = /(^|[\\\/])(curl|curl\.exe|wget|nc|ncat|netcat|sh|bash|cmd\.exe|powershell\.exe)$/ nocase) or
+      re.regex($e.target.process.command_line, `MARKER123|ARTX123`) nocase
     )
     $host = $e.principal.hostname
 

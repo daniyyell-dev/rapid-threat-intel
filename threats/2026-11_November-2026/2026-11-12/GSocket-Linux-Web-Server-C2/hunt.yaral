@@ -1,0 +1,46 @@
+// Threat: GSocket Linux Web-Server C2
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2
+rule rti_gsocket_linux_web_server_c2 {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-12"
+    description = "GSocket Linux Web-Server C2"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2"
+
+  events:
+    (
+      $e.target.file.sha256 = /^(?:d94f75a70b5cabaf786ac57177ed841732e62bdcc9a29e06e5b41d9be567bcfa|f95c4d029e6784e3849b4d1e2e2ae1a661187236ef7c5d487c71158a290a03b5|55d141bb2f62c527c3fea3413b8429fed7d52633d0b123b5e611bfa42165229f|12450bafc7a4398040e1ad3a16dbf4dbc79b6a8f83ef306c4f0f73f59886f06c)$/ nocase or
+      $e.target.process.file.sha256 = /^(?:d94f75a70b5cabaf786ac57177ed841732e62bdcc9a29e06e5b41d9be567bcfa|f95c4d029e6784e3849b4d1e2e2ae1a661187236ef7c5d487c71158a290a03b5|55d141bb2f62c527c3fea3413b8429fed7d52633d0b123b5e611bfa42165229f|12450bafc7a4398040e1ad3a16dbf4dbc79b6a8f83ef306c4f0f73f59886f06c)$/ nocase or
+      $e.principal.process.file.sha256 = /^(?:d94f75a70b5cabaf786ac57177ed841732e62bdcc9a29e06e5b41d9be567bcfa|f95c4d029e6784e3849b4d1e2e2ae1a661187236ef7c5d487c71158a290a03b5|55d141bb2f62c527c3fea3413b8429fed7d52633d0b123b5e611bfa42165229f|12450bafc7a4398040e1ad3a16dbf4dbc79b6a8f83ef306c4f0f73f59886f06c)$/ nocase or
+      $e.principal.process.parent_process.file.sha256 = /^(?:d94f75a70b5cabaf786ac57177ed841732e62bdcc9a29e06e5b41d9be567bcfa|f95c4d029e6784e3849b4d1e2e2ae1a661187236ef7c5d487c71158a290a03b5|55d141bb2f62c527c3fea3413b8429fed7d52633d0b123b5e611bfa42165229f|12450bafc7a4398040e1ad3a16dbf4dbc79b6a8f83ef306c4f0f73f59886f06c)$/ nocase or
+      re.regex($e.target.process.command_line, `gsocket\.io`) nocase or
+      re.regex($e.target.file.full_path, `dev/shm/\.gs-|gs-netcat_mini-linux|\.gsn_ora`) nocase or
+      re.regex($e.target.file.full_path, `systemd-remount-d|defunct\.service|/usr/bin/defunct`) nocase or re.regex($e.target.process.command_line, `systemd-remount-d|defunct\.service`) nocase
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(60)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+    $file_sha256 = array_distinct($e.target.file.sha256)
+    $process_sha256 = array_distinct($e.target.process.file.sha256)
+    $process_path = array_distinct($e.target.process.file.full_path)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}

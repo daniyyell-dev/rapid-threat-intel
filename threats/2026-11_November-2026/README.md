@@ -2,12 +2,15 @@
 
 [Back to index](../../README.md#latest-threats)
 
-23 threats, 944 indicators, 278 to block now. Newest first.
+26 threats, 965 indicators, 278 to block now. Newest first.
 
 ### [2026-11-12](2026-11-12/)
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
+| 2026-11-11 | [GSocket Linux Web-Server C2](2026-11-12/GSocket-Linux-Web-Server-C2/) | Post-exploitation / Linux C2 | 9 | 0 | GSocket relay clients on compromised Linux web servers, with hashes and paths only — do not block the public relay |
+| 2026-11-09 | [ARTEX AWS Financial-Data Hunting](2026-11-12/ARTEX-AWS-Financial-Data-Hunting/) | Financially motivated intrusion / cloud | 10 | 0 | ARTEX operators in AWS hunting financial logs and Cognito, with hunt-only operator IPs |
+| 2026-10-13 | [Ivanti Connect Secure UTA0576 CVE-2026-118527](2026-11-12/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527/) | Exploitation / VPN appliance | 2 | 0 | UTA0576 chaining Ivanti Connect Secure zero-days to steal LAPS, BitLocker and AD credentials |
 | 2026-11-11 | [Falcon C2 (XG): Browser Framework and Antino Implant Targeting Government Webmail](2026-11-12/Falcon-C2-XG-Antino-Browser-Implant/) | APT / browser implant | 27 | 0 | Browser C2 framework and Antino implant used against government webmail, with a malicious extension and OneDrive C2 |
 | 2026-11-11 | [AntiFox: ARTEX Fork Used to Implant IIS Web Shells and Steal AWS Secrets](2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft/) | Exploitation / cloud credential theft | 2 | 0 | ARTEX fork used to implant IIS web shells and steal AWS production secrets |
 | 2026-11-08 | [Operation Snowball: Cisco BroadWorks CVE-2026-20320 Exploited Against a European Telecom](2026-11-12/Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320/) | Exploitation / telecom | 4 | 0 | AI-driven intrusion of a European telecom through exploited Cisco BroadWorks CVE-2026-20320 |

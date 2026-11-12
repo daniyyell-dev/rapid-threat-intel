@@ -34,7 +34,7 @@ union isfuzzy=true
     | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(AccountDisplayName), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ActionType))),
   (DeviceProcessEvents
     | where Timestamp > ago(Lookback)
-    | where (FileName in~ ("curl", "curl.exe", "wget", "nc", "ncat", "netcat") and ProcessCommandLine has_any ("199.19.95.66", "199.19.95.67", "199.19.95.68", "91.92.240.238", "85.11.168.45", "85.11.167.52", "178.16.54.129", "31.77.229.35")) or ProcessCommandLine has_any ("vshell", "AdaptixC2")
+    | where (FileName in~ ("curl", "curl.exe", "wget", "nc", "ncat", "netcat") and ProcessCommandLine has_any ("199.19.95.66", "199.19.95.67", "199.19.95.68", "91.92.240.238", "85.11.168.45", "85.11.167.52", "178.16.54.129", "31.77.229.35")) or ProcessCommandLine has_any ("vshell", "AdaptixC2", "MARKER123", "ARTX123")
     | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
   (DeviceProcessEvents
     | where Timestamp > ago(Lookback)
@@ -60,6 +60,19 @@ union isfuzzy=true
   (CloudAppEvents
     | where Timestamp > ago(Lookback)
     | where Application == "Amazon Web Services" and ActionType has_any ("PutObject", "DeleteObject", "CreateBucket", "DeleteBucket")
-    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(RawEventData.userIdentity.arn), Indicator = tostring(ActionType), Context = tostring(strcat(ActionType, " ", IPAddress, " ", tostring(RawEventData.requestParameters))))
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(RawEventData.userIdentity.arn), Indicator = tostring(ActionType), Context = tostring(strcat(ActionType, " ", IPAddress, " ", tostring(RawEventData.requestParameters)))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FolderPath has @"\Windows\Temp" and (FileName startswith "artx" or FileName matches regex @"^i[0-9]+_.*\.ps1$")
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(ActionType, " ", FolderPath, "\\", FileName))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where ProcessCommandLine has_any ("MARKER123", "ARTX123")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(FileName, " ", ProcessCommandLine))),
+  (AuditLogs
+    | where TimeGenerated > ago(Lookback)
+    | where OperationName has_any ("Add application", "Update application", "Add service principal", "Add app role assignment", "Add member to role", "Add service principal credentials", "Certificates and secrets management")
+    | where InitiatedBy has "application" or tostring(InitiatedBy) has "app"
+    | project Timestamp=TimeGenerated, OperationName, Identity=tostring(InitiatedBy), Target=tostring(TargetResources), CorrelationId, AdditionalDetails)
 | summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
 | order by LastSeen desc

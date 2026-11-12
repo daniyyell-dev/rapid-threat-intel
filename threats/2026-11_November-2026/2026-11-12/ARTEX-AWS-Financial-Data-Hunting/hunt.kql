@@ -1,0 +1,57 @@
+// Threat: ARTEX AWS Financial-Data Hunting
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting
+let Lookback = 30d;
+let IPs = dynamic(["169.128.55.214", "154.64.252.77", "154.36.136.197", "154.36.136.23", "102.216.154.102", "82.158.88.233", "88.229.22.232", "103.54.154.40", "103.54.154.32", "45.145.228.25"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " port ", RemotePort))),
+  (DeviceLogonEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceLogonEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", LogonType, " ", AccountName))),
+  (EntraIdSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSignInEvents", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (AADSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSignInEventsBeta", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (EntraIdSpnSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSpnSignInEvents", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (AADSpnSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSpnSignInEventsBeta", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(AccountDisplayName), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ActionType))),
+  (AWSCloudTrail
+    | where TimeGenerated > ago(Lookback)
+    | where EventName =~ "FilterLogEvents"
+    | where tostring(RequestParameters) has_any ("card", "payment", "invoice", "transaction", "account", "iban", "pan") or toint(extractjson("$.limit", tostring(RequestParameters))) == 1000
+    | project Timestamp=TimeGenerated, Actor=UserIdentityArn, SourceIP=SourceIpAddress, UserAgent=UserAgent, RequestParameters, ErrorCode),
+  (AWSCloudTrail
+    | where TimeGenerated > ago(Lookback)
+    | where EventName in~ ("GetObject", "ListBuckets", "ListObjects", "ListObjectsV2", "SignUp", "InitiateAuth", "RespondToAuthChallenge")
+    | project Timestamp=TimeGenerated, EventName, Actor=UserIdentityArn, Type=UserIdentityType, SourceIP=SourceIpAddress, UserAgent=UserAgent, ErrorCode, RequestParameters
+    | summarize Events=make_set(EventName), Types=make_set(Type), First=min(Timestamp), Last=max(Timestamp) by SourceIP, UserAgent
+    | where Events has_any ("GetObject", "ListBuckets", "ListObjects", "ListObjectsV2") and Events has_any ("SignUp", "InitiateAuth")),
+  (union isfuzzy=true AWSCloudTrail, W3CIISLog, CommonSecurityLog
+    | where TimeGenerated > ago(Lookback)
+    | extend ua = coalesce(UserAgent, csUserAgent, RequestContextUserAgent)
+    | where ua has_any ("artex-readonly", "artex-pentest", "artex-audit", "artex-spawn", "artex-verify", "ARTEX-worker", "ARTeX-authorized-pentest", "Mozilla/5.0 ARTeX", "artex-i21861-canary")
+    | project Timestamp=TimeGenerated, ua, SourceIP=coalesce(SourceIpAddress, cIP, SourceIP), Actor=column_ifexists("UserIdentityArn", "")),
+  (AWSCloudTrail
+    | where TimeGenerated > ago(Lookback)
+    | where EventName in~ ("GetObject", "HeadObject")
+    | where tostring(RequestParameters) has_any ("zzz_nonexistent_abc.txt", "Notexist-xyz")
+    | project Timestamp=TimeGenerated, Actor=UserIdentityArn, SourceIP=SourceIpAddress, UserAgent=UserAgent, RequestParameters, ErrorCode)
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

@@ -1,0 +1,56 @@
+``` Threat: ARTEX AWS Financial-Data Hunting
+    Author: Daniel Jeremiah | Date: 2026-11-12
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting ```
+| tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+    FROM datamodel=Network_Traffic.All_Traffic
+    WHERE All_Traffic.dest_ip IN ("169.128.55.214", "154.64.252.77", "154.36.136.197", "154.36.136.23", "102.216.154.102", "82.158.88.233", "88.229.22.232", "103.54.154.40", "103.54.154.32", "45.145.228.25")
+    BY All_Traffic.src_ip All_Traffic.dest_ip All_Traffic.dest_port All_Traffic.action All_Traffic.dvc All_Traffic.user
+| rename "All_Traffic.*" AS *
+| eval data_model="Network_Traffic", ioc_type="ipv4", ioc=dest_ip, host=dvc, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Network_Traffic.All_Traffic
+        WHERE All_Traffic.src_ip IN ("169.128.55.214", "154.64.252.77", "154.36.136.197", "154.36.136.23", "102.216.154.102", "82.158.88.233", "88.229.22.232", "103.54.154.40", "103.54.154.32", "45.145.228.25")
+        BY All_Traffic.src_ip All_Traffic.dest_ip All_Traffic.dest_port All_Traffic.action All_Traffic.dvc All_Traffic.user
+    | rename "All_Traffic.*" AS *
+    | eval data_model="Network_Traffic", ioc_type="ipv4", ioc=src_ip, host=dvc, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+]
+
+| append [
+    search index=* ("FilterLogEvents")
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="AWS CloudTrail"
+    | eval ioc="CloudWatch FilterLogEvents for financial terms", ioc_type="behaviour (hunt)"
+]
+
+| append [
+    search index=* ("SignUp" OR "InitiateAuth" OR "ListBuckets")
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="AWS CloudTrail"
+    | eval ioc="Anonymous S3 then Cognito SignUp or InitiateAuth", ioc_type="behaviour (hunt)"
+]
+
+| append [
+    search index=* ("artex-readonly" OR "artex-pentest" OR "artex-audit" OR "artex-spawn" OR "artex-verify" OR "ARTEX-worker" OR "ARTeX-authorized-pentest" OR "Mozilla/5.0 ARTeX" OR "artex-i21861-canary")
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="AWS CloudTrail, WAF and proxy logs"
+    | eval ioc="ARTEX user agents in AWS or proxy logs", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search index=* ("zzz_nonexistent_abc.txt" OR "Notexist-xyz")
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="AWS CloudTrail"
+    | eval ioc="ARTEX canary S3 object keys", ioc_type="behaviour (hunt)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

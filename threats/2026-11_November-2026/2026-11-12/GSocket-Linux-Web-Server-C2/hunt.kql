@@ -1,0 +1,48 @@
+// Threat: GSocket Linux Web-Server C2
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2
+let Lookback = 30d;
+let SHA256s = dynamic(["d94f75a70b5cabaf786ac57177ed841732e62bdcc9a29e06e5b41d9be567bcfa", "f95c4d029e6784e3849b4d1e2e2ae1a661187236ef7c5d487c71158a290a03b5", "55d141bb2f62c527c3fea3413b8429fed7d52633d0b123b5e611bfa42165229f", "12450bafc7a4398040e1ad3a16dbf4dbc79b6a8f83ef306c4f0f73f59886f06c"]);
+union isfuzzy=true
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(ActionType, " ", FolderPath))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceImageLoadEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " loaded by ", InitiatingProcessFileName))),
+  (EmailAttachmentInfo
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "EmailAttachmentInfo", Entity = tostring(RecipientEmailAddress), Indicator = tostring(SHA256), Context = tostring(strcat(FileName, " from ", SenderFromAddress))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in~ ("systemd-remount-d", "gs-netcat_mini-linux-x86_64", "gs-netcat_mini-linux-aarch64") or FolderPath has "/dev/shm/.gs-" or ProcessCommandLine has_any ("gsocket.io/y", "gsocket.io/install.sh", "defunct.service", "[kaluad]") or (FileName =~ "defunct" and FolderPath has "/usr/bin/defunct")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where InitiatingProcessFileName in~ ("nginx", "httpd", "apache2", "php-fpm", "php", "java", "node", "tomcat", "python", "python3") and ProcessCommandLine has "gsocket.io"
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", ProcessCommandLine))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FolderPath has "/dev/shm/.gs-" or FileName in~ ("gs-netcat_mini-linux-x86_64", "gs-netcat_mini-linux-aarch64", ".gsn_ora")
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " ", FolderPath, "/", FileName))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in~ ("systemd-remount-d", "defunct.service") or FolderPath has "/usr/bin/defunct" or (FileName =~ "defunct" and FolderPath has "/usr/bin")
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(ActionType, " ", FolderPath, "/", FileName))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in~ ("systemd-remount-d", "defunct") or ProcessCommandLine has_any ("defunct.service", "systemd-remount-d")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FileName, " ", ProcessCommandLine))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where ProcessCommandLine has_any ("[kaluad]", "exec -a") or (FileName in~ ("chmod", "touch") and ProcessCommandLine has_any ("/usr/bin/defunct", "defunct.service", "systemd-remount-d"))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(FileName, " ", ProcessCommandLine)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

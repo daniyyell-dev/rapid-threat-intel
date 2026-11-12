@@ -73,6 +73,35 @@
     | fields - methods methods_join url _time
     | eval ioc="Write then GET or write-then-delete checks", ioc_type="behaviour (hunt)"
 ]
+
+| append [
+    search `rti_endpoint(artx or i*_*.ps1 in Windows\Temp)`
+    | where match(coalesce(file_path, file_name, ""), "(?i)Windows\\Temp") AND (match(coalesce(file_name, ""), "(?i)^artx") OR match(coalesce(file_name, ""), "(?i)^i[0-9]+_.*\.ps1$"))
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="ARTEX temp scripts under Windows\Temp", ioc_type="behaviour (hunt)"
+]
+
+| append [
+    search `rti_endpoint(MARKER123 OR ARTX123)`
+    | where match(coalesce(process, process_path, ""), "(?i)MARKER123|ARTX123")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="ARTEX MARKER123 or ARTX123 command markers", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search index=* ("Add application" OR "Add service principal" OR "Add app role assignment" OR "Certificates and secrets management")
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="Entra ID audit logs"
+    | eval ioc="Entra app adding credentials or assigning roles", ioc_type="behaviour (hunt)"
+]
 | sort 0 - last_seen
 | eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
 | table first_seen last_seen ioc ioc_type data_model host user src dest detail count

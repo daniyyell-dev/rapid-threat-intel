@@ -1,0 +1,40 @@
+// Threat: ARTEX AWS Financial-Data Hunting
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting
+rule rti_artex_aws_financial_data_hunting {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-12"
+    description = "ARTEX AWS Financial-Data Hunting"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting"
+
+  events:
+    (
+      $e.principal.ip = /^(?:169\.128\.55\.214|154\.64\.252\.77|154\.36\.136\.197|154\.36\.136\.23|102\.216\.154\.102|82\.158\.88\.233|88\.229\.22\.232|103\.54\.154\.40|103\.54\.154\.32|45\.145\.228\.25)$/ or
+      $e.target.ip = /^(?:169\.128\.55\.214|154\.64\.252\.77|154\.36\.136\.197|154\.36\.136\.23|102\.216\.154\.102|82\.158\.88\.233|88\.229\.22\.232|103\.54\.154\.40|103\.54\.154\.32|45\.145\.228\.25)$/ or
+      $e.network.dns.answers.data = /^(?:169\.128\.55\.214|154\.64\.252\.77|154\.36\.136\.197|154\.36\.136\.23|102\.216\.154\.102|82\.158\.88\.233|88\.229\.22\.232|103\.54\.154\.40|103\.54\.154\.32|45\.145\.228\.25)$/ or
+      re.regex($e.network.http.user_agent, `artex-readonly|artex-pentest|artex-audit|artex-spawn|artex-verify|ARTEX-worker|ARTeX-authorized-pentest|Mozilla/5.0 ARTeX|artex-i21861-canary`) nocase
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(60)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}
