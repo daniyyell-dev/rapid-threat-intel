@@ -4,11 +4,11 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-11 | 2026-11-12 09:50 | 2026-11-12 | Post-exploitation / Linux C2 | 9 | 0 |
+| 2026-11-11 | 2026-11-12 09:50 | 2026-11-12 | Post-exploitation / Linux C2 | 9 | 4 |
 
 ## Summary
 
-Microsoft Threat Intelligence reports that threat actors have been deploying GSocket, a legitimate open-source relay tool, as stealthy command and control on compromised Linux web servers after internet-facing application breaches. The host and the operator each connect outbound to the public Global Socket Relay Network, so there is no attacker-owned IP address or domain to block. Operators stage gs-netcat under /dev/shm, persist as systemd-remount-d or /usr/bin/defunct, launch the payload with a kernel-thread-like argument-zero name such as [kaluad], and timestomp the files. The four SHA-256 hashes below were published by Microsoft and are medium confidence, so they are alert only. MalwareBazaar holds two of them, but as stock GSocket builds, which is not independent evidence of malicious use. Do not block gsocket.io, cdn.gsocket.io, gsgg.b-cdn.net or the public relay; hunt web-server processes that retrieve or install GSocket instead. Sansec has independently described the same class of GSocket web-server abuse.
+Microsoft Threat Intelligence reports that threat actors have been deploying GSocket, a legitimate open-source relay tool, as stealthy command and control on compromised Linux web servers after internet-facing application breaches. The host and the operator each connect outbound to the public Global Socket Relay Network, so there is no attacker-owned IP address or domain to block. Operators stage gs-netcat under /dev/shm, persist as systemd-remount-d or /usr/bin/defunct, launch the payload with a kernel-thread-like argument-zero name such as [kaluad], and timestomp the files. The four SHA-256 hashes below were published by Microsoft and are medium confidence: they appear as BlockAndRemediate in the Defender import file, not on the high-confidence block-now list. Do not block gsocket.io, cdn.gsocket.io, gsgg.b-cdn.net or the public relay; hunt web-server processes that retrieve or install GSocket instead. Sansec has independently described the same class of GSocket web-server abuse.
 
 > [!WARNING]
 > GSocket is a legitimate project also used by administrators. Do not block gsocket.io, its CDN, or the public Global Socket Relay Network. Hashes and paths are medium confidence (Microsoft).
@@ -25,7 +25,7 @@ Microsoft Threat Intelligence reports that threat actors have been deploying GSo
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2/block_now.txt) (raw) | None yet: no indicator is high-confidence enough to block, so use the files below to hunt |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2/block_now.txt) (raw) | 4 high-confidence indicators to block now |
 | [`iocs.csv`](iocs.csv) | All 9 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 9 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
@@ -51,7 +51,7 @@ Indicators by type: 5 file names, 4 SHA256. See `iocs.csv` for full details and 
 
 ## Recommended actions
 
-1. Import the four GSocket SHA-256 hashes in Defender XDR as alerts, and hunt 30 days of endpoint logs for them and for the listed file paths.
+1. Import the four GSocket SHA-256 hashes in Defender XDR at medium confidence, and hunt 30 days of endpoint logs for them and for the listed file paths.
 2. Hunt internet-facing Linux web servers for web-server processes (nginx, httpd, php-fpm, java, node) running curl or bash against gsocket.io, files under /dev/shm/.gs-*, systemd-remount-d, /usr/bin/defunct and defunct.service. Do not block gsocket.io or the public relay.
 3. Look for bash exec -a launching a payload as [kaluad] or another kernel-thread-like name, chmod 700 on /usr/bin/defunct, and touch used to timestomp those files.
 4. If confirmed, remove the relay client and its persistence, rotate credentials reachable from the host, and verify that outbound sessions to the relay have stopped. Patching the original web-app flaw does not remove GSocket.
@@ -88,7 +88,7 @@ Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql)
 
 ## Hunt
 
-Run one of these to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
 
 | File | Platform | How to run it |
 |---|---|---|

@@ -4,7 +4,7 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-10 | 2026-11-11 10:05 | 2026-11-11 | Exploitation / hypervisor management | 17 | 0 |
+| 2026-11-10 | 2026-11-11 10:05 | 2026-11-11 | Exploitation / hypervisor management | 17 | 2 |
 
 ## Summary
 
@@ -21,7 +21,7 @@ Vates reports active exploitation of VSA-2026-062, a critical authentication byp
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/block_now.txt) (raw) | None yet: no indicator is high-confidence enough to block, so use the files below to hunt |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/block_now.txt) (raw) | 2 high-confidence indicators to block now |
 | [`iocs.csv`](iocs.csv) | All 17 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 8 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
@@ -45,7 +45,7 @@ Indicators by type: 8 IPv4, 5 other, 4 file names. See `iocs.csv` for full detai
 ## Recommended actions
 
 1. Update Xen Orchestra to 6.9.2 (stable) or 6.10.1 (latest), or xo-server to 5.211.2 or 5.213.1, and keep the console on a dedicated management network that is not reachable from the internet.
-2. Alert on 91.211.251.112 and 193.148.56.72 in both directions (only Vates lists them, though Vates advises blocking), block Tor from management networks, and search 30 days of firewall and proxy logs for these addresses and the six Tor relays.
+2. Block 91.211.251.112 and 193.148.56.72 in both directions, block Tor from management networks, and search 30 days of firewall and proxy logs for these addresses and the six Tor relays.
 3. Add a WAF or reverse-proxy rule for authenticationToken=j:{} and authenticationToken=j:%7B%7D, and search proxy and web server logs for both patterns, because Xen Orchestra does not log the bypass.
 4. On every XCP-ng host, look for a VM named pivot2, VMs with hvm_serial: file, '-serial file:' in /var/log/xensource.log*, and /etc/cron.d/zz-ustar*, /.ustar5, /.ustar6 and /etc/ld.so.preload. If compromised, reinstall and rotate every Vates VMS secret, including backup remotes, the pool secret, root and user passwords, OTP secrets and mail settings.
 
@@ -81,7 +81,7 @@ Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql)
 
 ## Hunt
 
-Run one of these to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
 
 | File | Platform | How to run it |
 |---|---|---|

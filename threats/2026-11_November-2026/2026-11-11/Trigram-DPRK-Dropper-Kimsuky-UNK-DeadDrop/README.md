@@ -4,7 +4,7 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-11 | 2026-11-11 17:20 | 2026-11-11 | APT / infostealer | 275 | 9 |
+| 2026-11-11 | 2026-11-11 17:20 | 2026-11-11 | APT / infostealer | 275 | 11 |
 
 ## Summary
 
@@ -22,7 +22,7 @@ Stormshield's Cyber Threat Intelligence team, in a report published on 11 Novemb
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Trigram-DPRK-Dropper-Kimsuky-UNK-DeadDrop/block_now.txt) (raw) | 9 high-confidence indicators to block now |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Trigram-DPRK-Dropper-Kimsuky-UNK-DeadDrop/block_now.txt) (raw) | 11 high-confidence indicators to block now |
 | [`iocs.csv`](iocs.csv) | All 275 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 256 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
@@ -57,7 +57,7 @@ Indicators by type: 203 domains, 23 URLs, 17 SHA256, 14 IPv4, 9 file names, 5 ot
 ## Recommended actions
 
 1. Hunt DeviceProcessEvents for Mark-of-the-Web stripping (Unblock-File or :Zone.Identifier) followed within 10 minutes on the same host by wscript.exe //B, especially when the command line contains nvdg_worker, and exclude packaging or deployment-agent accounts that legitimately unblock content and run hidden VBScript.
-2. Block the C2 domains marked Block (icagllmbt.space, the gaganata, fallgganata and chestsoi hosts, and asteara.org) at DNS and in Defender XDR; alert on the remaining lure domains and on every listed IP, and do not block gitlab.com, github.com, gmail.com or genuine Google software.
+2. Block the high-confidence C2 and dashboard domains (icagllmbt.space, the gaganata, fallgganata, chestsoi and asteara hosts) at DNS and in Defender XDR; alert on the remaining lure domains and on every listed IP, and do not block gitlab.com, github.com, gmail.com or genuine Google software.
 3. Search proxy and endpoint logs for GitLab paths /drop-indexings/tasks and /up-indexings/tasks, and for downloads of install_guard.js, verify_w, verify_m or /guard-install-log and /guard-launcher-result.
 4. Look for persistence named GoogleUpdateSupporterNode, com.google.UpdateSupporter or google-agent.service, for ~nvdg_worker.vbs in %TEMP%, and for portable Node.js running install_guard.js from a temp folder.
 5. Treat unexpected job, conference or parcel-tracking pages that ask the user to paste a verification command as ClickFix, and rotate browser, wallet, SSH and cloud credentials on any host that ran the payload.

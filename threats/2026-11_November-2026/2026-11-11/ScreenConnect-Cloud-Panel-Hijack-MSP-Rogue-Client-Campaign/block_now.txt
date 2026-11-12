@@ -11,5 +11,6 @@ soxnewwork.homedns.org
 sc.payproofkit.com
 cdn007-digitaldownloads.com
 
-## url (1)
+## url (2)
 https://ns.mo7sen.dev/EadF.php?p=4
+https://ns.mo7sen.dev/EadF.php?p=5

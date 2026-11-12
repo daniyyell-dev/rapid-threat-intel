@@ -4,7 +4,7 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-10 | 2026-11-11 07:54 | 2026-11-11 | Ransomware / hypervisor | 4 | 1 |
+| 2026-11-10 | 2026-11-11 07:54 | 2026-11-11 | Ransomware / hypervisor | 4 | 4 |
 
 ## Summary
 
@@ -22,7 +22,7 @@ Recorded Future's Insikt Group reports GhostFrame, a previously undocumented com
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/block_now.txt) (raw) | 1 high-confidence indicators to block now |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/block_now.txt) (raw) | 4 high-confidence indicators to block now |
 | [`iocs.csv`](iocs.csv) | All 4 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 4 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
@@ -48,7 +48,7 @@ Indicators by type: 3 IPv4, 1 SHA256. See `iocs.csv` for full details and descri
 
 ## Recommended actions
 
-1. Block the hash marked Block, alert on the two GhostFrame C2 addresses and the MeshCentral server, and search 30 days of firewall and proxy logs for connections from ESXi management addresses and VPN appliances to them.
+1. Block the two GhostFrame C2 addresses and the MeshCentral server, and search 30 days of firewall and proxy logs for connections from ESXi management addresses and VPN appliances to them.
 2. Alert when one host opens near-simultaneous connections to the same external IP on ports 53, 2222, 3389, 4444, 8443 and 9443.
 3. On every ESXi host, check /etc/rc.local.d/local.sh and /opt for vmhostd-core, confirm the firewall is enabled and execInstalledOnly is set, and look for unexpected snapshots or VNC enabled on VMs.
 4. Patch and review SonicWall, Palo Alto Networks and Fortinet VPN appliances, keep ESXi management off the internet and rotate credentials for accounts on VMs hosted on an affected hypervisor.

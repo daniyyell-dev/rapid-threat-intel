@@ -24,7 +24,7 @@ rule rti_gsocket_linux_web_server_c2 {
     $host over 1h
 
   outcome:
-    $risk_score = max(60)
+    $risk_score = max(80)
     $event_count = count($e.metadata.id)
     $event_types = array_distinct($e.metadata.event_type)
     $log_types = array_distinct($e.metadata.log_type)

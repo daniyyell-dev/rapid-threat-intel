@@ -1,5 +1,5 @@
 # BYOD Ransomware and Extortion: Vanderbilt University Attack
-# Published 2026-11-09. Updated 2026-11-10.
-#
-# No indicators for this threat meet the block-now bar (high confidence and safe to block).
-# The published indicators are lower-confidence hunting leads: see iocs.csv, defender_xdr_indicators.csv and hunt.kql.
+# Published 2026-11-09. High-confidence indicators to block. Updated 2026-11-10.
+
+## domain (1)
+byodxn5s7sua6oyyjj74rycgn6afncfckprt5ezskt3cni6lg3wdrgad.onion

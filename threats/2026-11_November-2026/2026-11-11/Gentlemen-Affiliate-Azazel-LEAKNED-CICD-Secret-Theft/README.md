@@ -4,7 +4,7 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-10-05 | 2026-11-11 10:21 | 2026-11-11 | Ransomware / data theft and extortion | 9 | 0 |
+| 2026-10-05 | 2026-11-11 10:21 | 2026-11-11 | Ransomware / data theft and extortion | 9 | 3 |
 
 ## Summary
 
@@ -21,7 +21,7 @@ CloudSEK traced an exposed open directory and storage server to Azazel, a Russia
 
 | File | What it is |
 |---|---|
-| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/block_now.txt) (raw) | None yet: no indicator is high-confidence enough to block, so use the files below to hunt |
+| [`block_now.txt`](https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/block_now.txt) (raw) | 3 high-confidence indicators to block now |
 | [`iocs.csv`](iocs.csv) | All 9 indicators with description, confidence, action and source |
 | [`defender_xdr_indicators.csv`](defender_xdr_indicators.csv) | 6 rows for Defender XDR bulk import |
 | [`hunt.kql`](hunt.kql) | Defender XDR advanced hunting query |
@@ -47,7 +47,7 @@ Indicators by type: 5 IPv4, 2 other, 1 domain, 1 file name. See `iocs.csv` for f
 
 ## Recommended actions
 
-1. Alert on 23.236.169.183, 162.220.163.26 and 66.179.30.155, which only CloudSEK lists, and search 90 days of firewall, NetFlow and GitLab access logs for them, including SSH and outbound HTTP to port 9999.
+1. Block 23.236.169.183, 162.220.163.26 and 66.179.30.155 at the perimeter and in Defender XDR, and search 90 days of firewall, NetFlow and GitLab access logs for them, including SSH and outbound HTTP to port 9999.
 2. Rotate every secret held in GitLab CI/CD variables and in repository history (database passwords, API tokens, SSH keys and cloud keys), make variables masked and protected, and review CI/CD variable reads and API token use from unexpected addresses.
 3. Search Linux servers for ATTENTION_SENSITIVE_INFORMATION.txt in the root and ubuntu home directories, and for changes to /etc/motd, the sshd_config Banner setting, the PostgreSQL cluster_name and the pgAdmin login template; also check GitLab for README edits or issues opened with a pipeline token.
 4. Alert on mc mirror, aws s3 sync, pg_dump or mega-cmd-server runs to destinations you do not own, keep any MCP server bound to loopback with an approved client allowlist, and alert on MCP clients named internet-census-mcp-scanner.
@@ -96,7 +96,7 @@ Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql)
 
 ## Hunt
 
-Run one of these to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
 
 | File | Platform | How to run it |
 |---|---|---|

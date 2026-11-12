@@ -57,7 +57,7 @@ externaldata(indicator: string, type: string, threat: string, confidence: string
 
 Things to know before importing:
 
-- **Actions:** High-confidence attacker infrastructure that at least two independent sources publish is `Block`; such file hashes are `Block` or `BlockAndRemediate`. Everything else is `Audit` with an alert. Shared infrastructure, such as cloud or proxy IPs, is `Audit` with an alert, so it is detected but not blocked. Network indicators (IPs, domains, URLs) never use `BlockAndRemediate`, because Defender rejects that action for them on import.
+- **Actions:** High-confidence attacker infrastructure is `Block`; file hashes are `Block` or `BlockAndRemediate`. Shared infrastructure, such as cloud or proxy IPs, is `Audit` with an alert, so it is detected but not blocked. Network indicators (IPs, domains, URLs) never use `BlockAndRemediate`, because Defender rejects that action for them on import.
 - **Expiry:** Every row expires 90 days after it was added (`ExpirationTime`), because attacker infrastructure is often reassigned.
 - **Network indicators** need network protection turned on in block mode on your devices. IP indicators act on outbound connections from the device, so block inbound attacker IPs at the firewall. Full URL paths are enforced in Microsoft Edge for HTTPS; domains and IPs work in any browser.
 - **File hashes** do not apply when Microsoft Defender Antivirus runs in passive mode. Test them on one device first where a threat reuses legitimate file names.

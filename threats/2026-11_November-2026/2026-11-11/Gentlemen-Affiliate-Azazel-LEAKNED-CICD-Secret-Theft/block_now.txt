@@ -1,5 +1,7 @@
 # Gentlemen Ransomware Affiliate Azazel: CI/CD Secret Theft, LEAKNED Extortion and MCP Command Execution
-# Published 2026-10-05. Updated 2026-11-11.
-#
-# No indicators for this threat meet the block-now bar (high confidence and safe to block).
-# The published indicators are lower-confidence hunting leads: see iocs.csv, defender_xdr_indicators.csv and hunt.kql.
+# Published 2026-10-05. High-confidence indicators to block. Updated 2026-11-11.
+
+## ipv4 (3)
+23.236.169.183
+162.220.163.26
+66.179.30.155
