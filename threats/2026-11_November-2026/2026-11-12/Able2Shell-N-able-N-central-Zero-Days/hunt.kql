@@ -2,7 +2,7 @@
 // Author: Daniel Jeremiah | Date: 2026-11-12
 // Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days
 let Lookback = 30d;
-let IPs = dynamic(["5.231.45.175", "3.74.48.121"]);
+let IPs = dynamic(["5.231.45.175", "157.20.241.16", "3.74.48.121"]);
 let Urls = dynamic(["http://5.231.45.175:8097/a.dtd", "http://5.231.45.175:8097/svc.xml"]);
 let UrlKeys = dynamic(["5.231.45.175:8097/a.dtd", "5.231.45.175:8097/svc.xml"]);
 union isfuzzy=true
@@ -61,6 +61,14 @@ union isfuzzy=true
   (DeviceProcessEvents
     | where Timestamp > ago(Lookback)
     | where FileName in~ ("taskkill.exe", "net.exe", "net1.exe", "sc.exe") and ProcessCommandLine has_any ("wsp.exe", "Windows Software Probe") and InitiatingProcessCommandLine has ".cmd"
-    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessCommandLine, " > ", ProcessCommandLine)))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessCommandLine, " > ", ProcessCommandLine))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP == "157.20.241.16"
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP, ":", tostring(RemotePort)))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in~ ("curl", "curl.exe", "wget", "wget.exe") and ProcessCommandLine has "157.20.241.16"
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", ProcessCommandLine)))
 | summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
 | order by LastSeen desc

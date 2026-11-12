@@ -10,15 +10,16 @@ rule rti_able2shell_n_able_n_central_zero_days {
 
   events:
     (
-      $e.principal.ip = /^(?:5\.231\.45\.175|3\.74\.48\.121)$/ or
-      $e.target.ip = /^(?:5\.231\.45\.175|3\.74\.48\.121)$/ or
-      $e.network.dns.answers.data = /^(?:5\.231\.45\.175|3\.74\.48\.121)$/ or
+      $e.principal.ip = /^(?:5\.231\.45\.175|157\.20\.241\.16|3\.74\.48\.121)$/ or
+      $e.target.ip = /^(?:5\.231\.45\.175|157\.20\.241\.16|3\.74\.48\.121)$/ or
+      $e.network.dns.answers.data = /^(?:5\.231\.45\.175|157\.20\.241\.16|3\.74\.48\.121)$/ or
       re.regex($e.target.url, `^(?:[a-z][a-z0-9+.-]*://)?(?:[^/?#]*@)?(?:5\.231\.45\.175:8097/a\.dtd|5\.231\.45\.175:8097/svc\.xml)`) nocase or
       re.regex($e.target.url, `dms/services/ServerUI|dms2/services2/ServerMMS2`) nocase or
       re.regex($e.network.http.user_agent, `N-central-sec-audit/1\.0`) or
       re.regex($e.target.file.full_path, `n-central/tmp/serverchild-|n-central/flag/flag_default\.json|CodeDropMeta\.xml`) nocase or
       re.regex($e.target.file.full_path, `Windows Software Probe.*(wsp\.exe|service\.cfg)|CodeDropTmp|ServiceBackup.*wsp\.exe`) nocase or
-      re.regex($e.target.process.command_line, `wsp\.exe|Windows Software Probe`) nocase and re.regex($e.principal.process.command_line, `.+\.cmd`) nocase
+      re.regex($e.target.process.command_line, `wsp\.exe|Windows Software Probe`) nocase and re.regex($e.principal.process.command_line, `.+\.cmd`) nocase or
+      $e.target.ip = "157.20.241.16" or re.regex($e.target.process.command_line, `157\.20\.241\.16`) nocase
     )
     $host = $e.principal.hostname
 

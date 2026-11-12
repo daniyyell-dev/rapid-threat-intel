@@ -2,7 +2,7 @@
 
 [Back to index](../../../README.md#latest-threats) · [November 2026](../README.md)
 
-13 threats, 133 indicators, 60 to block now. Newest first.
+13 threats, 134 indicators, 61 to block now. Newest first.
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
@@ -10,7 +10,7 @@
 | 2026-11-11 | [Citrus Ransomware: Certighost AD CS Exploitation, Xray VLESS Tunnels and Sn00py](Citrus-Ransomware-Certighost-Sn00py/) | Ransomware | 14 | 2 | Contractor-account ransomware using Certighost AD CS certificates, Xray VLESS tunnels and a fake Kaspersky GPO to push Sn00py |
 | 2026-10-21 | [Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient](Lazarus-Operation-FlashHole-CrossWeb-EX/) | Espionage / APT | 22 | 9 | Lazarus abusing CrossWeb EX with GitHub-issue C2 (TechHub) and compromised Korean sites for Cubridge and ClientHub |
 | 2026-11-11 | [Silent Lynx Strix AI-Agent Espionage Against Tajikistan](Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan/) | Espionage / APT | 22 | 13 | CloudSEK found an exposed server belonging to Silent Lynx (UAT-6275 at Cisco Talos, TAG-193 at Recorded Future), a Ka... |
-| 2026-11-09 | [Able2Shell N-able N-central Zero-Days](Able2Shell-N-able-N-central-Zero-Days/) | Exploitation / MSP RMM | 4 | 1 | Public N-central RCE chains that still work on HF2, honeypot exploitation seen; hunt the server and N-able Agent activity |
+| 2026-11-09 | [Able2Shell N-able N-central Zero-Days](Able2Shell-N-able-N-central-Zero-Days/) | Exploitation / MSP RMM | 5 | 2 | Public N-central RCE chains that still work on HF2, honeypot exploitation seen; hunt the server and N-able Agent activity |
 | 2026-11-11 | [GSocket Linux Web-Server C2](GSocket-Linux-Web-Server-C2/) | Post-exploitation / Linux C2 | 9 | 4 | GSocket relay clients on compromised Linux web servers, with hashes and paths only — do not block the public relay |
 | 2026-11-09 | [ARTEX AWS Financial-Data Hunting](ARTEX-AWS-Financial-Data-Hunting/) | Financially motivated intrusion / cloud | 10 | 0 | ARTEX operators in AWS hunting financial logs and Cognito, with hunt-only operator IPs |
 | 2026-10-13 | [Ivanti Connect Secure UTA0576 CVE-2026-118527](Ivanti-Connect-Secure-UTA0576-CVE-2026-118527/) | Exploitation / VPN appliance | 2 | 0 | UTA0576 chaining Ivanti Connect Secure zero-days to steal LAPS, BitLocker and AD credentials |
