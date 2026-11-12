@@ -8,10 +8,10 @@
 
 ## Summary
 
-Microsoft Threat Intelligence reports that threat actors have been deploying GSocket, a legitimate open-source relay tool, as stealthy command and control on compromised Linux web servers after internet-facing application breaches. The host and the operator each connect outbound to the public Global Socket Relay Network, so there is no attacker-owned IP address or domain to block. Operators stage gs-netcat under /dev/shm, persist as systemd-remount-d or /usr/bin/defunct, launch the payload with a kernel-thread-like argument-zero name such as [kaluad], and timestomp the files. The four SHA-256 hashes below were published by Microsoft and are medium confidence: they appear as BlockAndRemediate in the Defender import file, not on the high-confidence block-now list. Do not block gsocket.io, cdn.gsocket.io, gsgg.b-cdn.net or the public relay; hunt web-server processes that retrieve or install GSocket instead. Sansec has independently described the same class of GSocket web-server abuse.
+Microsoft Threat Intelligence reports that threat actors have been deploying GSocket, a legitimate open-source relay tool, as stealthy command and control on compromised Linux web servers after internet-facing application breaches. The host and the operator each connect outbound to the public Global Socket Relay Network, so there is no attacker-owned IP address or domain to block. Operators stage gs-netcat under /dev/shm, persist as systemd-remount-d or /usr/bin/defunct, launch the payload with a kernel-thread-like argument-zero name such as [kaluad], and timestomp the files. The four SHA-256 hashes below were published by Microsoft and are on the block list (BlockAndRemediate in the Defender import file). Do not block gsocket.io, cdn.gsocket.io, gsgg.b-cdn.net or the public relay; hunt web-server processes that retrieve or install GSocket instead. Sansec has independently described the same class of GSocket web-server abuse.
 
 > [!WARNING]
-> GSocket is a legitimate project also used by administrators. Do not block gsocket.io, its CDN, or the public Global Socket Relay Network. Hashes and paths are medium confidence (Microsoft).
+> GSocket is a legitimate project also used by administrators. Do not block gsocket.io, its CDN, or the public Global Socket Relay Network. Hashes and paths come from Microsoft; the hashes are on the block list.
 
 ## Affected countries and sectors
 
@@ -51,7 +51,7 @@ Indicators by type: 5 file names, 4 SHA256. See `iocs.csv` for full details and 
 
 ## Recommended actions
 
-1. Import the four GSocket SHA-256 hashes in Defender XDR at medium confidence, and hunt 30 days of endpoint logs for them and for the listed file paths.
+1. Block the four GSocket SHA-256 hashes (BlockAndRemediate in the Defender XDR import file), and hunt 30 days of endpoint logs for them and for the listed file paths.
 2. Hunt internet-facing Linux web servers for web-server processes (nginx, httpd, php-fpm, java, node) running curl or bash against gsocket.io, files under /dev/shm/.gs-*, systemd-remount-d, /usr/bin/defunct and defunct.service. Do not block gsocket.io or the public relay.
 3. Look for bash exec -a launching a payload as [kaluad] or another kernel-thread-like name, chmod 700 on /usr/bin/defunct, and touch used to timestomp those files.
 4. If confirmed, remove the relay client and its persistence, rotate credentials reachable from the host, and verify that outbound sessions to the relay have stopped. Patching the original web-app flaw does not remove GSocket.

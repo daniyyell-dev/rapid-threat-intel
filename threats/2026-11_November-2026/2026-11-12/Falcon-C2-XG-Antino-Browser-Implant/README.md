@@ -8,7 +8,7 @@
 
 ## Summary
 
-Unit 42 describes Falcon, also called XG or Xiang Ge, a browser-based command-and-control framework that runs malicious JavaScript on compromised webmail portals and government web applications. Between March and May 2026 it was used against ministries of foreign affairs, defence and interior, and law enforcement in one Middle Eastern country and four Southeast Asian countries. The framework steals passwords, emails, session cookies and communications, sideloads a malicious Chrome or Firefox extension, and in some cases delivers Antino, a Rust implant that uses Microsoft OneDrive as its C2 channel. The published domains, extension ID and file hashes come only from Unit 42, so they are medium confidence: they appear as Block in the Defender import file, not on the high-confidence block-now list. Do not block OneDrive or other Microsoft services; hunt for Antino's OneDrive paths and the GatherOSStateKit persistence folder instead.
+Unit 42 describes Falcon, also called XG or Xiang Ge, a browser-based command-and-control framework that runs malicious JavaScript on compromised webmail portals and government web applications. Between March and May 2026 it was used against ministries of foreign affairs, defence and interior, and law enforcement in one Middle Eastern country and four Southeast Asian countries. The framework steals passwords, emails, session cookies and communications, sideloads a malicious Chrome or Firefox extension, and in some cases delivers Antino, a Rust implant that uses Microsoft OneDrive as its C2 channel. The published domains and file hashes come from Unit 42 and are on the block list (Block or BlockAndRemediate in the Defender import file); the extension ID is a hunting lead. Do not block OneDrive or other Microsoft services; hunt for Antino's OneDrive paths and the GatherOSStateKit persistence folder instead.
 
 > [!WARNING]
 > Single-source indicators (Unit 42). The observed activity is from March to May 2026. Do not block OneDrive or other Microsoft services.
@@ -48,7 +48,7 @@ Indicators by type: 21 SHA256, 5 domains, 1 other. See `iocs.csv` for full detai
 
 ## Recommended actions
 
-1. Import the Falcon domains and file hashes in Defender XDR at medium confidence, and hunt 30 days of DNS, proxy and endpoint logs for them.
+1. Block the Falcon domains and file hashes (they are in the Defender XDR import file), and hunt 30 days of DNS, proxy and endpoint logs for them.
 2. Search browser extension inventories, file paths and registry keys for Chrome extension ID mbidcmlcbgbphpoacojjbmfpohcimjji.
 3. Hunt for files under %LOCALAPPDATA%\Windows GatherOSStateKit, sdiagnhost.exe launching PowerShell, and OneDrive or Graph activity to antino/heartbeat/ or antino/antino_upload/ paths. Do not block OneDrive or Microsoft services.
 4. On internal or government web applications, look for unexpected third-party JavaScript and for Hm_lvt_$ local-storage keys or an Hm_lvt__ cookie with a long-lived expiry.
