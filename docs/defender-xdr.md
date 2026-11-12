@@ -1,6 +1,6 @@
 # Microsoft Defender XDR
 
-[Back to index](../README.md#how-to-use)
+[Back to index](../README.md#use-the-data)
 
 Each threat folder has two Defender files:
 

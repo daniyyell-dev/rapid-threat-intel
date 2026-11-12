@@ -12,34 +12,14 @@
 
 </div>
 
-## What is this?
+<a id="what-is-this"></a>
+<a id="why-this-exists"></a>
+## Overview
 
-When a serious attack breaks, the indicators SOC teams need are scattered across vendor blogs, government advisories and researcher posts, often buried in PDFs, mixed with noise, and in formats no security tool can load directly. Commercial feeds fill the gap for those who can pay, but they bury the attacks that matter under thousands of low-value indicators, and free feeds rarely explain what an indicator is or where it came from.
-
-This repository closes that gap for the threats that matter most: attacks on banking, insurance and financial services, UK organisations and critical systems such as identity providers, edge devices and core enterprise software. Each threat comes with a short research summary (what happened, who is behind it, who is targeted, MITRE techniques and recommended actions), curated and deduplicated IOCs that each have a one-line description and a link to the published source, and ready-to-use files: a block list, a Microsoft Defender XDR import file and an advanced hunting query.
-
-Each threat is collected, verified and packaged automatically, with human oversight, and nothing is published until a reputable vendor, researcher or government source has released indicators for it.
+When a serious attack breaks, the indicators SOC teams need are scattered across reports, often buried in PDFs and in formats no security tool can load directly. Commercial feeds are expensive and bury the attacks that matter under low-value indicators, and most teams do not have time to dig through every source themselves. This project does that work once, for everyone, focusing on attacks against banking, insurance and financial services, UK organisations and critical systems such as identity providers, edge devices and core enterprise software. Each threat comes with a short research summary, curated indicators that each have a description and a source, and ready-to-use block lists, Defender XDR import files and hunt queries.
 
 > [!CAUTION]
 > **Handle all indicators as live and malicious.** Do not visit, open, download or resolve any IP address, domain, URL or file listed here from a corporate or personal device. Analyse them only in an isolated environment, such as a hosted sandbox like [ANY.RUN](https://any.run/) or a self-hosted one like [OpenSandbox](https://github.com/opensandbox-group/OpenSandbox), and follow your organisation's security policies. These indicators are provided for defensive use only, and the maintainers accept no responsibility for any damage, data loss or policy breach caused by their misuse or careless handling.
-
-> [!IMPORTANT]
-> This repository is updated every 2 hours, and only high-impact threat intelligence makes it in: if a threat is not exploitable or would not put a business at risk, it is left out.
-
-## Why this exists
-
-When you work in a high-intensity threat environment every day, there is rarely time to browse a dozen threat intel sites and dig through each report for the IOCs, artefacts and behavioural context that threat hunters and incident responders actually need to act on.
-
-Commercial threat intelligence is also expensive, and not every team or organisation can afford it.
-
-So this project does that work once, for everyone. It collects threats from many trusted sources, then:
-
-1. **Verifies** each indicator against its original published report
-2. **Cleans and deduplicates** it across sources
-3. **Aggregates** it per threat and in one combined set
-4. **Makes it actionable** with block lists, Defender XDR import files and ready-to-run hunt queries
-
-The result is one place where SOC analysts, threat hunters and incident responders can find what they need and act on it straight away.
 
 ## How it works
 
@@ -101,7 +81,8 @@ Grouped by the month and day they were added, newest first. The date column is w
 
 To block everything at once, use [`all/`](all/): 278 high-confidence block indicators across all threats.
 
-## How to use
+<a id="how-to-use"></a>
+## Use the data
 
 | Tool | Guide |
 |---|---|
@@ -129,7 +110,8 @@ These stable links always serve the latest data. Use them as external dynamic li
 > [!WARNING]
 > Hunt before you block, and test file-hash blocks on one host first where a threat abuses legitimate file names. Defender IP indicators only cover outbound connections from endpoints, so block inbound attacker IPs at the firewall.
 
-## Repository structure
+<a id="repository-structure"></a>
+## Repository
 
 ```text
 rapid-threat-intel/
@@ -194,7 +176,8 @@ Full reference, including the Defender file and expiry: [docs/data-format.md](do
 
 New indicators, corrections, false-positive reports and better detections are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), then open an [issue](https://github.com/daniyyell-dev/rapid-threat-intel/issues/new/choose) or a pull request. To report a security problem privately, see [SECURITY.md](SECURITY.md).
 
-## Acknowledgements
+<a id="acknowledgements"></a>
+## Sources
 
 Thanks to the organisations whose published research these indicators come from. Inclusion does not imply endorsement.
 

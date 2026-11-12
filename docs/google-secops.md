@@ -1,6 +1,6 @@
 # Google Security Operations (SecOps)
 
-[Back to index](../README.md#how-to-use)
+[Back to index](../README.md#use-the-data)
 
 Each threat folder has a ready YARA-L 2.0 rule, `hunt.yaral`. To match every threat at once, load the block lists into data tables and use [`all/live_feed.yaral`](../all/live_feed.yaral) or the example rules below.
 

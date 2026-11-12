@@ -1,6 +1,6 @@
 # Firewalls and EDR
 
-[Back to index](../README.md#how-to-use)
+[Back to index](../README.md#use-the-data)
 
 Most firewalls can pull a plain-text list from a URL and refresh it on a schedule. Point them at the raw files in this repository.
 

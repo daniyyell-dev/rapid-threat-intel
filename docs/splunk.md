@@ -1,6 +1,6 @@
 # Splunk
 
-[Back to index](../README.md#how-to-use)
+[Back to index](../README.md#use-the-data)
 
 Each threat folder has two Splunk searches, and [`all/`](../all/) has a live-feed search, a lookup and example macros:
 

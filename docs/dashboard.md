@@ -1,6 +1,6 @@
 # Live feed dashboard
 
-[Back to index](../README.md#how-to-use)
+[Back to index](../README.md#use-the-data)
 
 This is a dark, responsive GitHub Pages site for this repository. It is for SOC analysts, threat hunters and incident responders who need to check an indicator, read a short research summary and download ready-to-use files without browsing the folder tree.
 
