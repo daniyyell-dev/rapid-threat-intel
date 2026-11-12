@@ -60,7 +60,7 @@
 ]
 
 | append [
-    search `rti_endpoint(RelayTrap OR sckit- OR Panel-Lateral.ps1 OR Run-Lateral-Full.bat OR ToolboxRelayUploader.exe)`
+    search `rti_endpoint(("RelayTrap" OR "sckit-" OR "Panel-Lateral.ps1" OR "Run-Lateral-Full.bat" OR "ToolboxRelayUploader.exe"))`
     | where match(coalesce(file_path, file_name, ""), "(?i)ProgramData.RelayTrap|sckit-|Panel-Lateral\.ps1|Run-Lateral-Full\.bat|ToolboxRelayUploader\.exe")
     | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
     | fillnull value="-" host user src dest detail

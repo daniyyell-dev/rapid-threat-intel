@@ -10,7 +10,7 @@ search `rti_endpoint(d94f75a70b5cabaf786ac57177ed841732e62bdcc9a29e06e5b41d9be56
 | stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
 
 | append [
-    search `rti_endpoint(gsocket.io from a web server)`
+    search `rti_endpoint(("gsocket.io"))`
     | where match(coalesce(process, process_path, ""), "(?i)gsocket\.io") AND match(coalesce(parent_process_name, ""), "(?i)^(nginx|httpd|apache2|php-fpm|php|java|node|tomcat|python|python3)$")
     | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
     | fillnull value="-" host user src dest detail
@@ -20,7 +20,7 @@ search `rti_endpoint(d94f75a70b5cabaf786ac57177ed841732e62bdcc9a29e06e5b41d9be56
 ]
 
 | append [
-    search `rti_endpoint(/dev/shm/.gs- or gs-netcat_mini-linux)`
+    search `rti_endpoint(("/dev/shm/.gs-" OR "gs-netcat_mini-linux"))`
     | where match(coalesce(file_path, file_name, ""), "(?i)/dev/shm/\.gs-|gs-netcat_mini-linux|\.gsn_ora")
     | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
     | fillnull value="-" host user src dest detail
@@ -30,7 +30,7 @@ search `rti_endpoint(d94f75a70b5cabaf786ac57177ed841732e62bdcc9a29e06e5b41d9be56
 ]
 
 | append [
-    search `rti_endpoint(systemd-remount-d or defunct.service)`
+    search `rti_endpoint(("systemd-remount-d" OR "defunct.service"))`
     | where match(coalesce(file_path, file_name, ""), "(?i)systemd-remount-d|defunct\.service|/usr/bin/defunct")
     | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
     | fillnull value="-" host user src dest detail
@@ -39,7 +39,7 @@ search `rti_endpoint(d94f75a70b5cabaf786ac57177ed841732e62bdcc9a29e06e5b41d9be56
     | eval ioc="GSocket persistence as systemd-remount-d or defunct", ioc_type="behaviour (alert)"
 ]
 | append [
-    search `rti_endpoint(systemd-remount-d or defunct)`
+    search `rti_endpoint(("systemd-remount-d" OR "defunct"))`
     | where match(coalesce(process, process_path, process_name, ""), "(?i)systemd-remount-d|defunct\.service|/usr/bin/defunct")
     | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
     | fillnull value="-" host user src dest detail
@@ -49,7 +49,7 @@ search `rti_endpoint(d94f75a70b5cabaf786ac57177ed841732e62bdcc9a29e06e5b41d9be56
 ]
 
 | append [
-    search `rti_endpoint(exec -a [kaluad] or timestomp defunct)`
+    search `rti_endpoint(("exec -a" OR "[kaluad]" OR "timestomp" OR "defunct"))`
     | where match(coalesce(process, process_path, ""), "(?i)exec -a|\[kaluad\]") OR (match(coalesce(process_name, ""), "(?i)^(chmod|touch)$") AND match(coalesce(process, process_path, ""), "(?i)defunct|systemd-remount-d"))
     | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
     | fillnull value="-" host user src dest detail

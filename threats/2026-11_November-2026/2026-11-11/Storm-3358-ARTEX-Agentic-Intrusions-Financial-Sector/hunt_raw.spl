@@ -75,7 +75,7 @@
 ]
 
 | append [
-    search `rti_endpoint(artx or i*_*.ps1 in Windows\Temp)`
+    search `rti_endpoint(("artx" OR "i*_*.ps1" OR "Windows\Temp"))`
     | where match(coalesce(file_path, file_name, ""), "(?i)Windows\\Temp") AND (match(coalesce(file_name, ""), "(?i)^artx") OR match(coalesce(file_name, ""), "(?i)^i[0-9]+_.*\.ps1$"))
     | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
     | fillnull value="-" host user src dest detail

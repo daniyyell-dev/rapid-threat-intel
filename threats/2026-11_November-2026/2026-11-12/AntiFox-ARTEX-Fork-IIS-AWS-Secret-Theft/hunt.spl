@@ -19,7 +19,7 @@
 | append [
     | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
         FROM datamodel=Endpoint.Filesystem
-        WHERE Filesystem.file_name="*.aspx" Filesystem.process_name="w3wp.exe" Filesystem.action IN ("created", "modified", "renamed")
+        WHERE Filesystem.file_name="*.aspx" Filesystem.image="*w3wp.exe" Filesystem.action IN ("created", "modified", "renamed")
         BY Filesystem.dest Filesystem.user Filesystem.file_path Filesystem.file_name Filesystem.action
     | rename "Filesystem.*" AS *
     | eval host=dest, src="-", detail="file ".action." ".file_path, data_model="Endpoint.Filesystem"
