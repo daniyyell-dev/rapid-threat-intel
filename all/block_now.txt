@@ -1,4 +1,4 @@
-# All high-confidence indicators to block. Updated 2026-11-12 02:05.
+# All high-confidence indicators to block. Updated 2026-11-12 03:55.
 
 ## 2026-11-11 ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints
 185.99.255.28

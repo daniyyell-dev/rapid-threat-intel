@@ -4,9 +4,9 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-12 02:05",
+ "last_updated": "2026-11-12 03:55",
  "threat_count": 18,
- "indicator_count": 882,
+ "indicator_count": 899,
  "block_now_count": 276,
  "combined_files": [
   {
@@ -110,10 +110,10 @@
    "category": "Supply chain / MSP remote access",
    "published": "2026-11-11",
    "entry_date": "2026-11-11 22:05",
-   "last_updated": "2026-11-12 02:05",
+   "last_updated": "2026-11-12 03:55",
    "seq": 18,
    "headline": "Hijacked cloud ScreenConnect panels push rogue clients to MSP-managed endpoints and pivot back to technicians",
-   "summary": "Huntress's SOC is responding to an active campaign that began around 17:47 UTC on 11 November 2026 against managed service providers using cloud-hosted ConnectWise ScreenConnect. At the time of its update Huntress was tracking six compromised MSPs and more than 286 endpoints, with the numbers rising; the actor numbers each victim MSP and the observed tags start partway through the sequence, so other MSPs were probably hit first. Huntress has seen no evidence of a new vulnerability and has not confirmed how the panels were accessed; the evidence points to stolen credentials or hijacked operator sessions. With panel access, the actor uses Run Command to push a second, rogue ScreenConnect client to every managed endpoint, giving an independent backdoor that no longer needs the MSP's panel. If a technician then opens an interactive ScreenConnect session to investigate, the malware rides that session back onto the technician's workstation, drops sqlite3.exe to scrape saved browser sessions and tokens, and pivots into any other ScreenConnect panels the technician can reach. Persistence is a TrapWatch scheduled task running as SYSTEM every 10 seconds, files under C:\\ProgramData\\RelayTrap\\ and %TEMP%\\sckit-*, and a RelayTrapLiteAlert Run-key value; endpoints reinfect within minutes if isolation is lifted before these are removed. ConnectWise confirmed the campaign in a Trust Center advisory at 22:45 UTC on 11 November, said the actor appears to deploy the extra remote-access software through third-party extensions, and disabled five of them (Labtech Plus, RMM Plus, RMM+, RMM Plus Password Link and RMM+ Password Link) in about 400 partner environments; on-premises partners must disable them themselves. Sophos X-Ops independently observed the same activity: in one case curl.exe downloaded ScreenConnect.ClientSetup.msi from 185.99.255.28 to C:\\Windows\\TEMP\\sc.msi, msiexec.exe installed it silently, and PowerShell with execution-policy bypass fetched the second stage from the ns.mo7sen.dev stager. Sophos saw the commands come from three ScreenConnect instance IDs that are likely compromised MSP instances (d905b2b1b165d0a9, 4b8f4089ddaac6a9 and df1f7ef0cfacd0d8) and install the same two rogue client IDs Huntress reported. Huntress's customer advisory, updated at 00:29 UTC on 12 November, adds that the toolkit installs a modified client that impersonates the MSP's own client and waits for a technician to connect. Because two vendors saw them independently, the attacker relay 185.99.255.28 and the stager URL are now high confidence and on the block-now list, and the two rogue client IDs are high-confidence hunting leads; the secondary C2 server and the dynamic-DNS and payproofkit hostnames come only from Huntress, so they stay Block in the Defender import file at medium confidence. BleepingComputer found a July 2026 SSA-themed batch file on VirusTotal that installs ScreenConnect from cdn007-digitaldownloads.com, contacts amexsafekeyupdate.com and checks for rogue client ID ed630cc2c873b091; whether that earlier activity belongs to this campaign is not confirmed, so its domain, hash and file name, and the possible C2 domain, are alert-only.",
+   "summary": "Huntress's SOC is responding to an active campaign that began around 17:47 UTC on 11 November 2026 against managed service providers using cloud-hosted ConnectWise ScreenConnect. At the time of its update Huntress was tracking six compromised MSPs and more than 286 endpoints, with the numbers rising; the actor numbers each victim MSP and the observed tags start partway through the sequence, so other MSPs were probably hit first. Huntress has seen no evidence of a new vulnerability and has not confirmed how the panels were accessed; the evidence points to stolen credentials or hijacked operator sessions. With panel access, the actor uses Run Command to push a second, rogue ScreenConnect client to every managed endpoint, giving an independent backdoor that no longer needs the MSP's panel. If a technician then opens an interactive ScreenConnect session to investigate, the malware rides that session back onto the technician's workstation, drops sqlite3.exe to scrape saved browser sessions and tokens, and pivots into any other ScreenConnect panels the technician can reach. Persistence is a TrapWatch scheduled task running as SYSTEM every 10 seconds, files under C:\\ProgramData\\RelayTrap\\ and %TEMP%\\sckit-*, and a RelayTrapLiteAlert Run-key value; endpoints reinfect within minutes if isolation is lifted before these are removed. ConnectWise confirmed the campaign in a Trust Center advisory at 22:45 UTC on 11 November, said the actor appears to deploy the extra remote-access software through third-party extensions, and disabled five of them (Labtech Plus, RMM Plus, RMM+, RMM Plus Password Link and RMM+ Password Link) in about 400 partner environments; on-premises partners must disable them themselves. Sophos X-Ops independently observed the same activity: in one case curl.exe downloaded ScreenConnect.ClientSetup.msi from 185.99.255.28 to C:\\Windows\\TEMP\\sc.msi, msiexec.exe installed it silently, and PowerShell with execution-policy bypass fetched the second stage from the ns.mo7sen.dev stager. Sophos saw the commands come from three ScreenConnect instance IDs that are likely compromised MSP instances (d905b2b1b165d0a9, 4b8f4089ddaac6a9 and df1f7ef0cfacd0d8) and install the same two rogue client IDs Huntress reported. Huntress's customer advisory, updated at 00:29 UTC on 12 November, adds that the toolkit installs a modified client that impersonates the MSP's own client and waits for a technician to connect. Because two vendors saw them independently, the attacker relay 185.99.255.28 and the stager URL are now high confidence and on the block-now list, and the two rogue client IDs are high-confidence hunting leads; the secondary C2 server and the dynamic-DNS and payproofkit hostnames come only from Huntress, so they stay Block in the Defender import file at medium confidence. BleepingComputer found a July 2026 SSA-themed batch file on VirusTotal that installs ScreenConnect from cdn007-digitaldownloads.com, contacts amexsafekeyupdate.com and checks for rogue client ID ed630cc2c873b091; whether that earlier activity belongs to this campaign is not confirmed, so its domain, hash and file name are alert-only. Huntress's full SCKit write-up, published on its blog late on 11 November, puts the count at 288 endpoints in 48 organisations within 90 minutes, says the current ScreenConnect releases 26.6.6.9747 and 26.7.6.9783 are affected, and breaks down the 16-file toolkit: the dropper writes C:\\Windows\\Temp\\sckit-run.bat, fetches a host-keyed kit whose decryption key comes back in the server's response headers, and a later stage pulls sqlite3.exe from EadF.php?p=5 to read browser cookie databases. Huntress found that the worm's attempt to take over technician consoles failed in every host log it recovered, but it still advises against triaging over ScreenConnect. It also published 16 toolkit hashes; because the scripts are rebuilt per host and RelayTrap.exe is compiled on each machine, these are alert-only hunting leads, and the p=5 URL and cdn007-digitaldownloads.com (now listed by Huntress as C2, first flagged by Blackpoint) are Block in the Defender import but not on the block-now list.",
    "caveat": null,
    "targets": {
     "countries": [],
@@ -185,9 +185,9 @@
     "Check that the Labtech Plus, RMM Plus, RMM+, RMM Plus Password Link and RMM+ Password Link extensions are disabled (on-premises partners must do this themselves), keep their installation records and logs, and do not re-enable them until ConnectWise says it is safe.",
     "Do not triage suspected hosts through ScreenConnect: use your EDR live-response shell, WinRM or another out-of-band tool, because an interactive session can carry the infection back to the technician's workstation.",
     "Revoke all active ScreenConnect web sessions, rotate ScreenConnect credentials, verify MFA in your identity provider, and audit Run Command and Toolbox history for mass executions you did not start.",
-    "Block 185.99.255.28 and the ns.mo7sen.dev stager URL now (Huntress and Sophos both saw them), also block 155.94.150.39, newnewnew.gotdns.org, soxnewwork.homedns.org and sc.payproofkit.com in Defender XDR (Huntress only, so follow your own policy for single-source blocks), block only these exact dynamic-DNS hostnames, not gotdns.org or homedns.org, and alert on cdn007-digitaldownloads.com and amexsafekeyupdate.com.",
+    "Block 185.99.255.28 and the ns.mo7sen.dev stager URL now (Huntress and Sophos both saw them), also block 155.94.150.39, newnewnew.gotdns.org, soxnewwork.homedns.org and sc.payproofkit.com in Defender XDR (Huntress only, so follow your own policy for single-source blocks), plus cdn007-digitaldownloads.com and the EadF.php?p=5 URL (Huntress SCKit blog), block only these exact dynamic-DNS hostnames, not gotdns.org or homedns.org, and alert on amexsafekeyupdate.com.",
     "On endpoints, remove the rogue ScreenConnect client service (client IDs 2588ef5c15954b10 and ed630cc2c873b091), the TrapWatch scheduled task, C:\\ProgramData\\RelayTrap\\, %TEMP%\\sckit-* and the RelayTrapLiteAlert Run value before lifting isolation.",
-    "On technician workstations, look for sqlite3.exe reading browser profile data and for Panel-Lateral.ps1 or Run-Lateral-Full.bat, then reset browser-stored sessions and tokens."
+    "On technician workstations, look for sqlite3.exe reading browser profile data, for Panel-Lateral.ps1, Run-Lateral-Full.bat or %TEMP%\\sckit-decoder.ps1, and for the 16 SCKit hashes Huntress published (a miss does not clear a host, because they change per host), then reset browser-stored sessions and tokens."
    ],
    "sources": [
     {
@@ -214,22 +214,27 @@
      "url": "https://www.bleepingcomputer.com/news/security/active-screenconnect-attacks-breach-msps-impact-dozens-of-organizations/",
      "label": "BleepingComputer – Active ScreenConnect attacks breach MSPs, impact dozens of organizations",
      "name": "BleepingComputer"
+    },
+    {
+     "url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "name": "Huntress (2)"
     }
    ],
-   "indicator_count": 22,
+   "indicator_count": 39,
    "block_now_count": 2,
-   "hunt_count": 20,
+   "hunt_count": 37,
    "hunt_counts": {
-    "alert": 16,
-    "block": 4
+    "alert": 31,
+    "block": 6
    },
    "indicator_counts": {
+    "sha256": 17,
     "filename": 7,
     "other": 6,
     "domain": 5,
     "ipv4": 2,
-    "sha256": 1,
-    "url": 1
+    "url": 2
    },
    "ioas": [
     {
@@ -436,11 +441,11 @@
      "value": "cdn007-digitaldownloads.com",
      "type": "domain",
      "confidence": "med",
-     "recommended_action": "alert",
-     "description": "Possible C2 domain for the ScreenConnect panel-hijack campaign, contributed by another responder in the Huntress thread and not yet confirmed.",
-     "source_url": "https://www.reddit.com/r/msp/comments/1xts3f2/active_malware_campaign_abusing_screenconnect/",
-     "source_label": "Huntress SOC on r/msp – Active malware campaign abusing ScreenConnect",
-     "source_name": "Reddit r/msp"
+     "recommended_action": "block",
+     "description": "C2 domain for the ScreenConnect panel-hijack campaign, listed in Huntress's SCKit IOC table and originally flagged by Blackpoint.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress"
     },
     {
      "value": "https://ns.mo7sen.dev/EadF.php?p=4",
@@ -601,6 +606,176 @@
      "source_url": "https://www.bleepingcomputer.com/news/security/active-screenconnect-attacks-breach-msps-impact-dozens-of-organizations/",
      "source_label": "BleepingComputer – Active ScreenConnect attacks breach MSPs, impact dozens of organizations",
      "source_name": "BleepingComputer"
+    },
+    {
+     "value": "94b93c649b0ae0281352da9d01761fa9195ab1e6ac7010af3b9ba1646355eb11",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of Panel-Lateral-free.ps1, the SCKit worm script without its config file; it lists the attacker's own panel on a skip list.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress"
+    },
+    {
+     "value": "7a9aca9fdd4dcc13fe497cabdb13ca1e5d6a529271c8aa495e5ca1c1c80271ec",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of Panel-Lateral.ps1, the SCKit worm script that steals a technician's ScreenConnect login cookie and pushes an upload to every session the technician can reach.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress"
+    },
+    {
+     "value": "b93f10f30ee453d1e1c046fec9d141c41d7680be5cd46c3aeb3febe0f4953b4d",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of LabConfig.ps1, the SCKit helper library that decrypts cookies, probes ScreenConnect panels and builds rogue client installer URLs.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress"
+    },
+    {
+     "value": "3c7a98f0fdb6235b8076319c74dc1085f7b349b6d750416dd0cadb07d7972ec4",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of RelayTrap.cs, the C# source of the relay trap that takes the legitimate ScreenConnect client's place on the MSP relay; it is compiled per host into RelayTrap.exe.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress"
+    },
+    {
+     "value": "d2ed7a7bf4f8ac9c7969e9b3a07ebd4dda0d858f372c876ac0a041611698de9a",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of TrapWatch.ps1, which runs as SYSTEM every 10 seconds, stops the legitimate ScreenConnect client and takes over its connection slot.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress"
+    },
+    {
+     "value": "4a1dd3cd2ea14368afadf7e9dfdd63b104e3981ef8c85bbb6510919b810af04b",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of the SCKit trap install.ps1, which sets up C:\\ProgramData\\RelayTrap, the TrapWatch task, the RelayTrapLiteAlert Run key and SRP/AppLocker rules that block files pushed through ScreenConnect temp folders.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress"
+    },
+    {
+     "value": "8cb5f48bbe70b5248db7f327f3d1ad6649df5c767d2a7e0711ee147fd92e06af",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of ToolboxRelayUploader.exe, a 32-bit .NET tool that joins a session as the technician with a stolen token, uploads a payload to the panel's Shared Toolbox and deletes it after the broadcast.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress"
+    },
+    {
+     "value": "cf50d73fa8117a758093b1344de41cd6a6ccddc645cdda1fa91a9264efe93956",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of Lite-Alert.ps1, which runs at logon and logs ScreenConnect file-run events (Event ID 201) and new ScreenConnect client services with on-screen alerts turned off.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress"
+    },
+    {
+     "value": "81cc2baa35b798d6084bd078662fa29ff28df02c46c6ccdb2b43bde97d19f781",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of Stage0Loader.ps1, which fetches a host-keyed payload from EadF.php?p=1, decrypts it to %TEMP%\\k.ps1, runs it hidden and deletes it.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress"
+    },
+    {
+     "value": "c31e6f075cd77e01839aebce32ed35659a9ee962d102aca53040bb5e297410a9",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of Release-Machine.cmd, the SCKit removal script that deletes the TrapWatch task, kills RelayTrap.exe, clears the SRP/AppLocker rules and restarts ScreenConnect client services.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress"
+    },
+    {
+     "value": "deda7c30d798a19b6699a45fbcba503cf778594df9163c61c2f96bb2d2b9fb45",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of Recover-ExecutionPolicy.cmd, an SCKit script that deletes only the SRP/AppLocker rules and stops the AppLocker service when they have blocked powershell.exe.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress"
+    },
+    {
+     "value": "0bd84c776dc01f784a617e73fc77b269f847fc4a062ffd489e4692869724bf08",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of lab-context.json, the SCKit config that points the worm at the attacker panel and holds the RSA key and rogue client IDs.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress"
+    },
+    {
+     "value": "454c43d296b1276bde9a4f6ff1da2221cb35ccdb2fc7991bdd572e45bce12a8a",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of TRAP-PROOF.bat, the SCKit trap test payload that writes %PUBLIC%\\RELAY-TRAP-PROOF.txt; in full mode the dropper is placed beside it as Run-Lateral-Full.bat.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress"
+    },
+    {
+     "value": "5dd3a6ba806ac472663e243cfc1c034c534d5d9a42ec362c3dbf0f8d950148d0",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of Stop-LabTrap.bat, which runs the SCKit decoder in cleanup mode, fetches Stop-LabTrap.ps1 from EadF.php?p=6 and re-arms the new kit.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress"
+    },
+    {
+     "value": "43b7a5e56f9e6c7b74e1ce2b7b5af63f383084625fcc2d3a5985fa1059e2db95",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of Run-Lateral-Full.bat, the SCKit dropper that downloads the decoder from EadF.php?p=4 to %TEMP%\\sckit-decoder.ps1 and copies itself into the trap payload folder for the next machine.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress"
+    },
+    {
+     "value": "50659748723e906c8b3d3c0386bd4cf692f693a3e23639398c1a14d0c31fed61",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of runnew.cmd, which downloads EadF.php with curl.exe to %TEMP%\\sckit-loader.ps1 and runs it hidden; full mode pushes it to every target.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress"
+    },
+    {
+     "value": "https://ns.mo7sen.dev/EadF.php?p=5",
+     "type": "url",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "Stager URL that delivers a copy of the SQLite command-line tool, which SCKit uses to read browser cookie databases and steal ScreenConnect session cookies.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress"
     }
    ],
    "queries": [
