@@ -45,6 +45,21 @@ union isfuzzy=true
     | where csUserAgent has_any ("Nmap", "curl/", "Wget", "python-requests", "python-urllib", "aiohttp", "httpx", "HeadlessChrome", "Playwright")
     | summarize Timestamp = max(TimeGenerated), Requests = count(), Paths = dcount(csUriStem), Agents = make_set(csUserAgent, 3) by cIP, Computer, Window = bin(TimeGenerated, 5m)
     | where Requests >= 100 and Paths >= 20
-    | project Timestamp, SourceTable = "W3CIISLog", Entity = Computer, Indicator = cIP, Context = strcat(Requests, " requests, ", Paths, " paths in 5m; ", strcat_array(Agents, " | ")))
+    | project Timestamp, SourceTable = "W3CIISLog", Entity = Computer, Indicator = cIP, Context = strcat(Requests, " requests, ", Paths, " paths in 5m; ", strcat_array(Agents, " | "))),
+  (W3CIISLog
+    | where TimeGenerated > ago(Lookback)
+    | summarize Timestamp = max(TimeGenerated), Requests = count(), Paths = dcount(csUriStem), Methods = dcount(csMethod) by cIP, Computer, Window = bin(TimeGenerated, 30s)
+    | where Requests >= 8 and Requests <= 40 and Paths >= 3
+    | project Timestamp, SourceTable = "W3CIISLog", Entity = Computer, Indicator = cIP, Context = strcat(Requests, " requests, ", Paths, " paths in 30s")),
+  (W3CIISLog
+    | where TimeGenerated > ago(Lookback)
+    | where scStatus between (200 .. 299)
+    | summarize Timestamp = max(TimeGenerated), Methods = make_set(csMethod, 5), Hits = count() by cIP, Computer, csUriStem, Window = bin(TimeGenerated, 5m)
+    | where (Methods has "PUT" or Methods has "POST" or Methods has "DELETE") and Methods has "GET"
+    | project Timestamp, SourceTable = "W3CIISLog", Entity = Computer, Indicator = cIP, Context = strcat(csUriStem, " ", strcat_array(Methods, ", "), " in 5m")),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where Application == "Amazon Web Services" and ActionType has_any ("PutObject", "DeleteObject", "CreateBucket", "DeleteBucket")
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(RawEventData.userIdentity.arn), Indicator = tostring(ActionType), Context = tostring(strcat(ActionType, " ", IPAddress, " ", tostring(RawEventData.requestParameters))))
 | summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
 | order by LastSeen desc

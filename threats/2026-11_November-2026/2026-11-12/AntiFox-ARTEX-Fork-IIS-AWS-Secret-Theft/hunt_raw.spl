@@ -1,0 +1,46 @@
+``` Threat: AntiFox: ARTEX Fork Used to Implant IIS Web Shells and Steal AWS Secrets
+    Author: Daniel Jeremiah | Date: 2026-11-12
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft ```
+| multisearch
+  [ search `rti_network(47.79.4.33 OR 8.208.101.210)`
+    | search dest_ip IN ("47.79.4.33", "8.208.101.210")
+    | eval data_model="network", ioc_type="ipv4", ioc=dest_ip, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_network(47.79.4.33 OR 8.208.101.210)`
+    | search src_ip IN ("47.79.4.33", "8.208.101.210")
+    | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search `rti_endpoint(aspx AND w3wp.exe)`
+    | where match(coalesce(file_name, file_path, ""), "(?i)\.aspx$") AND match(coalesce(process_name, ""), "(?i)^w3wp\.exe$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="IIS worker dropping an ASPX web shell", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(w3wp.exe)`
+    | where match(coalesce(parent_process_name, ""), "(?i)^w3wp\.exe$") AND (match(coalesce(process_name, ""), "(?i)^(cmd|powershell|pwsh|whoami|icacls)\.exe$") OR match(coalesce(process, ""), "(?i)web\.config|connectionString|whoami|icacls"))
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="IIS worker running whoami, icacls or PowerShell", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search index=* sourcetype="aws:cloudtrail" eventName IN ("ListSecrets", "GetSecretValue", "ListBuckets", "GetObject", "AssumeRole")
+    | eval host=coalesce(recipientAccountId, 'userIdentity.accountId'), user=coalesce('userIdentity.sessionContext.sessionIssuer.arn', 'userIdentity.arn'), src=sourceIPAddress, dest=coalesce('requestParameters.secretId', 'requestParameters.bucketName', 'requestParameters.roleArn', "-"), detail=eventName." UA: ".coalesce(userAgent, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="aws:cloudtrail"
+    | eval ioc="AWS secret and service enumeration", ioc_type="behaviour (hunt)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

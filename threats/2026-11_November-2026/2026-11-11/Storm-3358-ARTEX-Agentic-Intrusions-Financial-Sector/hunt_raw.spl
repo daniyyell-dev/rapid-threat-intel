@@ -52,6 +52,27 @@
     | eval data_model="endpoint"
     | eval ioc="New cron jobs and temp-folder binaries on web hosts", ioc_type="behaviour (hunt)"
 ]
+
+| append [
+    search `rti_web(*)`
+    | bin _time span=30s
+    | stats count min(_time) AS first_seen max(_time) AS last_seen dc(url) AS paths BY src dest _time
+    | where count>=8 AND count<=40 AND paths>=3
+    | eval host=dest, user="-", detail=count." requests, ".paths." paths in 30s", data_model="web"
+    | fields - paths _time
+    | eval ioc="Inference-paced request bursts then a pause", ioc_type="behaviour (hunt)"
+]
+
+| append [
+    search `rti_web(*)` (status>=200 AND status<300)
+    | bin _time span=5m
+    | stats count min(_time) AS first_seen max(_time) AS last_seen values(http_method) AS methods BY src dest url _time
+    | eval methods_join=mvjoin(methods, ",")
+    | where (like(methods_join, "%PUT%") OR like(methods_join, "%POST%") OR like(methods_join, "%DELETE%")) AND like(methods_join, "%GET%")
+    | eval host=dest, user="-", detail=url." ".methods_join." in 5m", data_model="web"
+    | fields - methods methods_join url _time
+    | eval ioc="Write then GET or write-then-delete checks", ioc_type="behaviour (hunt)"
+]
 | sort 0 - last_seen
 | eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
 | table first_seen last_seen ioc ioc_type data_model host user src dest detail count

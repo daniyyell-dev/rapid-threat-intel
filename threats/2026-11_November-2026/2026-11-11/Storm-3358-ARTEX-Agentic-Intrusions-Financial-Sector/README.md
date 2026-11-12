@@ -4,11 +4,11 @@
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
-| 2026-11-06 | 2026-11-11 03:52 | 2026-11-11 | Financially motivated intrusion / financial sector | 8 | 8 |
+| 2026-11-06 | 2026-11-11 03:52 | 2026-11-12 09:25 | Financially motivated intrusion / financial sector | 8 | 8 |
 
 ## Summary
 
-Microsoft Threat Intelligence reports that Storm-3358, a financially motivated, Cambodia-based intrusion cluster, began targeting financial organisations in October 2026 with ARTEX, an open-source agentic penetration testing framework. Most targets are financial organisations in Southeast Asia, with a smaller number of large financial organisations globally. The ARTEX agents scan internet-facing systems at machine speed, exploit anonymous file upload and server-side request forgery (SSRF) flaws in web applications, then use curl and netcat to pull down the open-source WISP, vshell and AdaptixC2 remote access trojans for persistence and lateral movement. Microsoft listed the ARTEX servers and C2 nodes below as active on 6 November 2026; the actor rotates infrastructure, so behaviour-based hunting matters as much as blocking.
+Microsoft Threat Intelligence reports that Storm-3358, a financially motivated, Cambodia-based intrusion cluster, began targeting financial organisations in October 2026 with ARTEX, an open-source agentic penetration testing framework. Most targets are financial organisations in Southeast Asia, with a smaller number of large financial organisations globally. The ARTEX agents scan internet-facing systems at machine speed, exploit anonymous file upload and server-side request forgery (SSRF) flaws in web applications, then use curl and netcat to pull down the open-source WISP, vshell and AdaptixC2 remote access trojans for persistence and lateral movement. Microsoft listed the ARTEX servers and C2 nodes below as active on 6 November 2026; the actor rotates infrastructure, so behaviour-based hunting matters as much as blocking. On 11 November 2026 Unit 42 published a defender guide to ARTEX and similar agentic tools, describing the same class of machine-speed behaviour: short bursts of requests, a pause consistent with a model inference call, self-correction after failed requests, a GET after almost every successful write, and write-then-delete tests on storage buckets. Unit 42 did not publish new network indicators.
 
 ## Affected countries and sectors
 
@@ -51,6 +51,7 @@ Indicators by type: 8 IPv4. See `iocs.csv` for full details and descriptions.
 2. Inventory internet-facing upload endpoints and server-side URL fetch features (document portals, onboarding and KYC forms, webhooks, PDF and image processors); require authentication on uploads and restrict outbound destinations.
 3. Hunt for web server processes spawning a shell, curl, wget or nc, new binaries run from temp or world-writable paths, and new cron entries on web hosts.
 4. Watch for bursts of rapid, retried requests with default tool user agents (Nmap, curl, python-requests, headless Chromium) against public web applications.
+5. Hunt for ARTEX-like operator behaviour described by Unit 42: short request bursts with a 25-31 second pause, a GET after each successful write, write-then-delete tests on storage buckets, and placeholder inputs immediately before real credentials. Do not treat research examples as indicators.
 
 ## Behaviours to hunt
 
@@ -74,6 +75,24 @@ Indicators by type: 8 IPv4. See `iocs.csv` for full details and descriptions.
    Log source: EDR process and file events\
    Source: [Microsoft](https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/)
 
+4. **Hunt** · Inference-paced request bursts then a pause\
+   Look for: Short bursts of about one to 14 web or API requests a second apart, then a pause of 25 to 31 seconds, consistent with an agent waiting on a model inference call\
+   Why it matters: Unit 42's ARTEX defender guide describes this think-then-act cadence as a hallmark of agentic tooling, alongside machine-speed pivots after a credential is found.\
+   Log source: Web server, WAF and reverse-proxy logs\
+   Source: [Unit 42](https://unit42.paloaltonetworks.com/artex-and-ai-powered-red-teaming-tools/)
+
+5. **Hunt** · Write then GET or write-then-delete checks\
+   Look for: A GET to the same path after a successful write, or a write-then-delete test against a storage bucket or object, from the same source in a short window\
+   Why it matters: Unit 42 observed ARTEX agents checking their own work with a GET after almost every successful write, and running write-then-delete tests on storage buckets.\
+   Log source: Web, API and cloud audit logs (including AWS S3)\
+   Source: [Unit 42](https://unit42.paloaltonetworks.com/artex-and-ai-powered-red-teaming-tools/)
+
+6. **Hunt** · Canary inputs immediately before real credentials\
+   Look for: Placeholder or canary usernames and values sent immediately before real credentials in the same authentication or API session\
+   Why it matters: Unit 42 saw ARTEX agents test canary inputs, such as bogus usernames, before real ones. Hunt for that pattern in your own logs; do not treat research examples as indicators.\
+   Log source: Web application, identity and API logs\
+   Source: [Unit 42](https://unit42.paloaltonetworks.com/artex-and-ai-powered-red-teaming-tools/)
+
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
 
 ## Hunt
@@ -92,6 +111,7 @@ Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and
 ## Sources
 
 - [Microsoft Threat Intelligence – ARTEX abuse expands as cybercriminals target financial sector](https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/)
+- [Unit 42 – ARTEX and AI-Powered Red Teaming Tools: What Defenders Need to Know](https://unit42.paloaltonetworks.com/artex-and-ai-powered-red-teaming-tools/)
 
 ---
 

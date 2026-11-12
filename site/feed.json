@@ -4,9 +4,9 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-12 08:05",
- "threat_count": 19,
- "indicator_count": 910,
+ "last_updated": "2026-11-12 09:25",
+ "threat_count": 23,
+ "indicator_count": 944,
  "block_now_count": 278,
  "combined_files": [
   {
@@ -102,6 +102,1160 @@
   }
  ],
  "threats": [
+  {
+   "id": "Falcon-C2-XG-Antino-Browser-Implant",
+   "folder": "threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant",
+   "name": "Falcon C2 (XG): Browser Framework and Antino Implant Targeting Government Webmail",
+   "short": "Falcon C2 Antino browser implant",
+   "category": "APT / browser implant",
+   "published": "2026-11-11",
+   "entry_date": "2026-11-12 09:25",
+   "last_updated": "2026-11-12",
+   "seq": 23,
+   "headline": "Browser C2 framework and Antino implant used against government webmail, with a malicious extension and OneDrive C2",
+   "summary": "Unit 42 describes Falcon, also called XG or Xiang Ge, a browser-based command-and-control framework that runs malicious JavaScript on compromised webmail portals and government web applications. Between March and May 2026 it was used against ministries of foreign affairs, defence and interior, and law enforcement in one Middle Eastern country and four Southeast Asian countries. The framework steals passwords, emails, session cookies and communications, sideloads a malicious Chrome or Firefox extension, and in some cases delivers Antino, a Rust implant that uses Microsoft OneDrive as its C2 channel. The published domains, extension ID and file hashes come only from Unit 42, so they are medium confidence: they appear as Block in the Defender import file, not on the high-confidence block-now list. Do not block OneDrive or other Microsoft services; hunt for Antino's OneDrive paths and the GatherOSStateKit persistence folder instead.",
+   "caveat": "Single-source indicators (Unit 42). The observed activity is from March to May 2026. Do not block OneDrive or other Microsoft services.",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Middle East",
+     "Southeast Asia"
+    ],
+    "sectors": [
+     "Government",
+     "Law enforcement",
+     "Defence"
+    ],
+    "note": "Unit 42 observed compromises of government entities in one Middle Eastern country and four Southeast Asian countries between March and May 2026, including ministries of foreign affairs, defence and interior, and law enforcement. Countries were not named.",
+    "source": {
+     "url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "name": "Unit 42"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1189",
+     "name": "Drive-by Compromise",
+     "url": "https://attack.mitre.org/techniques/T1189/"
+    },
+    {
+     "id": "T1176",
+     "name": "Browser Extensions",
+     "url": "https://attack.mitre.org/techniques/T1176/"
+    },
+    {
+     "id": "T1555.003",
+     "name": "Credentials from Web Browsers",
+     "url": "https://attack.mitre.org/techniques/T1555/003/"
+    },
+    {
+     "id": "T1539",
+     "name": "Steal Web Session Cookie",
+     "url": "https://attack.mitre.org/techniques/T1539/"
+    },
+    {
+     "id": "T1102.002",
+     "name": "Web Service: Bidirectional Communication",
+     "url": "https://attack.mitre.org/techniques/T1102/002/"
+    },
+    {
+     "id": "T1547.001",
+     "name": "Registry Run Keys / Startup Folder",
+     "url": "https://attack.mitre.org/techniques/T1547/001/"
+    }
+   ],
+   "recommended_actions": [
+    "Import the Falcon domains and file hashes in Defender XDR at medium confidence, and hunt 30 days of DNS, proxy and endpoint logs for them.",
+    "Search browser extension inventories, file paths and registry keys for Chrome extension ID mbidcmlcbgbphpoacojjbmfpohcimjji.",
+    "Hunt for files under %LOCALAPPDATA%\\Windows GatherOSStateKit, sdiagnhost.exe launching PowerShell, and OneDrive or Graph activity to antino/heartbeat/ or antino/antino_upload/ paths. Do not block OneDrive or Microsoft services.",
+    "On internal or government web applications, look for unexpected third-party JavaScript and for Hm_lvt_$ local-storage keys or an Hm_lvt__ cookie with a long-lived expiry."
+   ],
+   "sources": [
+    {
+     "url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "name": "Unit 42"
+    }
+   ],
+   "indicator_count": 27,
+   "block_now_count": 0,
+   "hunt_count": 27,
+   "hunt_counts": {
+    "block": 27
+   },
+   "indicator_counts": {
+    "sha256": 21,
+    "domain": 5,
+    "other": 1
+   },
+   "ioas": [
+    {
+     "artefact": "A Chrome or Firefox extension with ID mbidcmlcbgbphpoacojjbmfpohcimjji, or that extension's files on disk",
+     "log_source": "Endpoint file, registry and browser-extension inventory events",
+     "why": "Unit 42 published this Chrome extension ID as the malicious Falcon extension used to steal passwords, emails and session cookies.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_name": "Unit 42",
+     "title": "Malicious Falcon Chrome extension ID",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Files or processes under %LOCALAPPDATA%\\Windows GatherOSStateKit, including a tmp########.exe drop and DllSafeCheck64.dll or slc.dll copied beside it",
+     "log_source": "EDR file and process events",
+     "why": "Unit 42 says Antino copies itself to this hard-coded folder and has used DllSafeCheck64.dll for sideloading in older versions.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_name": "Unit 42",
+     "title": "Antino GatherOSStateKit persistence folder",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "sdiagnhost.exe launching PowerShell that adds a Run-key value, shortly after a GatherOSStateKit drop",
+     "log_source": "EDR process events",
+     "why": "Unit 42 observed Antino executing sdiagnhost.exe so that a PowerShell snippet in a diagnostic answer file adds Antino to the Run key.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_name": "Unit 42",
+     "title": "sdiagnhost used to add an Antino Run key",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "OAuth or OneDrive file activity to a tenant that is not yours, with repeated small JSON writes to paths such as antino/heartbeat/ or antino/antino_upload/",
+     "log_source": "Cloud App events and OneDrive or Microsoft Graph audit logs",
+     "why": "Antino beacons by uploading hostname and username to antino/heartbeat/.json and exchanges commands and stolen files under antino/antino_upload/. Hunt these paths; do not block OneDrive or other Microsoft services.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_name": "Unit 42",
+     "title": "Antino OneDrive heartbeat or upload paths",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Hm_lvt_$ keys in browser local storage, or an Hm_lvt__ cookie set to 1 with a long-lived expiry (Unit 42 saw expiry in 2099), on internal or government web applications where Baidu Analytics has no legitimate reason to appear",
+     "log_source": "Web application logs, HTTP cookie headers, and browser forensic artefacts",
+     "why": "Falcon stores its session ID as Hm_lvt_$ in local storage and as the Hm_lvt__ cookie, mimicking Baidu Analytics identifiers.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_name": "Unit 42",
+     "title": "Falcon Hm_lvt session cookie or local storage",
+     "queries": []
+    }
+   ],
+   "ioa_count": 5,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant/block_now.txt",
+     "download": "Falcon-C2-XG-Antino-Browser-Implant_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant/defender_xdr_indicators.csv",
+     "download": "Falcon-C2-XG-Antino-Browser-Implant_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant/hunt.kql",
+     "download": "Falcon-C2-XG-Antino-Browser-Implant_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant/hunt.spl",
+     "download": "Falcon-C2-XG-Antino-Browser-Implant_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant/hunt_raw.spl",
+     "download": "Falcon-C2-XG-Antino-Browser-Implant_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant/hunt.yaral",
+     "download": "Falcon-C2-XG-Antino-Browser-Implant_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant/iocs.csv",
+     "download": "Falcon-C2-XG-Antino-Browser-Implant_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant",
+   "indicators": [
+    {
+     "value": "fonts.tarotfree101.top",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "Falcon C2 domain listed by Unit 42. Single-source (Unit 42); medium confidence, in the Defender import as Block, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "fonts.chrorne.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "Falcon C2 domain listed by Unit 42 (typosquat of Chrome). Single-source (Unit 42); medium confidence, in the Defender import as Block, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "robot.avbliud.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "Falcon C2 domain listed by Unit 42. Single-source (Unit 42); medium confidence, in the Defender import as Block, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "microsoft-flash.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "Payload-delivery domain that served the Antino installer as a fake Adobe Flash update. Single-source (Unit 42); medium confidence, in the Defender import as Block, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "wps-cn.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "Payload-delivery domain listed by Unit 42. Single-source (Unit 42); medium confidence, in the Defender import as Block, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "mbidcmlcbgbphpoacojjbmfpohcimjji",
+     "type": "other",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "Chrome extension ID of the malicious Falcon extension published by Unit 42. Hunt in browser extension inventories and endpoint file or registry events; it is not a firewall or Defender network indicator.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "3e535d63af8a95221fb517fa1b3e4a0029d3463d8b767443abdff385ee8cb6e9",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of analytics-core.js (Chrome and Firefox Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "f8b86238e179d88a9979b6f97750a39dda1d07b54d634bc1348fdfb0944a3b92",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of background.js (Chrome Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "88e8b07bdf294ace0357d35acb7e108c66ba65a2c4ad66351fb8f7806dae0862",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of content-script.js (Chrome Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "065d18fcfeddbd718c054f4b21c3cde5b9291db921d01f343d7ac0d4b41f29ce",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of icon128.png (Chrome and Firefox Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "3eab406d841fa22a4b0200c95c1afab068347f835400d5771e8de60aef732016",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of icon16.png (Chrome and Firefox Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "5711586125909863b91c1b5ff7cf70ef5d35249d67b11d7a23dc864405cddfe2",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of icon48.png (Chrome and Firefox Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "b6a7be724871ed3e81c986b74d62da8911c82a336c4c1857b35f2446b2d49fda",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of manifest.json (Chrome Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "2ed834d92bfefc9d07a9f1a48f986974ae2a29669029f8163a1f6e8706388fcd",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of offscreen.html (Chrome and Firefox Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "356b96c2267c5f2d8c07693643626e090b6389318b4ffa74699fa1732da5a00c",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of offscreen.js (Chrome Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "32af8413cbd38ce8beb257288cb8e6aa2f9b781d56d0f5272bffbcdc22d999f4",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of page.html (Chrome and Firefox Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "e2b6b1becdbcc340121e163b5afdfc5437a480ca132248ed5c7c309c45ac3dbb",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of page.js (Chrome and Firefox Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "265c2b36060e4b21c25aa86a8bb22d1db5f806117b484774c75c65b5b38222e0",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of sandbox.html (Chrome and Firefox Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "66e9098551a1c0c74077d6cf55570e5d307a4a5ef0b0f2053e139394e61c442d",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of sandbox.js (Chrome Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "3e923f11db08413fca8a3a69d33d8896cfd56309e5179e8604d7fb7110428da2",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of twitter-dm.js (Chrome Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "2ebe36f1322b77264a33fded81cd4b8817f93362945070bf0bb5845dd27c0575",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of background.js (Firefox Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "857429faffe0e0747ce299e86eed063ed781b4e403b917ca7e853e89bedf072c",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of content-script.js (Firefox Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "b33f2e95943e3ff0a72dea1be9fdea03d986bada4def34f6991b3113ec161ad7",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of manifest.json (Firefox Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "898656c33effb51e109c548fc213f157f151a870ea64a4601eda74ae75bd3af6",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of offscreen.js (Firefox Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "b3d8ea89b19a87bf2fdd63127086681059f41d67b6e5f8c939f5636a1b2315ce",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of sandbox.js (Firefox Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "24d69139cb2d32598f0f4983876f6320485fac134a66ade59cab76b50b4128f7",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of twitter-dm.js (Firefox Falcon extension). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    },
+    {
+     "value": "0c39264337a1186b2e765e24073399cbdcba118306614eb411e315887af578bd",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "block",
+     "description": "SHA256 of flashcenter_pp_ax_install_en.exe (Antino implant sample). Single-source (Unit 42); medium confidence, in the Defender import as BlockAndRemediate, not on the high-confidence block-now list.",
+     "source_url": "https://unit42.paloaltonetworks.com/falcon-c2-browser-compromise/",
+     "source_label": "Unit 42 – The XG Files: Falcon C2 Flying Under The (Browser) Radar",
+     "source_name": "Unit 42"
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant/hunt.kql",
+     "download": "Falcon-C2-XG-Antino-Browser-Implant_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant/hunt.spl",
+     "download": "Falcon-C2-XG-Antino-Browser-Implant_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant/hunt_raw.spl",
+      "download": "Falcon-C2-XG-Antino-Browser-Implant_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant/hunt.yaral",
+     "download": "Falcon-C2-XG-Antino-Browser-Implant_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft",
+   "folder": "threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft",
+   "name": "AntiFox: ARTEX Fork Used to Implant IIS Web Shells and Steal AWS Secrets",
+   "short": "AntiFox IIS-to-AWS secret theft",
+   "category": "Exploitation / cloud credential theft",
+   "published": "2026-11-11",
+   "entry_date": "2026-11-12 09:25",
+   "last_updated": "2026-11-12",
+   "seq": 22,
+   "headline": "ARTEX fork used to implant IIS web shells and steal AWS production secrets",
+   "summary": "Arctic Wolf Labs, reported on 11 November 2026, observed intrusions in which self-hosted AntiFox consoles on Alibaba Cloud were used against internet-facing IIS applications. AntiFox is an open-source agentic penetration-testing platform built on ARTEX. In the observed cases, access to a compromised IIS application was used to drop an ASPX web shell through w3wp.exe, run whoami and icacls, read web.config and connection strings, and then abuse valid AWS identities to enumerate many services. In some instances the actor called GetSecretValue on a production secret, or used the identity for S3 discovery and object operations. This is a different fork and different infrastructure from the Storm-3358 ARTEX campaign already in this feed. Arctic Wolf did not publish network indicators in the public write-ups; two IP addresses circulating on third-party sites are included as medium-confidence alert-only leads and have not been confirmed by Arctic Wolf. Do not block Alibaba Cloud.",
+   "caveat": "The two IP addresses were not published by Arctic Wolf or The Hacker News. Treat them as unconfirmed alert-only leads. Do not block Alibaba Cloud.",
+   "targets": {
+    "countries": [],
+    "regions": [],
+    "sectors": [
+     "Cloud services",
+     "Technology"
+    ],
+    "note": "Arctic Wolf described confirmed malicious actions against internet-facing IIS applications and associated AWS environments. No countries were named.",
+    "source": {
+     "url": "https://thehackernews.com/2026/11/antifox-ai-pentesting-platform-linked.html",
+     "label": "The Hacker News – AntiFox AI pentesting platform linked to attacks that accessed AWS production secrets",
+     "name": "The Hacker News"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1505.003",
+     "name": "Web Shell",
+     "url": "https://attack.mitre.org/techniques/T1505/003/"
+    },
+    {
+     "id": "T1059.001",
+     "name": "PowerShell",
+     "url": "https://attack.mitre.org/techniques/T1059/001/"
+    },
+    {
+     "id": "T1083",
+     "name": "File and Directory Discovery",
+     "url": "https://attack.mitre.org/techniques/T1083/"
+    },
+    {
+     "id": "T1552.001",
+     "name": "Credentials in Files",
+     "url": "https://attack.mitre.org/techniques/T1552/001/"
+    },
+    {
+     "id": "T1078",
+     "name": "Valid Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/"
+    },
+    {
+     "id": "T1526",
+     "name": "Cloud Service Discovery",
+     "url": "https://attack.mitre.org/techniques/T1526/"
+    },
+    {
+     "id": "T1530",
+     "name": "Data from Cloud Storage Object",
+     "url": "https://attack.mitre.org/techniques/T1530/"
+    }
+   ],
+   "recommended_actions": [
+    "Hunt IIS servers for w3wp.exe creating new .aspx files, and for w3wp.exe launching cmd, PowerShell, whoami or icacls.",
+    "In AWS CloudTrail, hunt valid identities that enumerate many services and, in particular, ListSecrets followed by GetSecretValue or unexpected S3 object access.",
+    "Treat the two circulated IP addresses as alert-only leads only; do not block Alibaba Cloud.",
+    "This is a separate AntiFox fork from Storm-3358; review both entries if you already hunt ARTEX behaviour."
+   ],
+   "sources": [
+    {
+     "url": "https://thehackernews.com/2026/11/antifox-ai-pentesting-platform-linked.html",
+     "label": "The Hacker News – AntiFox AI pentesting platform linked to attacks that accessed AWS production secrets",
+     "name": "The Hacker News"
+    },
+    {
+     "url": "https://www.bleepingcomputer.com/news/security/hackers-use-antifox-ai-agents-in-aws-credential-theft-attacks/",
+     "label": "BleepingComputer – Hackers use AntiFox AI agents in AWS credential-theft attacks",
+     "name": "BleepingComputer"
+    }
+   ],
+   "indicator_count": 2,
+   "block_now_count": 0,
+   "hunt_count": 2,
+   "hunt_counts": {
+    "alert": 2
+   },
+   "indicator_counts": {
+    "ipv4": 2
+   },
+   "ioas": [
+    {
+     "artefact": "w3wp.exe creating a new .aspx file under the web root or an upload directory",
+     "log_source": "EDR file events on IIS servers",
+     "why": "Arctic Wolf saw the IIS worker process drop an ASPX web shell after the web application was compromised, then run commands through that shell.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://thehackernews.com/2026/11/antifox-ai-pentesting-platform-linked.html",
+     "source_name": "The Hacker News",
+     "title": "IIS worker dropping an ASPX web shell",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "w3wp.exe starting cmd, PowerShell, whoami or icacls, or PowerShell that searches for web.config and connection strings",
+     "log_source": "EDR process events on IIS servers",
+     "why": "Arctic Wolf reported commands run through w3wp.exe to identify the execution context, enumerate the application directory, check permissions with icacls, and locate configuration and credentials.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://thehackernews.com/2026/11/antifox-ai-pentesting-platform-linked.html",
+     "source_name": "The Hacker News",
+     "title": "IIS worker running whoami, icacls or PowerShell",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Valid AWS identities enumerating many services, especially Secrets Manager ListSecrets followed by GetSecretValue, or rapid List, Get and Describe calls across IAM, EC2, S3, Lambda, RDS, KMS and similar APIs",
+     "log_source": "AWS CloudTrail, or CloudAppEvents with the AWS connector",
+     "why": "Arctic Wolf saw attackers abuse valid IAM identities to enumerate dozens of AWS services and, in some cases, successfully call GetSecretValue on a production secret or perform S3 object operations.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://thehackernews.com/2026/11/antifox-ai-pentesting-platform-linked.html",
+     "source_name": "The Hacker News",
+     "title": "AWS secret and service enumeration",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    }
+   ],
+   "ioa_count": 3,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft/block_now.txt",
+     "download": "AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft/defender_xdr_indicators.csv",
+     "download": "AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft/hunt.kql",
+     "download": "AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft/hunt.spl",
+     "download": "AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft/hunt_raw.spl",
+     "download": "AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft/hunt.yaral",
+     "download": "AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft/iocs.csv",
+     "download": "AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft",
+   "indicators": [
+    {
+     "value": "47.79.4.33",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "IPv4 circulated on third-party write-ups as an Alibaba Cloud host associated with AntiFox. Not published by Arctic Wolf or The Hacker News. Alert only; do not block Alibaba Cloud.",
+     "source_url": "https://thehackernews.com/2026/11/antifox-ai-pentesting-platform-linked.html",
+     "source_label": "The Hacker News – AntiFox AI pentesting platform linked to attacks that accessed AWS production secrets",
+     "source_name": "The Hacker News"
+    },
+    {
+     "value": "8.208.101.210",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "IPv4 circulated on third-party write-ups as an Alibaba Cloud host associated with AntiFox. Not published by Arctic Wolf or The Hacker News. Alert only; do not block Alibaba Cloud.",
+     "source_url": "https://thehackernews.com/2026/11/antifox-ai-pentesting-platform-linked.html",
+     "source_label": "The Hacker News – AntiFox AI pentesting platform linked to attacks that accessed AWS production secrets",
+     "source_name": "The Hacker News"
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft/hunt.kql",
+     "download": "AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft/hunt.spl",
+     "download": "AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft/hunt_raw.spl",
+      "download": "AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft/hunt.yaral",
+     "download": "AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320",
+   "folder": "threats/2026-11_November-2026/2026-11-12/Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320",
+   "name": "Operation Snowball: Cisco BroadWorks CVE-2026-20320 Exploited Against a European Telecom",
+   "short": "Operation Snowball BroadWorks exploitation",
+   "category": "Exploitation / telecom",
+   "published": "2026-11-08",
+   "entry_date": "2026-11-12 09:25",
+   "last_updated": "2026-11-12",
+   "seq": 21,
+   "headline": "AI-driven intrusion of a European telecom through exploited Cisco BroadWorks CVE-2026-20320",
+   "summary": "Malbear Labs reported on 8 November 2026 that an exposed workspace showed a jailbroken DeepSeek agent, directed by a Chinese-speaking operator, running more than two weeks of largely unsupervised attacks against a European telecommunications provider and 13 organisations hosted on its infrastructure. Initial access used CVE-2026-20320, an unauthenticated XXE in Cisco BroadWorks XSP on the OCI XML interface (port 2208). CISA added the CVE to its Known Exploited Vulnerabilities catalog on 10 November 2026. Cisco has said it knows of no attacks. The campaign indicators, a Sliver C2 domain and three IP addresses, come from a single technical source, so they are medium confidence and alert or hunt only. The C2 domain is Cloudflare-fronted: hunt or alert on that hostname, and do not block Cloudflare.",
+   "caveat": "Campaign indicators are from a single technical source (Malbear Labs). Cisco has said it knows of no attacks. CISA has listed CVE-2026-20320 as exploited. The C2 domain is Cloudflare-fronted; do not block Cloudflare.",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Europe"
+    ],
+    "sectors": [
+     "Telecommunications"
+    ],
+    "note": "Malbear Labs describes a European telecommunications provider and 13 organisations hosted on its infrastructure. The provider and the hosted organisations were not named.",
+    "source": {
+     "url": "https://malbearlabs.com/posts/operation-snowball-inside-an-autonomous-ai-intrusion-campaign",
+     "label": "Malbear Labs – Operation Snowball: Inside an Autonomous AI Intrusion Campaign",
+     "name": "Malbear Labs"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1059.001",
+     "name": "PowerShell",
+     "url": "https://attack.mitre.org/techniques/T1059/001/"
+    },
+    {
+     "id": "T1219",
+     "name": "Remote Access Software",
+     "url": "https://attack.mitre.org/techniques/T1219/"
+    },
+    {
+     "id": "T1021.004",
+     "name": "SSH",
+     "url": "https://attack.mitre.org/techniques/T1021/004/"
+    },
+    {
+     "id": "T1071.001",
+     "name": "Web Protocols",
+     "url": "https://attack.mitre.org/techniques/T1071/001/"
+    },
+    {
+     "id": "T1041",
+     "name": "Exfiltration Over C2 Channel",
+     "url": "https://attack.mitre.org/techniques/T1041/"
+    }
+   ],
+   "recommended_actions": [
+    "Patch Cisco BroadWorks XSP to a fixed release for CVE-2026-20320, and restrict unauthenticated access to the OCI interface on port 2208.",
+    "Hunt load-balancer, WAF and BroadWorks logs for unauthenticated OCI-P or XML requests on port 2208, including unusual external entity or DTD use.",
+    "Alert on the Sliver C2 hostname api.tablacysexplorer.com and the three published IP addresses; do not block Cloudflare.",
+    "Review BroadWorks and adjacent hosts for unexpected PowerShell or SSH, and for connections to ports 2299, 8000 or 56777."
+   ],
+   "sources": [
+    {
+     "url": "https://malbearlabs.com/posts/operation-snowball-inside-an-autonomous-ai-intrusion-campaign",
+     "label": "Malbear Labs – Operation Snowball: Inside an Autonomous AI Intrusion Campaign",
+     "name": "Malbear Labs"
+    },
+    {
+     "url": "https://www.cisa.gov/news-events/alerts/2026/11/10/cisa-adds-six-known-exploited-vulnerabilities-catalog",
+     "label": "CISA – Adds six known exploited vulnerabilities to catalog, including CVE-2026-20320",
+     "name": "CISA"
+    },
+    {
+     "url": "https://www.infosecurity-magazine.com/news/operation-snowball-ai-telecom/",
+     "label": "Infosecurity Magazine – Jailbroken AI agent ran two-week attack on European telecom",
+     "name": "Infosecurity Magazine"
+    }
+   ],
+   "indicator_count": 4,
+   "block_now_count": 0,
+   "hunt_count": 4,
+   "hunt_counts": {
+    "alert": 4
+   },
+   "indicator_counts": {
+    "ipv4": 3,
+    "domain": 1
+   },
+   "ioas": [
+    {
+     "artefact": "Unauthenticated OCI-P or XML requests to Cisco BroadWorks XSP on port 2208, especially requests that pull external entities or unusual DTDs",
+     "log_source": "Load-balancer, WAF and BroadWorks XSP logs",
+     "why": "Malbear Labs describes initial access through CVE-2026-20320, an unauthenticated XXE in the BroadWorks OCI XML parser on port 2208. CISA later listed the CVE as exploited.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://malbearlabs.com/posts/operation-snowball-inside-an-autonomous-ai-intrusion-campaign",
+     "source_name": "Malbear Labs",
+     "title": "BroadWorks OCI port 2208 (CVE-2026-20320)",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Outbound PowerShell or unexpected SSH from BroadWorks or telecom application servers, including connections to api.tablacysexplorer.com or to ports 2299, 8000 or 56777",
+     "log_source": "EDR process and network events on BroadWorks and adjacent hosts",
+     "why": "Malbear Labs recovered a PowerShell C2 chain, Sliver operator configuration, and SSH access to the Sliver server and an operator host from the exposed workspace.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://malbearlabs.com/posts/operation-snowball-inside-an-autonomous-ai-intrusion-campaign",
+     "source_name": "Malbear Labs",
+     "title": "Sliver C2 domain, staging or SSH ports",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    }
+   ],
+   "ioa_count": 2,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320/block_now.txt",
+     "download": "Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320/defender_xdr_indicators.csv",
+     "download": "Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320/hunt.kql",
+     "download": "Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320/hunt.spl",
+     "download": "Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320/hunt_raw.spl",
+     "download": "Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320/hunt.yaral",
+     "download": "Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320/iocs.csv",
+     "download": "Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320",
+   "indicators": [
+    {
+     "value": "api.tablacysexplorer.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Sliver C2 beacon domain from the Malbear Labs Operation Snowball report. The domain is Cloudflare-fronted: hunt or alert on this hostname, do not block Cloudflare.",
+     "source_url": "https://malbearlabs.com/posts/operation-snowball-inside-an-autonomous-ai-intrusion-campaign",
+     "source_label": "Malbear Labs – Operation Snowball: Inside an Autonomous AI Intrusion Campaign",
+     "source_name": "Malbear Labs"
+    },
+    {
+     "value": "146.70.53.182",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SSH access to the Sliver server (port 2299) in the Malbear Labs Operation Snowball report. Medium confidence, alert/hunt only.",
+     "source_url": "https://malbearlabs.com/posts/operation-snowball-inside-an-autonomous-ai-intrusion-campaign",
+     "source_label": "Malbear Labs – Operation Snowball: Inside an Autonomous AI Intrusion Campaign",
+     "source_name": "Malbear Labs"
+    },
+    {
+     "value": "113.23.212.15",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Tool staging server (port 8000) in the Malbear Labs Operation Snowball report. Medium confidence, alert/hunt only.",
+     "source_url": "https://malbearlabs.com/posts/operation-snowball-inside-an-autonomous-ai-intrusion-campaign",
+     "source_label": "Malbear Labs – Operation Snowball: Inside an Autonomous AI Intrusion Campaign",
+     "source_name": "Malbear Labs"
+    },
+    {
+     "value": "212.46.38.73",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Operator secondary machine (port 56777) in the Malbear Labs Operation Snowball report. Medium confidence, alert/hunt only.",
+     "source_url": "https://malbearlabs.com/posts/operation-snowball-inside-an-autonomous-ai-intrusion-campaign",
+     "source_label": "Malbear Labs – Operation Snowball: Inside an Autonomous AI Intrusion Campaign",
+     "source_name": "Malbear Labs"
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320/hunt.kql",
+     "download": "Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320/hunt.spl",
+     "download": "Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320/hunt_raw.spl",
+      "download": "Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320/hunt.yaral",
+     "download": "Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "Outlook-CVE-2026-124194-NTLM-Hash-Leak",
+   "folder": "threats/2026-11_November-2026/2026-11-12/Outlook-CVE-2026-124194-NTLM-Hash-Leak",
+   "name": "Outlook CVE-2026-124194: Exploited NTLM Hash Leak (Hunt Only)",
+   "short": "Outlook CVE-2026-124194 NTLM hash leak",
+   "category": "Exploitation / credential theft",
+   "published": "2026-11-10",
+   "entry_date": "2026-11-12 09:25",
+   "last_updated": "2026-11-12",
+   "seq": 20,
+   "headline": "Exploited Outlook flaw that leaks NTLMv2 hashes, with no published network indicators",
+   "summary": "CISA added CVE-2026-124194 to its Known Exploited Vulnerabilities catalog on 10 November 2026, confirming in-the-wild exploitation of a Microsoft Outlook flaw that can expose a user's NTLMv2 hash when a crafted message is processed, without meaningful user interaction. No campaign IP addresses, domains or file hashes have been published. This entry is hunt-only: look for OUTLOOK.EXE making outbound SMB connections (TCP 445 or 139) to addresses that are not private, patch Office, and block outbound SMB to the internet as a control.",
+   "caveat": "No campaign network or file indicators were published. This is a hunt-only entry. Internal SMB from Outlook is expected; exclude private destinations.",
+   "targets": {
+    "countries": [],
+    "regions": [],
+    "sectors": [],
+    "note": "CISA and Patch Tuesday reporting do not name victims. Any organisation running Microsoft Outlook or Microsoft Office is in scope.",
+    "source": {
+     "url": "https://www.cisa.gov/news-events/alerts/2026/11/10/cisa-adds-six-known-exploited-vulnerabilities-catalog",
+     "label": "CISA – Adds six known exploited vulnerabilities to catalog, including CVE-2026-124194",
+     "name": "CISA"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1187",
+     "name": "Forced Authentication",
+     "url": "https://attack.mitre.org/techniques/T1187/"
+    },
+    {
+     "id": "T1566.001",
+     "name": "Spearphishing Attachment",
+     "url": "https://attack.mitre.org/techniques/T1566/001/"
+    },
+    {
+     "id": "T1550.002",
+     "name": "Pass the Hash",
+     "url": "https://attack.mitre.org/techniques/T1550/002/"
+    }
+   ],
+   "recommended_actions": [
+    "Patch Microsoft Office and Outlook for CVE-2026-124194.",
+    "Hunt for OUTLOOK.EXE making outbound SMB (TCP 445 or 139) connections to addresses that are not private.",
+    "Block outbound SMB to the internet at the perimeter.",
+    "If a hit is confirmed, treat exposed NTLMv2 hashes as compromised: reset the account password and review subsequent logons."
+   ],
+   "sources": [
+    {
+     "url": "https://www.cisa.gov/news-events/alerts/2026/11/10/cisa-adds-six-known-exploited-vulnerabilities-catalog",
+     "label": "CISA – Adds six known exploited vulnerabilities to catalog, including CVE-2026-124194",
+     "name": "CISA"
+    },
+    {
+     "url": "https://www.malwarebytes.com/blog/bugs/2026/11/microsoft-patch-tuesday-fixes-outlook-flaw-already-under-attack",
+     "label": "Malwarebytes – Microsoft Patch Tuesday fixes Outlook flaw already under attack",
+     "name": "Malwarebytes"
+    },
+    {
+     "url": "https://www.securityweek.com/exploited-outlook-zero-day-among-1094-flaws-patched-by-microsoft/",
+     "label": "SecurityWeek – Exploited Outlook zero-day among flaws patched by Microsoft",
+     "name": "SecurityWeek"
+    }
+   ],
+   "indicator_count": 1,
+   "block_now_count": 0,
+   "hunt_count": 1,
+   "hunt_counts": {
+    "monitor": 1
+   },
+   "indicator_counts": {
+    "other": 1
+   },
+   "ioas": [
+    {
+     "artefact": "OUTLOOK.EXE making outbound SMB connections on TCP 445 or 139 to addresses that are not private",
+     "log_source": "EDR network events on workstations and mail hosts",
+     "why": "CVE-2026-124194 is an exploited Outlook flaw that can force the client to authenticate over SMB and expose an NTLMv2 hash when a crafted message is processed, with no meaningful user click. No campaign indicators were published. Internal SMB is expected; hunt only outbound or previously unseen destinations, and do not treat this as a block list.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.cisa.gov/news-events/alerts/2026/11/10/cisa-adds-six-known-exploited-vulnerabilities-catalog",
+     "source_name": "CISA",
+     "title": "Outlook outbound SMB to a non-private address",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    }
+   ],
+   "ioa_count": 1,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Outlook-CVE-2026-124194-NTLM-Hash-Leak/block_now.txt",
+     "download": "Outlook-CVE-2026-124194-NTLM-Hash-Leak_block_now.txt"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Outlook-CVE-2026-124194-NTLM-Hash-Leak/hunt.kql",
+     "download": "Outlook-CVE-2026-124194-NTLM-Hash-Leak_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Outlook-CVE-2026-124194-NTLM-Hash-Leak/hunt.spl",
+     "download": "Outlook-CVE-2026-124194-NTLM-Hash-Leak_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Outlook-CVE-2026-124194-NTLM-Hash-Leak/hunt_raw.spl",
+     "download": "Outlook-CVE-2026-124194-NTLM-Hash-Leak_hunt_raw.spl"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Outlook-CVE-2026-124194-NTLM-Hash-Leak/iocs.csv",
+     "download": "Outlook-CVE-2026-124194-NTLM-Hash-Leak_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Outlook-CVE-2026-124194-NTLM-Hash-Leak",
+   "indicators": [
+    {
+     "value": "CVE-2026-124194",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "monitor",
+     "description": "CISA Known Exploited Vulnerabilities identifier for the Outlook flaw that can leak NTLMv2 hashes. No campaign IP addresses, domains or file hashes were published. Hunt for OUTLOOK.EXE making outbound SMB (TCP 445 or 139) connections to addresses that are not private.",
+     "source_url": "https://www.cisa.gov/news-events/alerts/2026/11/10/cisa-adds-six-known-exploited-vulnerabilities-catalog",
+     "source_label": "CISA – Adds six known exploited vulnerabilities to catalog, including CVE-2026-124194",
+     "source_name": "CISA"
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Outlook-CVE-2026-124194-NTLM-Hash-Leak/hunt.kql",
+     "download": "Outlook-CVE-2026-124194-NTLM-Hash-Leak_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Outlook-CVE-2026-124194-NTLM-Hash-Leak/hunt.spl",
+     "download": "Outlook-CVE-2026-124194-NTLM-Hash-Leak_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Outlook-CVE-2026-124194-NTLM-Hash-Leak/hunt_raw.spl",
+      "download": "Outlook-CVE-2026-124194-NTLM-Hash-Leak_hunt_raw.spl"
+     }
+    }
+   ]
+  },
   {
    "id": "GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer",
    "folder": "threats/2026-11_November-2026/2026-11-12/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer",
@@ -6476,10 +7630,10 @@
    "category": "Financially motivated intrusion / financial sector",
    "published": "2026-11-06",
    "entry_date": "2026-11-11 03:52",
-   "last_updated": "2026-11-11",
+   "last_updated": "2026-11-12 09:25",
    "seq": 12,
    "headline": "Agentic AI framework used to exploit web apps at banks and drop WISP, vshell and AdaptixC2 RATs",
-   "summary": "Microsoft Threat Intelligence reports that Storm-3358, a financially motivated, Cambodia-based intrusion cluster, began targeting financial organisations in October 2026 with ARTEX, an open-source agentic penetration testing framework. Most targets are financial organisations in Southeast Asia, with a smaller number of large financial organisations globally. The ARTEX agents scan internet-facing systems at machine speed, exploit anonymous file upload and server-side request forgery (SSRF) flaws in web applications, then use curl and netcat to pull down the open-source WISP, vshell and AdaptixC2 remote access trojans for persistence and lateral movement. Microsoft listed the ARTEX servers and C2 nodes below as active on 6 November 2026; the actor rotates infrastructure, so behaviour-based hunting matters as much as blocking.",
+   "summary": "Microsoft Threat Intelligence reports that Storm-3358, a financially motivated, Cambodia-based intrusion cluster, began targeting financial organisations in October 2026 with ARTEX, an open-source agentic penetration testing framework. Most targets are financial organisations in Southeast Asia, with a smaller number of large financial organisations globally. The ARTEX agents scan internet-facing systems at machine speed, exploit anonymous file upload and server-side request forgery (SSRF) flaws in web applications, then use curl and netcat to pull down the open-source WISP, vshell and AdaptixC2 remote access trojans for persistence and lateral movement. Microsoft listed the ARTEX servers and C2 nodes below as active on 6 November 2026; the actor rotates infrastructure, so behaviour-based hunting matters as much as blocking. On 11 November 2026 Unit 42 published a defender guide to ARTEX and similar agentic tools, describing the same class of machine-speed behaviour: short bursts of requests, a pause consistent with a model inference call, self-correction after failed requests, a GET after almost every successful write, and write-then-delete tests on storage buckets. Unit 42 did not publish new network indicators.",
    "caveat": null,
    "targets": {
     "countries": [],
@@ -6543,13 +7697,19 @@
     "Block the ARTEX server and C2 addresses at the perimeter and in Defender XDR, and search 30 days of firewall, proxy and web server logs for them.",
     "Inventory internet-facing upload endpoints and server-side URL fetch features (document portals, onboarding and KYC forms, webhooks, PDF and image processors); require authentication on uploads and restrict outbound destinations.",
     "Hunt for web server processes spawning a shell, curl, wget or nc, new binaries run from temp or world-writable paths, and new cron entries on web hosts.",
-    "Watch for bursts of rapid, retried requests with default tool user agents (Nmap, curl, python-requests, headless Chromium) against public web applications."
+    "Watch for bursts of rapid, retried requests with default tool user agents (Nmap, curl, python-requests, headless Chromium) against public web applications.",
+    "Hunt for ARTEX-like operator behaviour described by Unit 42: short request bursts with a 25-31 second pause, a GET after each successful write, write-then-delete tests on storage buckets, and placeholder inputs immediately before real credentials. Do not treat research examples as indicators."
    ],
    "sources": [
     {
      "url": "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/",
      "label": "Microsoft Threat Intelligence – ARTEX abuse expands as cybercriminals target financial sector",
      "name": "Microsoft"
+    },
+    {
+     "url": "https://unit42.paloaltonetworks.com/artex-and-ai-powered-red-teaming-tools/",
+     "label": "Unit 42 – ARTEX and AI-Powered Red Teaming Tools: What Defenders Need to Know",
+     "name": "Unit 42"
     }
    ],
    "indicator_count": 8,
@@ -6601,9 +7761,48 @@
      "queries": [
       "SPL"
      ]
+    },
+    {
+     "artefact": "Short bursts of about one to 14 web or API requests a second apart, then a pause of 25 to 31 seconds, consistent with an agent waiting on a model inference call",
+     "log_source": "Web server, WAF and reverse-proxy logs",
+     "why": "Unit 42's ARTEX defender guide describes this think-then-act cadence as a hallmark of agentic tooling, alongside machine-speed pivots after a credential is found.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://unit42.paloaltonetworks.com/artex-and-ai-powered-red-teaming-tools/",
+     "source_name": "Unit 42",
+     "title": "Inference-paced request bursts then a pause",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "A GET to the same path after a successful write, or a write-then-delete test against a storage bucket or object, from the same source in a short window",
+     "log_source": "Web, API and cloud audit logs (including AWS S3)",
+     "why": "Unit 42 observed ARTEX agents checking their own work with a GET after almost every successful write, and running write-then-delete tests on storage buckets.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://unit42.paloaltonetworks.com/artex-and-ai-powered-red-teaming-tools/",
+     "source_name": "Unit 42",
+     "title": "Write then GET or write-then-delete checks",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Placeholder or canary usernames and values sent immediately before real credentials in the same authentication or API session",
+     "log_source": "Web application, identity and API logs",
+     "why": "Unit 42 saw ARTEX agents test canary inputs, such as bogus usernames, before real ones. Hunt for that pattern in your own logs; do not treat research examples as indicators.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://unit42.paloaltonetworks.com/artex-and-ai-powered-red-teaming-tools/",
+     "source_name": "Unit 42",
+     "title": "Canary inputs immediately before real credentials",
+     "queries": []
     }
    ],
-   "ioa_count": 3,
+   "ioa_count": 6,
    "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
    "files": [
     {

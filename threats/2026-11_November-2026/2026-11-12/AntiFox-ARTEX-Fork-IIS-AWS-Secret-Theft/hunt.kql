@@ -1,0 +1,52 @@
+// Threat: AntiFox: ARTEX Fork Used to Implant IIS Web Shells and Steal AWS Secrets
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft
+let Lookback = 30d;
+let IPs = dynamic(["47.79.4.33", "8.208.101.210"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " port ", RemotePort))),
+  (DeviceLogonEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceLogonEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", LogonType, " ", AccountName))),
+  (EntraIdSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSignInEvents", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (AADSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSignInEventsBeta", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (EntraIdSpnSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSpnSignInEvents", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (AADSpnSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSpnSignInEventsBeta", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(AccountDisplayName), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ActionType))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where InitiatingProcessFileName =~ "w3wp.exe" and FileName endswith ".aspx" and ActionType in ("FileCreated", "FileRenamed", "FileModified")
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " ", FileName, " via ", InitiatingProcessFileName))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where InitiatingProcessFileName =~ "w3wp.exe" and (FileName in~ ("cmd.exe", "powershell.exe", "pwsh.exe", "whoami.exe", "icacls.exe") or ProcessCommandLine has_any ("web.config", "connectionString", "whoami", "icacls"))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(InitiatingProcessFileName, " > ", ProcessCommandLine))),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where Application == "Amazon Web Services" and ActionType has_any ("ListSecrets", "GetSecretValue", "ListBuckets", "GetObject", "AssumeRole")
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(RawEventData.userIdentity.arn), Indicator = tostring(ActionType), Context = tostring(strcat(ActionType, " ", IPAddress, " ", tostring(RawEventData.userAgent)))),
+  (AWSCloudTrail
+    | where TimeGenerated > ago(Lookback)
+    | where EventName in ("ListSecrets", "GetSecretValue", "ListBuckets", "GetObject", "AssumeRole")
+    | project Timestamp = TimeGenerated, SourceTable = "AWSCloudTrail", Entity = tostring(UserIdentityArn), Indicator = tostring(EventName), Context = tostring(strcat(EventSource, " ", EventName, " ", SourceIpAddress, " ", UserAgent)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

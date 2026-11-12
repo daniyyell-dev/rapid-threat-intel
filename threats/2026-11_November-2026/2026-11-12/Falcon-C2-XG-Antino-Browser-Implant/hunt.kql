@@ -1,0 +1,65 @@
+// Threat: Falcon C2 (XG): Browser Framework and Antino Implant Targeting Government Webmail
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant
+let Lookback = 30d;
+let Domains = dynamic(["fonts.tarotfree101.top", "fonts.chrorne.com", "robot.avbliud.com", "microsoft-flash.com", "wps-cn.com"]);
+let SHA256s = dynamic(["3e535d63af8a95221fb517fa1b3e4a0029d3463d8b767443abdff385ee8cb6e9", "f8b86238e179d88a9979b6f97750a39dda1d07b54d634bc1348fdfb0944a3b92", "88e8b07bdf294ace0357d35acb7e108c66ba65a2c4ad66351fb8f7806dae0862", "065d18fcfeddbd718c054f4b21c3cde5b9291db921d01f343d7ac0d4b41f29ce", "3eab406d841fa22a4b0200c95c1afab068347f835400d5771e8de60aef732016", "5711586125909863b91c1b5ff7cf70ef5d35249d67b11d7a23dc864405cddfe2", "b6a7be724871ed3e81c986b74d62da8911c82a336c4c1857b35f2446b2d49fda", "2ed834d92bfefc9d07a9f1a48f986974ae2a29669029f8163a1f6e8706388fcd", "356b96c2267c5f2d8c07693643626e090b6389318b4ffa74699fa1732da5a00c", "32af8413cbd38ce8beb257288cb8e6aa2f9b781d56d0f5272bffbcdc22d999f4", "e2b6b1becdbcc340121e163b5afdfc5437a480ca132248ed5c7c309c45ac3dbb", "265c2b36060e4b21c25aa86a8bb22d1db5f806117b484774c75c65b5b38222e0", "66e9098551a1c0c74077d6cf55570e5d307a4a5ef0b0f2053e139394e61c442d", "3e923f11db08413fca8a3a69d33d8896cfd56309e5179e8604d7fb7110428da2", "2ebe36f1322b77264a33fded81cd4b8817f93362945070bf0bb5845dd27c0575", "857429faffe0e0747ce299e86eed063ed781b4e403b917ca7e853e89bedf072c", "b33f2e95943e3ff0a72dea1be9fdea03d986bada4def34f6991b3113ec161ad7", "898656c33effb51e109c548fc213f157f151a870ea64a4601eda74ae75bd3af6", "b3d8ea89b19a87bf2fdd63127086681059f41d67b6e5f8c939f5636a1b2315ce", "24d69139cb2d32598f0f4983876f6320485fac134a66ade59cab76b50b4128f7", "0c39264337a1186b2e765e24073399cbdcba118306614eb411e315887af578bd"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (DeviceEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType == "DnsQueryResponse" and tostring(parse_json(AdditionalFields).DnsQueryString) has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(parse_json(AdditionalFields).DnsQueryString), Context = tostring(strcat("DNS ", InitiatingProcessFileName))),
+  (EmailUrlInfo
+    | where Timestamp > ago(Lookback)
+    | where UrlDomain has_any (Domains)
+    | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = tostring(Url), Context = tostring("URL in email")),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url has_any (Domains)
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(ActionType, " ", FolderPath))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceImageLoadEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " loaded by ", InitiatingProcessFileName))),
+  (EmailAttachmentInfo
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "EmailAttachmentInfo", Entity = tostring(RecipientEmailAddress), Indicator = tostring(SHA256), Context = tostring(strcat(FileName, " from ", SenderFromAddress))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FolderPath has "mbidcmlcbgbphpoacojjbmfpohcimjji" or FileName has "mbidcmlcbgbphpoacojjbmfpohcimjji"
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " ", FileName))),
+  (DeviceRegistryEvents
+    | where Timestamp > ago(Lookback)
+    | where RegistryKey has "mbidcmlcbgbphpoacojjbmfpohcimjji" or RegistryValueName has "mbidcmlcbgbphpoacojjbmfpohcimjji" or RegistryValueData has "mbidcmlcbgbphpoacojjbmfpohcimjji"
+    | project Timestamp, SourceTable = "DeviceRegistryEvents", Entity = tostring(DeviceName), Indicator = tostring(RegistryKey), Context = tostring(strcat(ActionType, " ", RegistryValueName))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FolderPath has @"Windows GatherOSStateKit" or FileName in~ ("DllSafeCheck64.dll")
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " ", FileName, " ", InitiatingProcessFileName))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FolderPath has @"Windows GatherOSStateKit" or ProcessCommandLine has @"Windows GatherOSStateKit"
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where InitiatingProcessFileName =~ "sdiagnhost.exe" and FileName in~ ("powershell.exe", "pwsh.exe", "cmd.exe")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(InitiatingProcessFileName, " > ", ProcessCommandLine))),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where Application has_any ("OneDrive", "Microsoft OneDrive", "Office 365") and (ObjectName has "antino/heartbeat" or ObjectName has "antino/antino_upload" or ActivityObjects has "antino/heartbeat" or ActivityObjects has "antino/antino_upload" or RawEventData has "antino/heartbeat" or RawEventData has "antino/antino_upload")
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(AccountDisplayName), Indicator = tostring(ActionType), Context = tostring(strcat(Application, " ", ObjectName, " ", IPAddress)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

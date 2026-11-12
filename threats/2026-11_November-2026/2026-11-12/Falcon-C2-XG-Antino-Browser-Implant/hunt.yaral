@@ -1,0 +1,52 @@
+// Threat: Falcon C2 (XG): Browser Framework and Antino Implant Targeting Government Webmail
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant
+rule rti_falcon_c2_xg_antino_browser_implant {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-12"
+    description = "Falcon C2 (XG): Browser Framework and Antino Implant Targeting Government Webmail"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant"
+
+  events:
+    (
+      $e.network.dns.questions.name = /(?:^|\.)(?:fonts\.tarotfree101\.top|fonts\.chrorne\.com|robot\.avbliud\.com|microsoft\-flash\.com|wps\-cn\.com)\.?$/ nocase or
+      $e.target.hostname = /(?:^|\.)(?:fonts\.tarotfree101\.top|fonts\.chrorne\.com|robot\.avbliud\.com|microsoft\-flash\.com|wps\-cn\.com)\.?$/ nocase or
+      $e.target.domain.name = /(?:^|\.)(?:fonts\.tarotfree101\.top|fonts\.chrorne\.com|robot\.avbliud\.com|microsoft\-flash\.com|wps\-cn\.com)\.?$/ nocase or
+      re.regex($e.target.url, `^(?:[a-z][a-z0-9+.-]*://)?(?:[^/?#]*@)?(?:(?:[^/?#@]*\.)?(?:fonts\.tarotfree101\.top|fonts\.chrorne\.com|robot\.avbliud\.com|microsoft\-flash\.com|wps\-cn\.com)(?::\d+)?(?:[/?#]|$))`) nocase or
+      $e.target.file.sha256 = /^(?:3e535d63af8a95221fb517fa1b3e4a0029d3463d8b767443abdff385ee8cb6e9|f8b86238e179d88a9979b6f97750a39dda1d07b54d634bc1348fdfb0944a3b92|88e8b07bdf294ace0357d35acb7e108c66ba65a2c4ad66351fb8f7806dae0862|065d18fcfeddbd718c054f4b21c3cde5b9291db921d01f343d7ac0d4b41f29ce|3eab406d841fa22a4b0200c95c1afab068347f835400d5771e8de60aef732016|5711586125909863b91c1b5ff7cf70ef5d35249d67b11d7a23dc864405cddfe2|b6a7be724871ed3e81c986b74d62da8911c82a336c4c1857b35f2446b2d49fda|2ed834d92bfefc9d07a9f1a48f986974ae2a29669029f8163a1f6e8706388fcd|356b96c2267c5f2d8c07693643626e090b6389318b4ffa74699fa1732da5a00c|32af8413cbd38ce8beb257288cb8e6aa2f9b781d56d0f5272bffbcdc22d999f4|e2b6b1becdbcc340121e163b5afdfc5437a480ca132248ed5c7c309c45ac3dbb|265c2b36060e4b21c25aa86a8bb22d1db5f806117b484774c75c65b5b38222e0|66e9098551a1c0c74077d6cf55570e5d307a4a5ef0b0f2053e139394e61c442d|3e923f11db08413fca8a3a69d33d8896cfd56309e5179e8604d7fb7110428da2|2ebe36f1322b77264a33fded81cd4b8817f93362945070bf0bb5845dd27c0575|857429faffe0e0747ce299e86eed063ed781b4e403b917ca7e853e89bedf072c|b33f2e95943e3ff0a72dea1be9fdea03d986bada4def34f6991b3113ec161ad7|898656c33effb51e109c548fc213f157f151a870ea64a4601eda74ae75bd3af6|b3d8ea89b19a87bf2fdd63127086681059f41d67b6e5f8c939f5636a1b2315ce|24d69139cb2d32598f0f4983876f6320485fac134a66ade59cab76b50b4128f7|0c39264337a1186b2e765e24073399cbdcba118306614eb411e315887af578bd)$/ nocase or
+      $e.target.process.file.sha256 = /^(?:3e535d63af8a95221fb517fa1b3e4a0029d3463d8b767443abdff385ee8cb6e9|f8b86238e179d88a9979b6f97750a39dda1d07b54d634bc1348fdfb0944a3b92|88e8b07bdf294ace0357d35acb7e108c66ba65a2c4ad66351fb8f7806dae0862|065d18fcfeddbd718c054f4b21c3cde5b9291db921d01f343d7ac0d4b41f29ce|3eab406d841fa22a4b0200c95c1afab068347f835400d5771e8de60aef732016|5711586125909863b91c1b5ff7cf70ef5d35249d67b11d7a23dc864405cddfe2|b6a7be724871ed3e81c986b74d62da8911c82a336c4c1857b35f2446b2d49fda|2ed834d92bfefc9d07a9f1a48f986974ae2a29669029f8163a1f6e8706388fcd|356b96c2267c5f2d8c07693643626e090b6389318b4ffa74699fa1732da5a00c|32af8413cbd38ce8beb257288cb8e6aa2f9b781d56d0f5272bffbcdc22d999f4|e2b6b1becdbcc340121e163b5afdfc5437a480ca132248ed5c7c309c45ac3dbb|265c2b36060e4b21c25aa86a8bb22d1db5f806117b484774c75c65b5b38222e0|66e9098551a1c0c74077d6cf55570e5d307a4a5ef0b0f2053e139394e61c442d|3e923f11db08413fca8a3a69d33d8896cfd56309e5179e8604d7fb7110428da2|2ebe36f1322b77264a33fded81cd4b8817f93362945070bf0bb5845dd27c0575|857429faffe0e0747ce299e86eed063ed781b4e403b917ca7e853e89bedf072c|b33f2e95943e3ff0a72dea1be9fdea03d986bada4def34f6991b3113ec161ad7|898656c33effb51e109c548fc213f157f151a870ea64a4601eda74ae75bd3af6|b3d8ea89b19a87bf2fdd63127086681059f41d67b6e5f8c939f5636a1b2315ce|24d69139cb2d32598f0f4983876f6320485fac134a66ade59cab76b50b4128f7|0c39264337a1186b2e765e24073399cbdcba118306614eb411e315887af578bd)$/ nocase or
+      $e.principal.process.file.sha256 = /^(?:3e535d63af8a95221fb517fa1b3e4a0029d3463d8b767443abdff385ee8cb6e9|f8b86238e179d88a9979b6f97750a39dda1d07b54d634bc1348fdfb0944a3b92|88e8b07bdf294ace0357d35acb7e108c66ba65a2c4ad66351fb8f7806dae0862|065d18fcfeddbd718c054f4b21c3cde5b9291db921d01f343d7ac0d4b41f29ce|3eab406d841fa22a4b0200c95c1afab068347f835400d5771e8de60aef732016|5711586125909863b91c1b5ff7cf70ef5d35249d67b11d7a23dc864405cddfe2|b6a7be724871ed3e81c986b74d62da8911c82a336c4c1857b35f2446b2d49fda|2ed834d92bfefc9d07a9f1a48f986974ae2a29669029f8163a1f6e8706388fcd|356b96c2267c5f2d8c07693643626e090b6389318b4ffa74699fa1732da5a00c|32af8413cbd38ce8beb257288cb8e6aa2f9b781d56d0f5272bffbcdc22d999f4|e2b6b1becdbcc340121e163b5afdfc5437a480ca132248ed5c7c309c45ac3dbb|265c2b36060e4b21c25aa86a8bb22d1db5f806117b484774c75c65b5b38222e0|66e9098551a1c0c74077d6cf55570e5d307a4a5ef0b0f2053e139394e61c442d|3e923f11db08413fca8a3a69d33d8896cfd56309e5179e8604d7fb7110428da2|2ebe36f1322b77264a33fded81cd4b8817f93362945070bf0bb5845dd27c0575|857429faffe0e0747ce299e86eed063ed781b4e403b917ca7e853e89bedf072c|b33f2e95943e3ff0a72dea1be9fdea03d986bada4def34f6991b3113ec161ad7|898656c33effb51e109c548fc213f157f151a870ea64a4601eda74ae75bd3af6|b3d8ea89b19a87bf2fdd63127086681059f41d67b6e5f8c939f5636a1b2315ce|24d69139cb2d32598f0f4983876f6320485fac134a66ade59cab76b50b4128f7|0c39264337a1186b2e765e24073399cbdcba118306614eb411e315887af578bd)$/ nocase or
+      $e.principal.process.parent_process.file.sha256 = /^(?:3e535d63af8a95221fb517fa1b3e4a0029d3463d8b767443abdff385ee8cb6e9|f8b86238e179d88a9979b6f97750a39dda1d07b54d634bc1348fdfb0944a3b92|88e8b07bdf294ace0357d35acb7e108c66ba65a2c4ad66351fb8f7806dae0862|065d18fcfeddbd718c054f4b21c3cde5b9291db921d01f343d7ac0d4b41f29ce|3eab406d841fa22a4b0200c95c1afab068347f835400d5771e8de60aef732016|5711586125909863b91c1b5ff7cf70ef5d35249d67b11d7a23dc864405cddfe2|b6a7be724871ed3e81c986b74d62da8911c82a336c4c1857b35f2446b2d49fda|2ed834d92bfefc9d07a9f1a48f986974ae2a29669029f8163a1f6e8706388fcd|356b96c2267c5f2d8c07693643626e090b6389318b4ffa74699fa1732da5a00c|32af8413cbd38ce8beb257288cb8e6aa2f9b781d56d0f5272bffbcdc22d999f4|e2b6b1becdbcc340121e163b5afdfc5437a480ca132248ed5c7c309c45ac3dbb|265c2b36060e4b21c25aa86a8bb22d1db5f806117b484774c75c65b5b38222e0|66e9098551a1c0c74077d6cf55570e5d307a4a5ef0b0f2053e139394e61c442d|3e923f11db08413fca8a3a69d33d8896cfd56309e5179e8604d7fb7110428da2|2ebe36f1322b77264a33fded81cd4b8817f93362945070bf0bb5845dd27c0575|857429faffe0e0747ce299e86eed063ed781b4e403b917ca7e853e89bedf072c|b33f2e95943e3ff0a72dea1be9fdea03d986bada4def34f6991b3113ec161ad7|898656c33effb51e109c548fc213f157f151a870ea64a4601eda74ae75bd3af6|b3d8ea89b19a87bf2fdd63127086681059f41d67b6e5f8c939f5636a1b2315ce|24d69139cb2d32598f0f4983876f6320485fac134a66ade59cab76b50b4128f7|0c39264337a1186b2e765e24073399cbdcba118306614eb411e315887af578bd)$/ nocase or
+      re.regex($e.target.file.full_path, `mbidcmlcbgbphpoacojjbmfpohcimjji`) nocase or
+      re.regex($e.target.file.full_path, `Windows GatherOSStateKit|DllSafeCheck64\.dll`) nocase or re.regex($e.target.process.command_line, `Windows GatherOSStateKit`) nocase
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(60)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+    $dns_query = array_distinct($e.network.dns.questions.name)
+    $target_hostname = array_distinct($e.target.hostname)
+    $target_url = array_distinct($e.target.url)
+    $file_sha256 = array_distinct($e.target.file.sha256)
+    $process_sha256 = array_distinct($e.target.process.file.sha256)
+    $process_path = array_distinct($e.target.process.file.full_path)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}

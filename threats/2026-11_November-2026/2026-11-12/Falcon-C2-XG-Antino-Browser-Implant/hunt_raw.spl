@@ -1,0 +1,81 @@
+``` Threat: Falcon C2 (XG): Browser Framework and Antino Implant Targeting Government Webmail
+    Author: Daniel Jeremiah | Date: 2026-11-12
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant ```
+| multisearch
+  [ search `rti_dns(fonts.tarotfree101.top OR fonts.chrorne.com OR robot.avbliud.com OR microsoft-flash.com OR wps-cn.com)`
+    | search query IN ("fonts.tarotfree101.top", "*.fonts.tarotfree101.top", "fonts.chrorne.com", "*.fonts.chrorne.com", "robot.avbliud.com", "*.robot.avbliud.com", "microsoft-flash.com", "*.microsoft-flash.com", "wps-cn.com", "*.wps-cn.com")
+    | rex field=query "(?i)(?<ioc>(?:fonts\.tarotfree101\.top|fonts\.chrorne\.com|robot\.avbliud\.com|microsoft\-flash\.com|wps\-cn\.com))\.?$"
+    | eval data_model="dns", ioc_type="domain", host=src, detail="DNS query ".query
+  ]
+  [ search `rti_web(fonts.tarotfree101.top OR fonts.chrorne.com OR robot.avbliud.com OR microsoft-flash.com OR wps-cn.com)`
+    | search url IN ("*://fonts.tarotfree101.top*", "*.fonts.tarotfree101.top*", "fonts.tarotfree101.top*", "*://fonts.chrorne.com*", "*.fonts.chrorne.com*", "fonts.chrorne.com*", "*://robot.avbliud.com*", "*.robot.avbliud.com*", "robot.avbliud.com*", "*://microsoft-flash.com*", "*.microsoft-flash.com*", "microsoft-flash.com*", "*://wps-cn.com*", "*.wps-cn.com*", "wps-cn.com*") OR dest IN ("fonts.tarotfree101.top", "*.fonts.tarotfree101.top", "fonts.chrorne.com", "*.fonts.chrorne.com", "robot.avbliud.com", "*.robot.avbliud.com", "microsoft-flash.com", "*.microsoft-flash.com", "wps-cn.com", "*.wps-cn.com")
+    | rex field=url "(?i)(?<ioc>fonts\.tarotfree101\.top|fonts\.chrorne\.com|robot\.avbliud\.com|microsoft\-flash\.com|wps\-cn\.com)"
+    | eval ioc=coalesce(ioc, dest), data_model="web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+  ]
+  [ search `rti_endpoint(3e535d63af8a95221fb517fa1b3e4a0029d3463d8b767443abdff385ee8cb6e9 OR f8b86238e179d88a9979b6f97750a39dda1d07b54d634bc1348fdfb0944a3b92 OR 88e8b07bdf294ace0357d35acb7e108c66ba65a2c4ad66351fb8f7806dae0862 OR 065d18fcfeddbd718c054f4b21c3cde5b9291db921d01f343d7ac0d4b41f29ce OR 3eab406d841fa22a4b0200c95c1afab068347f835400d5771e8de60aef732016 OR 5711586125909863b91c1b5ff7cf70ef5d35249d67b11d7a23dc864405cddfe2 OR b6a7be724871ed3e81c986b74d62da8911c82a336c4c1857b35f2446b2d49fda OR 2ed834d92bfefc9d07a9f1a48f986974ae2a29669029f8163a1f6e8706388fcd OR 356b96c2267c5f2d8c07693643626e090b6389318b4ffa74699fa1732da5a00c OR 32af8413cbd38ce8beb257288cb8e6aa2f9b781d56d0f5272bffbcdc22d999f4 OR e2b6b1becdbcc340121e163b5afdfc5437a480ca132248ed5c7c309c45ac3dbb OR 265c2b36060e4b21c25aa86a8bb22d1db5f806117b484774c75c65b5b38222e0 OR 66e9098551a1c0c74077d6cf55570e5d307a4a5ef0b0f2053e139394e61c442d OR 3e923f11db08413fca8a3a69d33d8896cfd56309e5179e8604d7fb7110428da2 OR 2ebe36f1322b77264a33fded81cd4b8817f93362945070bf0bb5845dd27c0575 OR 857429faffe0e0747ce299e86eed063ed781b4e403b917ca7e853e89bedf072c OR b33f2e95943e3ff0a72dea1be9fdea03d986bada4def34f6991b3113ec161ad7 OR 898656c33effb51e109c548fc213f157f151a870ea64a4601eda74ae75bd3af6 OR b3d8ea89b19a87bf2fdd63127086681059f41d67b6e5f8c939f5636a1b2315ce OR 24d69139cb2d32598f0f4983876f6320485fac134a66ade59cab76b50b4128f7 OR 0c39264337a1186b2e765e24073399cbdcba118306614eb411e315887af578bd)`
+    | search file_hash IN ("*3e535d63af8a95221fb517fa1b3e4a0029d3463d8b767443abdff385ee8cb6e9*", "*f8b86238e179d88a9979b6f97750a39dda1d07b54d634bc1348fdfb0944a3b92*", "*88e8b07bdf294ace0357d35acb7e108c66ba65a2c4ad66351fb8f7806dae0862*", "*065d18fcfeddbd718c054f4b21c3cde5b9291db921d01f343d7ac0d4b41f29ce*", "*3eab406d841fa22a4b0200c95c1afab068347f835400d5771e8de60aef732016*", "*5711586125909863b91c1b5ff7cf70ef5d35249d67b11d7a23dc864405cddfe2*", "*b6a7be724871ed3e81c986b74d62da8911c82a336c4c1857b35f2446b2d49fda*", "*2ed834d92bfefc9d07a9f1a48f986974ae2a29669029f8163a1f6e8706388fcd*", "*356b96c2267c5f2d8c07693643626e090b6389318b4ffa74699fa1732da5a00c*", "*32af8413cbd38ce8beb257288cb8e6aa2f9b781d56d0f5272bffbcdc22d999f4*", "*e2b6b1becdbcc340121e163b5afdfc5437a480ca132248ed5c7c309c45ac3dbb*", "*265c2b36060e4b21c25aa86a8bb22d1db5f806117b484774c75c65b5b38222e0*", "*66e9098551a1c0c74077d6cf55570e5d307a4a5ef0b0f2053e139394e61c442d*", "*3e923f11db08413fca8a3a69d33d8896cfd56309e5179e8604d7fb7110428da2*", "*2ebe36f1322b77264a33fded81cd4b8817f93362945070bf0bb5845dd27c0575*", "*857429faffe0e0747ce299e86eed063ed781b4e403b917ca7e853e89bedf072c*", "*b33f2e95943e3ff0a72dea1be9fdea03d986bada4def34f6991b3113ec161ad7*", "*898656c33effb51e109c548fc213f157f151a870ea64a4601eda74ae75bd3af6*", "*b3d8ea89b19a87bf2fdd63127086681059f41d67b6e5f8c939f5636a1b2315ce*", "*24d69139cb2d32598f0f4983876f6320485fac134a66ade59cab76b50b4128f7*", "*0c39264337a1186b2e765e24073399cbdcba118306614eb411e315887af578bd*") OR process_hash IN ("*3e535d63af8a95221fb517fa1b3e4a0029d3463d8b767443abdff385ee8cb6e9*", "*f8b86238e179d88a9979b6f97750a39dda1d07b54d634bc1348fdfb0944a3b92*", "*88e8b07bdf294ace0357d35acb7e108c66ba65a2c4ad66351fb8f7806dae0862*", "*065d18fcfeddbd718c054f4b21c3cde5b9291db921d01f343d7ac0d4b41f29ce*", "*3eab406d841fa22a4b0200c95c1afab068347f835400d5771e8de60aef732016*", "*5711586125909863b91c1b5ff7cf70ef5d35249d67b11d7a23dc864405cddfe2*", "*b6a7be724871ed3e81c986b74d62da8911c82a336c4c1857b35f2446b2d49fda*", "*2ed834d92bfefc9d07a9f1a48f986974ae2a29669029f8163a1f6e8706388fcd*", "*356b96c2267c5f2d8c07693643626e090b6389318b4ffa74699fa1732da5a00c*", "*32af8413cbd38ce8beb257288cb8e6aa2f9b781d56d0f5272bffbcdc22d999f4*", "*e2b6b1becdbcc340121e163b5afdfc5437a480ca132248ed5c7c309c45ac3dbb*", "*265c2b36060e4b21c25aa86a8bb22d1db5f806117b484774c75c65b5b38222e0*", "*66e9098551a1c0c74077d6cf55570e5d307a4a5ef0b0f2053e139394e61c442d*", "*3e923f11db08413fca8a3a69d33d8896cfd56309e5179e8604d7fb7110428da2*", "*2ebe36f1322b77264a33fded81cd4b8817f93362945070bf0bb5845dd27c0575*", "*857429faffe0e0747ce299e86eed063ed781b4e403b917ca7e853e89bedf072c*", "*b33f2e95943e3ff0a72dea1be9fdea03d986bada4def34f6991b3113ec161ad7*", "*898656c33effb51e109c548fc213f157f151a870ea64a4601eda74ae75bd3af6*", "*b3d8ea89b19a87bf2fdd63127086681059f41d67b6e5f8c939f5636a1b2315ce*", "*24d69139cb2d32598f0f4983876f6320485fac134a66ade59cab76b50b4128f7*", "*0c39264337a1186b2e765e24073399cbdcba118306614eb411e315887af578bd*") OR parent_process_hash IN ("*3e535d63af8a95221fb517fa1b3e4a0029d3463d8b767443abdff385ee8cb6e9*", "*f8b86238e179d88a9979b6f97750a39dda1d07b54d634bc1348fdfb0944a3b92*", "*88e8b07bdf294ace0357d35acb7e108c66ba65a2c4ad66351fb8f7806dae0862*", "*065d18fcfeddbd718c054f4b21c3cde5b9291db921d01f343d7ac0d4b41f29ce*", "*3eab406d841fa22a4b0200c95c1afab068347f835400d5771e8de60aef732016*", "*5711586125909863b91c1b5ff7cf70ef5d35249d67b11d7a23dc864405cddfe2*", "*b6a7be724871ed3e81c986b74d62da8911c82a336c4c1857b35f2446b2d49fda*", "*2ed834d92bfefc9d07a9f1a48f986974ae2a29669029f8163a1f6e8706388fcd*", "*356b96c2267c5f2d8c07693643626e090b6389318b4ffa74699fa1732da5a00c*", "*32af8413cbd38ce8beb257288cb8e6aa2f9b781d56d0f5272bffbcdc22d999f4*", "*e2b6b1becdbcc340121e163b5afdfc5437a480ca132248ed5c7c309c45ac3dbb*", "*265c2b36060e4b21c25aa86a8bb22d1db5f806117b484774c75c65b5b38222e0*", "*66e9098551a1c0c74077d6cf55570e5d307a4a5ef0b0f2053e139394e61c442d*", "*3e923f11db08413fca8a3a69d33d8896cfd56309e5179e8604d7fb7110428da2*", "*2ebe36f1322b77264a33fded81cd4b8817f93362945070bf0bb5845dd27c0575*", "*857429faffe0e0747ce299e86eed063ed781b4e403b917ca7e853e89bedf072c*", "*b33f2e95943e3ff0a72dea1be9fdea03d986bada4def34f6991b3113ec161ad7*", "*898656c33effb51e109c548fc213f157f151a870ea64a4601eda74ae75bd3af6*", "*b3d8ea89b19a87bf2fdd63127086681059f41d67b6e5f8c939f5636a1b2315ce*", "*24d69139cb2d32598f0f4983876f6320485fac134a66ade59cab76b50b4128f7*", "*0c39264337a1186b2e765e24073399cbdcba118306614eb411e315887af578bd*")
+    | eval matched=file_hash." ".process_hash." ".parent_process_hash
+    | rex field=matched "(?i)(?<ioc>3e535d63af8a95221fb517fa1b3e4a0029d3463d8b767443abdff385ee8cb6e9|f8b86238e179d88a9979b6f97750a39dda1d07b54d634bc1348fdfb0944a3b92|88e8b07bdf294ace0357d35acb7e108c66ba65a2c4ad66351fb8f7806dae0862|065d18fcfeddbd718c054f4b21c3cde5b9291db921d01f343d7ac0d4b41f29ce|3eab406d841fa22a4b0200c95c1afab068347f835400d5771e8de60aef732016|5711586125909863b91c1b5ff7cf70ef5d35249d67b11d7a23dc864405cddfe2|b6a7be724871ed3e81c986b74d62da8911c82a336c4c1857b35f2446b2d49fda|2ed834d92bfefc9d07a9f1a48f986974ae2a29669029f8163a1f6e8706388fcd|356b96c2267c5f2d8c07693643626e090b6389318b4ffa74699fa1732da5a00c|32af8413cbd38ce8beb257288cb8e6aa2f9b781d56d0f5272bffbcdc22d999f4|e2b6b1becdbcc340121e163b5afdfc5437a480ca132248ed5c7c309c45ac3dbb|265c2b36060e4b21c25aa86a8bb22d1db5f806117b484774c75c65b5b38222e0|66e9098551a1c0c74077d6cf55570e5d307a4a5ef0b0f2053e139394e61c442d|3e923f11db08413fca8a3a69d33d8896cfd56309e5179e8604d7fb7110428da2|2ebe36f1322b77264a33fded81cd4b8817f93362945070bf0bb5845dd27c0575|857429faffe0e0747ce299e86eed063ed781b4e403b917ca7e853e89bedf072c|b33f2e95943e3ff0a72dea1be9fdea03d986bada4def34f6991b3113ec161ad7|898656c33effb51e109c548fc213f157f151a870ea64a4601eda74ae75bd3af6|b3d8ea89b19a87bf2fdd63127086681059f41d67b6e5f8c939f5636a1b2315ce|24d69139cb2d32598f0f4983876f6320485fac134a66ade59cab76b50b4128f7|0c39264337a1186b2e765e24073399cbdcba118306614eb411e315887af578bd)"
+    | eval data_model="endpoint", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, detail=coalesce(process, file_path)
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search `rti_endpoint(mbidcmlcbgbphpoacojjbmfpohcimjji)`
+    | where match(coalesce(file_path, file_name, ""), "mbidcmlcbgbphpoacojjbmfpohcimjji")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Malicious Falcon Chrome extension ID", ioc_type="behaviour (alert)"
+]
+| append [
+    search index=* mbidcmlcbgbphpoacojjbmfpohcimjji
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="raw events"
+    | eval ioc="Malicious Falcon Chrome extension ID", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(GatherOSStateKit OR DllSafeCheck64.dll)`
+    | where match(coalesce(file_path, file_name, ""), "(?i)Windows GatherOSStateKit|DllSafeCheck64\.dll")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Antino GatherOSStateKit persistence folder", ioc_type="behaviour (alert)"
+]
+| append [
+    search `rti_endpoint(GatherOSStateKit)`
+    | where match(coalesce(process, process_path, ""), "(?i)Windows GatherOSStateKit")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Antino GatherOSStateKit persistence folder", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(sdiagnhost.exe)`
+    | where match(coalesce(parent_process_name, ""), "(?i)^sdiagnhost\.exe$") AND match(coalesce(process_name, ""), "(?i)^(powershell|pwsh|cmd)\.exe$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="sdiagnhost used to add an Antino Run key", ioc_type="behaviour (hunt)"
+]
+
+| append [
+    search index=* ("antino/heartbeat" OR "antino/antino_upload")
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="OneDrive, Microsoft Graph and Cloud App logs"
+    | eval ioc="Antino OneDrive heartbeat or upload paths", ioc_type="behaviour (hunt)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

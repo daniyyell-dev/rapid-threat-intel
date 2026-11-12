@@ -1,0 +1,42 @@
+// Threat: AntiFox: ARTEX Fork Used to Implant IIS Web Shells and Steal AWS Secrets
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft
+rule rti_antifox_artex_fork_iis_aws_secret_theft {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-12"
+    description = "AntiFox: ARTEX Fork Used to Implant IIS Web Shells and Steal AWS Secrets"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft"
+
+  events:
+    (
+      $e.principal.ip = /^(?:47\.79\.4\.33|8\.208\.101\.210)$/ or
+      $e.target.ip = /^(?:47\.79\.4\.33|8\.208\.101\.210)$/ or
+      $e.network.dns.answers.data = /^(?:47\.79\.4\.33|8\.208\.101\.210)$/ or
+      (($e.metadata.event_type = "FILE_CREATION" or $e.metadata.event_type = "FILE_MODIFICATION" or $e.metadata.event_type = "FILE_MOVE") and re.regex($e.principal.process.file.full_path, `w3wp\.exe`) nocase and re.regex($e.target.file.full_path, `\.aspx$`) nocase) or
+      ($e.metadata.event_type = "PROCESS_LAUNCH" and re.regex($e.principal.process.file.full_path, `w3wp\.exe`) nocase and
+      (re.regex($e.target.process.file.full_path, `(cmd|powershell|pwsh|whoami|icacls)\.exe$`) nocase or re.regex($e.target.process.command_line, `web\.config|connectionString|whoami|icacls`) nocase))
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(60)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}
