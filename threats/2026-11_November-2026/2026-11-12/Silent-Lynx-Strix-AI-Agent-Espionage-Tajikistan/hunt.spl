@@ -1,0 +1,208 @@
+``` Threat: Silent Lynx Strix AI-Agent Espionage Against Tajikistan
+    Author: Daniel Jeremiah | Date: 2026-11-12
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan ```
+| tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+    FROM datamodel=Network_Traffic.All_Traffic
+    WHERE All_Traffic.dest_ip IN ("89.125.213.123", "134.17.14.24")
+    BY All_Traffic.src_ip All_Traffic.dest_ip All_Traffic.dest_port All_Traffic.action All_Traffic.dvc All_Traffic.user
+| rename "All_Traffic.*" AS *
+| eval data_model="Network_Traffic", ioc_type="ipv4", ioc=dest_ip, host=dvc, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Network_Traffic.All_Traffic
+        WHERE All_Traffic.src_ip IN ("89.125.213.123", "134.17.14.24")
+        BY All_Traffic.src_ip All_Traffic.dest_ip All_Traffic.dest_port All_Traffic.action All_Traffic.dvc All_Traffic.user
+    | rename "All_Traffic.*" AS *
+    | eval data_model="Network_Traffic", ioc_type="ipv4", ioc=src_ip, host=dvc, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Network_Resolution.DNS
+        WHERE DNS.query IN ("foreverpeace.ru", "*.foreverpeace.ru")
+        BY DNS.src DNS.dest DNS.query DNS.reply_code
+    | rename "DNS.*" AS *
+    | rex field=query "(?i)(?<ioc>(?:foreverpeace\.ru))\.?$"
+    | eval data_model="Network_Resolution", ioc_type="domain", host=src, user="-", detail="DNS query ".query." (".reply_code.")"
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Web.Web
+        WHERE (Web.url IN ("*://foreverpeace.ru*", "*.foreverpeace.ru*", "foreverpeace.ru*") OR Web.dest IN ("foreverpeace.ru", "*.foreverpeace.ru") OR Web.url IN ("*89.125.213.123:8080/P.ps1*", "*89.125.213.123:8080/decoy.pdf*"))
+        BY Web.src Web.user Web.dest Web.url Web.http_user_agent Web.status
+    | rename "Web.*" AS *
+    | rex field=url "(?i)(?<ioc>89\.125\.213\.123:8080/P\.ps1|89\.125\.213\.123:8080/decoy\.pdf|foreverpeace\.ru)"
+    | eval ioc=coalesce(ioc, dest), data_model="Web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.process_hash IN ("*af2822560bc0e44b600eefbe0170d3526e035704b533a806f9d455da6ac30d2c*", "*f26756cabe92842e25d82bee5f65ef9c22c80aec895386b9840b471b42e01463*", "*e6907392677134a1a4ffec14d303471352eee90da09db1991eb47486611f2e0d*", "*27dc5628adc666da702c9a33e8f96bb87087ac68a7064f99b91fb76b932aef6e*", "*5d8a2df90fa3cf913e2b5764e586ee3405a101294909df091060bd3e3d1a44c1*", "*19b68e504e1512dc19feef6b1da0f67f876191a937fdcd64ffb965c12d1f0bf0*", "*bf7fe6b518676a3e6d40459ac16b491e62d0e0a222ebb243a44d64ac33aed826*", "*efc1bbb873e9b691657a66e987b0ea87c454bb16e89126d1a41bcaa9bae9fab1*", "*368cb250f7b962c551dd721f6f62224a936dd7cffb8e0d92f223d82b991a0e6d*")
+        BY Processes.dest Processes.user Processes.process_name Processes.process_path Processes.parent_process_name Processes.process_hash
+    | rename "Processes.*" AS *
+    | rex field=process_hash "(?i)(?<ioc>af2822560bc0e44b600eefbe0170d3526e035704b533a806f9d455da6ac30d2c|f26756cabe92842e25d82bee5f65ef9c22c80aec895386b9840b471b42e01463|e6907392677134a1a4ffec14d303471352eee90da09db1991eb47486611f2e0d|27dc5628adc666da702c9a33e8f96bb87087ac68a7064f99b91fb76b932aef6e|5d8a2df90fa3cf913e2b5764e586ee3405a101294909df091060bd3e3d1a44c1|19b68e504e1512dc19feef6b1da0f67f876191a937fdcd64ffb965c12d1f0bf0|bf7fe6b518676a3e6d40459ac16b491e62d0e0a222ebb243a44d64ac33aed826|efc1bbb873e9b691657a66e987b0ea87c454bb16e89126d1a41bcaa9bae9fab1|368cb250f7b962c551dd721f6f62224a936dd7cffb8e0d92f223d82b991a0e6d)"
+    | eval data_model="Endpoint.Processes", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, src="-", detail="process ".process_path." (parent ".parent_process_name.")"
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.parent_process_hash IN ("*af2822560bc0e44b600eefbe0170d3526e035704b533a806f9d455da6ac30d2c*", "*f26756cabe92842e25d82bee5f65ef9c22c80aec895386b9840b471b42e01463*", "*e6907392677134a1a4ffec14d303471352eee90da09db1991eb47486611f2e0d*", "*27dc5628adc666da702c9a33e8f96bb87087ac68a7064f99b91fb76b932aef6e*", "*5d8a2df90fa3cf913e2b5764e586ee3405a101294909df091060bd3e3d1a44c1*", "*19b68e504e1512dc19feef6b1da0f67f876191a937fdcd64ffb965c12d1f0bf0*", "*bf7fe6b518676a3e6d40459ac16b491e62d0e0a222ebb243a44d64ac33aed826*", "*efc1bbb873e9b691657a66e987b0ea87c454bb16e89126d1a41bcaa9bae9fab1*", "*368cb250f7b962c551dd721f6f62224a936dd7cffb8e0d92f223d82b991a0e6d*")
+        BY Processes.dest Processes.user Processes.process_name Processes.process_path Processes.parent_process_name Processes.parent_process_hash
+    | rename "Processes.*" AS *
+    | rex field=parent_process_hash "(?i)(?<ioc>af2822560bc0e44b600eefbe0170d3526e035704b533a806f9d455da6ac30d2c|f26756cabe92842e25d82bee5f65ef9c22c80aec895386b9840b471b42e01463|e6907392677134a1a4ffec14d303471352eee90da09db1991eb47486611f2e0d|27dc5628adc666da702c9a33e8f96bb87087ac68a7064f99b91fb76b932aef6e|5d8a2df90fa3cf913e2b5764e586ee3405a101294909df091060bd3e3d1a44c1|19b68e504e1512dc19feef6b1da0f67f876191a937fdcd64ffb965c12d1f0bf0|bf7fe6b518676a3e6d40459ac16b491e62d0e0a222ebb243a44d64ac33aed826|efc1bbb873e9b691657a66e987b0ea87c454bb16e89126d1a41bcaa9bae9fab1|368cb250f7b962c551dd721f6f62224a936dd7cffb8e0d92f223d82b991a0e6d)"
+    | eval data_model="Endpoint.Processes", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, src="-", detail="parent process ".process_path." (parent ".parent_process_name.")"
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Filesystem
+        WHERE Filesystem.file_hash IN ("*af2822560bc0e44b600eefbe0170d3526e035704b533a806f9d455da6ac30d2c*", "*f26756cabe92842e25d82bee5f65ef9c22c80aec895386b9840b471b42e01463*", "*e6907392677134a1a4ffec14d303471352eee90da09db1991eb47486611f2e0d*", "*27dc5628adc666da702c9a33e8f96bb87087ac68a7064f99b91fb76b932aef6e*", "*5d8a2df90fa3cf913e2b5764e586ee3405a101294909df091060bd3e3d1a44c1*", "*19b68e504e1512dc19feef6b1da0f67f876191a937fdcd64ffb965c12d1f0bf0*", "*bf7fe6b518676a3e6d40459ac16b491e62d0e0a222ebb243a44d64ac33aed826*", "*efc1bbb873e9b691657a66e987b0ea87c454bb16e89126d1a41bcaa9bae9fab1*", "*368cb250f7b962c551dd721f6f62224a936dd7cffb8e0d92f223d82b991a0e6d*")
+        BY Filesystem.dest Filesystem.user Filesystem.file_path Filesystem.file_name Filesystem.action Filesystem.file_hash
+    | rename "Filesystem.*" AS *
+    | rex field=file_hash "(?i)(?<ioc>af2822560bc0e44b600eefbe0170d3526e035704b533a806f9d455da6ac30d2c|f26756cabe92842e25d82bee5f65ef9c22c80aec895386b9840b471b42e01463|e6907392677134a1a4ffec14d303471352eee90da09db1991eb47486611f2e0d|27dc5628adc666da702c9a33e8f96bb87087ac68a7064f99b91fb76b932aef6e|5d8a2df90fa3cf913e2b5764e586ee3405a101294909df091060bd3e3d1a44c1|19b68e504e1512dc19feef6b1da0f67f876191a937fdcd64ffb965c12d1f0bf0|bf7fe6b518676a3e6d40459ac16b491e62d0e0a222ebb243a44d64ac33aed826|efc1bbb873e9b691657a66e987b0ea87c454bb16e89126d1a41bcaa9bae9fab1|368cb250f7b962c551dd721f6f62224a936dd7cffb8e0d92f223d82b991a0e6d)"
+    | eval data_model="Endpoint.Filesystem", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, src="-", detail="file ".action." ".file_path
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Email.All_Email
+        WHERE (All_Email.file_hash IN ("*af2822560bc0e44b600eefbe0170d3526e035704b533a806f9d455da6ac30d2c*", "*f26756cabe92842e25d82bee5f65ef9c22c80aec895386b9840b471b42e01463*", "*e6907392677134a1a4ffec14d303471352eee90da09db1991eb47486611f2e0d*", "*27dc5628adc666da702c9a33e8f96bb87087ac68a7064f99b91fb76b932aef6e*", "*5d8a2df90fa3cf913e2b5764e586ee3405a101294909df091060bd3e3d1a44c1*", "*19b68e504e1512dc19feef6b1da0f67f876191a937fdcd64ffb965c12d1f0bf0*", "*bf7fe6b518676a3e6d40459ac16b491e62d0e0a222ebb243a44d64ac33aed826*", "*efc1bbb873e9b691657a66e987b0ea87c454bb16e89126d1a41bcaa9bae9fab1*", "*368cb250f7b962c551dd721f6f62224a936dd7cffb8e0d92f223d82b991a0e6d*") OR All_Email.url IN ("*89.125.213.123:8080/P.ps1*", "*89.125.213.123:8080/decoy.pdf*", "*://foreverpeace.ru*", "*.foreverpeace.ru*", "foreverpeace.ru*"))
+        BY All_Email.src_user All_Email.recipient All_Email.subject All_Email.file_name All_Email.file_hash All_Email.url
+    | rename "All_Email.*" AS *
+    | eval matched=file_hash." ".url
+    | rex field=matched "(?i)(?<ioc>af2822560bc0e44b600eefbe0170d3526e035704b533a806f9d455da6ac30d2c|f26756cabe92842e25d82bee5f65ef9c22c80aec895386b9840b471b42e01463|e6907392677134a1a4ffec14d303471352eee90da09db1991eb47486611f2e0d|27dc5628adc666da702c9a33e8f96bb87087ac68a7064f99b91fb76b932aef6e|5d8a2df90fa3cf913e2b5764e586ee3405a101294909df091060bd3e3d1a44c1|19b68e504e1512dc19feef6b1da0f67f876191a937fdcd64ffb965c12d1f0bf0|bf7fe6b518676a3e6d40459ac16b491e62d0e0a222ebb243a44d64ac33aed826|efc1bbb873e9b691657a66e987b0ea87c454bb16e89126d1a41bcaa9bae9fab1|368cb250f7b962c551dd721f6f62224a936dd7cffb8e0d92f223d82b991a0e6d|89\.125\.213\.123:8080/P\.ps1|89\.125\.213\.123:8080/decoy\.pdf|foreverpeace\.ru)"
+    | eval data_model="Email", ioc_type=case(match(ioc, "^[0-9a-fA-F]{64}$"), "sha256", match(ioc, "^[0-9a-fA-F]{40}$"), "sha1", match(ioc, "^[0-9a-fA-F]{32}$"), "md5", match(ioc, "/"), "url", 1==1, "domain"), host="-", user=recipient, src=src_user, dest=recipient, detail="email '".subject."' ".file_name
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.process_name IN ("powershell.exe", "pwsh.exe") (Processes.process IN ("*P.ps1*", "*decoy.pdf*", "*amsiInitFailed*", "*89.125.213.123*") OR (Processes.parent_process_name="explorer.exe" Processes.process IN ("*-w hidden*", "*-WindowStyle Hidden*") Processes.process IN ("*DownloadString*", "*Net.WebClient*", "*Invoke-WebRequest*")))
+        BY Processes.dest Processes.user Processes.parent_process_name Processes.process_name Processes.process
+    | rename "Processes.*" AS *
+    | eval host=dest, src="-", detail=parent_process_name." > ".process, data_model="Endpoint.Processes"
+    | eval ioc="LNK lure starting hidden PowerShell or a shell to port 46125", ioc_type="behaviour (alert)"
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Network_Traffic.All_Traffic
+        WHERE All_Traffic.dest_port=46125
+        BY All_Traffic.src_ip All_Traffic.dest_ip All_Traffic.dvc
+    | rename "All_Traffic.*" AS *
+    | eval host=dvc, user="-", src=src_ip, dest=dest_ip, detail="connection to port 46125", data_model="Network_Traffic"
+    | eval ioc="LNK lure starting hidden PowerShell or a shell to port 46125", ioc_type="behaviour (alert)"
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.process_name IN ("srvdriv.exe", "ssdpdrv.exe", "netsrvc.exe", "ssdspsrv.exe", "CoreMessaging.exe") OR Processes.process IN ("*srvdriv*", "*ssdpdrv*", "*netsrvc*", "*ssdspsrv*", "*CoreMessaging.exe*")
+        BY Processes.dest Processes.user Processes.parent_process_name Processes.process_name Processes.process
+    | rename "Processes.*" AS *
+    | eval host=dest, src="-", detail=parent_process_name." > ".process, data_model="Endpoint.Processes"
+    | eval ioc="Silent Lynx lookalike service binaries", ioc_type="behaviour (alert)"
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Filesystem
+        WHERE Filesystem.file_name IN ("srvdriv.exe", "ssdpdrv.exe", "netsrvc.exe", "ssdspsrv.exe", "CoreMessaging.exe")
+        BY Filesystem.dest Filesystem.user Filesystem.file_path Filesystem.file_name Filesystem.action
+    | rename "Filesystem.*" AS *
+    | eval host=dest, src="-", detail="file ".action." ".file_path, data_model="Endpoint.Filesystem"
+    | eval ioc="Silent Lynx lookalike service binaries", ioc_type="behaviour (alert)"
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Filesystem
+        WHERE Filesystem.file_name="*.war" Filesystem.file_path="*webapps*"
+        BY Filesystem.dest Filesystem.user Filesystem.file_path Filesystem.file_name Filesystem.action
+    | rename "Filesystem.*" AS *
+    | eval host=dest, src="-", detail="file ".action." ".file_path, data_model="Endpoint.Filesystem"
+    | eval ioc="WAR deployed to GeoServer or Tomcat, or Java spawning a shell", ioc_type="behaviour (alert)"
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.parent_process_name IN ("java", "java.exe") Processes.parent_process IN ("*geoserver*", "*catalina*", "*tomcat*") Processes.process_name IN ("sh", "bash", "dash", "curl", "wget", "nc", "ncat", "python", "python3", "perl", "cmd.exe", "powershell.exe")
+        BY Processes.dest Processes.user Processes.parent_process_name Processes.process_name Processes.process
+    | rename "Processes.*" AS *
+    | eval host=dest, src="-", detail=parent_process_name." > ".process, data_model="Endpoint.Processes"
+    | eval ioc="WAR deployed to GeoServer or Tomcat, or Java spawning a shell", ioc_type="behaviour (alert)"
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Web.Web
+        WHERE Web.url="*/health/*" Web.http_method="POST"
+        BY Web.src Web.user Web.dest Web.url Web.http_user_agent Web.status
+    | rename "Web.*" AS *
+    | eval host=dest, detail="HTTP ".status." ".url." UA: ".http_user_agent, data_model="Web"
+    | eval ioc="WAR deployed to GeoServer or Tomcat, or Java spawning a shell", ioc_type="behaviour (alert)"
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.parent_process_name IN ("postgres", "postmaster", "postgres.exe") Processes.process_name IN ("sh", "bash", "dash", "nc", "ncat", "netcat", "curl", "wget", "python", "python3", "perl", "socat", "cmd.exe", "powershell.exe")
+        BY Processes.dest Processes.user Processes.parent_process_name Processes.process_name Processes.process
+    | rename "Processes.*" AS *
+    | eval host=dest, src="-", detail=parent_process_name." > ".process, data_model="Endpoint.Processes"
+    | eval ioc="PostgreSQL COPY FROM PROGRAM or postgres spawning a shell", ioc_type="behaviour (alert)"
+]
+| append [
+    search index=* ("FROM PROGRAM" COPY)
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="PostgreSQL server logs"
+    | eval ioc="PostgreSQL COPY FROM PROGRAM or postgres spawning a shell", ioc_type="behaviour (alert)"
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.parent_process_name IN ("cron", "crond", "anacron") Processes.process IN ("*/dev/tcp/*", "*89.125.213.123*", "*134.17.14.24*", "*foreverpeace.ru*")
+        BY Processes.dest Processes.user Processes.parent_process_name Processes.process_name Processes.process
+    | rename "Processes.*" AS *
+    | eval host=dest, src="-", detail=parent_process_name." > ".process, data_model="Endpoint.Processes"
+    | eval ioc="Cron callback to an external address", ioc_type="behaviour (alert)"
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.process_name IN ("fscan.exe", "fscan", "nxc.exe", "nxc", "netexec", "Inveigh.exe", "gost.exe", "gost", "ligolo-agent", "ligolo-agent.exe") OR Processes.process IN ("*Invoke-Inveigh*", "*Responder.py*", "*ligolo*", "*nxc smb*", "*netexec smb*")
+        BY Processes.dest Processes.user Processes.parent_process_name Processes.process_name Processes.process
+    | rename "Processes.*" AS *
+    | eval host=dest, src="-", detail=parent_process_name." > ".process, data_model="Endpoint.Processes"
+    | eval ioc="fscan, NetExec, Responder, Inveigh, Ligolo or GOST", ioc_type="behaviour (alert)"
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Web.Web
+        WHERE Web.url IN ("*openrouter.ai*", "*api.deepseek.com*", "*generativelanguage.googleapis.com*")
+        BY Web.src Web.user Web.dest Web.url Web.http_user_agent Web.status
+    | rename "Web.*" AS *
+    | eval host=dest, detail="HTTP ".status." ".url." UA: ".http_user_agent, data_model="Web"
+    | eval ioc="Server calling OpenRouter, DeepSeek or Gemini APIs", ioc_type="behaviour (hunt)"
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Web.Web
+        WHERE Web.url="*api.telegram.org*"
+        BY Web.src Web.user Web.dest Web.url Web.http_user_agent Web.status
+    | rename "Web.*" AS *
+    | eval host=dest, detail="HTTP ".status." ".url." UA: ".http_user_agent, data_model="Web"
+    | eval ioc="Server calling the Telegram Bot API, or .hermes on disk", ioc_type="behaviour (hunt)"
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Filesystem
+        WHERE Filesystem.file_path="*.hermes*"
+        BY Filesystem.dest Filesystem.user Filesystem.file_path Filesystem.file_name Filesystem.action
+    | rename "Filesystem.*" AS *
+    | eval host=dest, src="-", detail="file ".action." ".file_path, data_model="Endpoint.Filesystem"
+    | eval ioc="Server calling the Telegram Bot API, or .hermes on disk", ioc_type="behaviour (hunt)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

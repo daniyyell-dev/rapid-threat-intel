@@ -2,12 +2,13 @@
 
 [Back to index](../../README.md#latest-threats)
 
-27 threats, 969 indicators, 341 to block now. Newest first.
+28 threats, 991 indicators, 354 to block now. Newest first.
 
 ### [2026-11-12](2026-11-12/)
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
+| 2026-11-11 | [Silent Lynx Strix AI-Agent Espionage Against Tajikistan](2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan/) | Espionage / APT | 22 | 13 | CloudSEK found an exposed server belonging to Silent Lynx (UAT-6275 at Cisco Talos, TAG-193 at Recorded Future), a Ka... |
 | 2026-11-09 | [Able2Shell N-able N-central Zero-Days](2026-11-12/Able2Shell-N-able-N-central-Zero-Days/) | Exploitation / MSP RMM | 4 | 1 | Public N-central RCE chains that still work on HF2, honeypot exploitation seen; hunt the server and N-able Agent activity |
 | 2026-11-11 | [GSocket Linux Web-Server C2](2026-11-12/GSocket-Linux-Web-Server-C2/) | Post-exploitation / Linux C2 | 9 | 4 | GSocket relay clients on compromised Linux web servers, with hashes and paths only — do not block the public relay |
 | 2026-11-09 | [ARTEX AWS Financial-Data Hunting](2026-11-12/ARTEX-AWS-Financial-Data-Hunting/) | Financially motivated intrusion / cloud | 10 | 0 | ARTEX operators in AWS hunting financial logs and Cognito, with hunt-only operator IPs |

@@ -8,7 +8,7 @@
 **Agentic AI collects it. Analysts verify it. Community acts on it.**<br>
 <sub>AI threat intel from defenders, for defenders.</sub>
 
-[![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-27-informational)](#latest-threats) ![IOCs](https://img.shields.io/badge/IOCs-969-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--12_09:50-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
+[![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-28-informational)](#latest-threats) ![IOCs](https://img.shields.io/badge/IOCs-991-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--12_09:50-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
 </div>
 
@@ -49,6 +49,7 @@ Grouped by the month and day they were added, newest first. The date column is w
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
+| 2026-11-11 | [Silent Lynx Strix AI-Agent Espionage Against Tajikistan](threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan/) | Espionage / APT | 22 | 13 | CloudSEK found an exposed server belonging to Silent Lynx (UAT-6275 at Cisco Talos, TAG-193 at Recorded Future), a Ka... |
 | 2026-11-09 | [Able2Shell N-able N-central Zero-Days](threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days/) | Exploitation / MSP RMM | 4 | 1 | Public N-central RCE chains that still work on HF2, honeypot exploitation seen; hunt the server and N-able Agent activity |
 | 2026-11-11 | [GSocket Linux Web-Server C2](threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2/) | Post-exploitation / Linux C2 | 9 | 4 | GSocket relay clients on compromised Linux web servers, with hashes and paths only — do not block the public relay |
 | 2026-11-09 | [ARTEX AWS Financial-Data Hunting](threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting/) | Financially motivated intrusion / cloud | 10 | 0 | ARTEX operators in AWS hunting financial logs and Cognito, with hunt-only operator IPs |
@@ -87,7 +88,7 @@ Grouped by the month and day they were added, newest first. The date column is w
 | 2026-11-05 | [FreeSWITCH CVE-2026-116779 SIP Command Injection Cryptominer Campaign](threats/2026-11_November-2026/2026-11-10/FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/) | Exploitation / cryptomining | 12 | 6 | SIP MESSAGE command injection used to install a cryptominer |
 | 2026-11-04 | [APT29 Watering Holes Targeting iOS and Android with N-Day Exploits](threats/2026-11_November-2026/2026-11-10/APT29-Mobile-Watering-Hole-Exploit-Chains/) | APT / espionage | 27 | 25 | Watering holes serving n-day exploit chains to iOS and Android visitors |
 
-To block everything at once, use [`all/`](all/): 341 high-confidence block indicators across all threats.
+To block everything at once, use [`all/`](all/): 354 high-confidence block indicators across all threats.
 
 <a id="how-to-use"></a>
 ## Use the data

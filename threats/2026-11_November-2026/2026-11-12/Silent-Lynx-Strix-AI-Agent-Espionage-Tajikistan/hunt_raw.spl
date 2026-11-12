@@ -1,0 +1,156 @@
+``` Threat: Silent Lynx Strix AI-Agent Espionage Against Tajikistan
+    Author: Daniel Jeremiah | Date: 2026-11-12
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan ```
+| multisearch
+  [ search `rti_network(89.125.213.123 OR 134.17.14.24)`
+    | search dest_ip IN ("89.125.213.123", "134.17.14.24")
+    | eval data_model="network", ioc_type="ipv4", ioc=dest_ip, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_network(89.125.213.123 OR 134.17.14.24)`
+    | search src_ip IN ("89.125.213.123", "134.17.14.24")
+    | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_dns(foreverpeace.ru)`
+    | search query IN ("foreverpeace.ru", "*.foreverpeace.ru")
+    | rex field=query "(?i)(?<ioc>(?:foreverpeace\.ru))\.?$"
+    | eval data_model="dns", ioc_type="domain", host=src, detail="DNS query ".query
+  ]
+  [ search `rti_web(foreverpeace.ru OR 89.125.213.123)`
+    | search url IN ("*://foreverpeace.ru*", "*.foreverpeace.ru*", "foreverpeace.ru*", "*89.125.213.123:8080/P.ps1*", "*89.125.213.123:8080/decoy.pdf*") OR dest IN ("foreverpeace.ru", "*.foreverpeace.ru")
+    | rex field=url "(?i)(?<ioc>89\.125\.213\.123:8080/P\.ps1|89\.125\.213\.123:8080/decoy\.pdf|foreverpeace\.ru)"
+    | eval ioc=coalesce(ioc, dest), data_model="web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+  ]
+  [ search `rti_endpoint(af2822560bc0e44b600eefbe0170d3526e035704b533a806f9d455da6ac30d2c OR f26756cabe92842e25d82bee5f65ef9c22c80aec895386b9840b471b42e01463 OR e6907392677134a1a4ffec14d303471352eee90da09db1991eb47486611f2e0d OR 27dc5628adc666da702c9a33e8f96bb87087ac68a7064f99b91fb76b932aef6e OR 5d8a2df90fa3cf913e2b5764e586ee3405a101294909df091060bd3e3d1a44c1 OR 19b68e504e1512dc19feef6b1da0f67f876191a937fdcd64ffb965c12d1f0bf0 OR bf7fe6b518676a3e6d40459ac16b491e62d0e0a222ebb243a44d64ac33aed826 OR efc1bbb873e9b691657a66e987b0ea87c454bb16e89126d1a41bcaa9bae9fab1 OR 368cb250f7b962c551dd721f6f62224a936dd7cffb8e0d92f223d82b991a0e6d)`
+    | search file_hash IN ("*af2822560bc0e44b600eefbe0170d3526e035704b533a806f9d455da6ac30d2c*", "*f26756cabe92842e25d82bee5f65ef9c22c80aec895386b9840b471b42e01463*", "*e6907392677134a1a4ffec14d303471352eee90da09db1991eb47486611f2e0d*", "*27dc5628adc666da702c9a33e8f96bb87087ac68a7064f99b91fb76b932aef6e*", "*5d8a2df90fa3cf913e2b5764e586ee3405a101294909df091060bd3e3d1a44c1*", "*19b68e504e1512dc19feef6b1da0f67f876191a937fdcd64ffb965c12d1f0bf0*", "*bf7fe6b518676a3e6d40459ac16b491e62d0e0a222ebb243a44d64ac33aed826*", "*efc1bbb873e9b691657a66e987b0ea87c454bb16e89126d1a41bcaa9bae9fab1*", "*368cb250f7b962c551dd721f6f62224a936dd7cffb8e0d92f223d82b991a0e6d*") OR process_hash IN ("*af2822560bc0e44b600eefbe0170d3526e035704b533a806f9d455da6ac30d2c*", "*f26756cabe92842e25d82bee5f65ef9c22c80aec895386b9840b471b42e01463*", "*e6907392677134a1a4ffec14d303471352eee90da09db1991eb47486611f2e0d*", "*27dc5628adc666da702c9a33e8f96bb87087ac68a7064f99b91fb76b932aef6e*", "*5d8a2df90fa3cf913e2b5764e586ee3405a101294909df091060bd3e3d1a44c1*", "*19b68e504e1512dc19feef6b1da0f67f876191a937fdcd64ffb965c12d1f0bf0*", "*bf7fe6b518676a3e6d40459ac16b491e62d0e0a222ebb243a44d64ac33aed826*", "*efc1bbb873e9b691657a66e987b0ea87c454bb16e89126d1a41bcaa9bae9fab1*", "*368cb250f7b962c551dd721f6f62224a936dd7cffb8e0d92f223d82b991a0e6d*") OR parent_process_hash IN ("*af2822560bc0e44b600eefbe0170d3526e035704b533a806f9d455da6ac30d2c*", "*f26756cabe92842e25d82bee5f65ef9c22c80aec895386b9840b471b42e01463*", "*e6907392677134a1a4ffec14d303471352eee90da09db1991eb47486611f2e0d*", "*27dc5628adc666da702c9a33e8f96bb87087ac68a7064f99b91fb76b932aef6e*", "*5d8a2df90fa3cf913e2b5764e586ee3405a101294909df091060bd3e3d1a44c1*", "*19b68e504e1512dc19feef6b1da0f67f876191a937fdcd64ffb965c12d1f0bf0*", "*bf7fe6b518676a3e6d40459ac16b491e62d0e0a222ebb243a44d64ac33aed826*", "*efc1bbb873e9b691657a66e987b0ea87c454bb16e89126d1a41bcaa9bae9fab1*", "*368cb250f7b962c551dd721f6f62224a936dd7cffb8e0d92f223d82b991a0e6d*")
+    | eval matched=file_hash." ".process_hash." ".parent_process_hash
+    | rex field=matched "(?i)(?<ioc>af2822560bc0e44b600eefbe0170d3526e035704b533a806f9d455da6ac30d2c|f26756cabe92842e25d82bee5f65ef9c22c80aec895386b9840b471b42e01463|e6907392677134a1a4ffec14d303471352eee90da09db1991eb47486611f2e0d|27dc5628adc666da702c9a33e8f96bb87087ac68a7064f99b91fb76b932aef6e|5d8a2df90fa3cf913e2b5764e586ee3405a101294909df091060bd3e3d1a44c1|19b68e504e1512dc19feef6b1da0f67f876191a937fdcd64ffb965c12d1f0bf0|bf7fe6b518676a3e6d40459ac16b491e62d0e0a222ebb243a44d64ac33aed826|efc1bbb873e9b691657a66e987b0ea87c454bb16e89126d1a41bcaa9bae9fab1|368cb250f7b962c551dd721f6f62224a936dd7cffb8e0d92f223d82b991a0e6d)"
+    | eval data_model="endpoint", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, detail=coalesce(process, file_path)
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search `rti_endpoint(("P.ps1" OR "decoy.pdf" OR amsiInitFailed OR "89.125.213.123"))`
+    | where match(coalesce(process_name, ""), "(?i)^(powershell|pwsh)\.exe$") AND match(coalesce(process, ""), "(?i)P\.ps1|decoy\.pdf|amsiInitFailed|89\.125\.213\.123")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="LNK lure starting hidden PowerShell or a shell to port 46125", ioc_type="behaviour (alert)"
+]
+| append [
+    search `rti_network(46125)`
+    | search dest_port=46125
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY src_ip dest_ip dvc
+    | eval host=dvc, user="-", src=src_ip, dest=dest_ip, detail="connections to port 46125", data_model="network"
+    | fields - src_ip dest_ip dvc
+    | eval ioc="LNK lure starting hidden PowerShell or a shell to port 46125", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint((srvdriv OR ssdpdrv OR netsrvc OR ssdspsrv OR "CoreMessaging.exe"))`
+    | where match(coalesce(process, process_name, ""), "(?i)srvdriv|ssdpdrv|netsrvc|ssdspsrv|CoreMessaging\.exe")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Silent Lynx lookalike service binaries", ioc_type="behaviour (alert)"
+]
+| append [
+    search `rti_endpoint((srvdriv OR ssdpdrv OR netsrvc OR ssdspsrv OR "CoreMessaging.exe"))`
+    | where match(coalesce(file_path, file_name, ""), "(?i)(srvdriv|ssdpdrv|netsrvc|ssdspsrv|CoreMessaging)\.exe")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Silent Lynx lookalike service binaries", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint((".war"))`
+    | where match(coalesce(file_path, file_name, ""), "(?i)webapps.*\.war$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="WAR deployed to GeoServer or Tomcat, or Java spawning a shell", ioc_type="behaviour (alert)"
+]
+| append [
+    search `rti_endpoint((geoserver OR catalina OR tomcat))`
+    | where match(coalesce(parent_process_name, ""), "(?i)^java(\.exe)?$") AND match(coalesce(parent_process, ""), "(?i)geoserver|catalina|tomcat") AND match(coalesce(process_name, ""), "(?i)^(sh|bash|dash|curl|wget|nc|ncat|python3?|perl|cmd\.exe|powershell\.exe)$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="WAR deployed to GeoServer or Tomcat, or Java spawning a shell", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint((postgres OR postmaster))`
+    | where match(coalesce(parent_process_name, ""), "(?i)^(postgres|postmaster)(\.exe)?$") AND match(coalesce(process_name, ""), "(?i)^(sh|bash|dash|nc|ncat|netcat|curl|wget|python3?|perl|socat|cmd\.exe|powershell\.exe)$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="PostgreSQL COPY FROM PROGRAM or postgres spawning a shell", ioc_type="behaviour (alert)"
+]
+| append [
+    search index=* ("FROM PROGRAM" COPY)
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="PostgreSQL server logs"
+    | eval ioc="PostgreSQL COPY FROM PROGRAM or postgres spawning a shell", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(("/dev/tcp/" OR "89.125.213.123" OR "134.17.14.24" OR "foreverpeace.ru"))`
+    | where match(coalesce(parent_process_name, ""), "(?i)^(cron|crond|anacron)$") AND match(coalesce(process, ""), "(?i)/dev/tcp/|89\.125\.213\.123|134\.17\.14\.24|foreverpeace\.ru")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Cron callback to an external address", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint((fscan OR nxc OR netexec OR Inveigh OR gost OR ligolo OR "Responder.py"))`
+    | where match(coalesce(process_name, process, ""), "(?i)fscan|(^|[\\/ ])nxc|netexec|inveigh|(^|[\\/])gost(\.exe)?$|ligolo|Responder\.py")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="fscan, NetExec, Responder, Inveigh, Ligolo or GOST", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_web((openrouter.ai OR api.deepseek.com OR generativelanguage.googleapis.com))`
+    | where match(coalesce(url, dest, ""), "(?i)openrouter\.ai|api\.deepseek\.com|generativelanguage\.googleapis\.com")
+    | eval host=dest, user=user, src=src, dest=dest, detail="HTTP ".coalesce(status, "-")." ".coalesce(url, "-")." UA: ".coalesce(http_user_agent, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="web"
+    | eval ioc="Server calling OpenRouter, DeepSeek or Gemini APIs", ioc_type="behaviour (hunt)"
+]
+
+| append [
+    search `rti_web((api.telegram.org))`
+    | where match(coalesce(url, dest, ""), "(?i)api\.telegram\.org")
+    | eval host=dest, user=user, src=src, dest=dest, detail="HTTP ".coalesce(status, "-")." ".coalesce(url, "-")." UA: ".coalesce(http_user_agent, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="web"
+    | eval ioc="Server calling the Telegram Bot API, or .hermes on disk", ioc_type="behaviour (hunt)"
+]
+| append [
+    search `rti_endpoint((".hermes"))`
+    | where match(coalesce(file_path, ""), "(?i)[\\/]\.hermes[\\/]")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Server calling the Telegram Bot API, or .hermes on disk", ioc_type="behaviour (hunt)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

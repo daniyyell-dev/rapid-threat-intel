@@ -1,0 +1,59 @@
+// Threat: Silent Lynx Strix AI-Agent Espionage Against Tajikistan
+// Author: Daniel Jeremiah | Date: 2026-11-12
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan
+rule rti_silent_lynx_strix_ai_agent_espionage_tajikistan {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-12"
+    description = "Silent Lynx Strix AI-Agent Espionage Against Tajikistan"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan"
+
+  events:
+    (
+      $e.principal.ip = /^(?:89\.125\.213\.123|134\.17\.14\.24)$/ or
+      $e.target.ip = /^(?:89\.125\.213\.123|134\.17\.14\.24)$/ or
+      $e.network.dns.answers.data = /^(?:89\.125\.213\.123|134\.17\.14\.24)$/ or
+      $e.network.dns.questions.name = /(?:^|\.)(?:foreverpeace\.ru)\.?$/ nocase or
+      $e.target.hostname = /(?:^|\.)(?:foreverpeace\.ru)\.?$/ nocase or
+      $e.target.domain.name = /(?:^|\.)(?:foreverpeace\.ru)\.?$/ nocase or
+      re.regex($e.target.url, `^(?:[a-z][a-z0-9+.-]*://)?(?:[^/?#]*@)?(?:89\.125\.213\.123:8080/P\.ps1|89\.125\.213\.123:8080/decoy\.pdf|(?:[^/?#@]*\.)?(?:foreverpeace\.ru)(?::\d+)?(?:[/?#]|$))`) nocase or
+      $e.target.file.sha256 = /^(?:af2822560bc0e44b600eefbe0170d3526e035704b533a806f9d455da6ac30d2c|f26756cabe92842e25d82bee5f65ef9c22c80aec895386b9840b471b42e01463|e6907392677134a1a4ffec14d303471352eee90da09db1991eb47486611f2e0d|27dc5628adc666da702c9a33e8f96bb87087ac68a7064f99b91fb76b932aef6e|5d8a2df90fa3cf913e2b5764e586ee3405a101294909df091060bd3e3d1a44c1|19b68e504e1512dc19feef6b1da0f67f876191a937fdcd64ffb965c12d1f0bf0|bf7fe6b518676a3e6d40459ac16b491e62d0e0a222ebb243a44d64ac33aed826|efc1bbb873e9b691657a66e987b0ea87c454bb16e89126d1a41bcaa9bae9fab1|368cb250f7b962c551dd721f6f62224a936dd7cffb8e0d92f223d82b991a0e6d)$/ nocase or
+      $e.target.process.file.sha256 = /^(?:af2822560bc0e44b600eefbe0170d3526e035704b533a806f9d455da6ac30d2c|f26756cabe92842e25d82bee5f65ef9c22c80aec895386b9840b471b42e01463|e6907392677134a1a4ffec14d303471352eee90da09db1991eb47486611f2e0d|27dc5628adc666da702c9a33e8f96bb87087ac68a7064f99b91fb76b932aef6e|5d8a2df90fa3cf913e2b5764e586ee3405a101294909df091060bd3e3d1a44c1|19b68e504e1512dc19feef6b1da0f67f876191a937fdcd64ffb965c12d1f0bf0|bf7fe6b518676a3e6d40459ac16b491e62d0e0a222ebb243a44d64ac33aed826|efc1bbb873e9b691657a66e987b0ea87c454bb16e89126d1a41bcaa9bae9fab1|368cb250f7b962c551dd721f6f62224a936dd7cffb8e0d92f223d82b991a0e6d)$/ nocase or
+      $e.principal.process.file.sha256 = /^(?:af2822560bc0e44b600eefbe0170d3526e035704b533a806f9d455da6ac30d2c|f26756cabe92842e25d82bee5f65ef9c22c80aec895386b9840b471b42e01463|e6907392677134a1a4ffec14d303471352eee90da09db1991eb47486611f2e0d|27dc5628adc666da702c9a33e8f96bb87087ac68a7064f99b91fb76b932aef6e|5d8a2df90fa3cf913e2b5764e586ee3405a101294909df091060bd3e3d1a44c1|19b68e504e1512dc19feef6b1da0f67f876191a937fdcd64ffb965c12d1f0bf0|bf7fe6b518676a3e6d40459ac16b491e62d0e0a222ebb243a44d64ac33aed826|efc1bbb873e9b691657a66e987b0ea87c454bb16e89126d1a41bcaa9bae9fab1|368cb250f7b962c551dd721f6f62224a936dd7cffb8e0d92f223d82b991a0e6d)$/ nocase or
+      $e.principal.process.parent_process.file.sha256 = /^(?:af2822560bc0e44b600eefbe0170d3526e035704b533a806f9d455da6ac30d2c|f26756cabe92842e25d82bee5f65ef9c22c80aec895386b9840b471b42e01463|e6907392677134a1a4ffec14d303471352eee90da09db1991eb47486611f2e0d|27dc5628adc666da702c9a33e8f96bb87087ac68a7064f99b91fb76b932aef6e|5d8a2df90fa3cf913e2b5764e586ee3405a101294909df091060bd3e3d1a44c1|19b68e504e1512dc19feef6b1da0f67f876191a937fdcd64ffb965c12d1f0bf0|bf7fe6b518676a3e6d40459ac16b491e62d0e0a222ebb243a44d64ac33aed826|efc1bbb873e9b691657a66e987b0ea87c454bb16e89126d1a41bcaa9bae9fab1|368cb250f7b962c551dd721f6f62224a936dd7cffb8e0d92f223d82b991a0e6d)$/ nocase or
+      re.regex($e.target.process.command_line, `P\.ps1|decoy\.pdf|amsiInitFailed|89\.125\.213\.123`) nocase or
+      re.regex($e.target.process.file.full_path, `(srvdriv|ssdpdrv|netsrvc|ssdspsrv|CoreMessaging)\.exe$`) nocase or
+      (($e.metadata.event_type = "FILE_CREATION" or $e.metadata.event_type = "FILE_MODIFICATION" or $e.metadata.event_type = "FILE_MOVE") and re.regex($e.target.file.full_path, `webapps.*\.war$`) nocase) or
+      re.regex($e.principal.process.file.full_path, `(^|/)(postgres|postmaster)(\.exe)?$`) nocase and re.regex($e.target.process.file.full_path, `(^|/)(sh|bash|dash|nc|ncat|netcat|curl|wget|python3?|perl|socat)$`) nocase or
+      re.regex($e.principal.process.file.full_path, `(^|/)(cron|crond|anacron)$`) nocase and re.regex($e.target.process.command_line, `/dev/tcp/|89\.125\.213\.123|134\.17\.14\.24|foreverpeace\.ru`) nocase or
+      re.regex($e.target.process.file.full_path, `(^|[\\/])(fscan|nxc|netexec|Inveigh|gost|ligolo-agent)(\.exe)?$`) nocase
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+    $dns_query = array_distinct($e.network.dns.questions.name)
+    $target_hostname = array_distinct($e.target.hostname)
+    $target_url = array_distinct($e.target.url)
+    $file_sha256 = array_distinct($e.target.file.sha256)
+    $process_sha256 = array_distinct($e.target.process.file.sha256)
+    $process_path = array_distinct($e.target.process.file.full_path)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}

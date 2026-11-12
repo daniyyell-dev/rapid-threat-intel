@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-12 09:55",
- "threat_count": 27,
- "indicator_count": 969,
- "block_now_count": 341,
+ "last_updated": "2026-11-12 11:30",
+ "threat_count": 28,
+ "indicator_count": 991,
+ "block_now_count": 354,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -102,6 +102,769 @@
   }
  ],
  "threats": [
+  {
+   "id": "Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan",
+   "folder": "threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan",
+   "name": "Silent Lynx Strix AI-Agent Espionage Against Tajikistan",
+   "short": "Silent Lynx Strix espionage",
+   "category": "Espionage / APT",
+   "published": "2026-11-11",
+   "entry_date": "2026-11-12 11:30",
+   "last_updated": "2026-11-12",
+   "seq": 28,
+   "headline": "CloudSEK found an exposed server belonging to Silent Lynx (UAT-6275 at Cisco Talos, TAG-193 at Recorded Future), a Ka...",
+   "summary": "CloudSEK found an exposed server belonging to Silent Lynx (UAT-6275 at Cisco Talos, TAG-193 at Recorded Future), a Kazakhstan-nexus espionage group. The operator had domain-level access to Tajikistan's national railway from mid-August to at least 10 October 2026, dumped NTDS credentials, and used one railway employee's account on the government SSO portal to pull more than 2,000 documents from the national electronic document (EDO) platform, including defence correspondence. The group also broke into Uzbekistan's Smart Forestry GeoServer through malicious WAR files and a PostgreSQL COPY FROM PROGRAM reverse shell, and built Turkmenistan-themed lures in October. Much of the reconnaissance, collection and cleanup was run by a self-hosted Hermes agent branded Strix, which used DeepSeek and Gemini models through OpenRouter and took tasks over Telegram. The operator server 89.125.213.123, its two stage URLs, foreverpeace.ru and the nine implant and lure hashes are on the block list. 134.17.14.24 is alert-only because its ownership is unconfirmed. OpenRouter, DeepSeek, Gemini and Telegram are legitimate services: hunt for them on servers, never block them.",
+   "caveat": "All indicators come from CloudSEK's analysis of one exposed server; Threadlinqs repeats some of them. 134.17.14.24 is alert-only because CloudSEK could not confirm who owns it. The AI agent ran on the operator's server, so OpenRouter, DeepSeek, Gemini and Telegram traffic is only a hunting lead on your own servers and must not be blocked. The file names are lookalikes of Windows services and need the hashes or the path to confirm.",
+   "targets": {
+    "countries": [
+     {
+      "code": "TJ",
+      "name": "Tajikistan"
+     },
+     {
+      "code": "UZ",
+      "name": "Uzbekistan"
+     },
+     {
+      "code": "TM",
+      "name": "Turkmenistan"
+     },
+     {
+      "code": "KG",
+      "name": "Kyrgyzstan"
+     }
+    ],
+    "regions": [
+     "Central Asia"
+    ],
+    "sectors": [
+     "Government",
+     "Defence",
+     "Rail transport",
+     "Telecommunications"
+    ],
+    "note": "Confirmed victims are Tajikistan's national railway and national electronic document (EDO) platform and Uzbekistan's Smart Forestry GeoServer. Turkmenistan lures were built and tested but not yet deployed, and an implant was built for a target in Kyrgyzstan.",
+    "source": {
+     "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "name": "CloudSEK"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1566.001",
+     "name": "Spearphishing Attachment",
+     "url": "https://attack.mitre.org/techniques/T1566/001/"
+    },
+    {
+     "id": "T1204.002",
+     "name": "Malicious File",
+     "url": "https://attack.mitre.org/techniques/T1204/002/"
+    },
+    {
+     "id": "T1059.001",
+     "name": "PowerShell",
+     "url": "https://attack.mitre.org/techniques/T1059/001/"
+    },
+    {
+     "id": "T1562.001",
+     "name": "Disable or Modify Tools",
+     "url": "https://attack.mitre.org/techniques/T1562/001/"
+    },
+    {
+     "id": "T1543.003",
+     "name": "Windows Service",
+     "url": "https://attack.mitre.org/techniques/T1543/003/"
+    },
+    {
+     "id": "T1036.004",
+     "name": "Masquerade Task or Service",
+     "url": "https://attack.mitre.org/techniques/T1036/004/"
+    },
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1505.003",
+     "name": "Web Shell",
+     "url": "https://attack.mitre.org/techniques/T1505/003/"
+    },
+    {
+     "id": "T1053.003",
+     "name": "Cron",
+     "url": "https://attack.mitre.org/techniques/T1053/003/"
+    },
+    {
+     "id": "T1078",
+     "name": "Valid Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/"
+    },
+    {
+     "id": "T1003.003",
+     "name": "NTDS",
+     "url": "https://attack.mitre.org/techniques/T1003/003/"
+    },
+    {
+     "id": "T1046",
+     "name": "Network Service Discovery",
+     "url": "https://attack.mitre.org/techniques/T1046/"
+    },
+    {
+     "id": "T1557.001",
+     "name": "LLMNR/NBT-NS Poisoning and SMB Relay",
+     "url": "https://attack.mitre.org/techniques/T1557/001/"
+    },
+    {
+     "id": "T1572",
+     "name": "Protocol Tunneling",
+     "url": "https://attack.mitre.org/techniques/T1572/"
+    },
+    {
+     "id": "T1039",
+     "name": "Data from Network Shared Drive",
+     "url": "https://attack.mitre.org/techniques/T1039/"
+    },
+    {
+     "id": "T1119",
+     "name": "Automated Collection",
+     "url": "https://attack.mitre.org/techniques/T1119/"
+    },
+    {
+     "id": "T1030",
+     "name": "Data Transfer Size Limits",
+     "url": "https://attack.mitre.org/techniques/T1030/"
+    },
+    {
+     "id": "T1102",
+     "name": "Web Service",
+     "url": "https://attack.mitre.org/techniques/T1102/"
+    },
+    {
+     "id": "T1070.003",
+     "name": "Clear Command History",
+     "url": "https://attack.mitre.org/techniques/T1070/003/"
+    }
+   ],
+   "recommended_actions": [
+    "Block 89.125.213.123, the two 89.125.213.123:8080 stage URLs and foreverpeace.ru, and BlockAndRemediate the nine SHA-256 hashes; alert on 134.17.14.24. Search 90 days of proxy, firewall and EDR logs for all of them, and for any outbound connection to TCP 46125.",
+    "Hunt Windows endpoints for shortcuts with a PDF icon that start hidden PowerShell, for amsiInitFailed in PowerShell command lines, and for services or binaries named srvdriv, ssdpdrv, netsrvc, ssdspsrv or CoreMessaging.exe.",
+    "On GeoServer, Tomcat and PostgreSQL hosts, look for new WAR deployments, a webshell under /health/, java or postgres spawning a shell, COPY ... FROM PROGRAM in database logs, and cron entries that call external addresses.",
+    "Review government SSO and document-management logs for one ordinary account pulling large numbers of documents outside its role in parallel, resuming after errors, and in fixed-size chunks; then reset that account and fix per-document authorisation.",
+    "If the network was reached, hunt for fscan, NetExec, Responder, Inveigh, Ligolo and GOST, rotate domain credentials including krbtgt twice after an NTDS dump, and change default passwords on network equipment."
+   ],
+   "sources": [
+    {
+     "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "name": "CloudSEK"
+    },
+    {
+     "url": "https://intel.threadlinqs.com/threat/TL-2026-5756",
+     "label": "Threadlinqs – Silent Lynx Strix AI-agent espionage (TL-2026-5756)",
+     "name": "Threadlinqs"
+    },
+    {
+     "url": "https://www.livemint.com/technology/kazakhstanlinked-hackers-used-ai-to-steal-tajik-government-documents-researchers-say-11794394933122.html",
+     "label": "Mint (Reuters) – Kazakhstan-linked hackers used AI to steal Tajik government documents, researchers say",
+     "name": "Mint (Reuters)"
+    },
+    {
+     "url": "https://blog.talosintelligence.com/break-the-silence-kazakhstan-nexus-uat-6275-targets-cis-government-organizations/",
+     "label": "Cisco Talos – Break the silence: Kazakhstan-nexus UAT-6275 targets CIS government organizations (background)",
+     "name": "Cisco Talos"
+    }
+   ],
+   "indicator_count": 22,
+   "block_now_count": 13,
+   "hunt_count": 9,
+   "hunt_counts": {
+    "alert": 9
+   },
+   "indicator_counts": {
+    "sha256": 9,
+    "filename": 7,
+    "ipv4": 2,
+    "url": 2,
+    "domain": 1,
+    "other": 1
+   },
+   "ioas": [
+    {
+     "artefact": "A shortcut with a PDF icon that starts hidden PowerShell to fetch P.ps1 and a decoy PDF from a remote server, then a raw TCP shell to port 46125 (one variant sets amsiInitFailed first)",
+     "log_source": "EDR process and network events on Windows endpoints",
+     "why": "This is Silent Lynx's delivery chain: a .lnk in a ZIP, password-protected ZIP or ISO opens a decoy, then hidden PowerShell runs P.ps1 in memory and opens a shell to the operator. Port 46125 is the operator's listener; amsiInitFailed is the AMSI bypass in one variant.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_name": "CloudSEK",
+     "title": "LNK lure starting hidden PowerShell or a shell to port 46125",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Services or binaries named srvdriv, ssdpdrv, netsrvc, ssdspsrv or CoreMessaging.exe",
+     "log_source": "EDR process, file and registry events; Windows System event 7045 (service installed)",
+     "why": "Silent Lynx's wrappers install the Laplas and Chvost shells as Windows services with names that look like drivers or the SSDP service. CoreMessaging is a real Windows DLL, so an executable with that name is unusual.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_name": "CloudSEK",
+     "title": "Silent Lynx lookalike service binaries",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "New WAR files deployed to GeoServer or Tomcat, a webshell under /health/, or the Java process spawning a shell",
+     "log_source": "EDR file and process events on Linux application servers; GeoServer and Tomcat access logs",
+     "why": "Silent Lynx got into Uzbekistan's Smart Forestry GeoServer by deploying malicious WAR files (one carried a Metasploit payload servlet) and drove a webshell on the /health/ path through a curl wrapper.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_name": "CloudSEK",
+     "title": "WAR deployed to GeoServer or Tomcat, or Java spawning a shell",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "PostgreSQL running COPY ... FROM PROGRAM, or the postgres process spawning a shell or network tool",
+     "log_source": "PostgreSQL server logs (log_statement); EDR process events on database hosts",
+     "why": "On the Smart Forestry host the operator logged in to PostgreSQL as a superuser and used COPY ... FROM PROGRAM to open a reverse shell as the postgres user.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_name": "CloudSEK",
+     "title": "PostgreSQL COPY FROM PROGRAM or postgres spawning a shell",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Cron jobs on Linux servers that open shells or call back to external addresses",
+     "log_source": "EDR process events on Linux servers; crontab file changes",
+     "why": "Cron entries on the compromised GeoServer host called back to the operator's server and to 134.17.14.24.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_name": "CloudSEK",
+     "title": "Cron callback to an external address",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Bursts of internal reconnaissance from a new shell: whoami, hostname and ipconfig in quick succession, then fscan, NetExec, Responder, Inveigh, Ligolo or GOST",
+     "log_source": "EDR process events on Windows and Linux hosts",
+     "why": "The operator's dispatcher ran whoami, hostname and ipconfig on every new shell automatically, and the agent drove scans with fscan and NetExec, poisoning with Responder and Inveigh, and tunnels through Ligolo and GOST.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_name": "CloudSEK",
+     "title": "fscan, NetExec, Responder, Inveigh, Ligolo or GOST",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Servers or service accounts calling OpenRouter, DeepSeek or Gemini APIs",
+     "log_source": "Proxy, DNS and EDR network events on servers",
+     "why": "The Strix agent sent its model calls through OpenRouter to DeepSeek V4.1 Flash and Gemini 2.5 Flash. These are legitimate services, so never block them; a server or service account with no business reason to call them is a lead.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_name": "CloudSEK",
+     "title": "Server calling OpenRouter, DeepSeek or Gemini APIs",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Servers calling the Telegram Bot API, or a .hermes directory on a host",
+     "log_source": "Proxy, DNS and EDR network and file events",
+     "why": "The operator tasked the agent through a Telegram bot, and the document collectors posted progress to a Telegram chat. The agent framework lived under .hermes/. Telegram is legitimate, so hunt for non-Telegram processes on servers calling api.telegram.org; do not block it.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_name": "CloudSEK",
+     "title": "Server calling the Telegram Bot API, or .hermes on disk",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "One ordinary SSO account pulling large numbers of documents from a document-management system, in parallel and in fixed-size chunks",
+     "log_source": "SSO portal and document-management (EDO) application logs",
+     "why": "The operator used one railway employee's standard account on the government SSO portal to pull more than 2,000 documents outside that role. The collectors ran many requests at once, resumed after failures and split the data into chunks for exfiltration.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_name": "CloudSEK",
+     "title": "Bulk document pulls by one SSO account",
+     "queries": []
+    }
+   ],
+   "ioa_count": 9,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan/block_now.txt",
+     "download": "Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan/defender_xdr_indicators.csv",
+     "download": "Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan/hunt.kql",
+     "download": "Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan/hunt.spl",
+     "download": "Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan/hunt_raw.spl",
+     "download": "Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan/hunt.yaral",
+     "download": "Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan/iocs.csv",
+     "download": "Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan",
+   "indicators": [
+    {
+     "value": "89.125.213.123",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Silent Lynx operator server (Debian VPS, Baxet Group): payload host, implant C2, phishing and scanning; its open directory on port 8088 exposed the operation, and P.ps1 shells call back to it on TCP 46125.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      },
+      {
+       "url": "https://intel.threadlinqs.com/threat/TL-2026-5756",
+       "name": "Threadlinqs"
+      }
+     ]
+    },
+    {
+     "value": "http://89.125.213.123:8080/P.ps1",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "PowerShell reverse-shell stage that the LNK lure downloads and runs in memory; it opens a raw TCP shell to 89.125.213.123 on port 46125.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    },
+    {
+     "value": "http://89.125.213.123:8080/decoy.pdf",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Decoy PDF the LNK lure opens from the operator server while hidden PowerShell runs.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    },
+    {
+     "value": "foreverpeace.ru",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Operator infrastructure domain hosting the self-hosted NetBird mesh control plane and a Pangolin reverse proxy used by the Strix agent's Kali box.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      },
+      {
+       "url": "https://intel.threadlinqs.com/threat/TL-2026-5756",
+       "name": "Threadlinqs"
+      }
+     ]
+    },
+    {
+     "value": "134.17.14.24",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Second address called back by cron entries on the compromised Uzbekistan Smart Forestry GeoServer host; CloudSEK says its ownership is unconfirmed, so alert only.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    },
+    {
+     "value": "af2822560bc0e44b600eefbe0170d3526e035704b533a806f9d455da6ac30d2c",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Laplas TLS reverse shell srvdriv.exe, Tajikistan build, April 2026.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      },
+      {
+       "url": "https://intel.threadlinqs.com/threat/TL-2026-5756",
+       "name": "Threadlinqs"
+      }
+     ]
+    },
+    {
+     "value": "f26756cabe92842e25d82bee5f65ef9c22c80aec895386b9840b471b42e01463",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Laplas TLS reverse shell srvdriv.exe, railway build, late August 2026.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    },
+    {
+     "value": "e6907392677134a1a4ffec14d303471352eee90da09db1991eb47486611f2e0d",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Laplas TLS reverse shell srvdriv.exe, railway build, early September 2026.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    },
+    {
+     "value": "27dc5628adc666da702c9a33e8f96bb87087ac68a7064f99b91fb76b932aef6e",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Chvost reverse shell ssdpdrv.exe (32-bit), PDB path \\chvost\\Release\\Netdrv.pdb.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    },
+    {
+     "value": "5d8a2df90fa3cf913e2b5764e586ee3405a101294909df091060bd3e3d1a44c1",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "netsrvc.exe service wrapper that installs the shells as a Windows service with a lookalike name.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    },
+    {
+     "value": "19b68e504e1512dc19feef6b1da0f67f876191a937fdcd64ffb965c12d1f0bf0",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "CoreMessaging.exe, the netsrvc service wrapper renamed for the railway deployment, late August 2026.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    },
+    {
+     "value": "bf7fe6b518676a3e6d40459ac16b491e62d0e0a222ebb243a44d64ac33aed826",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "CoreMessaging.exe, the netsrvc service wrapper renamed for the railway deployment, early September 2026.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    },
+    {
+     "value": "efc1bbb873e9b691657a66e987b0ea87c454bb16e89126d1a41bcaa9bae9fab1",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "ssdspsrv.exe, an older service wrapper built from an E:\\share\\shell\\service project.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    },
+    {
+     "value": "368cb250f7b962c551dd721f6f62224a936dd7cffb8e0d92f223d82b991a0e6d",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Executable lure with a Turkmen-language filename about the Ahal regional administration's 2026 programme report; it contains the operator IP.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    },
+    {
+     "value": "srvdriv.exe",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Laplas implant file name chosen to look like a Windows driver service.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    },
+    {
+     "value": "ssdpdrv.exe",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Chvost implant file name that mimics the SSDP service.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    },
+    {
+     "value": "netsrvc.exe",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Service-wrapper file name used to install the shells as a Windows service.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    },
+    {
+     "value": "ssdspsrv.exe",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Older service-wrapper file name that mimics the SSDP service.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    },
+    {
+     "value": "CoreMessaging.exe",
+     "type": "filename",
+     "confidence": "low",
+     "recommended_action": "alert",
+     "description": "Renamed netsrvc service wrapper. Windows ships CoreMessaging.dll, not an .exe, so an executable with this name outside a known product is suspicious.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    },
+    {
+     "value": "P.ps1",
+     "type": "filename",
+     "confidence": "low",
+     "recommended_action": "alert",
+     "description": "PowerShell stage fetched by the LNK lure; the name is generic, so match it with the operator server.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    },
+    {
+     "value": "Отчёт_2026.pdf.lnk",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Russian-named shortcut (\"Report_2026\") with a PDF icon, shipped in a password-protected ZIP.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    },
+    {
+     "value": "\\chvost\\Release\\Netdrv.pdb",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Debug path left in the Chvost implant ssdpdrv.exe; useful for YARA and file-content hunts.",
+     "source_url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+     "source_label": "CloudSEK – Off the Rails: inside an exposed Silent Lynx server",
+     "source_name": "CloudSEK",
+     "sources": [
+      {
+       "url": "https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server",
+       "name": "CloudSEK"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan/hunt.kql",
+     "download": "Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan/hunt.spl",
+     "download": "Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan/hunt_raw.spl",
+      "download": "Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan/hunt.yaral",
+     "download": "Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan_hunt.yaral"
+    }
+   ]
+  },
   {
    "id": "Able2Shell-N-able-N-central-Zero-Days",
    "folder": "threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days",
