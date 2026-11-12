@@ -582,6 +582,9 @@ td.none { text-align: center; padding: 32px; color: var(--ink-3); font-size: 14p
 }
 /* Source links stay the existing pink/underline style; never restyle a link as an IOC chip. */
 a.ioc, a .ioc, .ioc a { font-family: inherit; font-weight: inherit; font-size: inherit; color: inherit; background: none; padding: 0; margin: 0; border-radius: 0; }
+/* Indicator cells (value + Copy) are plain monospace text, never a highlighted chip. */
+div.ioc { display: flex; font: inherit; color: inherit; background: none; padding: 0; margin: 0; border-radius: 0; white-space: normal; }
+div.ioc code { font-family: var(--mono); font-weight: 400; color: var(--ink); background: none; border: 0; padding: 0; }
 
 /* Hunt preview and actions */
 .hq-act { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin: 0 0 12px; }
