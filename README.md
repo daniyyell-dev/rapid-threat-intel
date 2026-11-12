@@ -43,6 +43,10 @@ The result is one place where SOC analysts, threat hunters and incident responde
 
 ## How it works
 
+An autonomous agentic system runs 24/7, collecting threat intel from vendor research, CERT advisories, IOC repos, dark-web trackers, Telegram and social media. Anything without real impact or actionable IOCs and IOAs is dropped by design. Every indicator is cross-checked against independent sources and weighed on likelihood before it passes the acceptance gate. Intel is published every 2 hours, and analysts review every verdict.
+
+Threats move fast. Defenders have to as well.
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/how-it-works-dark.png">
   <img src="assets/how-it-works-light.png" alt="How it works: collect from vendor reports, CERT advisories, IOC repos, Telegram, dark-web trackers and social media, filter for high impact and actionable, verify and cross-check sources, clean and deduplicate, describe and map to MITRE, build block lists, Defender import, hunt.kql, SPL and YARA-L, quality checks, publish every 2 hours, expire after 90 days" width="100%">
