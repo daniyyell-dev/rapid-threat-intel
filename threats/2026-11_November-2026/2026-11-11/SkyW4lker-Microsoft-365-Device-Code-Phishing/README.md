@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-10-27 | 2026-11-11 16:11 | 2026-11-11 | Phishing / identity | 90 | 0 |
 
+## Hunt
+
+Run one of these to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 ANY.RUN describes SkyW4lker (also branded SkyW4lker x365 Sentinel) as a device-code phishing kit aimed at Microsoft 365 users, most often in technology, manufacturing and government organisations in the United States, and also seen in India, Canada, the United Kingdom and elsewhere in Europe. The victim is sent a password-protected PDF, DOCX or XLSX, typically framed as a contract, invoice or proposal, with the password in the email body; a CAPTCHA and sometimes a lure page on a trusted service then leads to a page that tells them to enter a Microsoft device code on Microsoft's own sign-in site. Completing that genuine sign-in, including MFA, hands the attacker a Microsoft 365 token without a password being stolen. The kit's PHP backend and obfuscated JavaScript register the visit with action=start on /session_public.php and poll with action=poll until authentication finishes. ANY.RUN counted 618 related sandbox analyses between 23 June and 21 October 2026, rising from about 20 in June to about 200 in September, and assesses with high confidence that SkyW4lker and the Gabagool credential-phishing kit were built by the same developer. These figures are sandbox submissions, not a confirmed victim count, and the indicators come from a single source, so they are published at medium confidence for alerting and hunting, not for blocking.
@@ -86,19 +99,6 @@ Indicators by type: 80 domains, 7 URLs, 2 other, 1 SHA256. See `iocs.csv` for fu
    Source: [ANY.RUN](https://any.run/cybersecurity-blog/skyw4lker-phishing-kit-analysis/)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

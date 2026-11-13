@@ -508,7 +508,7 @@
     show(0);
     return h("section", { class: "blk-sec hunt-sec", id: "hunt-sec", "aria-labelledby": "hq-h" },
       h("h2", { id: "hq-h" }, "Hunt", h("span", { text: plural(qs.length, "platform") })),
-      h("p", { class: "hq-intro" }, "The same hunt for each platform: " + (behaviourFirst(t) ? "the behaviours that map cleanly to log fields (the rest are under Behaviours above)" : "the indicators" + (t.ioa_count ? " and the behaviours that map cleanly to log fields" : "")) +
+      h("p", { class: "hq-intro" }, "The same hunt for each platform: " + (behaviourFirst(t) ? "the behaviours that map cleanly to log fields (the rest are under Behaviours below)" : "the indicators" + (t.ioa_count ? " and the behaviours that map cleanly to log fields" : "")) +
         ". Run it before you block to find past activity." + (t.ioa_count ? " Behaviour hits are leads, not proof." : "")),
       tabs, panel);
   }
@@ -683,6 +683,9 @@
         [["Published", fmtDay(t.published)], ["Added", fmtAdded(t.entry_date)], ["Last updated", fmtDay(t.last_updated)]]
           .map(function (f) { return h("div", { class: f[2] || null }, h("dt", { text: f[0] }), h("dd", { text: String(f[1]) })); }))));
 
+    var hq = huntSection(t);
+    if (hq) wrap.appendChild(hq);
+
     var main = h("div", { class: "det-main" });
     if (t.caveat) main.appendChild(h("div", { class: "warn", role: "note" }, h("b", null, "Note"), " ", highlightIocs(t.caveat)));
     var hunt = t.hunt_count != null ? t.hunt_count : t.indicator_count - t.block_now_count;
@@ -697,8 +700,6 @@
       t.recommended_actions.length ? h("ol", { class: "steps" }, t.recommended_actions.map(function (a) { return h("li", null, h("span", null, highlightIocs(a))); })) : null)));
     var ioa = ioaSection(t);
     if (ioa) main.appendChild(ioa);
-    var hq = huntSection(t);
-    if (hq) main.appendChild(hq);
     main.appendChild(targetSection(t));
     main.appendChild(srcLine(t.sources, "srcline det-src"));
     if (t.summary) main.appendChild(sec("Background", h("div", { class: "prose" }, h("p", null, highlightIocs(t.summary)))));

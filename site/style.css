@@ -297,6 +297,8 @@ option, optgroup { background: var(--raise); color: var(--ink); }
 .facts .hot dd { color: var(--block); }
 .det-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 48px; padding-top: 32px; }
 .det-main { min-width: 0; }
+/* Hunt is full-width, directly under the threat header, before the other detail sections. */
+.det > .hunt-sec { padding-top: 32px; margin-bottom: 0; }
 .blk-sec { margin-bottom: 32px; }
 .blk-sec > h2 { font: 700 18px/1.25 var(--sans); padding-bottom: 8px; border-bottom: 1px solid var(--line-2); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .blk-sec > h2 span { font: 400 12px/1 var(--mono); color: var(--ink-3); }

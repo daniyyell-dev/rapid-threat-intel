@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-12 | 2026-11-12 22:55 | 2026-11-12 | Supply chain / information stealer | 9 | 5 |
 
+## Hunt
+
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 Bitdefender reports that from 30 October 2026 attackers abused the Goddess of Victory: NIKKE PC launcher's server-pushed task channel to deliver k2f-agent, a 46-module Lua stealer, without patching the signed launcher or the game distribution. The payload arrived as obfuscated LuaJIT bytecode disguised as a log file, ran inside the launcher's embedded browser, and harvested Chrome, Edge and Opera passwords and cookies, including those protected by Chrome App-Bound Encryption, plus MetaMask, Phantom, Coinbase Wallet, Keplr and TronLink extension data and developer secrets such as SSH and GPG keys, Git credentials and Kubernetes configs. Stolen data left through the launcher's normal telemetry, and the download, collection, exfiltration and cleanup finished in under ten minutes. The delivery domain insightjs.com was registered on 27 September 2026 and hosted in Iceland at 89.127.233.127; the provider has taken the server down. The domains, IP, payload URL and SHA-256 hash are on the block list. Bitdefender has no evidence that Shift Up or Level Infinite took part in the attack; do not block the game vendor's own infrastructure.
@@ -78,19 +91,6 @@ Indicators by type: 2 domains, 2 file names, 2 other, 1 IPv4, 1 URL, 1 SHA256. S
    Source: [Bitdefender](https://www.bitdefender.com/en-us/blog/labs/nikke-game-launcher-malware)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

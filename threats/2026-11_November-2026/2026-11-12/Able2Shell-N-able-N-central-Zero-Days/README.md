@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-09 | 2026-11-12 09:55 | 2026-11-12 22:55 | Exploitation / MSP RMM | 20 | 8 |
 
+## Hunt
+
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 An independent researcher published proof-of-concept code for 33 flaws in N-able N-central, the remote monitoring and management platform used by MSPs and IT teams, under the name Able2Shell. N-able took Hosted N-central offline on 9 November and shipped 2026.4 HF2 on 10 November, but late on 11 November the researcher released two more chains, 4EverAble2Shell (unauthenticated root RCE on the server) and Agent2Shell (commands as SYSTEM on managed Windows endpoints), which Huntress says work against HF2, so a fully patched server should be treated as vulnerable. On 12 November, about four and a half hours after 4EverAble2Shell was published, huntback Research saw 157.20.241.16 probe its decoys and then run the full chain, installing an XMRig miner via jup.sh. By 12:50 UTC that operator's public mining pool listed 21 production N-central servers as nc_ rigs, all submitting shares; 19 of them reported build 2026.4.1.26 (HF2). The servers were in the United States, South Africa, Canada, the United Kingdom, Germany, France and Sweden; huntback has not published the addresses. Applying HF2 is not enough: keep the Legacy API disabled and follow N-able's current guidance. Earlier N-central zero-days were exploited and are in CISA KEV, and Beazley notes past state-sponsored targeting. 5.231.45.175 remains a block candidate for earlier Able2Shell probing reported by Previdian and Lupovis; 157.20.241.16 is the live exploitation and payload host and is on the block list, along with its installer URLs and the nable-to-root script hash; the mining-pool addresses are alert only because they are public pool endpoints; the AWS address 3.74.48.121 is alert-only. Hunt N-central web logs for SOAP faults naming jline.internal.TerminalLineSettings, and the appliance for /tmp/.xvd, xvd.service and --rig-id nc_ miners, as well as N-able Agent child processes on managed endpoints.
@@ -120,19 +133,6 @@ Indicators by type: 7 URLs, 5 IPv4, 4 file names, 3 other, 1 SHA256. See `iocs.c
    Source: [huntback.io](https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

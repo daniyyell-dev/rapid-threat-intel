@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-06 | 2026-11-10 15:14 | 2026-11-10 | Cloud / C2 | 2 | 0 |
 
+## Hunt
+
+Run one of these to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 NotC2 is a proof-of-concept command-and-control framework published by Varonis Threat Labs on 6 November 2026. It assumes the attacker already holds AWS credentials and runs the whole C2 loop on native AWS services: commands arrive through Amazon SQS, a Lambda function executes them, Amazon Bedrock translates natural-language prompts into AWS API calls through a generic tool named execute_aws_operation, and results leave through Amazon SNS to an external HTTPS endpoint. There is no conventional C2 server to block. Varonis has not reported in-the-wild use and published no network indicators. Detection depends on CloudTrail and related AWS logs: new SQS-to-Lambda event source mappings, unexpected Bedrock InvokeModel or Converse calls from Lambda roles, and SNS subscriptions to external endpoints.
@@ -120,19 +133,6 @@ Indicators by type: 2 other. See `iocs.csv` for full details and descriptions.
    Source: [Varonis](https://www.varonis.com/blog/notc2-ai-powered-c2-channel)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-10 | 2026-11-11 10:05 | 2026-11-11 | Exploitation / hypervisor management | 17 | 2 |
 
+## Hunt
+
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 Vates reports active exploitation of VSA-2026-062, a critical authentication bypass in Xen Orchestra, the web console that manages XCP-ng virtualisation pools. A request carrying the cookie authenticationToken=j:{} (or its URL-encoded form, j:%7B%7D) makes Xen Orchestra treat the value as an empty object, return the first stored token and log the sender in as that token's owner, usually an administrator; the /rest/v0/users/me/authentication_tokens route then hands back reusable login tokens. From there an attacker can run code on managed pools and take over XCP-ng hosts as root. The threat actor operated initially from 91.211.251.112:8001 and a Tor onion service on port 3333, ran a VM named pivot2, configured VMs with a file-backed serial port and planted /etc/cron.d/zz-ustar, /etc/cron.d/zz-ustar2, /.ustar5 and /.ustar6 on hosts. Xen Orchestra does not log the bypass. Six of the eight addresses Vates lists for blocking are public Tor relays, including a Tor directory authority, so they are marked alert rather than block. The flaw has no CVE yet; it is fixed in Xen Orchestra 6.9.2 (stable) and 6.10.1 (latest), and was discovered by TDC NET Security.
@@ -78,19 +91,6 @@ Indicators by type: 8 IPv4, 5 other, 4 file names. See `iocs.csv` for full detai
    Source: [Vates](https://docs.vates.tech/security-advisories/advisories/2026/vates-sa-2026-062/)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

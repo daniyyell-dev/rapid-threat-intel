@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-12 | 2026-11-12 22:55 | 2026-11-12 | Crimeware / cryptomining | 23 | 19 |
 
+## Hunt
+
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 FortiGuard Labs reports an early-October 2026 campaign against internet-facing Microsoft SQL Server instances that brute-forces logins and then abuses T-SQL to deploy malware. A UPX-packed Go orchestrator, named dllhost.exe and embedding the Naabu scanner, fetches a target range from site.vietnam852.com:88/ip.php, probes TCP 1433, writes hits to %TEMP%\Result.txt and hands them to dwm.exe with user and password lists. After a successful login, 2018.sql enables xp_cmdshell and downloads a loader from the same site or from ftp.vietnam852.com, saving it under C:\Users\Public as Google.exe or payload.exe. Later stages drop an XMRig miner disguised as MicrosoftEdgeUpdate.exe and a Themida-packed Gh0st RAT as winlogon.exe, which talks to server.vietnam852.com:8000 and www.swordaa.com:8000. Persistence uses scheduled tasks that imitate Microsoft Edge Update. The attacker domains, payload URLs and published hashes are on the block list. Do not block public Kryptex mining pools; hunt the XMRig Reporter check-ins to site.vietnam852.com instead.
@@ -79,19 +92,6 @@ Indicators by type: 12 SHA256, 5 domains, 2 URLs, 2 file names, 2 other. See `io
    Source: [Fortinet](https://www.fortinet.com/blog/threat-research/t-sql-being-abused-to-deliver-malware-on-compromised-ms-sql-servers)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

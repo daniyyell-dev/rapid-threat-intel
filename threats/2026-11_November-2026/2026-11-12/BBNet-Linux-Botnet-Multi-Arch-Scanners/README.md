@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-05 | 2026-11-12 15:11 | 2026-11-12 | Malware / botnet | 8 | 0 |
 
+## Hunt
+
+Run one of these to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 PRODAFT's Threat Intelligence team, in a report dated 5 November 2026 and summarised publicly on 12 November by Security Online, analysed a 13.65 MB package recovered from an open directory and labelled the family BBNet. The archive holds a loader named infect.sh and 13 statically linked ELF binaries for ARM, AArch64, x86, MIPS and PowerPC (10 unique SHA-256 hashes; three filename pairs are byte-identical). After a double fork the implant copies itself to /etc, /var/lib or /tmp as .bbnet, writes @reboot entries in /etc/crontab and /etc/rc.local, and starts scanning before it ever registers with its controller, so blocking the C2 will not stop propagation. The x86-64 build brute-forces Telnet on TCP 23 and 2323; the other builds add 11 exploit handlers, including React Server Components CVE-2025-55182 and GNU Inetutils telnetd CVE-2026-24061, plus Hikvision, D-Link, Netgear, GPON, Huawei and Realtek flaws. Default C2 is plaintext TCP port 7778, with HTTP updates on port 7779; both can be changed at runtime. PRODAFT did not publish C2 addresses or file hashes in the public coverage, and the recovered package had no victim telemetry, so this entry is behaviours and file-name leads only. Patch the two CVEs, disable exposed Telnet, and hunt the .bbnet artefacts.
@@ -86,19 +99,6 @@ Indicators by type: 8 file names. See `iocs.csv` for full details and descriptio
    Source: [Security Online](https://securityonline.info/bbnet-linux-botnet-scanners-ddos/)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

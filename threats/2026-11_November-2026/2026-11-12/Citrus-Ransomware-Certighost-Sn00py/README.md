@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-11 | 2026-11-12 12:25 | 2026-11-12 | Ransomware | 14 | 2 |
 
+## Hunt
+
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 Kaspersky describes Citrus, a previously undocumented Russian-speaking ransomware group that has hit Russian organisations, mainly in finance, agriculture and retail. Citrus logs in with stolen contractor accounts over VPN or internet-facing RDP, then tries to escalate with CVE-2026-54121 (Certighost), an AD CS flaw patched in July 2026: each attempt creates a computer account named GHOST plus eight capital letters and requests a Machine-template certificate whose cdc attribute points the CA at the attacker's server 91.210.109.118, so a success gives a certificate for a domain controller. The group also used Impacket atexec, Metasploit and weak 1C:Enterprise servers, PowerShell written with large language models, and Xray reverse VLESS tunnels on port 443 disguised with REALITY as traffic to mirror.yandex.ru. It stole messenger data with 7-Zip, then pushed the Go-based Sn00py ransomware through a malicious GPO named Kaspersky GPO, created by KasperskyGPO_Deploy_64.exe, which runs it through the KasperskyAgentInstallTask or Sysvc scheduled task; files get the .citrus extension and a CITRUS_README.txt note. Both Citrus servers are on the block list.
@@ -98,19 +111,6 @@ Indicators by type: 8 other, 4 file names, 2 IPv4. See `iocs.csv` for full detai
    Source: [Kaspersky](https://securelist.com/citrus-ransomware/121879/)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

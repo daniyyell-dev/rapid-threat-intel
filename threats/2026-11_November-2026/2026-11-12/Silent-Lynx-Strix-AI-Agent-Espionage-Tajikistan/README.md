@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-11 | 2026-11-12 11:30 | 2026-11-12 | Espionage / APT | 22 | 13 |
 
+## Hunt
+
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 CloudSEK found an exposed server belonging to Silent Lynx (UAT-6275 at Cisco Talos, TAG-193 at Recorded Future), a Kazakhstan-nexus espionage group. The operator had domain-level access to Tajikistan's national railway from mid-August to at least 10 October 2026, dumped NTDS credentials, and used one railway employee's account on the government SSO portal to pull more than 2,000 documents from the national electronic document (EDO) platform, including defence correspondence. The group also broke into Uzbekistan's Smart Forestry GeoServer through malicious WAR files and a PostgreSQL COPY FROM PROGRAM reverse shell, and built Turkmenistan-themed lures in October. Much of the reconnaissance, collection and cleanup was run by a self-hosted Hermes agent branded Strix, which used DeepSeek and Gemini models through OpenRouter and took tasks over Telegram. The operator server 89.125.213.123, its two stage URLs, foreverpeace.ru and the nine implant and lure hashes are on the block list. 134.17.14.24 is alert-only because its ownership is unconfirmed. OpenRouter, DeepSeek, Gemini and Telegram are legitimate services: hunt for them on servers, never block them.
@@ -126,19 +139,6 @@ Indicators by type: 9 SHA256, 7 file names, 2 IPv4, 2 URLs, 1 domain, 1 other. S
    Source: [CloudSEK](https://www.cloudsek.com/blog/off-the-rails-inside-an-exposed-silent-lynx-server)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

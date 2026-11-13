@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-10 | 2026-11-11 07:54 | 2026-11-11 | Ransomware / hypervisor | 4 | 4 |
 
+## Hunt
+
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 Recorded Future's Insikt Group reports GhostFrame, a previously undocumented command-and-control and post-exploitation framework for compromised VMware ESXi hosts, used by TAG-218, a group whose activity overlaps with Settra ransomware. Between late August and October 2026 TAG-218 servers targeted VPN appliances in the US and Europe, mainly SonicWall, Palo Alto Networks and Fortinet, and four of the targeted organisations later appeared on the Settra leak site. GhostFrame needs existing root access on the hypervisor: its implant, vmhostd-core, runs from a datastore, persists through /etc/rc.local.d/local.sh, keeps disabling the ESXi firewall and unsigned-binary protection, and masquerades as vmhostd. Operators can list, power off and snapshot VMs, relay VNC sessions, tunnel the ESXi Host Client, pivot with the gfsox SOCKS5 proxy, and harvest Windows credentials from VM memory, disks and datastores with sdkmon and VMkatz. The implant tries six C2 ports at once (53, 2222, 3389, 4444, 8443 and 9443), which gives a distinctive network pattern.
@@ -82,19 +95,6 @@ Indicators by type: 3 IPv4, 1 SHA256. See `iocs.csv` for full details and descri
    Source: [Recorded Future](https://www.recordedfuture.com/blog/ghostframe-esxi-implant-settra-ransomware)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

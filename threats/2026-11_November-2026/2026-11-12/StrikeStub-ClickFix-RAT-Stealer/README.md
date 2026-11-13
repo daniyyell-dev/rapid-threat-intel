@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-12 | 2026-11-12 15:11 | 2026-11-12 | Malware / RAT and stealer | 6 | 2 |
 
+## Hunt
+
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 Akamai, writing on 12 November 2026, describes StrikeStub, a modular Windows remote access trojan and stealer likely sold as malware-as-a-service, delivered through a ClickFix lure on the compromised site spiraldirect.ch. A fake 'Verify you are human' prompt copies a hidden PowerShell command that downloads http://squidscript.com/Cloudflare.exe to %TEMP%\svc.exe and runs it. The payload masquerades as RuntimeBroker.exe with spoofed Microsoft version resources, persists as Microsoft\WindowsUpdate.exe through a Registry Run key and the user Startup folder, and talks to a config-driven C2 over WebSockets with the user agent StrikeStub/1.0. Operators can toggle hidden VNC, keylogging, webcam capture, live desktop streaming, clipboard monitoring and DPAPI theft of browser credentials. squidscript.com and the Cloudflare.exe URL are attacker infrastructure and are on the block list; spiraldirect.ch is a compromised legitimate site and is alert only. Akamai did not publish a sample hash or the C2 host, which is read from a runtime config, so hunt on the behaviours and the user agent as well as the staging URL.
@@ -91,19 +104,6 @@ Indicators by type: 2 domains, 2 file names, 1 URL, 1 other. See `iocs.csv` for 
    Source: [Akamai](https://www.akamai.com/blog/security-research/strikestub-clickfix-powershell-malware-modular-rat)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

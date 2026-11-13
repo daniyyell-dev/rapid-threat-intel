@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-09 | 2026-11-10 13:43 | 2026-11-10 | Supply chain / npm | 57 | 45 |
 
+## Hunt
+
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 On 9 November 2026 an attacker abused Ethersphere's own GitHub release workflow to publish a malicious @ethersphere/bee-js 13.3.0 to npm and a trojanised Swarm Desktop 0.56.2 release on GitHub. Both carry a small loader that fetches and runs JavaScript from api.frameworkmetrics.xyz; later stages find their C2 through an Ethereum smart-contract dead drop shared with the SleepyDuck / EtherDuck campaign, steal Swarm wallet keys, and install the evjawbreaker backdoor on Linux and macOS or a rogue ScreenConnect client on Windows. npm removed 13.3.0 about 75 minutes after publication; the last clean bee-js version is 13.2.0.
@@ -48,19 +61,6 @@ Indicators by type: 25 SHA256, 9 URLs, 8 IPv4, 8 file names, 4 Ethereum/Polygon 
 2. Block the frameworkmetrics.xyz domains, the C2 IPs and the exact webhook.site and pastebin URLs.
 3. On affected hosts look for ~/.solidity/, the solidity-langsupport persistence units and the rogue ScreenConnect service, then rebuild.
 4. Move any Swarm or Ethereum wallet funds to new keys and rotate npm, GitHub and CI secrets present on the host.
-
-## Hunt
-
-Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

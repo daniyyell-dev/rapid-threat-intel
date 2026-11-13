@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-11 | 2026-11-11 17:20 | 2026-11-11 | APT / infostealer | 275 | 11 |
 
+## Hunt
+
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 Stormshield's Cyber Threat Intelligence team, in a report published on 11 November 2026, describes Trigram, a campaign targeting the AI, blockchain and logistics sectors across Europe and the United States. Operators impersonate about 50 companies with fake job offers, invitations to a conference branded ICAGLLMBT, and parcel-tracking pages, then use a ClickFix step that looks like anti-spam verification and swaps a harmless command for a downloader. Separate droppers for Windows, macOS and Linux prepare a Node.js environment, fetch a JavaScript payload named install_guard.js, and on Windows strip the Mark-of-the-Web before launching a hidden VBScript worker, ~nvdg_worker.vbs, with wscript.exe //B. The payload does not hard-code its command-and-control server; it reads a GitLab project named *-indexings/tasks as a dead drop. The same operators, in SafeDep's 3 November 2026 report, force-pushed a forged commit to the popular antd-img-crop GitHub repository so that npm run build installed the OverLord stealer, and ran a fake Amber Group careers portal that led to the same loaders. Stormshield attributes Trigram with high confidence to North Korea as a continuation of the UNK_DeadDrop cluster and the Kimsuky group (APT-43), by overlapping infrastructure and tooling with Proofpoint (asteara.org and 170.205.29.83, tracked since April 2026), SafeDep (icagllmbt.space, the gaganata and chestsoi C2 hosts, and the GitLab dead drop) and Genians (the console super-admin address eros1030109@gmail.com and 170.205.29.83). Proofpoint had observed UNK_DeadDrop luring developers at close to 100 organisations in finance, cryptocurrency, education and technology with job-offer emails and trojanized repositories that delivered a modified OverLord framework. Blocked indicators are high confidence, most of them appearing in more than one of these reports; everything else stays at medium confidence for alerting and hunting, and listed IP addresses are alerts rather than blocks because they sit on cheap or shared hosting. Do not block gitlab.com, github.com, gmail.com or genuine Google Update software.
@@ -97,19 +110,6 @@ Indicators by type: 203 domains, 23 URLs, 17 SHA256, 14 IPv4, 9 file names, 5 ot
    Source: [SafeDep](https://safedep.io/blog/antd-img-crop-forged-commit-overlord-stealer)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

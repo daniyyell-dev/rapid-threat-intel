@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-12 | 2026-11-13 00:20 | 2026-11-13 | Nation-state / social engineering | 134 | 120 |
 
+## Hunt
+
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 On 12 November 2026 the FBI published FLASH AC-111226-MS on FaceStealer, a North Korean scheme it attributes to the actors known as Sapphire Sleet, UNC1069, BlueNoroff and APT38. Hijacked Telegram, LinkedIn, Slack or Discord accounts invite a contact to a catch-up, a Calendly invite follows, and shortly before the call the target receives a typo-squatted Zoom or Teams link such as uu01webzoom.us or teams.livemeet.us. The fake meeting plays secretly recorded webcam video of earlier victims, or deepfakes of well-known industry figures, then stages an audio fault and talks the target into running a fix that installs a cookie harvester, keylogger, screen capture and backdoor while recording their webcam for the next round. The FBI says the scheme stole more than $400 million in 18 months, seized over 900 victim videos, and nearly poisoned a JavaScript library with tens of millions of weekly downloads. The same day Arctic Wolf reported that BlueNoroff now also uses fake document viewers, a NovaStream media player, Chrome PDF updates, identity checks and security scanners, published 98 high-confidence domains on three Hostwinds servers, and noted the fix commands have barely changed. The domains, IPs, payload URLs and lure hashes are on the block list; the strongest hunts are the paste-and-run cradles.
@@ -94,19 +107,6 @@ Indicators by type: 112 domains, 11 URLs, 4 SHA256, 4 file names, 3 IPv4. See `i
    Source: [Arctic Wolf](https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/ https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-10-21 | 2026-11-12 12:25 | 2026-11-12 | Espionage / APT | 22 | 9 |
 
+## Hunt
+
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 Kaspersky's GReAT documented Operation FlashHole, a Lazarus Group follow-up to Operation SyncHole that it presented at SAS on 11 November 2026. Targets in South Korea's software, construction and wired-communication equipment sectors received tailored phishing links to fake résumé and portfolio sites on GitHub Pages; the sites loaded scripts from javadevhouse.co.kr and pythonapischool.com, and the infection ran through INISAFE CrossWeb EX 3.4.1.2, a security plug-in that Korean banking and government sites require. Under INISAFECrossWebEXSvc.exe, the Windows binary fsquirt.exe was injected with the TechHub downloader, which uses a private GitHub repository as C2: it opens an issue titled 1 plus a host ID with the body hel, swaps keys through repository files and changes the body to hey when ready. TechHub loads the Cubridge orchestrator, TouchHub installs a service for the TouchShift loader (side-loaded as mscoree.dll), and a second TechHub brings in ClientHub, which uses SNOW-encrypted config and compromised Korean websites or Dropbox as C2, and LPEClient, which now uses ML-KEM-1024. The two script hosts' URLs, pythonapischool.com and six C2 paths on compromised sites are on the block list.
@@ -88,19 +101,6 @@ Indicators by type: 12 other, 8 URLs, 2 domains. See `iocs.csv` for full details
    Source: [Kaspersky](https://securelist.com/lazarus-operation-flashhole/121541/)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

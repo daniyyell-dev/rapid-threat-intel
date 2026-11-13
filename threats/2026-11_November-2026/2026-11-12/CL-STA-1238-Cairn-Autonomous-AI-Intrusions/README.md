@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-12 | 2026-11-12 18:20 | 2026-11-12 | Nation-state / AI-driven intrusion | 2 | 2 |
 
+## Hunt
+
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 Unit 42 reports that from August to September 2026 Chinese-speaking attackers, tracked as CL-STA-1238 and assessed with moderate confidence as China-nexus intelligence collection, ran a customised fork of the open-source Cairn penetration-testing framework with the Zhipu GLM and DeepSeek models to run 25 largely autonomous operations against at least 19 organisations. Targets were the semiconductor and advanced-manufacturing supply chain, defence and defence policy, and human-rights and civil-society groups. The operator gave each task a root domain and a one-line goal, sometimes with VPN gateway addresses, group names and shared passwords gathered beforehand, and the framework planned and ran reconnaissance, web and middleware exploitation, credential collection and persistence on its own for 20 minutes to more than 50 hours. Unit 42 confirmed access or data theft at 10 organisations through weak-password spraying, brute-forced production credentials, unauthenticated account-creation bypasses, insecure direct object references, mass-assignment privilege escalation, exposed cloud storage and old public CVEs, leading to new administrator accounts and a persistent API token in one production system, more than one million member records at another and an overwritten standards-ballot document. The Cairn hosting server and the staging and egress server are on the block list.
@@ -56,19 +69,6 @@ Indicators by type: 2 IPv4. See `iocs.csv` for full details and descriptions.
 2. Review internet-facing applications for password spraying and brute force from a single source, and enforce MFA and lockout on partner-integration, CMS and VPN logins.
 3. Look for new administrator accounts, new API tokens and self-registered accounts on internet-facing applications that nobody requested.
 4. Close open self-registration and backend registration endpoints, fix insecure direct object references and mass-assignment flaws, and patch old public CVEs on exposed services.
-
-## Hunt
-
-Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

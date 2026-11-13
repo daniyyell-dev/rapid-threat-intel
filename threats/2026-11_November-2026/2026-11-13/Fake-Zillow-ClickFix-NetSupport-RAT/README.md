@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-12 | 2026-11-13 03:50 | 2026-11-13 | Malware / RAT | 25 | 21 |
 
+## Hunt
+
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 EfficientIP Research Labs, writing on 12 November 2026, traces a ClickFix campaign that used fake Zillow apartment-review pages on short-lived apartments-review<digits>.sbs domains, first spotted in passive DNS in August 2026. Clicking Continue copied a PowerShell command that fetched a script from the decimal address 1495423691, which is 89.34.90.203, at /winup2. The script hid its window, used a downloaded Python runtime to pull http://89.34.90.203/mestos2.zip, installed NetSupport RAT into %APPDATA%\NetSupport and dropped a NetSupport.lnk shortcut in the user Startup folder pointing at Service.exe. The installed client was configured to use the gateway domains asgomd.com and asgrsv.com; pivoting on their Flyservers addresses 45.227.254.179 and 45.227.254.10 uncovered seven further short -md and -rsv domains on the same hosts. Help Net Security reported the same findings on 13 November. The landing domains, payload host, URLs and gateway infrastructure are on the block list. Do not block the Cloudflare addresses that only fronted the short-lived landing pages, and do not treat legitimate NetSupport Manager as malware.
@@ -75,19 +88,6 @@ Indicators by type: 16 domains, 3 IPv4, 2 URLs, 2 file names, 2 other. See `iocs
    Source: [EfficientIP](https://efficientip.com/blog/clickfix-netsupport-rat/ https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-06 | 2026-11-13 00:20 | 2026-11-13 | Crimeware / information stealer | 37 | 26 |
 
+## Hunt
+
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 Zscaler ThreatLabz reported in October that poisoned search results sent people looking for Chocolatey or Microsoft Activation Scripts install commands to lookalike sites choclatey.org and massgravel.net. The PowerShell command each site showed installed the real tool and quietly dropped Armorsteal, a PyArmor-protected Python kit with its own Python 3.11 runtime, into C:\Windows\SystemHealth\Update\, persisting with the scheduled tasks SysCheck2 and SysCheckX. On 6 November Seqrite Labs analysed a newer build, compiled on 28 October, with an 11-domain C2 failover list, a new SysHeal task, and an XMRig miner manager that adds C:\Windows and xmrig.exe as Microsoft Defender exclusions and pauses the miner whenever Task Manager or similar tools open. The backdoor only runs Python tasks signed with the operator's RSA key; the spy module logs keys, swaps copied wallet addresses and takes keyword-triggered screenshots; the stealer takes Discord tokens, browser passwords and cookies (through Chrome remote debugging on port 9222), wallet data, seed phrases, password-manager vaults and SSH keys. The Hacker News highlighted the campaign again on 12 November. The lure and C2 domains, the Spamhaus-listed lure host and the published hashes are on the block list.
@@ -90,19 +103,6 @@ Indicators by type: 13 domains, 13 SHA256, 7 IPv4, 3 other, 1 file name. See `io
    Source: [Zscaler ThreatLabz](https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

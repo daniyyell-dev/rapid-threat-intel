@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-12 | 2026-11-12 15:52 | 2026-11-13 11:25 | Exploitation / edge device | 11 | 10 |
 
+## Hunt
+
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 Check Point Research reports that from 30 October 2026, about a week after the fix shipped, an attacker scanned and exploited unpatched Check Point Security Gateways through their Mobile Access portals using PHP2Shell (CVE-2026-109618 and CVE-2026-109619). The first wave hit Israeli organisations and included destructive activity; a broader second wave on 2 November reached organisations in many countries and sectors with no sign of destruction. In the investigated intrusion the attacker escalated from the portal service account to root through the DynamicCLI interface (CVE-2026-123039), planted zz*.tpl PHP webshells in the portal templates directory, then launched the TSGA backdoor from /tmp/CPconfigdaemon, which relaunches as slot_CPconfigdaemon, listens on TCP 11072 and drops the TSProxy library as /lib/libcpfwcommon.so. They ran the gogo scanner, moved to a VMware ESXi host over SSH with the vpxuser account, and ran the destroy_v6 wiper, leaving DREAM_ANNEXATION.txt notes. TSGA and TSProxy are modified PhiliKit tools, which ESET tied to China-nexus UNC5221 and Ivanti attacks, but Check Point does not attribute the operation with high confidence. Both attacker IPs and all eight hashes are on the block list.
@@ -94,19 +107,6 @@ Indicators by type: 8 SHA256, 2 IPv4, 1 other. See `iocs.csv` for full details a
    Source: [Check Point Research](https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 

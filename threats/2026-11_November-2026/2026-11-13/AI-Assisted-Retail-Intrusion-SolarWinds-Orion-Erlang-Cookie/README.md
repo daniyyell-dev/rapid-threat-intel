@@ -6,6 +6,19 @@
 |---|---|---|---|---|---|
 | 2026-11-12 | 2026-11-13 09:55 | 2026-11-13 | Intrusion / financially motivated | 62 | 35 |
 
+## Hunt
+
+Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
+
+| File | Platform | How to run it |
+|---|---|---|
+| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
+| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
+| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
+| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
+
+Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section below. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
+
 ## Summary
 
 Symantec's Threat Hunter Team describes a September 2026 intrusion at a U.S. retailer that stalled while the attackers typed commands by hand, then sped up once they switched to long, labelled, error-free PowerShell scripts that read like a language model's output relayed by an operator. Commands ran as cmd.exe under sqlservr.exe (xp_cmdshell) on SQL servers and under w3wp.exe on a web server. The attackers staged an old Bitdefender bdreinit.exe with log.dll and log.txt, and a G DATA signed ask.exe with ask.dll, from 204.194.49.129:8080, used a BreakChain launcher to move payloads out from under w3wp.exe, dropped the AES-encrypted server.ps1 reverse shell to 166.0.25.106:443 and two ASP web shells, and built EfsPotato with certutil and csc.exe to dump the SAM, SYSTEM and SECURITY hives. About 10 minutes after first querying SolarWinds Orion they read the .erlang.cookie of Orion's bundled RabbitMQ and ran Orion's erl.exe with that cookie to execute commands on a second server, with each command encoded as decimal character codes. They then hunted NTDS.dit, Group Policy cpassword and LAPS passwords, sprayed passwords with i<number>_winspray.ps1 scripts and tunnelled with Chisel and Yuze. Symantec links the loaders and staging server to an August 2026 intrusion and a July 2026 intrusion at a securities firm, and 155.254.22.215, which the attackers tested egress to, matches the AI console Gambit Security tied to an operator stealing card data from online retailers. Attacker servers, payload URLs and malicious tool hashes are on the block list.
@@ -119,19 +132,6 @@ Indicators by type: 40 SHA256, 11 IPv4, 11 URLs. See `iocs.csv` for full details
    Source: [Symantec Threat Hunter Team](https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer)
 
 Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql) and [`hunt.spl`](hunt.spl), and alert behaviours in [`hunt.yaral`](hunt.yaral). The rest are listed in the Behaviours section above with where to look. Use behaviours to hunt and alert, never to block.
-
-## Hunt
-
-Run one of these before blocking to find past activity. Each file is the same hunt written for a different platform; pick the one for your SIEM or XDR.
-
-| File | Platform | How to run it |
-|---|---|---|
-| [`hunt.kql`](hunt.kql) | Microsoft Defender XDR | In the [Defender portal](https://security.microsoft.com), open **Hunting > Advanced hunting**, paste the query and select **Run query**. It covers the last 30 days. |
-| [`hunt.spl`](hunt.spl) | Splunk | In **Search & Reporting**, set the time picker to the last 30 days or more, paste the search and run it. It reads the CIM data models. |
-| [`hunt_raw.spl`](hunt_raw.spl) | Splunk without CIM | The same hunt over raw events. Define the `rti_*` macros from [`splunk_macros.conf`](../../../../all/splunk_macros.conf) first. |
-| [`hunt.yaral`](hunt.yaral) | Google SecOps | In **Detection > Rules & Detections > Rules Editor**, paste the rule, run a Retrohunt over the last 30 days, then turn on live mode. |
-
-Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and behaviours with no clean field mapping are in the Behaviours section above. Guides: [Defender XDR](../../../../docs/defender-xdr.md), [Splunk](../../../../docs/splunk.md), [Google SecOps](../../../../docs/google-secops.md).
 
 ## Sources
 
