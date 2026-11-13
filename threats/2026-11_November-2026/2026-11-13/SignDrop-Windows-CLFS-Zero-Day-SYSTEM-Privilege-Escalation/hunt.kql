@@ -1,0 +1,23 @@
+// Threat: SignDrop: Public Windows CLFS Zero-Day for SYSTEM Privilege Escalation (Hunt Only)
+// Author: Daniel Jeremiah | Date: 2026-11-13
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation
+let Lookback = 30d;
+union isfuzzy=true
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "hid.dll" and FolderPath has @"\microsoft shared\ink" and ActionType in ("FileCreated", "FileModified", "FileRenamed")
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " by ", InitiatingProcessFileName, " (", InitiatingProcessAccountName, ")"))),
+  (DeviceImageLoadEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "hid.dll" and FolderPath has @"\microsoft shared\ink"
+    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(InitiatingProcessFileName, " loaded ", FolderPath, " | ", InitiatingProcessAccountName))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where InitiatingProcessFileName =~ "consent.exe" and FileName in~ ("conhost.exe", "cmd.exe", "powershell.exe", "pwsh.exe", "rundll32.exe")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(AccountName, " | consent.exe > ", ProcessCommandLine))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FolderPath has @"\SigDrop_" and ActionType == "FileCreated"
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(FileName, " by ", InitiatingProcessFileName, " (", InitiatingProcessAccountName, ")")))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

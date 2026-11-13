@@ -1,0 +1,33 @@
+``` Threat: SignDrop: Public Windows CLFS Zero-Day for SYSTEM Privilege Escalation (Hunt Only)
+    Author: Daniel Jeremiah | Date: 2026-11-13
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation ```
+search `rti_endpoint(("hid.dll" "microsoft shared"))`
+| where match(coalesce(file_path, ""), "(?i)microsoft shared\\ink\\hid\.dll$")
+| eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+| eval data_model="endpoint"
+| eval ioc="hid.dll written to or loaded from the ink folder", ioc_type="behaviour (alert)"
+
+| append [
+    search `rti_endpoint(consent.exe)`
+    | where match(coalesce(parent_process_name, ""), "(?i)^consent\.exe$") AND match(coalesce(process_name, ""), "(?i)^(conhost|cmd|powershell|pwsh|rundll32)\.exe$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="consent.exe starting a console or shell", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(SigDrop_*)`
+    | where match(coalesce(file_path, ""), "(?i)\\SigDrop_")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Unmodified SignDrop proof-of-concept working folder", ioc_type="behaviour (alert)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

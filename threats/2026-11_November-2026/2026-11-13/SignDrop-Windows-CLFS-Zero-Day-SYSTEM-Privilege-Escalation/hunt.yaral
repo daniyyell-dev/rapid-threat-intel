@@ -1,0 +1,39 @@
+// Threat: SignDrop: Public Windows CLFS Zero-Day for SYSTEM Privilege Escalation (Hunt Only)
+// Author: Daniel Jeremiah | Date: 2026-11-13
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation
+rule rti_signdrop_windows_clfs_zero_day_system_privilege_escalation {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-13"
+    description = "SignDrop: Public Windows CLFS Zero-Day for SYSTEM Privilege Escalation (Hunt Only)"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation"
+
+  events:
+    (
+      (re.regex($e.target.file.full_path, `microsoft shared\\ink\\hid\.dll$`) nocase) or
+      ($e.metadata.event_type = "PROCESS_LAUNCH" and re.regex($e.principal.process.file.full_path, `\\consent\.exe$`) nocase and re.regex($e.target.process.file.full_path, `\\(conhost|cmd|powershell|pwsh|rundll32)\.exe$`) nocase) or
+      (re.regex($e.target.file.full_path, `\\SigDrop_`) nocase)
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(60)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}

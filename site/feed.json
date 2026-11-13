@@ -4,9 +4,9 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-13 15:02",
- "threat_count": 52,
- "indicator_count": 1540,
+ "last_updated": "2026-11-13 19:25",
+ "threat_count": 53,
+ "indicator_count": 1541,
  "block_now_count": 714,
  "combined_files": [
   {
@@ -111,7 +111,7 @@
    "published": "2026-11-11",
    "entry_date": "2026-11-13 11:40",
    "last_updated": "2026-11-13",
-   "seq": 52,
+   "seq": 53,
    "headline": "Old Qlik Sense flaws exploited at EU firms for PowerShell reverse shells, a Go agent and SSH-key persistence",
    "summary": "Cynet reports that in October 2026 the Qlik Sense Scheduler.exe process on servers at several EU customers launched cmd.exe and a hidden, base64-encoded PowerShell reverse shell, all within about three minutes. The process tree matches the 2023 Cactus ransomware intrusions, so the operator most likely used the old Qlik Sense flaws CVE-2023-41266 with CVE-2023-41265, or CVE-2023-48365 (DoubleQlik). The shell is a trimmed Nishang one-liner that checks in to 45.115.26.23 over HTTP at /hb and connects back on TCP 4455. An open directory on the same server (TCP 8012) held a Go reverse-shell agent (wsvc.exe, TCP 4456) for Windows and several Linux architectures, a Bash agent (TCP 4457), a persist.ps1 script that installs OpenSSH, adds the ed25519 key node6-sm to administrators_authorized_keys, writes C:\\ProgramData\\ssh\\winc.ps1 and creates the WinUpdCheck task every five minutes, plus ActiveMQ CVE-2023-46604 payloads and a modified Veeam CVE-2024-40711 toolchain still in testing. The server address and the two persist.ps1 hashes are on the block list.",
    "caveat": "Cynet did not confirm which Qlik Sense vulnerability was used. The ActiveMQ and Veeam tooling looked unfinished and Cynet saw no successful exploitation with it. OpenSSH-Win64.zip on the staging server was the legitimate package, so it is not listed.",
@@ -462,7 +462,7 @@
    "published": "2026-11-09",
    "entry_date": "2026-11-13 11:40",
    "last_updated": "2026-11-13",
-   "seq": 51,
+   "seq": 52,
    "headline": "Stolen Qubole vendor credentials used to assume customer AWS integration roles, steal secrets and download S3 data",
    "summary": "Wiz, working with Sentra and Mandiant, reports that between 14 and 26 October 2026 a threat actor used IAM credentials from AWS account 805246085872, which Qubole's data platform uses to reach customer accounts, to assume the cross-account integration roles that dozens of customers had created to trust Qubole. Every AssumeRole call carried a valid External ID and succeeded, and most of the roles were otherwise unused. Using session names starting quiam-, the actor enumerated S3, EC2, RDS, IAM and KMS, read Lambda environment variables, Secrets Manager secrets and SSM parameters, downloaded whole S3 buckets, and validated the credentials it found with TruffleHog against AWS, Entra ID and Okta. Traffic came from an OVH server (57.129.54.120, which also hosted a bootable sso_agent.iso that beacons to TCP 23458) and Mullvad VPN exits. An actor calling itself n0n has claimed the intrusion. The OVH address and the ISO hashes are on the block list; the Mullvad exits, the vendor account and its principal IDs are alert-only hunt leads.",
    "caveat": "Account 805246085872 and the principal AIDAJYRRH5Y3A7AAJM2HW also carry legitimate Qubole traffic from AWS infrastructure; alert on them only when the source address is not an AWS address. AIDA3W7DIFLYOLTK63SFS was seen only in attacker activity. The Mullvad addresses are shared VPN exits and are not blocked. 57.129.54.120 was attacker-controlled from 15 to 26 October 2026 and may be reassigned later. The user agents Wiz lists are common and are only useful alongside another indicator.",
@@ -900,7 +900,7 @@
    "published": "2026-11-12",
    "entry_date": "2026-11-13 11:25",
    "last_updated": "2026-11-13",
-   "seq": 50,
+   "seq": 51,
    "headline": "A public exploit gives root on clustered Cisco Expressway nodes through hard-coded Erlang credentials on TCP 4372",
    "summary": "Cisco fixed CVE-2026-76466 (CVSS 9.8) on 21 October 2026: clustered Cisco Expressway-C and Expressway-E nodes, virtual and appliance, on X15.5.3 and earlier (and X14 and earlier) let an unauthenticated attacker run operating-system commands as root through the cluster database service. On 12 November researcher Nicolas Krassas (dinosn) published a working exploit and fleet detector on GitHub. It opens TLS to TCP 4372, completes the Erlang distribution handshake as the hard-coded maintenance node wombat@127.0.0.1 with the hard-coded cookie that is the same on every affected install, and calls os:cmd as root; it was tested on Expressway-C X15.3.2 in the factory-default TLS Permissive mode. Cisco says there is no workaround and, at the time of its advisory, knew of no malicious use; no exploitation has been reported since the code went public. No attacker infrastructure exists yet, so this entry is hunt and alert only. Its hunts flag connections to TCP 4371 or 4372 from anything that is not a cluster peer, and the public exploit being run from a managed host.",
    "caveat": "No exploitation or attacker indicators have been published; the CVE row is a tracking identifier, not something to block. The network hunt needs your Expressway cluster peer addresses filled in before it alerts, and it only sees traffic your firewall or NetFlow logs record. Expressway nodes do not run Defender for Endpoint, so the KQL can only see managed devices that connect out to the cluster ports or run the exploit.",
@@ -1097,6 +1097,229 @@
      "name": "hunt.yaral",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/hunt.yaral",
      "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation",
+   "folder": "threats/2026-11_November-2026/2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation",
+   "name": "SignDrop: Public Windows CLFS Zero-Day for SYSTEM Privilege Escalation (Hunt Only)",
+   "short": "SignDrop CLFS zero-day",
+   "category": "Exploitation / Windows privilege escalation",
+   "published": "2026-11-12",
+   "entry_date": "2026-11-13 19:25",
+   "last_updated": "2026-11-13",
+   "seq": 50,
+   "headline": "Public unpatched Windows exploit turns CLFS authentication into SYSTEM via a hid.dll planted in the ink folder",
+   "summary": "On 10 November 2026 the researcher behind the Nightmare-Eclipse releases (GitHub MSNightmare) published SignDrop, a working exploit that takes a standard user to SYSTEM on Windows with CLFS authentication active (Mode 0 or 1). It makes Microsoft Defender's signature-update RPC open a crafted CLFS log, so clfs.sys writes the .cnpf signature file as SYSTEM to a path chosen through Object Manager links, overwritten as C:\\Program Files\\Common Files\\microsoft shared\\ink\\hid.dll and loaded by consent.exe. Cyderes reproduced a SYSTEM shell. There is no CVE or patch, and no in-the-wild use has been reported.",
+   "caveat": "No attacker infrastructure or hashes exist; the path row is a host artefact for hunting, not something to block. Do not disable CLFS authentication as a workaround: it reopens the older memory-corruption bugs.",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Global"
+    ],
+    "sectors": [],
+    "note": "No victims or in-the-wild use reported. Windows hosts with CLFS authentication in Mode 0 or 1 are in scope; the researcher estimates about 80% of Windows installs.",
+    "source": {
+     "url": "https://www.cyderes.com/howler-cell/signdrop-zero-day",
+     "label": "Cyderes Howler Cell – SignDrop: Windows zero-day that turns Microsoft's own CLFS mitigation into a privilege escalation path",
+     "name": "Cyderes Howler Cell"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1068",
+     "name": "Exploitation for Privilege Escalation",
+     "url": "https://attack.mitre.org/techniques/T1068/"
+    },
+    {
+     "id": "T1574.001",
+     "name": "DLL Search Order Hijacking",
+     "url": "https://attack.mitre.org/techniques/T1574/001/"
+    },
+    {
+     "id": "T1070.004",
+     "name": "File Deletion",
+     "url": "https://attack.mitre.org/techniques/T1070/004/"
+    },
+    {
+     "id": "T1106",
+     "name": "Native API",
+     "url": "https://attack.mitre.org/techniques/T1106/"
+    }
+   ],
+   "recommended_actions": [
+    "Record HKLM\\SYSTEM\\CurrentControlSet\\Services\\CLFS\\Authentication Mode on every host; Mode 0 or 1 is in scope.",
+    "Alert on hid.dll created in or loaded from the ink folder and on consent.exe starting a console or shell.",
+    "Tighten application and script control, since the exploit needs code running as a local user first.",
+    "Apply Microsoft's fix when released; do not turn off CLFS authentication."
+   ],
+   "sources": [
+    {
+     "url": "https://www.cyderes.com/howler-cell/signdrop-zero-day",
+     "label": "Cyderes Howler Cell – SignDrop: Windows zero-day that turns Microsoft's own CLFS mitigation into a privilege escalation path",
+     "name": "Cyderes Howler Cell"
+    },
+    {
+     "url": "https://github.com/msnightmare/signdrop",
+     "label": "MSNightmare – SignDrop Windows CLFS authentication zero-day proof of concept",
+     "name": "github.com"
+    },
+    {
+     "url": "https://www.securityweek.com/nightmare-eclipse-drops-windows-zero-day-exploit-signdrop/",
+     "label": "SecurityWeek – Nightmare Eclipse drops Windows zero-day exploit SignDrop",
+     "name": "SecurityWeek"
+    },
+    {
+     "url": "https://www.bleepingcomputer.com/news/security/new-windows-signdrop-zero-day-gives-hackers-system-privileges/",
+     "label": "BleepingComputer – New Windows SignDrop zero-day gives hackers SYSTEM privileges",
+     "name": "BleepingComputer"
+    }
+   ],
+   "indicator_count": 1,
+   "block_now_count": 0,
+   "hunt_count": 1,
+   "hunt_counts": {
+    "alert": 1
+   },
+   "indicator_counts": {
+    "other": 1
+   },
+   "ioas": [
+    {
+     "artefact": "hid.dll written to, or loaded from, C:\\Program Files\\Common Files\\microsoft shared\\ink\\ (the DLL SignDrop plants through the SYSTEM .cnpf write)",
+     "log_source": "Defender XDR DeviceFileEvents and DeviceImageLoadEvents; Sysmon events 11 and 7 in Splunk or Google SecOps",
+     "why": "SignDrop redirects the CLFS .cnpf signature file, created as SYSTEM, to the ink folder as hid.dll, overwrites it with its payload and has consent.exe load it, then deletes it with a transacted delete. Windows does not ship hid.dll in the ink folder (the real one is in System32), so Cyderes rates any appearance there as alert-worthy whatever the variant. Tuning: matched on the exact file name and folder only. Expected false positives: none known; keep file and image-load telemetry for the ink folder because the file is removed after use.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.cyderes.com/howler-cell/signdrop-zero-day",
+     "source_name": "Cyderes Howler Cell",
+     "title": "hid.dll written to or loaded from the ink folder",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "consent.exe (the UAC consent UI) starting conhost.exe, cmd.exe, PowerShell or rundll32.exe",
+     "log_source": "Defender XDR DeviceProcessEvents; Sysmon event 1 or Windows 4688 in Splunk or Google SecOps",
+     "why": "Cyderes found consent.exe, started as SYSTEM by the exploit's runas request, loads the planted hid.dll, whose payload opens a SYSTEM console on the user's desktop and kills the UAC prompt. consent.exe only draws the elevation prompt and does not start shells or consoles, so a child like this means code is running inside it. Tuning: parent and child names only, no command-line matching. Expected false positives: none known; confirm with the hid.dll hunt on the same device.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.cyderes.com/howler-cell/signdrop-zero-day",
+     "source_name": "Cyderes Howler Cell",
+     "title": "consent.exe starting a console or shell",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Files created under a %TEMP%\\SigDrop_ working folder (the unmodified public proof of concept)",
+     "log_source": "Defender XDR DeviceFileEvents; Sysmon event 11 in Splunk or Google SecOps",
+     "why": "The public exploit stages its CLFS container, .cnpf file and bait MpEngine.dll in %TEMP%\\SigDrop_ and deletes the folder when it finishes. This only catches the unchanged release; a recompiled copy can rename the folder, so rely on the hid.dll and consent.exe hunts for variants. Expected false positives: your own authorised testing of the proof of concept.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.cyderes.com/howler-cell/signdrop-zero-day",
+     "source_name": "Cyderes Howler Cell",
+     "title": "Unmodified SignDrop proof-of-concept working folder",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    }
+   ],
+   "ioa_count": 3,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation/block_now.txt",
+     "download": "SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation_block_now.txt"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation/hunt.kql",
+     "download": "SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation/hunt.spl",
+     "download": "SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation/hunt_raw.spl",
+     "download": "SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation/hunt.yaral",
+     "download": "SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation/iocs.csv",
+     "download": "SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation",
+   "share_url": "https://daniyyell.com/rapid-threat-intel/t/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation/",
+   "indicators": [
+    {
+     "value": "C:\\Program Files\\Common Files\\microsoft shared\\ink\\hid.dll",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Path where the SignDrop exploit plants its payload DLL through a SYSTEM-created CLFS .cnpf file before consent.exe loads it; Windows does not ship hid.dll in this folder.",
+     "source_url": "https://www.cyderes.com/howler-cell/signdrop-zero-day",
+     "source_label": "Cyderes Howler Cell – SignDrop: Windows zero-day that turns Microsoft's own CLFS mitigation into a privilege escalation path",
+     "source_name": "Cyderes Howler Cell",
+     "sources": [
+      {
+       "url": "https://www.cyderes.com/howler-cell/signdrop-zero-day",
+       "name": "Cyderes Howler Cell"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation/hunt.kql",
+     "download": "SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation/hunt.spl",
+     "download": "SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation/hunt_raw.spl",
+      "download": "SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation/hunt.yaral",
+     "download": "SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation_hunt.yaral"
     }
    ]
   },

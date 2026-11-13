@@ -2,7 +2,7 @@
 
 [Back to index](../../README.md)
 
-52 threats, 1540 indicators, 714 to block now. Newest first.
+53 threats, 1541 indicators, 714 to block now. Newest first.
 
 ### [2026-11-13](2026-11-13/)
 
@@ -11,6 +11,7 @@
 | 2026-11-11 | [ZeroQlik Returns: Qlik Sense Servers Exploited for Reverse Shells, Go Agent and ActiveMQ/Veeam Tooling](2026-11-13/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam/) | Exploitation / initial access | 7 | 4 | Old Qlik Sense flaws exploited at EU firms for PowerShell reverse shells, a Go agent and SSH-key persistence |
 | 2026-11-09 | [Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles](2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse/) | Supply chain / cloud intrusion | 12 | 5 | Stolen Qubole vendor credentials used to assume customer AWS integration roles, steal secrets and download S3 data |
 | 2026-11-12 | [Cisco Expressway CVE-2026-76466: Public Root RCE Exploit (Hunt Only)](2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/) | Exploitation / edge appliance | 1 | 0 | A public exploit gives root on clustered Cisco Expressway nodes through hard-coded Erlang credentials on TCP 4372 |
+| 2026-11-12 | [SignDrop: Public Windows CLFS Zero-Day for SYSTEM Privilege Escalation (Hunt Only)](2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation/) | Exploitation / Windows privilege escalation | 1 | 0 | Public unpatched Windows exploit turns CLFS authentication into SYSTEM via a hid.dll planted in the ink folder |
 | 2026-11-13 | [GeoVision Camera Software Abused to Deploy XMRig Cryptominer](2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer/) | Exploitation / cryptomining | 12 | 8 | Exposed GeoVision camera software is being used to run PowerShell, a vulnerable driver and a Golang loader that drops XMRig |
 | 2026-11-13 | [XaocMail ClickFix Campaign Dropping Phantom53 DoH C2 and Havoc](2026-11-13/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc/) | Malware / RAT | 50 | 47 | A Russian-speaking actor uses ClickFix document lures to install Phantom53, a DNS-over-HTTPS backdoor that loads Havoc |
 | 2026-11-01 | [Barracuda Managed XDR Integration Credential Store Breach](2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach/) | Cloud / identity | 5 | 2 | Barracuda Managed XDR integration credentials were reachable after a 1-2 November cloud intrusion; hunt sign-ins from the published addresses and the read-only-audit user agent |
