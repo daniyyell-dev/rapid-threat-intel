@@ -1,4 +1,5 @@
 http://45.115.26.23:80/hb
+http://145.63.138.67:8125/up/
 http://129.146.87.174:18080/hJCdxq/popoc.py
 http://129.146.87.174:18080/UzIwMH/forti-ca.txt
 http://129.146.87.174:18080/aN2MLr/forti_GB.txt

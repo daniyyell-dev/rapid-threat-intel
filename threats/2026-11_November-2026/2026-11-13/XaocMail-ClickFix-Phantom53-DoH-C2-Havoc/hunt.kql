@@ -1,0 +1,92 @@
+// Threat: XaocMail ClickFix Campaign Dropping Phantom53 DoH C2 and Havoc
+// Author: Daniel Jeremiah | Date: 2026-11-13
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc
+let Lookback = 30d;
+let IPs = dynamic(["185.224.132.148", "162.252.198.204", "162.252.199.92", "94.156.152.7", "145.63.138.67", "91.132.93.251", "176.9.154.69"]);
+let Domains = dynamic(["dns.timesyncserver-312453.com", "securedoc.makeneg458.workers.dev", "securedoc.mesuttgulerr573.workers.dev", "linkrot.fypahedupal2-0maz.workers.dev", "cdn-analytics-p53.makeneg458.workers.dev", "cdn-analytics-3f4033.rosamariaeadeshtvfud.workers.dev", "sync-node-serv.com", "dns.cdn-syncnode-server.com", "cdn-assets-api.cfchk902834.workers.dev", "cdn-assets-api.makeneg458.workers.dev", "cdn-assets-api.kessler-m88.workers.dev", "cdn-assets-api.busykifukek2-8psk.workers.dev", "a8f2aac37385.xyz", "kfkwrfdd.xyz", "544504d7fe1e.xyz", "bestutyresdomaonupder.com", "bestutyresdomaonupder.top", "bestutyresdomaonupder2324.com"]);
+let Urls = dynamic(["http://145.63.138.67:8125/up/", "https://gist.githubusercontent.com/yegeqebige46-creator/b393f36b20ad8aeadcb8a80af70ccc09/raw/da03fd7f1ffacda970a1f3d345bdaeae8c6a7b43/gistfile1.txt", "https://github.com/yegeqebige46-creator/qq/raw/main/update.zip"]);
+let UrlKeys = dynamic(["145.63.138.67:8125/up/", "gist.githubusercontent.com/yegeqebige46-creator/b393f36b20ad8aeadcb8a80af70ccc09/raw/da03fd7f1ffacda970a1f3d345bdaeae8c6a7b43/gistfile1.txt", "github.com/yegeqebige46-creator/qq/raw/main/update.zip"]);
+let SHA256s = dynamic(["bceeb2d54b6a756c73a3e06617e9e95ad4d8e53da47639bcd6ef3cae98c6da6d", "79a4cb73983a1facb5db09f1a20cec6e58d91a93044a78aa3ba32ab2190284ed", "0e1c94a8f94158f64558325ddbfd1e1277884fba6fb1f8c381dbd5c742e59fbb", "efc4b8c1968c06e598a6f6f98398d44b488198b497291fe30fb792d696b6cb81", "4f656834e545c0b44922ce6d8952989c8c0859d8ae8b1f117c06ab07b047e2b4", "8ebb2bf61b48ae7abdcd674413bebd79b30ddd945854e175ba60d56c0a3adf54", "a4ad001c6900176eba43a747ae5d212db6fc78f7ef4e777f276cbbdf8099dbe8", "dc57638cb90798835848a9dafec228bef7738def50f4f2db612862e07c5b6f8a", "56582934901cce0b618d6a50e54c9db29bf2d444636bcd40b5975a765ecde538", "009099ba10365b44bdb3ecc28dfcbed6a594ec0a0df86931620cdaac9843e611", "0aff424f9a02eb9f429119c4caa05e85fc952603549d69849e745293d20235d6", "7055483a77f679ad569c3a9bfe76cdb8e5b96efc44d2bf2a6f08e930add598b0", "0dcfe51d2521e52a469f5cec6b42bc8e7e37b41df993cce7d739ff3fd248d8b1", "bd1c005f35e4fd8c61dfa6f20d4c03e082c692e286a3b22dd642369c8d5e3564", "dbd252becd490ac47e16bff4391ab9e6237c4f7e81ab6784c57fa2eed751f477", "e9e57a57ee45b8faae2e47affd8cf3a6d0cc1283802108f7298ae1d2ef3b43f0", "d2d41b249905deae3bd6bcaa547872d747256a7dfa459b509d9db9de8f0ca29b", "ee5fa33b58d0f2772e091e23de9db24908d970000a88e39fd7d908f30f5e591a", "a972797cc1a4161f6e2841142b8cace9b781585f9a71b03aa79a9c051b817491", "47e853092511d9663196e9b36d563a0c3e92ee734f88675c4f375ffcfa5f3db8", "4efe003a54db8ffbaef6065270eacb0a59479ccc86941517ac7a33344e97bc1d", "9a2af4b6d9780e08c86ff35030ee1747ea11460cb1dffc868c48e7af6d626546"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " port ", RemotePort))),
+  (DeviceLogonEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceLogonEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", LogonType, " ", AccountName))),
+  (EntraIdSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSignInEvents", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (AADSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSignInEventsBeta", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (EntraIdSpnSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSpnSignInEvents", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (AADSpnSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSpnSignInEventsBeta", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(AccountDisplayName), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ActionType))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (DeviceEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType == "DnsQueryResponse" and tostring(parse_json(AdditionalFields).DnsQueryString) has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(parse_json(AdditionalFields).DnsQueryString), Context = tostring(strcat("DNS ", InitiatingProcessFileName))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (UrlKeys)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (EmailUrlInfo
+    | where Timestamp > ago(Lookback)
+    | where UrlDomain has_any (Domains) or Url has_any (UrlKeys)
+    | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = tostring(Url), Context = tostring("URL in email")),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url has_any (Domains) or Url has_any (UrlKeys)
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(ActionType, " ", FolderPath))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceImageLoadEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " loaded by ", InitiatingProcessFileName))),
+  (EmailAttachmentInfo
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "EmailAttachmentInfo", Entity = tostring(RecipientEmailAddress), Indicator = tostring(SHA256), Context = tostring(strcat(FileName, " from ", SenderFromAddress))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where InitiatingProcessFileName =~ "explorer.exe" and FileName in~ ("msiexec.exe", "mshta.exe", "powershell.exe", "pwsh.exe") and ((ProcessCommandLine has "workers.dev" and ProcessCommandLine matches regex @"(?i)https?://[^\s/]+\.workers\.dev/[mhs]\?id=") or (ProcessCommandLine has "xei" and ProcessCommandLine has "[-1..-3]"))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(FileName, " from Run dialog | ", AccountName))),
+  (DeviceEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType == "ScheduledTaskCreated" and AdditionalFields has "pythonw.exe" and AdditionalFields has ".pyw" and AdditionalFields has "AppData" and not (AdditionalFields has_any ("Programs\\Python", "PythonSoftwareFoundation", "Anaconda", "miniconda"))
+    | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(parse_json(AdditionalFields).TaskName), Context = tostring(strcat(iff(tostring(parse_json(AdditionalFields).TaskName) matches regex @"(MicrosoftEdgeUpdateTask|OneDriveSyncTask|WindowsDefenderScheduledScan|OfficeBackgroundTaskHandler|AdobeAcrobatUpdateTask)[a-z0-9]$", "task name from the Phantom53 pool | ", ""), substring(tostring(parse_json(AdditionalFields).TaskContent), 0, 300)))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in~ ("p53_task_a.xml", "p53_task_b.xml")
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(ActionType, " ", FolderPath, " by ", InitiatingProcessFileName))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where InitiatingProcessFileName =~ "pythonw.exe" and InitiatingProcessFolderPath has "AppData" and not (InitiatingProcessFolderPath has_any ("Programs\\Python", "PythonSoftwareFoundation", "Anaconda", "miniconda")) and RemotePort == 443 and (RemoteIP in ("1.1.1.1", "1.0.0.1", "8.8.8.8", "8.8.4.4", "76.76.2.11", "76.76.10.11") or RemoteUrl in~ ("dns.google", "cloudflare-dns.com", "one.one.one.one", "freedns.controld.com"))
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(InitiatingProcessFolderPath), Context = tostring(strcat("DoH to ", RemoteIP, " ", RemoteUrl, " | ", InitiatingProcessCommandLine)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc
