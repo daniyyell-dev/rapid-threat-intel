@@ -1,0 +1,38 @@
+``` Threat: Barracuda Managed XDR Integration Credential Store Breach
+    Author: Daniel Jeremiah | Date: 2026-11-13
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach ```
+| tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+    FROM datamodel=Network_Traffic.All_Traffic
+    WHERE All_Traffic.dest_ip IN ("180.178.56.10", "52.128.238.126", "221.146.68.107")
+    BY All_Traffic.src_ip All_Traffic.dest_ip All_Traffic.dest_port All_Traffic.action All_Traffic.dvc All_Traffic.user
+| rename "All_Traffic.*" AS *
+| eval data_model="Network_Traffic", ioc_type="ipv4", ioc=dest_ip, host=dvc, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Network_Traffic.All_Traffic
+        WHERE All_Traffic.src_ip IN ("180.178.56.10", "52.128.238.126", "221.146.68.107")
+        BY All_Traffic.src_ip All_Traffic.dest_ip All_Traffic.dest_port All_Traffic.action All_Traffic.dvc All_Traffic.user
+    | rename "All_Traffic.*" AS *
+    | eval data_model="Network_Traffic", ioc_type="ipv4", ioc=src_ip, host=dvc, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+]
+
+| append [
+    search index=* (sourcetype="azure:monitor:aad" OR sourcetype="mscs:azure:eventhub" OR sourcetype="azure:aad:signin" OR sourcetype="azure:aad:audit" OR sourcetype="ms:aad:signin" OR sourcetype="ms:aad:audit") earliest=11/01/2026:00:00:00 ("180.178.56.10" OR "52.128.238.126" OR "221.146.68.107" OR "2a09:bac1:7680:3d0::26b:5b" OR "read-only-audit")
+    | where coalesce('properties.ipAddress', ipAddress, src_ip, src) IN ("180.178.56.10","52.128.238.126","221.146.68.107","2a09:bac1:7680:3d0::26b:5b") OR match(coalesce(userAgent, 'properties.userAgent', ""), "read-only-audit")
+    | eval host=coalesce('properties.userPrincipalName', userPrincipalName, 'properties.appDisplayName', appDisplayName, "-"), user=coalesce('properties.servicePrincipalName', servicePrincipalName, user, "-"), src=coalesce('properties.ipAddress', ipAddress, src_ip, src), dest=coalesce('properties.resourceDisplayName', resourceDisplayName, "-"), detail=coalesce(userAgent, 'properties.userAgent', "-")." app=".coalesce('properties.appDisplayName', appDisplayName, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="Entra sign-in logs"
+    | eval ioc="Cloud or identity sign-ins from the Barracuda addresses or the read-only-audit user agent", ioc_type="behaviour (alert)"
+]
+| append [
+    search index=* sourcetype="aws:cloudtrail" earliest=11/01/2026:00:00:00 ("180.178.56.10" OR "52.128.238.126" OR "221.146.68.107" OR "2a09:bac1:7680:3d0::26b:5b" OR "read-only-audit")
+    | eval host=coalesce(recipientAccountId, 'userIdentity.accountId'), user=coalesce('userIdentity.sessionContext.sessionIssuer.arn', 'userIdentity.arn'), src=sourceIPAddress, dest=coalesce(eventName, "-"), detail=eventName." UA: ".coalesce(userAgent, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="aws:cloudtrail"
+    | eval ioc="Cloud or identity sign-ins from the Barracuda addresses or the read-only-audit user agent", ioc_type="behaviour (alert)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

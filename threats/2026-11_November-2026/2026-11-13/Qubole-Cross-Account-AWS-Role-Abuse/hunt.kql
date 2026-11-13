@@ -1,0 +1,73 @@
+// Threat: Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
+// Author: Daniel Jeremiah | Date: 2026-11-13
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse
+let Lookback = 30d;
+let IPs = dynamic(["57.129.54.120", "45.83.220.211", "185.209.199.73", "89.37.63.175", "2001:41d0:70d:7800::"]);
+let SHA1s = dynamic(["1c7437dac21630f53c0b888b50662c6487e23fd7"]);
+let SHA256s = dynamic(["65f061281c9a712e9502793dc4c5035cae490b84da05f7d4223cefa65ad396e4"]);
+let MD5s = dynamic(["086d4a83181971e883c53a4c44f46da2"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " port ", RemotePort))),
+  (DeviceLogonEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceLogonEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", LogonType, " ", AccountName))),
+  (EntraIdSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSignInEvents", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (AADSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSignInEventsBeta", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (EntraIdSpnSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSpnSignInEvents", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (AADSpnSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSpnSignInEventsBeta", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(AccountDisplayName), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ActionType))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA1 in~ (SHA1s) or SHA256 in~ (SHA256s) or MD5 in~ (MD5s)
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(coalesce(iff(SHA256 in~ (SHA256s), SHA256, ''), iff(SHA1 in~ (SHA1s), SHA1, ''), iff(MD5 in~ (MD5s), MD5, ''))), Context = tostring(strcat(ActionType, " ", FolderPath))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA1 in~ (SHA1s) or SHA256 in~ (SHA256s) or MD5 in~ (MD5s)
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(coalesce(iff(SHA256 in~ (SHA256s), SHA256, ''), iff(SHA1 in~ (SHA1s), SHA1, ''), iff(MD5 in~ (MD5s), MD5, ''))), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceImageLoadEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA1 in~ (SHA1s) or SHA256 in~ (SHA256s) or MD5 in~ (MD5s)
+    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(coalesce(iff(SHA256 in~ (SHA256s), SHA256, ''), iff(SHA1 in~ (SHA1s), SHA1, ''), iff(MD5 in~ (MD5s), MD5, ''))), Context = tostring(strcat(FolderPath, " loaded by ", InitiatingProcessFileName))),
+  (EmailAttachmentInfo
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "EmailAttachmentInfo", Entity = tostring(RecipientEmailAddress), Indicator = tostring(SHA256), Context = tostring(strcat(FileName, " from ", SenderFromAddress))),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where Application == "Amazon Web Services"
+    | extend R = parse_json(tostring(RawEventData))
+    | extend Acct = tostring(R.userIdentity.accountId), Pid = tostring(R.userIdentity.principalId), Src = tostring(R.sourceIPAddress), Sess = tostring(R.requestParameters.roleSessionName), Ev = tostring(R.eventName)
+    | where (Ev == "AssumeRole" and (Acct == "805246085872" or Pid has "AIDAJYRRH5Y3A7AAJM2HW") and Src matches regex @"^[0-9a-fA-F:.]+$") or Pid has "AIDA3W7DIFLYOLTK63SFS"
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(R.recipientAccountId), Indicator = strcat(Acct, " ", Pid), Context = strcat(Ev, " from ", Src, " session ", Sess, " UA ", tostring(R.userAgent))),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where Application == "Amazon Web Services"
+    | extend R = parse_json(tostring(RawEventData))
+    | extend Acct = tostring(R.userIdentity.accountId), Pid = tostring(R.userIdentity.principalId), Src = tostring(R.sourceIPAddress), Sess = tostring(R.requestParameters.roleSessionName), Ev = tostring(R.eventName)
+    | where Sess startswith "quiam-" or tostring(R.userIdentity.arn) has "/quiam-"
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(R.recipientAccountId), Indicator = strcat(Acct, " ", Pid), Context = strcat(Ev, " from ", Src, " session ", Sess, " UA ", tostring(R.userAgent))),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in ("57.129.54.120", "45.83.220.211", "185.209.199.73", "89.37.63.175") or IPAddress startswith "2001:41d0:70d:7800:"
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(AccountDisplayName), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ActionType, " UA ", UserAgent)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

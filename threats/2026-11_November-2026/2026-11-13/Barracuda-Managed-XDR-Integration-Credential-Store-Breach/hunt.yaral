@@ -1,0 +1,40 @@
+// Threat: Barracuda Managed XDR Integration Credential Store Breach
+// Author: Daniel Jeremiah | Date: 2026-11-13
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach
+rule rti_barracuda_managed_xdr_integration_credential_store_breach {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-13"
+    description = "Barracuda Managed XDR Integration Credential Store Breach"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach"
+
+  events:
+    (
+      $e.principal.ip = /^(?:180\.178\.56\.10|52\.128\.238\.126|221\.146\.68\.107)$/ or
+      $e.target.ip = /^(?:180\.178\.56\.10|52\.128\.238\.126|221\.146\.68\.107)$/ or
+      $e.network.dns.answers.data = /^(?:180\.178\.56\.10|52\.128\.238\.126|221\.146\.68\.107)$/ or
+      ($e.principal.ip = "180.178.56.10" or $e.principal.ip = "52.128.238.126" or $e.principal.ip = "221.146.68.107" or $e.principal.ip = "2a09:bac1:7680:3d0::26b:5b" or $e.target.ip = "180.178.56.10" or $e.target.ip = "52.128.238.126" or $e.target.ip = "221.146.68.107" or $e.target.ip = "2a09:bac1:7680:3d0::26b:5b" or re.regex($e.network.http.user_agent, `read-only-audit`) nocase)
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}

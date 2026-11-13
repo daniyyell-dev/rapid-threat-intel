@@ -70,6 +70,22 @@ union isfuzzy=true
   (CloudAppEvents
     | where Timestamp > ago(Lookback)
     | where Application == "Amazon Web Services" and ActionType in ("AssumeRoleWithWebIdentity", "AssumeRole", "CreateAccessKey", "UpdateAssumeRolePolicy") and tostring(RawEventData) contains "wfx-"
-    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(RawEventData.userIdentity.arn), Indicator = tostring(ActionType), Context = tostring(strcat(ActionType, " from ", IPAddress, " | ", tostring(RawEventData.requestParameters))))
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(RawEventData.userIdentity.arn), Indicator = tostring(ActionType), Context = tostring(strcat(ActionType, " from ", IPAddress, " | ", tostring(RawEventData.requestParameters)))),
+  (union isfuzzy=true
+    (W3CIISLog
+        | where TimeGenerated > ago(Lookback)
+        | where csUriStem endswith "/.git/config"
+        | where scStatus == 200
+        | where scBytes between (100 .. 20000)
+        | where not(ipv4_is_private(cIP) or cIP == "::1" or cIP startswith "fe80:" or cIP startswith "fc" or cIP startswith "fd" or cIP startswith "127." or cIP startswith "169.254.")
+        | project Timestamp = TimeGenerated, SourceTable = "W3CIISLog", Entity = tostring(coalesce(csHost, sSiteName, Computer, "")), Indicator = tostring(csUriStem), Context = strcat("status ", scStatus, " bytes ", scBytes, " from ", cIP, " ua=", coalesce(csUserAgent, ""))),
+    (CommonSecurityLog
+        | where Timestamp > ago(Lookback)
+        | where RequestURL endswith "/.git/config" or AdditionalExtensions has "/.git/config"
+        | extend Status = coalesce(DeviceCustomNumber1, toint(extract(@"(?:sc-status|status)=(\d{3})", 1, tostring(AdditionalExtensions))))
+        | extend Bytes = coalesce(SentBytes, ReceivedBytes, DeviceCustomNumber2, 0)
+        | where Status == 200 and Bytes between (100 .. 20000)
+        | where not(ipv4_is_private(SourceIP) or SourceIP == "::1" or SourceIP startswith "fe80:" or SourceIP startswith "fc" or SourceIP startswith "fd" or SourceIP startswith "127." or SourceIP startswith "169.254.")
+        | project Timestamp, SourceTable = "CommonSecurityLog", Entity = tostring(coalesce(DestinationHostName, DeviceName, "")), Indicator = tostring(RequestURL), Context = strcat("status ", Status, " bytes ", Bytes, " from ", SourceIP)))
 | summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
 | order by LastSeen desc

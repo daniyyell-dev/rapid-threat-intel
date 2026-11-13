@@ -2,11 +2,14 @@
 
 [Back to index](../../../README.md) · [November 2026](../README.md)
 
-8 threats, 313 indicators, 216 to block now. Newest first.
+11 threats, 337 indicators, 227 to block now. Newest first.
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
+| 2026-11-11 | [ZeroQlik Returns: Qlik Sense Servers Exploited for Reverse Shells, Go Agent and ActiveMQ/Veeam Tooling](ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam/) | Exploitation / initial access | 7 | 4 | Old Qlik Sense flaws exploited at EU firms for PowerShell reverse shells, a Go agent and SSH-key persistence |
+| 2026-11-09 | [Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles](Qubole-Cross-Account-AWS-Role-Abuse/) | Supply chain / cloud intrusion | 12 | 5 | Stolen Qubole vendor credentials used to assume customer AWS integration roles, steal secrets and download S3 data |
 | 2026-11-12 | [Cisco Expressway CVE-2026-76466: Public Root RCE Exploit (Hunt Only)](Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/) | Exploitation / edge appliance | 1 | 0 | A public exploit gives root on clustered Cisco Expressway nodes through hard-coded Erlang credentials on TCP 4372 |
+| 2026-11-01 | [Barracuda Managed XDR Integration Credential Store Breach](Barracuda-Managed-XDR-Integration-Credential-Store-Breach/) | Cloud / identity | 5 | 2 | Barracuda Managed XDR integration credentials were reachable after a 1-2 November cloud intrusion; hunt sign-ins from the published addresses and the read-only-audit user agent |
 | 2026-11-11 | [DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe](DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/) | Espionage / APT | 41 | 7 | An unattributed operator used a FortiGate CVE-2024-55591 exploit to create a service super-admin and ran 14 months of attacks on Europe |
 | 2026-11-11 | [LIMINAL PANDA GTPDoor v3 and SilentAir Mobile-Network Espionage](LIMINAL-PANDA-GTPDoor-v3-SilentAir/) | Nation-state / espionage | 2 | 2 | China-nexus actors hide mobile-network C2 in GTP-U and abuse SS7 and Diameter to intercept calls, texts and 2FA |
 | 2026-11-12 | [AI-Assisted Intrusion at a U.S. Retailer: SolarWinds Orion Erlang Cookie Abuse, Side-Loaded Loaders and Yuze Tunnels](AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/) | Intrusion / financially motivated | 62 | 35 | Attackers using AI-written PowerShell abuse SolarWinds Orion's RabbitMQ Erlang cookie to move laterally at a U.S. retailer |

@@ -1,0 +1,50 @@
+``` Threat: Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
+    Author: Daniel Jeremiah | Date: 2026-11-13
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse ```
+| multisearch
+  [ search `rti_network(57.129.54.120 OR 45.83.220.211 OR 185.209.199.73 OR 89.37.63.175)`
+    | search dest_ip IN ("57.129.54.120", "45.83.220.211", "185.209.199.73", "89.37.63.175")
+    | eval data_model="network", ioc_type="ipv4", ioc=dest_ip, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_network(57.129.54.120 OR 45.83.220.211 OR 185.209.199.73 OR 89.37.63.175)`
+    | search src_ip IN ("57.129.54.120", "45.83.220.211", "185.209.199.73", "89.37.63.175")
+    | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_endpoint(65f061281c9a712e9502793dc4c5035cae490b84da05f7d4223cefa65ad396e4 OR 1c7437dac21630f53c0b888b50662c6487e23fd7 OR 086d4a83181971e883c53a4c44f46da2)`
+    | search file_hash IN ("*65f061281c9a712e9502793dc4c5035cae490b84da05f7d4223cefa65ad396e4*", "*1c7437dac21630f53c0b888b50662c6487e23fd7*", "*086d4a83181971e883c53a4c44f46da2*") OR process_hash IN ("*65f061281c9a712e9502793dc4c5035cae490b84da05f7d4223cefa65ad396e4*", "*1c7437dac21630f53c0b888b50662c6487e23fd7*", "*086d4a83181971e883c53a4c44f46da2*") OR parent_process_hash IN ("*65f061281c9a712e9502793dc4c5035cae490b84da05f7d4223cefa65ad396e4*", "*1c7437dac21630f53c0b888b50662c6487e23fd7*", "*086d4a83181971e883c53a4c44f46da2*")
+    | eval matched=file_hash." ".process_hash." ".parent_process_hash
+    | rex field=matched "(?i)(?<ioc>65f061281c9a712e9502793dc4c5035cae490b84da05f7d4223cefa65ad396e4|1c7437dac21630f53c0b888b50662c6487e23fd7|086d4a83181971e883c53a4c44f46da2)"
+    | eval data_model="endpoint", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, detail=coalesce(process, file_path)
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search index=* sourcetype="aws:cloudtrail" (805246085872 OR AIDA3W7DIFLYOLTK63SFS OR AIDAJYRRH5Y3A7AAJM2HW) | where (eventName="AssumeRole" AND match(sourceIPAddress, "^[0-9a-fA-F:.]+$") AND ('userIdentity.accountId'="805246085872" OR like('userIdentity.principalId', "%AIDAJYRRH5Y3A7AAJM2HW%"))) OR like('userIdentity.principalId', "%AIDA3W7DIFLYOLTK63SFS%")
+    | eval host=coalesce(recipientAccountId, 'userIdentity.accountId'), user=coalesce('userIdentity.sessionContext.sessionIssuer.arn', 'userIdentity.arn'), src=sourceIPAddress, dest=coalesce('requestParameters.roleArn', "-"), detail=eventName." session ".coalesce('requestParameters.roleSessionName', "-")." from ".sourceIPAddress
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="aws:cloudtrail"
+    | eval ioc="Qubole account role assumption from a non-AWS address", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search index=* sourcetype="aws:cloudtrail" "quiam-"
+    | eval host=coalesce(recipientAccountId, 'userIdentity.accountId'), user=coalesce('userIdentity.sessionContext.sessionIssuer.arn', 'userIdentity.arn'), src=sourceIPAddress, dest=coalesce('requestParameters.roleArn', 'userIdentity.arn', "-"), detail=eventName." session quiam-* from ".sourceIPAddress
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="aws:cloudtrail"
+    | eval ioc="quiam-* role sessions harvesting secrets or S3", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search index=* ("57.129.54.120" OR "45.83.220.211" OR "185.209.199.73" OR "89.37.63.175" OR "2001:41d0:70d:7800")
+    | eval host=host, user=coalesce(user, 'userIdentity.arn', "-"), src=coalesce(sourceIPAddress, src_ip, src, "-"), dest=sourcetype, detail=coalesce(eventName, action, "-")." UA ".coalesce(userAgent, http_user_agent, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="cloud and identity logs"
+    | eval ioc="TruffleHog credential checks from the attacker addresses", ioc_type="behaviour (alert)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

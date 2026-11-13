@@ -1,0 +1,17 @@
+# Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
+# Published 2026-11-09. High-confidence indicators to block. Updated 2026-11-13.
+
+## ipv4 (1)
+57.129.54.120
+
+## ipv6 (1)
+2001:41d0:70d:7800::
+
+## sha256 (1)
+65f061281c9a712e9502793dc4c5035cae490b84da05f7d4223cefa65ad396e4
+
+## sha1 (1)
+1c7437dac21630f53c0b888b50662c6487e23fd7
+
+## md5 (1)
+086d4a83181971e883c53a4c44f46da2

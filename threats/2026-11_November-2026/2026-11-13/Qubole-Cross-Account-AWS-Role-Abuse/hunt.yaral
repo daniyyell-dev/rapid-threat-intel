@@ -1,0 +1,57 @@
+// Threat: Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
+// Author: Daniel Jeremiah | Date: 2026-11-13
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse
+rule rti_qubole_cross_account_aws_role_abuse {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-13"
+    description = "Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse"
+
+  events:
+    (
+      $e.principal.ip = /^(?:57\.129\.54\.120|45\.83\.220\.211|185\.209\.199\.73|89\.37\.63\.175)$/ or
+      $e.target.ip = /^(?:57\.129\.54\.120|45\.83\.220\.211|185\.209\.199\.73|89\.37\.63\.175)$/ or
+      $e.network.dns.answers.data = /^(?:57\.129\.54\.120|45\.83\.220\.211|185\.209\.199\.73|89\.37\.63\.175)$/ or
+      $e.target.file.sha256 = /^(?:65f061281c9a712e9502793dc4c5035cae490b84da05f7d4223cefa65ad396e4)$/ nocase or
+      $e.target.process.file.sha256 = /^(?:65f061281c9a712e9502793dc4c5035cae490b84da05f7d4223cefa65ad396e4)$/ nocase or
+      $e.principal.process.file.sha256 = /^(?:65f061281c9a712e9502793dc4c5035cae490b84da05f7d4223cefa65ad396e4)$/ nocase or
+      $e.principal.process.parent_process.file.sha256 = /^(?:65f061281c9a712e9502793dc4c5035cae490b84da05f7d4223cefa65ad396e4)$/ nocase or
+      $e.target.file.sha1 = /^(?:1c7437dac21630f53c0b888b50662c6487e23fd7)$/ nocase or
+      $e.target.process.file.sha1 = /^(?:1c7437dac21630f53c0b888b50662c6487e23fd7)$/ nocase or
+      $e.principal.process.file.sha1 = /^(?:1c7437dac21630f53c0b888b50662c6487e23fd7)$/ nocase or
+      $e.principal.process.parent_process.file.sha1 = /^(?:1c7437dac21630f53c0b888b50662c6487e23fd7)$/ nocase or
+      $e.target.file.md5 = /^(?:086d4a83181971e883c53a4c44f46da2)$/ nocase or
+      $e.target.process.file.md5 = /^(?:086d4a83181971e883c53a4c44f46da2)$/ nocase or
+      $e.principal.process.file.md5 = /^(?:086d4a83181971e883c53a4c44f46da2)$/ nocase or
+      $e.principal.process.parent_process.file.md5 = /^(?:086d4a83181971e883c53a4c44f46da2)$/ nocase or
+      ($e.metadata.log_type = "AWS_CLOUDTRAIL" and $e.metadata.product_event_type = "AssumeRole" and re.regex($e.principal.user.userid, `805246085872|AIDA3W7DIFLYOLTK63SFS|AIDAJYRRH5Y3A7AAJM2HW`) and not re.regex($e.principal.hostname, `amazonaws\.com$`)) or
+      ($e.metadata.log_type = "AWS_CLOUDTRAIL" and (re.regex($e.target.resource.name, `quiam-`) or re.regex($e.principal.user.userid, `quiam-`))) or
+      (re.regex($e.principal.ip, `^(57\.129\.54\.120|45\.83\.220\.211|185\.209\.199\.73|89\.37\.63\.175|2001:41d0:70d:7800:)`))
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+    $file_sha256 = array_distinct($e.target.file.sha256)
+    $process_sha256 = array_distinct($e.target.process.file.sha256)
+    $process_path = array_distinct($e.target.process.file.full_path)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}

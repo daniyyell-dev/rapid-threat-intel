@@ -1,5 +1,22 @@
 # All high-confidence indicators to block. Updated 2026-11-13 11:25.
 
+## 2026-11-11 ZeroQlik Returns: Qlik Sense Servers Exploited for Reverse Shells, Go Agent and ActiveMQ/Veeam Tooling
+45.115.26.23
+24ee79a519839230377585ec541863b1615286736cbeb98125afeb82d91bb768
+1ff457d643e5246efb04861169153402345d50b0bb296443b93a87790909efd5
+http://45.115.26.23:80/hb
+
+## 2026-11-09 Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
+57.129.54.120
+2001:41d0:70d:7800::
+65f061281c9a712e9502793dc4c5035cae490b84da05f7d4223cefa65ad396e4
+1c7437dac21630f53c0b888b50662c6487e23fd7
+086d4a83181971e883c53a4c44f46da2
+
+## 2026-11-01 Barracuda Managed XDR Integration Credential Store Breach
+180.178.56.10
+52.128.238.126
+
 ## 2026-11-11 DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe
 46.8.236.121
 129.146.87.174

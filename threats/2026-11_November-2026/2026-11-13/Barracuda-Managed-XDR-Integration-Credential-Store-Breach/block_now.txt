@@ -1,0 +1,6 @@
+# Barracuda Managed XDR Integration Credential Store Breach
+# Published 2026-11-01. High-confidence indicators to block. Updated 2026-11-13.
+
+## ipv4 (2)
+180.178.56.10
+52.128.238.126

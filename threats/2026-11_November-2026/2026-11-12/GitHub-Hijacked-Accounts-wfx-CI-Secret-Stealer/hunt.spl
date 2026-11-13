@@ -91,12 +91,36 @@
 ]
 
 | append [
-    search index=* ("wfx-docs" OR "docs: dependency audit notes" OR "ci: refresh build cache" OR "chore: add ci helper" OR "chore: add dependency audit workflow")
+    search index=* ("wfx-docs" OR "docs: dependency audit notes" OR "ci: refresh build cache" OR "chore: add ci helper" OR "chore: add dependency audit workflow" OR "docs/wfx-audit.md" OR "ci-check-")
     | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
     | fillnull value="-" host user src dest detail
     | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
     | eval data_model="GitHub audit and webhook logs"
     | eval ioc="wfx-docs probe pull requests and payload commits", ioc_type="behaviour (hunt)"
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Web.Web
+        WHERE Web.url="*/.git/config" AND Web.status=200
+        BY Web.src Web.user Web.dest Web.url Web.http_user_agent Web.status
+    | rename "Web.*" AS *
+    | eval host=dest, detail="HTTP ".status." ".url." UA: ".http_user_agent, data_model="Web"
+    | eval ioc="Public /.git/config request returning HTTP 200", ioc_type="behaviour (hunt)"
+]
+| append [
+    search index=* earliest=11/10/2026:00:00:00 ("/.git/config") (status=200 OR sc_status=200 OR status="200")
+    | eval url=coalesce(url, cs_uri_stem, uri_path, uri, "")
+    | eval status=coalesce(status, sc_status, http_status, "")
+    | eval byt=coalesce(bytes, sc_bytes, bytes_out, bytes_sent, 0)
+    | eval srcip=coalesce(src, c_ip, src_ip, clientip, "")
+    | where like(url, "%/.git/config") AND status=200 AND byt>=100 AND byt<=20000
+    | where NOT cidrmatch("10.0.0.0/8", srcip) AND NOT cidrmatch("172.16.0.0/12", srcip) AND NOT cidrmatch("192.168.0.0/16", srcip) AND NOT cidrmatch("127.0.0.0/8", srcip) AND NOT cidrmatch("169.254.0.0/16", srcip)
+    | eval host=coalesce(dest, cs_host, host), user=coalesce(user, "-"), src=coalesce(src, c_ip, src_ip, "-"), dest=coalesce(dest, cs_host, host), detail="HTTP ".coalesce(status, sc_status, "-")." bytes=".coalesce(bytes, sc_bytes, bytes_out, "-")." ".coalesce(url, cs_uri_stem, uri_path, "/.git/config")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="web"
+    | eval ioc="Public /.git/config request returning HTTP 200", ioc_type="behaviour (hunt)"
 ]
 | sort 0 - last_seen
 | eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")

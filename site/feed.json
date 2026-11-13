@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-13 11:25",
- "threat_count": 47,
- "indicator_count": 1454,
- "block_now_count": 648,
+ "last_updated": "2026-11-13 11:40",
+ "threat_count": 50,
+ "indicator_count": 1478,
+ "block_now_count": 659,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -103,6 +103,793 @@
  ],
  "threats": [
   {
+   "id": "ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam",
+   "folder": "threats/2026-11_November-2026/2026-11-13/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam",
+   "name": "ZeroQlik Returns: Qlik Sense Servers Exploited for Reverse Shells, Go Agent and ActiveMQ/Veeam Tooling",
+   "short": "ZeroQlik Qlik Sense exploitation",
+   "category": "Exploitation / initial access",
+   "published": "2026-11-11",
+   "entry_date": "2026-11-13 11:40",
+   "last_updated": "2026-11-13",
+   "seq": 50,
+   "headline": "Old Qlik Sense flaws exploited at EU firms for PowerShell reverse shells, a Go agent and SSH-key persistence",
+   "summary": "Cynet reports that in October 2026 the Qlik Sense Scheduler.exe process on servers at several EU customers launched cmd.exe and a hidden, base64-encoded PowerShell reverse shell, all within about three minutes. The process tree matches the 2023 Cactus ransomware intrusions, so the operator most likely used the old Qlik Sense flaws CVE-2023-41266 with CVE-2023-41265, or CVE-2023-48365 (DoubleQlik). The shell is a trimmed Nishang one-liner that checks in to 45.115.26.23 over HTTP at /hb and connects back on TCP 4455. An open directory on the same server (TCP 8012) held a Go reverse-shell agent (wsvc.exe, TCP 4456) for Windows and several Linux architectures, a Bash agent (TCP 4457), a persist.ps1 script that installs OpenSSH, adds the ed25519 key node6-sm to administrators_authorized_keys, writes C:\\ProgramData\\ssh\\winc.ps1 and creates the WinUpdCheck task every five minutes, plus ActiveMQ CVE-2023-46604 payloads and a modified Veeam CVE-2024-40711 toolchain still in testing. The server address and the two persist.ps1 hashes are on the block list.",
+   "caveat": "Cynet did not confirm which Qlik Sense vulnerability was used. The ActiveMQ and Veeam tooling looked unfinished and Cynet saw no successful exploitation with it. OpenSSH-Win64.zip on the staging server was the legitimate package, so it is not listed.",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Europe"
+    ],
+    "sectors": [],
+    "note": "Cynet saw the reverse-shell attempts on Qlik Sense servers at several EU-based customers within about three minutes in October 2026; sectors and countries are not named.",
+    "source": {
+     "url": "https://www.cynet.com/security-foundations/attack-techniques/exploiting-qlik-sense-servers/",
+     "label": "Cynet – ZeroQlik Returns: Exploiting N-Days Still Pays Off",
+     "name": "Cynet"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1059.001",
+     "name": "PowerShell",
+     "url": "https://attack.mitre.org/techniques/T1059/001/"
+    },
+    {
+     "id": "T1059.003",
+     "name": "Windows Command Shell",
+     "url": "https://attack.mitre.org/techniques/T1059/003/"
+    },
+    {
+     "id": "T1027.010",
+     "name": "Command Obfuscation",
+     "url": "https://attack.mitre.org/techniques/T1027/010/"
+    },
+    {
+     "id": "T1105",
+     "name": "Ingress Tool Transfer",
+     "url": "https://attack.mitre.org/techniques/T1105/"
+    },
+    {
+     "id": "T1053.005",
+     "name": "Scheduled Task",
+     "url": "https://attack.mitre.org/techniques/T1053/005/"
+    },
+    {
+     "id": "T1543.003",
+     "name": "Windows Service",
+     "url": "https://attack.mitre.org/techniques/T1543/003/"
+    },
+    {
+     "id": "T1098.004",
+     "name": "SSH Authorized Keys",
+     "url": "https://attack.mitre.org/techniques/T1098/004/"
+    },
+    {
+     "id": "T1095",
+     "name": "Non-Application Layer Protocol",
+     "url": "https://attack.mitre.org/techniques/T1095/"
+    }
+   ],
+   "recommended_actions": [
+    "Patch Qlik Sense Enterprise for CVE-2023-41265, CVE-2023-41266 and CVE-2023-48365, and keep the Qlik proxy off the internet.",
+    "Block 45.115.26.23 and search firewall, proxy and EDR logs for it on TCP 80, 4455, 4456, 4457 and 8012.",
+    "On Qlik Sense servers, look for Scheduler.exe starting cmd.exe or PowerShell, the WinUpdCheck scheduled task, C:\\ProgramData\\ssh\\winc.ps1, C:\\Windows\\Temp\\wsvc.exe, a wsvc service named Windows Service Controller, and the node6-sm key in C:\\ProgramData\\ssh\\administrators_authorized_keys; treat a hit as a full compromise.",
+    "Patch ActiveMQ (CVE-2023-46604) and Veeam Backup & Replication (CVE-2024-40711), which the same operator was preparing to exploit."
+   ],
+   "sources": [
+    {
+     "url": "https://www.cynet.com/security-foundations/attack-techniques/exploiting-qlik-sense-servers/",
+     "label": "Cynet – ZeroQlik Returns: Exploiting N-Days Still Pays Off",
+     "name": "Cynet"
+    },
+    {
+     "url": "https://thehackernews.com/2026/11/hackers-target-qlik-sense-servers-with.html",
+     "label": "The Hacker News – Hackers target Qlik Sense servers with reverse shells, stage ActiveMQ and Veeam exploits",
+     "name": "The Hacker News"
+    },
+    {
+     "url": "https://urlhaus.abuse.ch/host/45.115.26.23/",
+     "label": "urlhaus.abuse.ch",
+     "name": "URLhaus"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/1ff457d643e5246efb04861169153402345d50b0bb296443b93a87790909efd5/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar"
+    }
+   ],
+   "indicator_count": 7,
+   "block_now_count": 4,
+   "hunt_count": 3,
+   "hunt_counts": {
+    "alert": 2,
+    "monitor": 1
+   },
+   "indicator_counts": {
+    "other": 3,
+    "sha256": 2,
+    "ipv4": 1,
+    "url": 1
+   },
+   "ioas": [
+    {
+     "artefact": "Qlik Sense Scheduler.exe starting cmd.exe or powershell.exe, especially powershell -nop -w hidden -enc",
+     "log_source": "Defender XDR DeviceProcessEvents; Sysmon event 1 in Splunk or Google SecOps",
+     "why": "Exploiting CVE-2023-41265/41266 or CVE-2023-48365 runs commands as the Qlik Sense Scheduler service, which is what Cynet saw across several EU customers and what Arctic Wolf saw in the 2023 Cactus intrusions. Tuning: the parent must be Scheduler.exe from a Qlik Sense install path, so other products' schedulers do not match. Expected false positives: a Qlik external program task deliberately set up to run a script; confirm with the Qlik admins.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.cynet.com/security-foundations/attack-techniques/exploiting-qlik-sense-servers/",
+     "source_name": "Cynet",
+     "title": "Qlik Sense Scheduler.exe spawning a shell",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Persistence from persist.ps1: the WinUpdCheck scheduled task, C:\\ProgramData\\ssh\\winc.ps1, C:\\Windows\\Temp\\wsvc.exe, a wsvc service shown as Windows Service Controller, or administrators_authorized_keys written by PowerShell",
+     "log_source": "Defender XDR DeviceProcessEvents, DeviceFileEvents and DeviceEvents; Windows Security 4698 and System 7045; Sysmon 1 and 11",
+     "why": "Cynet's persist.ps1 adds the attacker's ed25519 key (comment node6-sm) to C:\\ProgramData\\ssh\\administrators_authorized_keys, installs OpenSSH and opens TCP 22, writes the reverse shell to winc.ps1 and runs it every five minutes from the WinUpdCheck task, and installs the Go agent as the wsvc service. Tuning: matches only these exact names and paths. Expected false positives: an administrator adding SSH keys with PowerShell; check for the node6-sm comment.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.cynet.com/security-foundations/attack-techniques/exploiting-qlik-sense-servers/",
+     "source_name": "Cynet",
+     "title": "WinUpdCheck task, winc.ps1, wsvc agent or node6-sm SSH key",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    }
+   ],
+   "ioa_count": 2,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam/block_now.txt",
+     "download": "ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam/defender_xdr_indicators.csv",
+     "download": "ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam/hunt.kql",
+     "download": "ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam/hunt.spl",
+     "download": "ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam/hunt_raw.spl",
+     "download": "ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam/hunt.yaral",
+     "download": "ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam/iocs.csv",
+     "download": "ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam",
+   "indicators": [
+    {
+     "value": "45.115.26.23",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "ZeroQlik operator server on SolidCore Hosting (AS199457, Netherlands): HTTP check-in at /hb on TCP 80, PowerShell reverse shell on TCP 4455, Go agent on TCP 4456, Bash agent on TCP 4457 and an open directory on TCP 8012 hosting agents, persistence scripts and ActiveMQ and Veeam exploit material.",
+     "source_url": "https://www.cynet.com/security-foundations/attack-techniques/exploiting-qlik-sense-servers/",
+     "source_label": "Cynet – ZeroQlik Returns: Exploiting N-Days Still Pays Off",
+     "source_name": "Cynet",
+     "sources": [
+      {
+       "url": "https://www.cynet.com/security-foundations/attack-techniques/exploiting-qlik-sense-servers/",
+       "name": "Cynet"
+      },
+      {
+       "url": "https://thehackernews.com/2026/11/hackers-target-qlik-sense-servers-with.html",
+       "name": "The Hacker News"
+      },
+      {
+       "url": "https://urlhaus.abuse.ch/host/45.115.26.23/",
+       "name": "URLhaus"
+      }
+     ]
+    },
+    {
+     "value": "24ee79a519839230377585ec541863b1615286736cbeb98125afeb82d91bb768",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of a persist.ps1 sample carrying the attacker's node6-sm SSH key: installs OpenSSH, adds the key to administrators_authorized_keys, writes winc.ps1 and creates the WinUpdCheck task.",
+     "source_url": "https://www.cynet.com/security-foundations/attack-techniques/exploiting-qlik-sense-servers/",
+     "source_label": "Cynet – ZeroQlik Returns: Exploiting N-Days Still Pays Off",
+     "source_name": "Cynet",
+     "sources": [
+      {
+       "url": "https://www.cynet.com/security-foundations/attack-techniques/exploiting-qlik-sense-servers/",
+       "name": "Cynet"
+      }
+     ]
+    },
+    {
+     "value": "1ff457d643e5246efb04861169153402345d50b0bb296443b93a87790909efd5",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of a second persist.ps1 sample carrying the attacker's node6-sm SSH key.",
+     "source_url": "https://www.cynet.com/security-foundations/attack-techniques/exploiting-qlik-sense-servers/",
+     "source_label": "Cynet – ZeroQlik Returns: Exploiting N-Days Still Pays Off",
+     "source_name": "Cynet",
+     "sources": [
+      {
+       "url": "https://www.cynet.com/security-foundations/attack-techniques/exploiting-qlik-sense-servers/",
+       "name": "Cynet"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/1ff457d643e5246efb04861169153402345d50b0bb296443b93a87790909efd5/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "http://45.115.26.23:80/hb",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "HTTP check-in endpoint the PowerShell launcher called with the computer name and username before starting the reverse shell.",
+     "source_url": "https://www.cynet.com/security-foundations/attack-techniques/exploiting-qlik-sense-servers/",
+     "source_label": "Cynet – ZeroQlik Returns: Exploiting N-Days Still Pays Off",
+     "source_name": "Cynet",
+     "sources": [
+      {
+       "url": "https://www.cynet.com/security-foundations/attack-techniques/exploiting-qlik-sense-servers/",
+       "name": "Cynet"
+      }
+     ]
+    },
+    {
+     "value": "SHA256:Fl1zSuSZvRomXoyHnR7zfn3ZE9TzE+vg3xxWaQFfzeE",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Fingerprint of the attacker's ed25519 SSH public key (comment node6-sm) that persist.ps1 adds to C:\\ProgramData\\ssh\\administrators_authorized_keys.",
+     "source_url": "https://www.cynet.com/security-foundations/attack-techniques/exploiting-qlik-sense-servers/",
+     "source_label": "Cynet – ZeroQlik Returns: Exploiting N-Days Still Pays Off",
+     "source_name": "Cynet",
+     "sources": [
+      {
+       "url": "https://www.cynet.com/security-foundations/attack-techniques/exploiting-qlik-sense-servers/",
+       "name": "Cynet"
+      }
+     ]
+    },
+    {
+     "value": "WinUpdCheck",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Scheduled task name persist.ps1 creates to run C:\\ProgramData\\ssh\\winc.ps1 (the PowerShell reverse shell) every five minutes, requesting SYSTEM.",
+     "source_url": "https://www.cynet.com/security-foundations/attack-techniques/exploiting-qlik-sense-servers/",
+     "source_label": "Cynet – ZeroQlik Returns: Exploiting N-Days Still Pays Off",
+     "source_name": "Cynet",
+     "sources": [
+      {
+       "url": "https://www.cynet.com/security-foundations/attack-techniques/exploiting-qlik-sense-servers/",
+       "name": "Cynet"
+      }
+     ]
+    },
+    {
+     "value": "CVE-2023-48365",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "monitor",
+     "description": "Qlik Sense DoubleQlik unauthenticated RCE, one of the two likely entry points for the October 2026 Scheduler.exe reverse shells (the other is CVE-2023-41266 with CVE-2023-41265).",
+     "source_url": "https://www.cynet.com/security-foundations/attack-techniques/exploiting-qlik-sense-servers/",
+     "source_label": "Cynet – ZeroQlik Returns: Exploiting N-Days Still Pays Off",
+     "source_name": "Cynet",
+     "sources": [
+      {
+       "url": "https://www.cynet.com/security-foundations/attack-techniques/exploiting-qlik-sense-servers/",
+       "name": "Cynet"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam/hunt.kql",
+     "download": "ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam/hunt.spl",
+     "download": "ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam/hunt_raw.spl",
+      "download": "ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam/hunt.yaral",
+     "download": "ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "Qubole-Cross-Account-AWS-Role-Abuse",
+   "folder": "threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse",
+   "name": "Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles",
+   "short": "Qubole cross-account AWS role abuse",
+   "category": "Supply chain / cloud intrusion",
+   "published": "2026-11-09",
+   "entry_date": "2026-11-13 11:40",
+   "last_updated": "2026-11-13",
+   "seq": 49,
+   "headline": "Stolen Qubole vendor credentials used to assume customer AWS integration roles, steal secrets and download S3 data",
+   "summary": "Wiz, working with Sentra and Mandiant, reports that between 14 and 26 October 2026 a threat actor used IAM credentials from AWS account 805246085872, which Qubole's data platform uses to reach customer accounts, to assume the cross-account integration roles that dozens of customers had created to trust Qubole. Every AssumeRole call carried a valid External ID and succeeded, and most of the roles were otherwise unused. Using session names starting quiam-, the actor enumerated S3, EC2, RDS, IAM and KMS, read Lambda environment variables, Secrets Manager secrets and SSM parameters, downloaded whole S3 buckets, and validated the credentials it found with TruffleHog against AWS, Entra ID and Okta. Traffic came from an OVH server (57.129.54.120, which also hosted a bootable sso_agent.iso that beacons to TCP 23458) and Mullvad VPN exits. An actor calling itself n0n has claimed the intrusion. The OVH address and the ISO hashes are on the block list; the Mullvad exits, the vendor account and its principal IDs are alert-only hunt leads.",
+   "caveat": "Account 805246085872 and the principal AIDAJYRRH5Y3A7AAJM2HW also carry legitimate Qubole traffic from AWS infrastructure; alert on them only when the source address is not an AWS address. AIDA3W7DIFLYOLTK63SFS was seen only in attacker activity. The Mullvad addresses are shared VPN exits and are not blocked. 57.129.54.120 was attacker-controlled from 15 to 26 October 2026 and may be reassigned later. The user agents Wiz lists are common and are only useful alongside another indicator.",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Global"
+    ],
+    "sectors": [
+     "Organisations using Qubole data platform integrations on AWS"
+    ],
+    "note": "Wiz saw dozens of AWS customer environments with Qubole integration roles accessed between 14 and 26 October 2026; victims are not named.",
+    "source": {
+     "url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+     "label": "Wiz – Trusted by Default: Qubole Cross-Account Access Abused in the Wild",
+     "name": "Wiz"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1199",
+     "name": "Trusted Relationship",
+     "url": "https://attack.mitre.org/techniques/T1199/"
+    },
+    {
+     "id": "T1078.004",
+     "name": "Cloud Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/004/"
+    },
+    {
+     "id": "T1580",
+     "name": "Cloud Infrastructure Discovery",
+     "url": "https://attack.mitre.org/techniques/T1580/"
+    },
+    {
+     "id": "T1552.001",
+     "name": "Credentials In Files",
+     "url": "https://attack.mitre.org/techniques/T1552/001/"
+    },
+    {
+     "id": "T1555.006",
+     "name": "Cloud Secrets Management Stores",
+     "url": "https://attack.mitre.org/techniques/T1555/006/"
+    },
+    {
+     "id": "T1530",
+     "name": "Data from Cloud Storage",
+     "url": "https://attack.mitre.org/techniques/T1530/"
+    },
+    {
+     "id": "T1090.002",
+     "name": "External Proxy",
+     "url": "https://attack.mitre.org/techniques/T1090/002/"
+    }
+   ],
+   "recommended_actions": [
+    "List every IAM role whose trust policy allows account 805246085872 or any other external vendor account; delete roles for integrations you no longer use.",
+    "Search CloudTrail from 1 October 2026 in every account with a Qubole role for AssumeRole by account 805246085872 from a non-AWS address, any activity by principal AIDA3W7DIFLYOLTK63SFS, and role sessions named quiam-*.",
+    "For any session you find, review its Secrets Manager, SSM Parameter Store, Lambda and S3 activity, rotate every secret, parameter and Lambda environment variable the role could read, and revoke the role's active sessions.",
+    "Block 57.129.54.120 and search 90 days of CloudTrail, proxy and identity-provider logs for it and for the Mullvad exits 45.83.220.211, 185.209.199.73 and 89.37.63.175.",
+    "Pin vendor trust policies to the vendor's specific principal and add aws:SourceIp or aws:SourceVpce conditions; Wiz notes a source-IP condition alone would have blocked every role assumption it saw.",
+    "Check identity-provider sign-in logs for TruffleHog user agents on service principals and Okta clients from the listed addresses."
+   ],
+   "sources": [
+    {
+     "url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+     "label": "Wiz – Trusted by Default: Qubole Cross-Account Access Abused in the Wild",
+     "name": "Wiz"
+    },
+    {
+     "url": "https://www.bleepingcomputer.com/news/security/hackers-exploit-trusted-aws-access-to-breach-multiple-cloud-environments/",
+     "label": "BleepingComputer – Hackers exploit trusted AWS access to breach multiple cloud environments",
+     "name": "BleepingComputer"
+    },
+    {
+     "url": "https://thehackernews.com/2026/11/hackers-exploit-quboles-trusted-aws.html",
+     "label": "The Hacker News – Hackers exploit Qubole's trusted AWS access to breach customer accounts and steal data",
+     "name": "The Hacker News"
+    },
+    {
+     "url": "https://www.theregister.com/security/2026/11/09/attackers-backdoor-trusted-aws-integrations-to-steal-secrets/5308553",
+     "label": "The Register – Attackers backdoor trusted AWS integrations to steal secrets",
+     "name": "The Register"
+    }
+   ],
+   "indicator_count": 12,
+   "block_now_count": 5,
+   "hunt_count": 7,
+   "hunt_counts": {
+    "alert": 6,
+    "monitor": 1
+   },
+   "indicator_counts": {
+    "ipv4": 4,
+    "other": 4,
+    "ipv6": 1,
+    "md5": 1,
+    "sha1": 1,
+    "sha256": 1
+   },
+   "ioas": [
+    {
+     "artefact": "AssumeRole by AWS account 805246085872 (Qubole) from a source address that is not an AWS address, or any CloudTrail activity by principal AIDA3W7DIFLYOLTK63SFS",
+     "log_source": "AWS CloudTrail management events, or Defender XDR CloudAppEvents with the AWS connector",
+     "why": "Wiz saw all legitimate Qubole platform traffic come from AWS infrastructure, while every attacker role assumption came from OVH or Mullvad addresses with a valid External ID. AIDA3W7DIFLYOLTK63SFS appeared only in attacker activity. Tuning: AWS-originated calls show an AWS service name or an amazonaws.com host as the source and are excluded; the attacker addresses are public IPs. Expected false positives: a Qubole support engineer assuming a role from an office address, which should itself be questioned.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+     "source_name": "Wiz",
+     "title": "Qubole account role assumption from a non-AWS address",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Role sessions named quiam-* (for example quiam-enum or quiam-scope-full), followed by ListSecrets, GetSecretValue, GetParameter, GetFunctionConfiguration or bulk S3 GetObject",
+     "log_source": "AWS CloudTrail management and S3 data events, or Defender XDR CloudAppEvents with the AWS connector",
+     "why": "The actor named every assumed-role session quiam- plus a word describing the task, then harvested Lambda environment variables, Secrets Manager secrets and SSM parameters and downloaded S3 buckets. Tuning: the quiam- prefix is specific to this actor. Expected false positives: none known.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+     "source_name": "Wiz",
+     "title": "quiam-* role sessions harvesting secrets or S3",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "GetCallerIdentity, Entra ID service-principal sign-ins or Okta client-credential token requests with a TruffleHog user agent from 57.129.54.120, 2001:41d0:70d:7800:: or the Mullvad exits",
+     "log_source": "AWS CloudTrail, Entra ID service principal sign-in logs, Okta system log; Defender XDR CloudAppEvents and AADSpnSignInEventsBeta",
+     "why": "The actor validated the keys and client secrets it stole from customer accounts with TruffleHog, in bursts lasting seconds. TruffleHog is also run by security teams, so the hunt requires one of the attacker addresses as well. Expected false positives: none when paired with the addresses.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+     "source_name": "Wiz",
+     "title": "TruffleHog credential checks from the attacker addresses",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    }
+   ],
+   "ioa_count": 3,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse/block_now.txt",
+     "download": "Qubole-Cross-Account-AWS-Role-Abuse_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse/defender_xdr_indicators.csv",
+     "download": "Qubole-Cross-Account-AWS-Role-Abuse_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse/hunt.kql",
+     "download": "Qubole-Cross-Account-AWS-Role-Abuse_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse/hunt.spl",
+     "download": "Qubole-Cross-Account-AWS-Role-Abuse_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse/hunt_raw.spl",
+     "download": "Qubole-Cross-Account-AWS-Role-Abuse_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse/hunt.yaral",
+     "download": "Qubole-Cross-Account-AWS-Role-Abuse_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse/iocs.csv",
+     "download": "Qubole-Cross-Account-AWS-Role-Abuse_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse",
+   "indicators": [
+    {
+     "value": "57.129.54.120",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Attacker-controlled OVH server (AS16276, Germany) used from 15 to 26 October 2026 as the main address for assuming Qubole-trusted roles in customer AWS accounts, enumeration and credential harvesting. It also hosted sso_agent.iso, which beacons back to TCP 23458. May be reassigned after October 2026; review hits in that window.",
+     "source_url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+     "source_label": "Wiz – Trusted by Default: Qubole Cross-Account Access Abused in the Wild",
+     "source_name": "Wiz",
+     "sources": [
+      {
+       "url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+       "name": "Wiz"
+      },
+      {
+       "url": "https://thehackernews.com/2026/11/hackers-exploit-quboles-trusted-aws.html",
+       "name": "The Hacker News"
+      }
+     ]
+    },
+    {
+     "value": "2001:41d0:70d:7800::",
+     "type": "ipv6",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Attacker-used OVH IPv6 address (AS16276) seen from 16 to 24 October 2026 enumerating and verifying stolen credentials.",
+     "source_url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+     "source_label": "Wiz – Trusted by Default: Qubole Cross-Account Access Abused in the Wild",
+     "source_name": "Wiz",
+     "sources": [
+      {
+       "url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+       "name": "Wiz"
+      },
+      {
+       "url": "https://thehackernews.com/2026/11/hackers-exploit-quboles-trusted-aws.html",
+       "name": "The Hacker News"
+      }
+     ]
+    },
+    {
+     "value": "45.83.220.211",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Mullvad VPN exit (31173 Services AB, AS39351) that assumed Qubole-trusted roles in customer accounts on 14 and 15 October 2026. Shared VPN exit: alert, do not block.",
+     "source_url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+     "source_label": "Wiz – Trusted by Default: Qubole Cross-Account Access Abused in the Wild",
+     "source_name": "Wiz",
+     "sources": [
+      {
+       "url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+       "name": "Wiz"
+      }
+     ]
+    },
+    {
+     "value": "185.209.199.73",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Mullvad VPN exit (31173 Services AB, AS39351) used from 18 to 21 October 2026 to assume integration roles across several victim accounts in quick succession. Shared VPN exit: alert, do not block.",
+     "source_url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+     "source_label": "Wiz – Trusted by Default: Qubole Cross-Account Access Abused in the Wild",
+     "source_name": "Wiz",
+     "sources": [
+      {
+       "url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+       "name": "Wiz"
+      }
+     ]
+    },
+    {
+     "value": "89.37.63.175",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Mullvad VPN exit on Datacamp Limited (AS212238) used on 25 October 2026 to assume roles in customer accounts. Shared VPN exit: alert, do not block.",
+     "source_url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+     "source_label": "Wiz – Trusted by Default: Qubole Cross-Account Access Abused in the Wild",
+     "source_name": "Wiz",
+     "sources": [
+      {
+       "url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+       "name": "Wiz"
+      }
+     ]
+    },
+    {
+     "value": "65f061281c9a712e9502793dc4c5035cae490b84da05f7d4223cefa65ad396e4",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of sso_agent.iso, a bootable Linux image hosted on 57.129.54.120 that collects disk and interface details, uploads them, polls TCP 23458 for shell scripts for 90 minutes, then hard-reboots to erase traces; it loads the ntfs3 driver, suggesting Windows targets.",
+     "source_url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+     "source_label": "Wiz – Trusted by Default: Qubole Cross-Account Access Abused in the Wild",
+     "source_name": "Wiz",
+     "sources": [
+      {
+       "url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+       "name": "Wiz"
+      }
+     ]
+    },
+    {
+     "value": "1c7437dac21630f53c0b888b50662c6487e23fd7",
+     "type": "sha1",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA1 of sso_agent.iso, the bootable Linux image hosted on the attacker's OVH server.",
+     "source_url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+     "source_label": "Wiz – Trusted by Default: Qubole Cross-Account Access Abused in the Wild",
+     "source_name": "Wiz",
+     "sources": [
+      {
+       "url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+       "name": "Wiz"
+      }
+     ]
+    },
+    {
+     "value": "086d4a83181971e883c53a4c44f46da2",
+     "type": "md5",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "MD5 of sso_agent.iso, the bootable Linux image hosted on the attacker's OVH server.",
+     "source_url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+     "source_label": "Wiz – Trusted by Default: Qubole Cross-Account Access Abused in the Wild",
+     "source_name": "Wiz",
+     "sources": [
+      {
+       "url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+       "name": "Wiz"
+      }
+     ]
+    },
+    {
+     "value": "805246085872",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "monitor",
+     "description": "AWS account that Qubole's platform uses to assume roles in customer accounts, and the source of every attacker role assumption. Also carries legitimate traffic: hunt for AssumeRole from it with a non-AWS source address.",
+     "source_url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+     "source_label": "Wiz – Trusted by Default: Qubole Cross-Account Access Abused in the Wild",
+     "source_name": "Wiz",
+     "sources": [
+      {
+       "url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+       "name": "Wiz"
+      }
+     ]
+    },
+    {
+     "value": "AIDA3W7DIFLYOLTK63SFS",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "IAM user principal ID in account 805246085872 seen only in the attacker's activity. Any CloudTrail event with this principal warrants investigation.",
+     "source_url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+     "source_label": "Wiz – Trusted by Default: Qubole Cross-Account Access Abused in the Wild",
+     "source_name": "Wiz",
+     "sources": [
+      {
+       "url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+       "name": "Wiz"
+      }
+     ]
+    },
+    {
+     "value": "AIDAJYRRH5Y3A7AAJM2HW",
+     "type": "other",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Second IAM user principal ID in account 805246085872, used by the attacker from 18 October 2026 but also by legitimate Qubole traffic from AWS infrastructure. Alert only when the source address is not an AWS address.",
+     "source_url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+     "source_label": "Wiz – Trusted by Default: Qubole Cross-Account Access Abused in the Wild",
+     "source_name": "Wiz",
+     "sources": [
+      {
+       "url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+       "name": "Wiz"
+      }
+     ]
+    },
+    {
+     "value": "quiam-*",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Role session name prefix the attacker used for every assumed-role session, such as quiam-enum and quiam-scope-full.",
+     "source_url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+     "source_label": "Wiz – Trusted by Default: Qubole Cross-Account Access Abused in the Wild",
+     "source_name": "Wiz",
+     "sources": [
+      {
+       "url": "https://www.wiz.io/blog/qubole-cross-account-access-abused-in-the-wild",
+       "name": "Wiz"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse/hunt.kql",
+     "download": "Qubole-Cross-Account-AWS-Role-Abuse_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse/hunt.spl",
+     "download": "Qubole-Cross-Account-AWS-Role-Abuse_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse/hunt_raw.spl",
+      "download": "Qubole-Cross-Account-AWS-Role-Abuse_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse/hunt.yaral",
+     "download": "Qubole-Cross-Account-AWS-Role-Abuse_hunt.yaral"
+    }
+   ]
+  },
+  {
    "id": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC",
    "folder": "threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC",
    "name": "Cisco Expressway CVE-2026-76466: Public Root RCE Exploit (Hunt Only)",
@@ -111,7 +898,7 @@
    "published": "2026-11-12",
    "entry_date": "2026-11-13 11:25",
    "last_updated": "2026-11-13",
-   "seq": 47,
+   "seq": 48,
    "headline": "A public exploit gives root on clustered Cisco Expressway nodes through hard-coded Erlang credentials on TCP 4372",
    "summary": "Cisco fixed CVE-2026-76466 (CVSS 9.8) on 21 October 2026: clustered Cisco Expressway-C and Expressway-E nodes, virtual and appliance, on X15.5.3 and earlier (and X14 and earlier) let an unauthenticated attacker run operating-system commands as root through the cluster database service. On 12 November researcher Nicolas Krassas (dinosn) published a working exploit and fleet detector on GitHub. It opens TLS to TCP 4372, completes the Erlang distribution handshake as the hard-coded maintenance node wombat@127.0.0.1 with the hard-coded cookie that is the same on every affected install, and calls os:cmd as root; it was tested on Expressway-C X15.3.2 in the factory-default TLS Permissive mode. Cisco says there is no workaround and, at the time of its advisory, knew of no malicious use; no exploitation has been reported since the code went public. No attacker infrastructure exists yet, so this entry is hunt and alert only. Its hunts flag connections to TCP 4371 or 4372 from anything that is not a cluster peer, and the public exploit being run from a managed host.",
    "caveat": "No exploitation or attacker indicators have been published; the CVE row is a tracking identifier, not something to block. The network hunt needs your Expressway cluster peer addresses filled in before it alerts, and it only sees traffic your firewall or NetFlow logs record. Expressway nodes do not run Defender for Endpoint, so the KQL can only see managed devices that connect out to the cluster ports or run the exploit.",
@@ -307,6 +1094,264 @@
      "name": "hunt.yaral",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/hunt.yaral",
      "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "Barracuda-Managed-XDR-Integration-Credential-Store-Breach",
+   "folder": "threats/2026-11_November-2026/2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach",
+   "name": "Barracuda Managed XDR Integration Credential Store Breach",
+   "short": "Barracuda Managed XDR credentials",
+   "category": "Cloud / identity",
+   "published": "2026-11-01",
+   "entry_date": "2026-11-13 11:23",
+   "last_updated": "2026-11-13",
+   "seq": 47,
+   "headline": "Barracuda Managed XDR integration credentials were reachable after a 1-2 November cloud intrusion; hunt sign-ins from the published addresses and the read-only-audit user agent",
+   "summary": "Barracuda, writing on its Trust Center, says it found unauthorised activity in parts of its internal cloud between 1 and 2 November 2026. Initial access was a third-party cloud access key. One affected system stores credentials that Barracuda Managed XDR uses to collect data from customer integrations such as Microsoft 365, Google Workspace and endpoint security platforms. Barracuda says it has found no direct evidence those customer credentials were viewed or used, has rotated its own secrets, and has notified only the customers whose integrations may have been affected. Those organisations should revoke and recreate the credentials and review connected-system logs since 1 November; Barracuda says organisations that were not notified do not need to take action. The activity looks financially motivated: the operator searched for cryptocurrency wallets and related secrets. Two attacker source addresses on N963/Netsec hosting (180.178.56.10 and 52.128.238.126; the latter is APNIC space, not Microsoft Azure) are on the block list, as hosts only. A Korea Telecom address and a Cloudflare WARP IPv6 are alert only and must not be blocked. Hunt cloud and identity sign-ins and API calls from all four addresses, or with the distinctive user agent Mozilla/5.0 (compatible; read-only-audit), since 1 November, especially Barracuda connector service principals and OAuth apps. The other user agents Barracuda listed (Boto3, curl and Python-urllib) are ordinary client strings and are not indicators.",
+   "caveat": "Barracuda has found no direct evidence that customer integration credentials were accessed. Do not block 221.146.68.107 (Korea Telecom) or 2a09:bac1:7680:3d0::26b:5b (Cloudflare WARP), and do not widen the two N963/Netsec blocks to the surrounding ranges. Do not treat Boto3/1.43.122, curl/8.5.0, curl/7.81.0 or Python-urllib/3.10 as indicators.",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Worldwide"
+    ],
+    "sectors": [
+     "Cloud services",
+     "Managed security",
+     "Enterprise IT"
+    ],
+    "note": "Barracuda says this applies only to organisations using an API integration for Barracuda Managed XDR Cloud or Monitored Endpoint, and that only notified customers need to revoke and recreate those credentials. No countries were named.",
+    "source": {
+     "url": "https://trust.barracuda.com/security/barracuda-xdr-integration-credentials",
+     "label": "Barracuda – Barracuda XDR Integration Credentials",
+     "name": "Barracuda"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1199",
+     "name": "Trusted Relationship",
+     "url": "https://attack.mitre.org/techniques/T1199/"
+    },
+    {
+     "id": "T1078.004",
+     "name": "Valid Accounts: Cloud Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/004/"
+    },
+    {
+     "id": "T1528",
+     "name": "Steal Application Access Token",
+     "url": "https://attack.mitre.org/techniques/T1528/"
+    },
+    {
+     "id": "T1552.001",
+     "name": "Credentials In Files",
+     "url": "https://attack.mitre.org/techniques/T1552/001/"
+    },
+    {
+     "id": "T1078",
+     "name": "Valid Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/"
+    }
+   ],
+   "recommended_actions": [
+    "If Barracuda notified you, revoke and recreate Managed XDR Cloud or Monitored Endpoint integration credentials (Microsoft 365, Google Workspace and endpoint connectors) and review connected-system logs since 1 November 2026.",
+    "Block 180.178.56.10 and 52.128.238.126 as individual hosts (N963/Netsec hosting, not Azure). Do not block 221.146.68.107 (Korea Telecom) or 2a09:bac1:7680:3d0::26b:5b (Cloudflare WARP), and do not widen the blocks to the surrounding ranges.",
+    "Hunt Entra ID, Cloud App and AWS CloudTrail sign-ins and API calls from those four addresses, or with the user agent Mozilla/5.0 (compatible; read-only-audit), since 1 November, especially Barracuda connector service principals and OAuth apps.",
+    "Treat Boto3/1.43.122, curl/8.5.0, curl/7.81.0 and Python-urllib/3.10 as context only, not as indicators."
+   ],
+   "sources": [
+    {
+     "url": "https://trust.barracuda.com/security/barracuda-xdr-integration-credentials",
+     "label": "Barracuda – Barracuda XDR Integration Credentials",
+     "name": "Barracuda"
+    }
+   ],
+   "indicator_count": 5,
+   "block_now_count": 2,
+   "hunt_count": 3,
+   "hunt_counts": {
+    "alert": 3
+   },
+   "indicator_counts": {
+    "ipv4": 3,
+    "ipv6": 1,
+    "other": 1
+   },
+   "ioas": [
+    {
+     "artefact": "Cloud or identity sign-ins and API calls from 180.178.56.10, 52.128.238.126, 221.146.68.107 or 2a09:bac1:7680:3d0::26b:5b, or with the user agent Mozilla/5.0 (compatible; read-only-audit), since 1 November 2026, especially by Barracuda connector service principals or OAuth apps",
+     "log_source": "Defender XDR EntraIdSignInEvents, AADSignInEventsBeta, EntraIdSpnSignInEvents, AADSpnSignInEventsBeta and CloudAppEvents; AWS CloudTrail (AWSCloudTrail in Sentinel). The CloudTrail and some web tables need Microsoft Sentinel connected to the Defender portal.",
+     "why": "Barracuda published these four addresses and the distinctive read-only-audit user agent as the source of the 1-2 November 2026 intrusion into the store that holds Managed XDR integration credentials. A hit on a Barracuda connector service principal or OAuth app is the highest-priority case, but any sign-in or API call from those indicators since 1 November is worth investigating. Tuning: match only those four addresses or a user agent containing read-only-audit; do not hunt the generic Boto3, curl or Python-urllib agents from the advisory. 221.146.68.107 is Korea Telecom subscriber space and 2a09:bac1:7680:3d0::26b:5b is Cloudflare WARP, so a match on those two is an alert lead, not a reason to block the network. Expected false positives: a legitimate user or service reaching your tenant through that exact Cloudflare WARP address or that Korea Telecom subscriber; or an internal audit tool that already uses the read-only-audit user agent. Confirm whether the principal is a Barracuda connector and whether the activity was expected.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://trust.barracuda.com/security/barracuda-xdr-integration-credentials",
+     "source_name": "Barracuda",
+     "title": "Cloud or identity sign-ins from the Barracuda addresses or the read-only-audit user agent",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    }
+   ],
+   "ioa_count": 1,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach/block_now.txt",
+     "download": "Barracuda-Managed-XDR-Integration-Credential-Store-Breach_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach/defender_xdr_indicators.csv",
+     "download": "Barracuda-Managed-XDR-Integration-Credential-Store-Breach_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach/hunt.kql",
+     "download": "Barracuda-Managed-XDR-Integration-Credential-Store-Breach_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach/hunt.spl",
+     "download": "Barracuda-Managed-XDR-Integration-Credential-Store-Breach_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach/hunt_raw.spl",
+     "download": "Barracuda-Managed-XDR-Integration-Credential-Store-Breach_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach/hunt.yaral",
+     "download": "Barracuda-Managed-XDR-Integration-Credential-Store-Breach_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach/iocs.csv",
+     "download": "Barracuda-Managed-XDR-Integration-Credential-Store-Breach_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach",
+   "indicators": [
+    {
+     "value": "180.178.56.10",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Attacker source address published by Barracuda for the 1-2 November 2026 Managed XDR integration credential store intrusion. Datacenter host in AS963 (N963 PTE. LTD. / Netsec / Simcentric). Block this host only; do not block the surrounding range.",
+     "source_url": "https://trust.barracuda.com/security/barracuda-xdr-integration-credentials",
+     "source_label": "Barracuda – Barracuda XDR Integration Credentials",
+     "source_name": "Barracuda",
+     "sources": [
+      {
+       "url": "https://trust.barracuda.com/security/barracuda-xdr-integration-credentials",
+       "name": "Barracuda"
+      }
+     ]
+    },
+    {
+     "value": "52.128.238.126",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Attacker source address published by Barracuda for the 1-2 November 2026 intrusion. In AS963 (N963 PTE. LTD. / Netsec Limited) on 52.128.224.0/19, which is APNIC space, not Microsoft Azure. The /24 is shared hosting, so block this host only, not the range.",
+     "source_url": "https://trust.barracuda.com/security/barracuda-xdr-integration-credentials",
+     "source_label": "Barracuda – Barracuda XDR Integration Credentials",
+     "source_name": "Barracuda",
+     "sources": [
+      {
+       "url": "https://trust.barracuda.com/security/barracuda-xdr-integration-credentials",
+       "name": "Barracuda"
+      }
+     ]
+    },
+    {
+     "value": "221.146.68.107",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Attacker source address published by Barracuda for the 1-2 November 2026 intrusion, on Korea Telecom (AS4766 KORNET). Shared ISP space; alert only, do not block.",
+     "source_url": "https://trust.barracuda.com/security/barracuda-xdr-integration-credentials",
+     "source_label": "Barracuda – Barracuda XDR Integration Credentials",
+     "source_name": "Barracuda",
+     "sources": [
+      {
+       "url": "https://trust.barracuda.com/security/barracuda-xdr-integration-credentials",
+       "name": "Barracuda"
+      }
+     ]
+    },
+    {
+     "value": "2a09:bac1:7680:3d0::26b:5b",
+     "type": "ipv6",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Attacker source address published by Barracuda for the 1-2 November 2026 intrusion. In Cloudflare WARP (2a09:bac1::/32, AS13335). Shared VPN space; alert only, do not block Cloudflare WARP.",
+     "source_url": "https://trust.barracuda.com/security/barracuda-xdr-integration-credentials",
+     "source_label": "Barracuda – Barracuda XDR Integration Credentials",
+     "source_name": "Barracuda",
+     "sources": [
+      {
+       "url": "https://trust.barracuda.com/security/barracuda-xdr-integration-credentials",
+       "name": "Barracuda"
+      }
+     ]
+    },
+    {
+     "value": "Mozilla/5.0 (compatible; read-only-audit)",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Distinctive user agent published by Barracuda for the 1-2 November 2026 intrusion. Hunt cloud and identity sign-ins and API calls with this user agent since 1 November. The other user agents in the advisory (Boto3/1.43.122, curl/8.5.0, curl/7.81.0, Python-urllib/3.10) are ordinary client strings and are not indicators.",
+     "source_url": "https://trust.barracuda.com/security/barracuda-xdr-integration-credentials",
+     "source_label": "Barracuda – Barracuda XDR Integration Credentials",
+     "source_name": "Barracuda",
+     "sources": [
+      {
+       "url": "https://trust.barracuda.com/security/barracuda-xdr-integration-credentials",
+       "name": "Barracuda"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach/hunt.kql",
+     "download": "Barracuda-Managed-XDR-Integration-Credential-Store-Breach_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach/hunt.spl",
+     "download": "Barracuda-Managed-XDR-Integration-Credential-Store-Breach_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach/hunt_raw.spl",
+      "download": "Barracuda-Managed-XDR-Integration-Credential-Store-Breach_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach/hunt.yaral",
+     "download": "Barracuda-Managed-XDR-Integration-Credential-Store-Breach_hunt.yaral"
     }
    ]
   },
@@ -16697,10 +17742,10 @@
    "category": "Supply chain / CI/CD",
    "published": "2026-11-11",
    "entry_date": "2026-11-12 08:05",
-   "last_updated": "2026-11-12",
+   "last_updated": "2026-11-13 11:23",
    "seq": 19,
    "headline": "Stolen GitHub accounts plant a CI secret stealer that exfiltrates repository secrets and backdoors cloud accounts",
-   "summary": "From about 12:45 UTC on 10 November 2026 an attacker used stolen credentials for 4,837 GitHub accounts to plant a CI secret stealer, named wfx after the prefix it puts on its files, branches and cloud objects, in repositories those accounts could write to. Each attack starts with a probe pull request titled 'docs: dependency audit notes' from a wfx-docs branch; Aikido counted these in 61,764 repositories and treats any account that opened one as compromised. The payload, a single shell script of about 1,500 lines, then arrives in one of three ways: injected into an existing workflow ('ci: refresh build cache'), as an npm postinstall hook that runs a .ci-xxxxxx.sh script on every npm install, including on developer machines ('chore: add ci helper'), or as a new build-audit workflow on a short-lived chore/ branch. The actor usually reverts the change within minutes and deletes the workflow run and its logs, so a missing run number is often the only trace. Aikido says the stealer ran in at least 1,806 repositories; SafeDep counted 8,093 repositories that received malicious commits between 10 November 12:46 UTC and 12 November 04:36 UTC, and probe pull requests were still being opened early on 12 November. The script takes repository secrets and variables, GITHUB_TOKEN and Actions runtime tokens, keys found in runner memory, credential files for cloud, SSH, package registries and developer tools, and .env and Terraform state files, and sends them by HTTP POST to port 8080 on three servers or to a Telegram chat. It also swaps GitHub OIDC tokens for AWS, Azure and GCP sessions and leaves backdoors that survive rotation: new AWS access keys, role trust policies opened to any account, and Entra ID federated credentials named wfx-ci-*. The stealer reached the Packagist package digitalelvis/neuronai-studio 3.14.3 and Go module versions of vkuznet/gocurl and onuragtas/docker-env, and 28 WebdriverIO repositories through the project's release account. Aikido found that the accounts overlap with October's GhostAction wave but does not attribute the two to one actor. The first exfil server and its URL appear in both reports and sit in a network on Spamhaus's ASN-DROP list, so they are on the block-now list; the Amazon-hosted server is alert-only because the address may be reassigned, 153.75.82.159 is on the block list too, and the other single-report indicators stay at medium confidence for alerting.",
+   "summary": "From about 12:45 UTC on 10 November 2026 an attacker used stolen credentials for 4,837 GitHub accounts to plant a CI secret stealer, named wfx after the prefix it puts on its files, branches and cloud objects, in repositories those accounts could write to. Each attack starts with a probe pull request titled 'docs: dependency audit notes' from a wfx-docs branch; Aikido counted these in 61,764 repositories and treats any account that opened one as compromised. The payload, a single shell script of about 1,500 lines, then arrives in one of three ways: injected into an existing workflow ('ci: refresh build cache'), as an npm postinstall hook that runs a .ci-xxxxxx.sh script on every npm install, including on developer machines ('chore: add ci helper'), or as a new build-audit workflow on a short-lived chore/ branch. The actor usually reverts the change within minutes and deletes the workflow run and its logs, so a missing run number is often the only trace. Aikido says the stealer ran in at least 1,806 repositories; SafeDep counted 8,093 repositories that received malicious commits between 10 November 12:46 UTC and 12 November 04:36 UTC, and probe pull requests were still being opened early on 12 November. The script takes repository secrets and variables, GITHUB_TOKEN and Actions runtime tokens, keys found in runner memory, credential files for cloud, SSH, package registries and developer tools, and .env and Terraform state files, and sends them by HTTP POST to port 8080 on three servers or to a Telegram chat. It also swaps GitHub OIDC tokens for AWS, Azure and GCP sessions and leaves backdoors that survive rotation: new AWS access keys, role trust policies opened to any account, and Entra ID federated credentials named wfx-ci-*. The stealer reached the Packagist package digitalelvis/neuronai-studio 3.14.3 and Go module versions of vkuznet/gocurl and onuragtas/docker-env, and 28 WebdriverIO repositories through the project's release account. Aikido found that the accounts overlap with October's GhostAction wave but does not attribute the two to one actor. On 12 November 2026 Fly.io reported that GitHub tokens issued to its GitHub App had been scraped from .git/config files left in some apps deployed from GitHub and used in this campaign; it revoked the tokens and notified the small number of affected customers. The first exfil server and its URL appear in both reports and sit in a network on Spamhaus's ASN-DROP list, so they are on the block-now list; the Amazon-hosted server is alert-only because the address may be reassigned, 153.75.82.159 is on the block list too, and the other single-report indicators stay at medium confidence for alerting.",
    "caveat": null,
    "targets": {
     "countries": [],
@@ -16781,7 +17826,8 @@
     "For any account that opened a probe pull request, revoke its tokens, OAuth app grants, SSH keys and sessions and turn on 2FA; then rotate every secret and variable the affected repository can read, including environment and organisation secrets.",
     "Check cloud accounts for backdoors that survive rotation: AWS sessions named wfx-* followed by CreateAccessKey or UpdateAssumeRolePolicy, Entra ID federated credentials named wfx-ci-*, GCP GenerateAccessToken or SignJwt from your GitHub workload identity pool, and Vault JWT logins from the GitHub OIDC issuer.",
     "Block 194.150.166.244 and its /exfil URL now, block 153.75.82.159 in Defender, and alert on 18.143.168.96 (Amazon-hosted) and the older GhostAction server 193.32.204.199.",
-    "Remove neuronai-studio 3.14.3 (pin 3.14.2 or earlier) and the listed gocurl and docker-env versions; treat any machine that ran npm install on an affected commit as compromised and rotate its keys."
+    "Remove neuronai-studio 3.14.3 (pin 3.14.2 or earlier) and the listed gocurl and docker-env versions; treat any machine that ran npm install on an affected commit as compromised and rotate its keys.",
+    "If you connected GitHub to Fly.io or deployed an app from GitHub through the Fly.io dashboard, reconnect the GitHub App after the token revocation, look for a public /.git/config on the app, and also search repositories the app can access for ci-check-<4 digits> branches and a docs/wfx-audit.md file."
    ],
    "sources": [
     {
@@ -16798,6 +17844,11 @@
      "url": "https://thehackernews.com/2026/11/4837-hijacked-github-accounts-ran-ci.html",
      "label": "The Hacker News – Attacker used 4,837 hijacked GitHub accounts to run a CI secret stealer",
      "name": "The Hacker News"
+    },
+    {
+     "url": "https://community.fly.io/t/security-github-tokens-exposed-by-apps-deployed-from-github/29070",
+     "label": "Fly.io – GitHub tokens exposed by apps deployed from GitHub",
+     "name": "Fly.io"
     }
    ],
    "indicator_count": 11,
@@ -16857,9 +17908,9 @@
      ]
     },
     {
-     "artefact": "A wfx-docs branch or a pull request titled 'docs: dependency audit notes', followed by commits 'ci: refresh build cache', 'chore: add ci helper', 'chore: add dependency audit workflow', 'chore: initial commit', 'ci: restore' or 'ci: cleanup'",
+     "artefact": "A wfx-docs branch or a pull request titled 'docs: dependency audit notes', followed by commits 'ci: refresh build cache', 'chore: add ci helper', 'chore: add dependency audit workflow', 'chore: initial commit', 'ci: restore' or 'ci: cleanup', or a ci-check-<4 digits> branch or a docs/wfx-audit.md file",
      "log_source": "GitHub audit log, repository history and pull requests",
-     "why": "The probe pull request confirms the stolen token can write to the repository, and Aikido and SafeDep treat any account that opened one as compromised even if no payload followed. The commit messages are generic, so verify the diff before acting.",
+     "why": "The probe pull request confirms the stolen token can write to the repository, and Aikido and SafeDep treat any account that opened one as compromised even if no payload followed. Fly.io later confirmed the same pull-request title, wfx-docs and chore/ branches, and also saw ci-check-<4 digits> branches and a docs/wfx-audit.md file. The commit messages are generic, so verify the diff before acting.",
      "action": "hunt",
      "has_query": false,
      "source_url": "https://www.aikido.dev/blog/compromised-github-accounts-push-ci-secret-stealer-to-tens-of-thousands-of-repositories",
@@ -16890,9 +17941,23 @@
      "source_name": "SafeDep",
      "title": "GitHub OIDC tokens used against GCP, Vault or Kubernetes",
      "queries": []
+    },
+    {
+     "artefact": "A web request to /.git/config that returns HTTP 200 with a response body of 100 to 20,000 bytes, from a non-internal source address",
+     "log_source": "IIS / W3C web logs (W3CIISLog) or CEF/WAF logs (CommonSecurityLog). These tables need Microsoft Sentinel connected to the Defender portal; the hunt returns nothing until those logs are ingested.",
+     "why": "Fly.io found that apps deployed from GitHub had left a GitHub access token in .git/config inside the image, and that some apps were serving that file on the public internet. A 200 response in this size range from a public address is consistent with a real git configuration being fetched, including one that may still contain a token. Tuning: the path must end with /.git/config, the status must be 200, the response size must be between 100 and 20,000 bytes (a git config is small; this drops empty replies and large HTML shells), and the source address must not be private, loopback or link-local. Expected false positives: a site that returns HTTP 200 with a small custom HTML page for unknown paths; a vulnerability scanner or an approved external monitor that requests /.git/config. Confirm the response is a git configuration before rotating tokens. Do not treat a 404, or a 200 under 100 bytes, as exposure.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://community.fly.io/t/security-github-tokens-exposed-by-apps-deployed-from-github/29070",
+     "source_name": "Fly.io",
+     "title": "Public /.git/config request returning HTTP 200",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
     }
    ],
-   "ioa_count": 6,
+   "ioa_count": 7,
    "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
    "files": [
     {

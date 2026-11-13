@@ -1,4 +1,13 @@
 indicator,type,threat
+45.115.26.23,ipv4,"ZeroQlik Returns: Qlik Sense Servers Exploited for Reverse Shells, Go Agent and ActiveMQ/Veeam Tooling"
+24ee79a519839230377585ec541863b1615286736cbeb98125afeb82d91bb768,sha256,"ZeroQlik Returns: Qlik Sense Servers Exploited for Reverse Shells, Go Agent and ActiveMQ/Veeam Tooling"
+1ff457d643e5246efb04861169153402345d50b0bb296443b93a87790909efd5,sha256,"ZeroQlik Returns: Qlik Sense Servers Exploited for Reverse Shells, Go Agent and ActiveMQ/Veeam Tooling"
+http://45.115.26.23:80/hb,url,"ZeroQlik Returns: Qlik Sense Servers Exploited for Reverse Shells, Go Agent and ActiveMQ/Veeam Tooling"
+57.129.54.120,ipv4,Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
+65f061281c9a712e9502793dc4c5035cae490b84da05f7d4223cefa65ad396e4,sha256,Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
+1c7437dac21630f53c0b888b50662c6487e23fd7,sha1,Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
+180.178.56.10,ipv4,Barracuda Managed XDR Integration Credential Store Breach
+52.128.238.126,ipv4,Barracuda Managed XDR Integration Credential Store Breach
 46.8.236.121,ipv4,DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe
 129.146.87.174,ipv4,DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe
 http://129.146.87.174:18080/hJCdxq/popoc.py,url,DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe

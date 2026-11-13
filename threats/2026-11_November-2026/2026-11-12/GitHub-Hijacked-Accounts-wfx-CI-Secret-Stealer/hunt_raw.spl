@@ -53,12 +53,22 @@
 ]
 
 | append [
-    search index=* ("wfx-docs" OR "docs: dependency audit notes" OR "ci: refresh build cache" OR "chore: add ci helper" OR "chore: add dependency audit workflow")
+    search index=* ("wfx-docs" OR "docs: dependency audit notes" OR "ci: refresh build cache" OR "chore: add ci helper" OR "chore: add dependency audit workflow" OR "docs/wfx-audit.md" OR "ci-check-")
     | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
     | fillnull value="-" host user src dest detail
     | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
     | eval data_model="GitHub audit and webhook logs"
     | eval ioc="wfx-docs probe pull requests and payload commits", ioc_type="behaviour (hunt)"
+]
+
+| append [
+    search `rti_web(("/.git/config"))`
+    | where like(coalesce(url, cs_uri_stem, uri_path, ""), "%/.git/config") AND coalesce(status, sc_status, 0)=200 AND coalesce(bytes, sc_bytes, bytes_out, 0)>=100 AND coalesce(bytes, sc_bytes, bytes_out, 0)<=20000
+    | eval host=dest, user=user, src=src, dest=dest, detail="HTTP ".coalesce(status, "-")." ".coalesce(url, "-")." UA: ".coalesce(http_user_agent, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="web"
+    | eval ioc="Public /.git/config request returning HTTP 200", ioc_type="behaviour (hunt)"
 ]
 | sort 0 - last_seen
 | eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
