@@ -1,10 +1,10 @@
 // Threat: AI Rapid Threat Intel live feed
-// Author: Daniel Jeremiah | Date: 2026-11-12
+// Author: Daniel Jeremiah | Date: 2026-11-13
 // Ref: https://github.com/daniyyell-dev/rapid-threat-intel
 rule rti_live_feed_block_now_indicators {
   meta:
     author = "Daniel Jeremiah"
-    date = "2026-11-12"
+    date = "2026-11-13"
     description = "AI Rapid Threat Intel live feed"
     reference = "https://github.com/daniyyell-dev/rapid-threat-intel"
 

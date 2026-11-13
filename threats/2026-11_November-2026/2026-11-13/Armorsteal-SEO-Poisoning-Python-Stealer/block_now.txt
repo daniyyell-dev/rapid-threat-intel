@@ -1,0 +1,34 @@
+# Armorsteal: SEO-Poisoned Chocolatey and Massgrave Lures Deliver a Python Stealer, Backdoor and Miner
+# Published 2026-11-06. High-confidence indicators to block. Updated 2026-11-13.
+
+## ipv4 (1)
+209.99.186.187
+
+## domain (12)
+choclatey.org
+massgravel.net
+workerstats.net
+pymons.is
+datamons.org
+niceer.net
+supertrap.net
+plaineagle.xyz
+univalley.top
+icedhatch.top
+icedhatch.xyz
+icedout.top
+
+## sha256 (13)
+f3846ec2a6ff0a27d9ef2b9bf7908743b81d295ef29344acfb96ff83fff994f9
+fb1181160e9f10ce1eb5e5dc9bc23e1498a39110ee9ea361fd150454cb01b292
+3e3b62a9836697d978cbb620dc8af8f6eefdf8cb73fc30d16bb394d1c58f4c97
+237ba698d7dc8936c43e0e78e7644002375e51e8baf9b3a7d4e18683f871ee31
+be0329d0795dd62ae587faf97e704bb36413e5c98ddd8fe575f5077db3c84e5f
+04d2828155ed2a276cfd3c97d4f966d328391dd818e04e773212cd601e49fa74
+56f05c4fb1c25c04e0dde60e2e5e41ac164a6dc53688d0f9eb52a55f82106389
+0ea99fbbe29af6f797e3866ed5f822c7a5d3e9cdb990a8c382a715069f156499
+8fb7aaf2b9270b8b75f6844aaefd5242b4f926fb89cba10fff3d9b908a769788
+5410c2f239c3649928383c4478dea182f90b21f5b258081fec07e9d297ae4b1c
+972fe9edb13da76113047e6db39bcc44749aaeec1be107c975649f0c413a3067
+cb9db2b44476e160fdae0e840d62e7c5c0b07dc56d26d17acf82412e446274ca
+f1150680a69ca5e28f229e51c7b7bc9afa34f3e3a4ba424e3571b152009104b0

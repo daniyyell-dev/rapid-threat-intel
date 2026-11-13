@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-12 22:55",
- "threat_count": 39,
- "indicator_count": 1140,
- "block_now_count": 432,
+ "last_updated": "2026-11-13 00:20",
+ "threat_count": 41,
+ "indicator_count": 1311,
+ "block_now_count": 578,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -102,6 +102,3896 @@
   }
  ],
  "threats": [
+  {
+   "id": "FaceStealer-BlueNoroff-Fake-Meeting-Lures",
+   "folder": "threats/2026-11_November-2026/2026-11-13/FaceStealer-BlueNoroff-Fake-Meeting-Lures",
+   "name": "FaceStealer: BlueNoroff Fake Zoom and Teams Meetings, Stolen Webcam Video and ClickFix Lures",
+   "short": "FaceStealer / BlueNoroff fake meetings",
+   "category": "Nation-state / social engineering",
+   "published": "2026-11-12",
+   "entry_date": "2026-11-13 00:20",
+   "last_updated": "2026-11-13",
+   "seq": 41,
+   "headline": "North Korean fake Zoom and Teams calls replaying stolen webcam video to trick targets into running a malicious fix",
+   "summary": "On 12 November 2026 the FBI published FLASH AC-111226-MS on FaceStealer, a North Korean scheme it attributes to the actors known as Sapphire Sleet, UNC1069, BlueNoroff and APT38. Hijacked Telegram, LinkedIn, Slack or Discord accounts invite a contact to a catch-up, a Calendly invite follows, and shortly before the call the target receives a typo-squatted Zoom or Teams link such as uu01webzoom.us or teams.livemeet.us. The fake meeting plays secretly recorded webcam video of earlier victims, or deepfakes of well-known industry figures, then stages an audio fault and talks the target into running a fix that installs a cookie harvester, keylogger, screen capture and backdoor while recording their webcam for the next round. The FBI says the scheme stole more than $400 million in 18 months, seized over 900 victim videos, and nearly poisoned a JavaScript library with tens of millions of weekly downloads. The same day Arctic Wolf reported that BlueNoroff now also uses fake document viewers, a NovaStream media player, Chrome PDF updates, identity checks and security scanners, published 98 high-confidence domains on three Hostwinds servers, and noted the fix commands have barely changed. The domains, IPs, payload URLs and lure hashes are on the block list; the strongest hunts are the paste-and-run cradles.",
+   "caveat": "Many of the domains stopped resolving after the FBI disruption on 12 November, so treat them mainly as historical hunts. Arctic Wolf's target counts describe people the actor prepared material against, not confirmed compromises. Ten domains Arctic Wolf rates medium confidence are alert only. Do not block zoom.us, teams.microsoft.com or calendly.com.",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Global"
+    ],
+    "sectors": [
+     "Cryptocurrency and Web3",
+     "Venture capital",
+     "Open-source software maintainers",
+     "Executives"
+    ],
+    "note": "The FBI says FaceStealer stole more than $400 million in 18 months and nearly compromised a JavaScript library with tens of millions of weekly downloads. Arctic Wolf found material prepared against 677 individuals in 58 countries, 84% of them founders or C-suite executives; this counts targets, not confirmed compromises.",
+    "source": {
+     "url": "https://www.ic3.gov/CSA/2026/261112.pdf",
+     "label": "FBI FLASH AC-111226-MS – North Korean Hackers Use Secretly Recorded Webcam Library in FaceStealer Crypto Theft Scheme",
+     "name": "FBI IC3"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1586",
+     "name": "Compromise Accounts",
+     "url": "https://attack.mitre.org/techniques/T1586/"
+    },
+    {
+     "id": "T1583.001",
+     "name": "Domains",
+     "url": "https://attack.mitre.org/techniques/T1583/001/"
+    },
+    {
+     "id": "T1566.003",
+     "name": "Spearphishing via Service",
+     "url": "https://attack.mitre.org/techniques/T1566/003/"
+    },
+    {
+     "id": "T1204.004",
+     "name": "Malicious Copy and Paste",
+     "url": "https://attack.mitre.org/techniques/T1204/004/"
+    },
+    {
+     "id": "T1059.001",
+     "name": "PowerShell",
+     "url": "https://attack.mitre.org/techniques/T1059/001/"
+    },
+    {
+     "id": "T1059.002",
+     "name": "AppleScript",
+     "url": "https://attack.mitre.org/techniques/T1059/002/"
+    },
+    {
+     "id": "T1059.004",
+     "name": "Unix Shell",
+     "url": "https://attack.mitre.org/techniques/T1059/004/"
+    },
+    {
+     "id": "T1125",
+     "name": "Video Capture",
+     "url": "https://attack.mitre.org/techniques/T1125/"
+    },
+    {
+     "id": "T1539",
+     "name": "Steal Web Session Cookie",
+     "url": "https://attack.mitre.org/techniques/T1539/"
+    },
+    {
+     "id": "T1056.001",
+     "name": "Keylogging",
+     "url": "https://attack.mitre.org/techniques/T1056/001/"
+    },
+    {
+     "id": "T1195.001",
+     "name": "Compromise Software Dependencies and Development Tools",
+     "url": "https://attack.mitre.org/techniques/T1195/001/"
+    }
+   ],
+   "recommended_actions": [
+    "Block the listed domains, the three Hostwinds addresses 104.168.149.230, 104.168.149.182 and 104.168.149.21, the payload URLs and the lure hashes, and search 90 days of DNS, proxy and EDR logs for them.",
+    "Hunt for PowerShell or curl command lines containing [Console]::In.ReadToEnd() with iex, iwr downloads of %TEMP%\\update.ps1 run with -ep bypass, osacompile or osascript fed by curl on macOS, and curl -fsSL -k piped to bash on Linux.",
+    "Alert on DNS for any updatesdk.<domain> host or a calendly.<domain> host outside calendly.com.",
+    "Brief executives, finance, crypto and open-source maintainer staff: join meetings from the official app with an invite code, keep the webcam off until the inviter is confirmed, never run a fix command during a call, and confirm invites out of band.",
+    "After any contact, terminate all Telegram and other messaging sessions, rotate browser-stored credentials and developer tokens, and move wallet funds to new seed phrases from a clean device."
+   ],
+   "sources": [
+    {
+     "url": "https://www.ic3.gov/CSA/2026/261112.pdf",
+     "label": "FBI FLASH AC-111226-MS – North Korean Hackers Use Secretly Recorded Webcam Library in FaceStealer Crypto Theft Scheme",
+     "name": "FBI IC3"
+    },
+    {
+     "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "name": "Arctic Wolf"
+    },
+    {
+     "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+     "label": "Arctic Wolf Labs – Still in the Meeting (full report and IOC appendix)",
+     "name": "Arctic Wolf (2)"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/540da969ed2a0d828e208c99f3afb4b0763a7076144e1b9edd6ca9c7db0dbeae/",
+     "label": "bazaar.abuse.ch",
+     "name": "MalwareBazaar"
+    }
+   ],
+   "indicator_count": 134,
+   "block_now_count": 120,
+   "hunt_count": 14,
+   "hunt_counts": {
+    "alert": 14
+   },
+   "indicator_counts": {
+    "domain": 112,
+    "url": 11,
+    "filename": 4,
+    "sha256": 4,
+    "ipv4": 3
+   },
+   "ioas": [
+    {
+     "artefact": "curl.exe or powershell.exe with [Console]::In.ReadToEnd() and iex / Invoke-Expression, typically pasted from a meeting \"fix\" prompt",
+     "log_source": "EDR process events (DeviceProcessEvents), PowerShell 4104, Windows 4688 with command line",
+     "why": "Arctic Wolf says BlueNoroff changed every visible lure but kept the same fix command: the page asks the target to paste a curl into PowerShell cradle that reads the payload from standard input and runs it. The FBI says FaceStealer victims are walked through exactly this kind of command during a fake Zoom or Teams call.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf https://www.ic3.gov/CSA/2026/261112.pdf",
+     "source_name": "Arctic Wolf",
+     "title": "Pasted curl into PowerShell ReadToEnd and iex cradle",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "iwr -UseBasicParsing downloading $env:TEMP\\update.ps1, followed by powershell -ep bypass -f on that file",
+     "log_source": "EDR process events, PowerShell 4104",
+     "why": "The docview.ink LNK chain fetches update.ps1 into %TEMP%, runs it with execution policy bypass and deletes it.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/ https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+     "source_name": "Arctic Wolf",
+     "title": "update.ps1 fetched to %TEMP% and run with -ep bypass",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "DNS or web requests to any updatesdk.<domain> host, or a calendly.<domain> host that is not calendly.com",
+     "log_source": "DNS, proxy and EDR network logs (DeviceNetworkEvents)",
+     "why": "Arctic Wolf calls these subdomain patterns fingerprints with no legitimate use: updatesdk hosts serve the fake SDK fix and calendly.<lookalike> hosts serve the verification lures.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/ https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+     "source_name": "Arctic Wolf",
+     "title": "Lookups for updatesdk.* or calendly.<lookalike> hosts",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "macOS osacompile or osascript fed by curl, or a .scpt or Automator document.wflow launched from ~/Downloads",
+     "log_source": "Defender for Endpoint on macOS process events, unified log",
+     "why": "The macOS branches of the lures pipe curl into osacompile, run long osascript -e strings, or launch an Automator workflow from a ZIP to fetch the next stage.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/ https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+     "source_name": "Arctic Wolf",
+     "title": "macOS curl into osacompile or Automator from Downloads",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Linux curl -fsSL -k piped to bash from an interactive shell",
+     "log_source": "EDR process events on Linux, auditd execve",
+     "why": "The Linux branch of the fake update tells the target to run curl -fsSL -k against an updatesdk or chromeupdate host and pipe it to bash.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/ https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+     "source_name": "Arctic Wolf",
+     "title": "Linux curl -fsSL -k piped to bash",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    }
+   ],
+   "ioa_count": 5,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/FaceStealer-BlueNoroff-Fake-Meeting-Lures/block_now.txt",
+     "download": "FaceStealer-BlueNoroff-Fake-Meeting-Lures_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/FaceStealer-BlueNoroff-Fake-Meeting-Lures/defender_xdr_indicators.csv",
+     "download": "FaceStealer-BlueNoroff-Fake-Meeting-Lures_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/FaceStealer-BlueNoroff-Fake-Meeting-Lures/hunt.kql",
+     "download": "FaceStealer-BlueNoroff-Fake-Meeting-Lures_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/FaceStealer-BlueNoroff-Fake-Meeting-Lures/hunt.spl",
+     "download": "FaceStealer-BlueNoroff-Fake-Meeting-Lures_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/FaceStealer-BlueNoroff-Fake-Meeting-Lures/hunt_raw.spl",
+     "download": "FaceStealer-BlueNoroff-Fake-Meeting-Lures_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/FaceStealer-BlueNoroff-Fake-Meeting-Lures/hunt.yaral",
+     "download": "FaceStealer-BlueNoroff-Fake-Meeting-Lures_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/FaceStealer-BlueNoroff-Fake-Meeting-Lures/iocs.csv",
+     "download": "FaceStealer-BlueNoroff-Fake-Meeting-Lures_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/FaceStealer-BlueNoroff-Fake-Meeting-Lures",
+   "indicators": [
+    {
+     "value": "uu01webzoom.us",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Typo-squatted Zoom meeting domain the FBI names as North Korean-controlled FaceStealer infrastructure, sent to targets shortly before a fake meeting.",
+     "source_url": "https://www.ic3.gov/CSA/2026/261112.pdf",
+     "source_label": "FBI FLASH AC-111226-MS – North Korean Hackers Use Secretly Recorded Webcam Library in FaceStealer Crypto Theft Scheme",
+     "source_name": "FBI IC3",
+     "sources": [
+      {
+       "url": "https://www.ic3.gov/CSA/2026/261112.pdf",
+       "name": "FBI IC3"
+      }
+     ]
+    },
+    {
+     "value": "teams.livemeet.us",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Typo-squatted Microsoft Teams meeting host the FBI names as North Korean-controlled FaceStealer infrastructure.",
+     "source_url": "https://www.ic3.gov/CSA/2026/261112.pdf",
+     "source_label": "FBI FLASH AC-111226-MS – North Korean Hackers Use Secretly Recorded Webcam Library in FaceStealer Crypto Theft Scheme",
+     "source_name": "FBI IC3",
+     "sources": [
+      {
+       "url": "https://www.ic3.gov/CSA/2026/261112.pdf",
+       "name": "FBI IC3"
+      }
+     ]
+    },
+    {
+     "value": "104.168.149.230",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Hostwinds VPS (AS54290) that Arctic Wolf identifies as the BlueNoroff primary lure host serving about 90 BlueNoroff domains.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "104.168.149.182",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Hostwinds VPS (AS54290) that Arctic Wolf identifies as the BlueNoroff host for the DocSend and Teams lure families and per-target subdomains.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "104.168.149.21",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Hostwinds VPS (AS54290) that Arctic Wolf identifies as the BlueNoroff host for the me-live meeting-room cluster.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "https://vip.novaplayer.online/view/7091322YJEemPZd0V5R4258BX3xe292n0",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "NovaStream fake media-player lure page.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "https://updatesdk.novaplayer.online/update-winsdk-18731628",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Windows ClickFix payload fetched by a curl | powershell fix command.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "https://updatesdk.novaplayer.online/update-macsdk-49661181",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "macOS AppleScript payload served by the NovaStream lure.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "https://updatesdk.novaplayer.online/update-linuxsdk-06166443",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Linux payload fetched by a curl | bash fix command.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "https://docview.ink/check/60046502686a7cjHHgIc",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "URL a malicious LNK uses to drop %TEMP%\\update.ps1.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "https://docview.ink/check/7060005211mD1eCY8u09",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Second LNK chain URL that drops %TEMP%\\update.ps1.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "https://calendly.idcheck.watch/DyPck",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "AppleScript source for the macOS Automator (document.wflow) JXA chain, posing as Calendly verification.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "https://chromeupdate.docdock.online/check/32831766541X56zrQlC1",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Windows payload behind the fake Chrome PDF Viewer update lure.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "https://chromeupdate.docdock.online/check/3976671880i9937o3D8T",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Linux payload (curl | bash) behind the fake Chrome update lure.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "https://calendly.docdock.online/troubleshoot-issue-092267",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "macOS AppleScript source that leads to PDF Viewer Update.scpt.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "https://calendly.docdock.online/uploads/2571422?id=4NrwnhccbXvUAZM",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "HTML lure kit hosted on a fake Calendly subdomain.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "02live.com.co",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "02live.us.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "05live.us.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "live-teams.com.co",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "me-0live.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "me-live.it.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "me-live.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "me-live.xyz",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "microso1t.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "ms-live.cc",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "ms-live.co.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "ms-live.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "ms-meet.store",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "ms-meeting.co",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "ms-meeting.com.co",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "ms-meeting.live",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "ms-room.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "ms-teams.co",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "ms-teams.in",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "protected-view.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-live.cam",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-live.com.co",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-live.com.im",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-live.eu.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-live.it.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-live.vip",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-live.work",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-meet.cc",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-meet.cloud",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-meet.co",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-meet.com.co",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-meet.in",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-meeting.co",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-meeting.in",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-meets.cc",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-meets.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-meets.in",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-meets.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-meets.us.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams-room.us",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams02live.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams02live.us",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams02live.us.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams05live.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams05live.us.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams06live.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams07live.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teams0live.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teamscloud.us.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teamslive.cloud",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "teamslive.us.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "us02live.co",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "us05cloud.co",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "us05cloud.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "us05cloud.live",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "us09live.us",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "web-live.com.co",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "web-live.us",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "call-in.co",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "call-in.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "call-live.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "call-on.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "call-room.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "meet-in.co",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "meet-on.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "meet-room.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "meet-room.xyz",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "meeting-on.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "room-live.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "room-meet.us",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "room-meet.xyz",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "room-on.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "room-on.xyz",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "team-meet.xyz",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "web-meet.us",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "web-teams.us",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "novaplayer.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "novaplayer.xyz",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "videolan.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "videolan.store",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "videoviewer.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "instantsecscan.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "instantsecscan.xyz",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "ipblock.watch",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "scanmypc.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "scanmypc.xyz",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "securealliance.xyz",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "securemypc.life",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "securemypc.xyz",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "ashnote.blog",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "cloud-docs.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "cobolabs.cloud",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "docsend.space",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "notionshare.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "agenda.pw",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "idcheck.watch",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "ipcheck.watch",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "sealteam911.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "theworldofluck.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "docdock.online",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BlueNoroff fake-meeting, document, media-player or security-scanner lure domain that Arctic Wolf rates high confidence (Hostwinds cluster, shared naming and certificate habits).",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "docsend.blog",
+     "type": "domain",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Domain Arctic Wolf links to the BlueNoroff lure cluster at medium confidence.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "docsend.site",
+     "type": "domain",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Domain Arctic Wolf links to the BlueNoroff lure cluster at medium confidence.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "docsend.store",
+     "type": "domain",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Domain Arctic Wolf links to the BlueNoroff lure cluster at medium confidence.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "docview.ink",
+     "type": "domain",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Domain Arctic Wolf links to the BlueNoroff lure cluster at medium confidence.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "docview.pw",
+     "type": "domain",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Domain Arctic Wolf links to the BlueNoroff lure cluster at medium confidence.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "docview.vip",
+     "type": "domain",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Domain Arctic Wolf links to the BlueNoroff lure cluster at medium confidence.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "mailview.online",
+     "type": "domain",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Domain Arctic Wolf links to the BlueNoroff lure cluster at medium confidence.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "sealteam911.com",
+     "type": "domain",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Domain Arctic Wolf links to the BlueNoroff lure cluster at medium confidence.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "shiabank.com",
+     "type": "domain",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Domain Arctic Wolf links to the BlueNoroff lure cluster at medium confidence.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "theworldofluck.site",
+     "type": "domain",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Domain Arctic Wolf links to the BlueNoroff lure cluster at medium confidence.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "ca14040cc48fbc3b00ea5f74e891266128f7bb3058be400782c5b08436f7668a",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of the NovaStream Player HTML lure (React single-page app) seen at vip.novaplayer.online.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "57201b105d64ecf9050fa1fb9107a6be36761b221ae32d7eb23859ce74b68718",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of the NovaStream Player expired-link HTML from the same lure URL.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "1a9663641958e9e7c31cc621b85f22c77c20d1ace2cb0477c4d35e6c9675bb8e",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of a ZIP holding the LNK execution chain that pulls update.ps1 from docview.ink.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "540da969ed2a0d828e208c99f3afb4b0763a7076144e1b9edd6ca9c7db0dbeae",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of a second ZIP with the docview.ink LNK execution chain.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/540da969ed2a0d828e208c99f3afb4b0763a7076144e1b9edd6ca9c7db0dbeae/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "document.wflow",
+     "type": "filename",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "macOS Automator workflow inside a fake Capital Investment Agreement ZIP that runs a JXA downloader.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "NovaStreamHelper.scpt",
+     "type": "filename",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "AppleScript payload name used by the NovaStream media-player lure.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "Calendly Verification.scpt",
+     "type": "filename",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "AppleScript payload name used by the fake Calendly verification lure.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    },
+    {
+     "value": "%TEMP%\\update.ps1",
+     "type": "filename",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Script the docview.ink LNK chain downloads with iwr -UseBasicParsing, runs with powershell -ep bypass -f, then deletes.",
+     "source_url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+     "source_label": "Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On",
+     "source_name": "Arctic Wolf",
+     "sources": [
+      {
+       "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",
+       "name": "Arctic Wolf"
+      },
+      {
+       "url": "https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf",
+       "name": "Arctic Wolf (2)"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/FaceStealer-BlueNoroff-Fake-Meeting-Lures/hunt.kql",
+     "download": "FaceStealer-BlueNoroff-Fake-Meeting-Lures_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/FaceStealer-BlueNoroff-Fake-Meeting-Lures/hunt.spl",
+     "download": "FaceStealer-BlueNoroff-Fake-Meeting-Lures_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/FaceStealer-BlueNoroff-Fake-Meeting-Lures/hunt_raw.spl",
+      "download": "FaceStealer-BlueNoroff-Fake-Meeting-Lures_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/FaceStealer-BlueNoroff-Fake-Meeting-Lures/hunt.yaral",
+     "download": "FaceStealer-BlueNoroff-Fake-Meeting-Lures_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "Armorsteal-SEO-Poisoning-Python-Stealer",
+   "folder": "threats/2026-11_November-2026/2026-11-13/Armorsteal-SEO-Poisoning-Python-Stealer",
+   "name": "Armorsteal: SEO-Poisoned Chocolatey and Massgrave Lures Deliver a Python Stealer, Backdoor and Miner",
+   "short": "Armorsteal Python stealer",
+   "category": "Crimeware / information stealer",
+   "published": "2026-11-06",
+   "entry_date": "2026-11-13 00:20",
+   "last_updated": "2026-11-13",
+   "seq": 40,
+   "headline": "Fake Chocolatey and Massgrave install commands drop a Python backdoor, stealer and hidden miner",
+   "summary": "Zscaler ThreatLabz reported in October that poisoned search results sent people looking for Chocolatey or Microsoft Activation Scripts install commands to lookalike sites choclatey.org and massgravel.net. The PowerShell command each site showed installed the real tool and quietly dropped Armorsteal, a PyArmor-protected Python kit with its own Python 3.11 runtime, into C:\\Windows\\SystemHealth\\Update\\, persisting with the scheduled tasks SysCheck2 and SysCheckX. On 6 November Seqrite Labs analysed a newer build, compiled on 28 October, with an 11-domain C2 failover list, a new SysHeal task, and an XMRig miner manager that adds C:\\Windows and xmrig.exe as Microsoft Defender exclusions and pauses the miner whenever Task Manager or similar tools open. The backdoor only runs Python tasks signed with the operator's RSA key; the spy module logs keys, swaps copied wallet addresses and takes keyword-triggered screenshots; the stealer takes Discord tokens, browser passwords and cookies (through Chrome remote debugging on port 9222), wallet data, seed phrases, password-manager vaults and SSH keys. The Hacker News highlighted the campaign again on 12 November. The lure and C2 domains, the Spamhaus-listed lure host and the published hashes are on the block list.",
+   "caveat": "The C2 addresses sit in IQWeb / DDoS-Guard protected ranges that front many unrelated sites, so they are alert only; block the domains instead. 82.153.135.80 hosted the lures until about 1 October and may have been reassigned, so it is alert only. pur.st has a long certificate history and is alert only. PyArmor rebuilds change file hashes, so rely on the task, folder and exclusion hunts.",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Global"
+    ],
+    "sectors": [
+     "IT administrators and developers",
+     "Cryptocurrency holders",
+     "Consumers"
+    ],
+    "note": "Victims are users who searched for Chocolatey or Microsoft Activation Scripts commands. Zscaler and Seqrite do not name victim organisations or countries.",
+    "source": {
+     "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+     "label": "Seqrite Labs – Armorsteal Unpacked: Breaking Down a Python Malware Kit That Steals Data and Mines Crypto",
+     "name": "Seqrite Labs"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1608.006",
+     "name": "SEO Poisoning",
+     "url": "https://attack.mitre.org/techniques/T1608/006/"
+    },
+    {
+     "id": "T1204.004",
+     "name": "Malicious Copy and Paste",
+     "url": "https://attack.mitre.org/techniques/T1204/004/"
+    },
+    {
+     "id": "T1059.001",
+     "name": "PowerShell",
+     "url": "https://attack.mitre.org/techniques/T1059/001/"
+    },
+    {
+     "id": "T1059.006",
+     "name": "Python",
+     "url": "https://attack.mitre.org/techniques/T1059/006/"
+    },
+    {
+     "id": "T1053.005",
+     "name": "Scheduled Task",
+     "url": "https://attack.mitre.org/techniques/T1053/005/"
+    },
+    {
+     "id": "T1036.004",
+     "name": "Masquerade Task or Service",
+     "url": "https://attack.mitre.org/techniques/T1036/004/"
+    },
+    {
+     "id": "T1562.001",
+     "name": "Disable or Modify Tools",
+     "url": "https://attack.mitre.org/techniques/T1562/001/"
+    },
+    {
+     "id": "T1497.001",
+     "name": "System Checks",
+     "url": "https://attack.mitre.org/techniques/T1497/001/"
+    },
+    {
+     "id": "T1555.003",
+     "name": "Credentials from Web Browsers",
+     "url": "https://attack.mitre.org/techniques/T1555/003/"
+    },
+    {
+     "id": "T1539",
+     "name": "Steal Web Session Cookie",
+     "url": "https://attack.mitre.org/techniques/T1539/"
+    },
+    {
+     "id": "T1056.001",
+     "name": "Keylogging",
+     "url": "https://attack.mitre.org/techniques/T1056/001/"
+    },
+    {
+     "id": "T1115",
+     "name": "Clipboard Data",
+     "url": "https://attack.mitre.org/techniques/T1115/"
+    },
+    {
+     "id": "T1496.001",
+     "name": "Compute Hijacking",
+     "url": "https://attack.mitre.org/techniques/T1496/001/"
+    }
+   ],
+   "recommended_actions": [
+    "Block choclatey.org, massgravel.net and the C2 domains (workerstats.net, pymons.is, datamons.org, niceer.net, supertrap.net and the newer failover domains), 209.99.186.187 and the published hashes, and search 90 days of DNS, proxy and EDR logs for them.",
+    "Hunt for the scheduled tasks SysCheck2, SysCheckX and SysHeal, any file under C:\\Windows\\SystemHealth\\Update\\, and conhost.exe --headless starting python.exe.",
+    "Check Microsoft Defender for exclusions of C:\\Windows or xmrig.exe and remove them, and alert on browsers launched by Python with --remote-debugging-port=9222.",
+    "On a confirmed host, rebuild it, rotate browser-stored passwords, Discord sessions, SSH keys and password-manager master passwords, and move wallet funds to new seed phrases from a clean device.",
+    "Remind IT staff to copy install commands only from the official chocolatey.org and massgrave.dev sites."
+   ],
+   "sources": [
+    {
+     "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+     "label": "Seqrite Labs – Armorsteal Unpacked: Breaking Down a Python Malware Kit That Steals Data and Mines Crypto",
+     "name": "Seqrite Labs"
+    },
+    {
+     "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "name": "Zscaler ThreatLabz"
+    },
+    {
+     "url": "https://thehackernews.com/2026/11/threatsday-59-linux-kernel-bugs-falcon.html",
+     "label": "The Hacker News – ThreatsDay: 59 Linux Kernel Bugs, Falcon Spyware, GSocket Backdoors + 17 More Stories",
+     "name": "The Hacker News"
+    },
+    {
+     "url": "https://www.spamhaus.org/drop/",
+     "label": "Spamhaus – DROP list",
+     "name": "Spamhaus"
+    },
+    {
+     "url": "https://urlhaus.abuse.ch/host/massgravel.net/",
+     "label": "urlhaus.abuse.ch",
+     "name": "URLhaus"
+    },
+    {
+     "url": "https://urlhaus.abuse.ch/host/workerstats.net/",
+     "label": "urlhaus.abuse.ch",
+     "name": "URLhaus (2)"
+    }
+   ],
+   "indicator_count": 37,
+   "block_now_count": 26,
+   "hunt_count": 11,
+   "hunt_counts": {
+    "alert": 11
+   },
+   "indicator_counts": {
+    "domain": 13,
+    "sha256": 13,
+    "ipv4": 7,
+    "other": 3,
+    "filename": 1
+   },
+   "ioas": [
+    {
+     "artefact": "Scheduled tasks named SysCheck2, SysCheckX or SysHeal, or files written under C:\\Windows\\SystemHealth\\Update\\",
+     "log_source": "EDR process, file and scheduled-task events (DeviceProcessEvents, DeviceFileEvents, DeviceEvents), Windows 4698",
+     "why": "Both the Zscaler and Seqrite builds install a portable Python 3.11 runtime into this fake system folder and persist with these task names. Neither the folder nor the tasks exist on a clean Windows install.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+     "source_name": "Zscaler ThreatLabz",
+     "title": "SysCheck tasks or files in the fake SystemHealth folder",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "conhost.exe --headless starting python.exe or pythonw.exe from C:\\Windows\\SystemHealth\\Update",
+     "log_source": "EDR process events, Windows 4688 with command line",
+     "why": "SysCheck2 launches SysMon.py through a headless console so no window appears; Zscaler lists this as a detection opportunity.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+     "source_name": "Zscaler ThreatLabz",
+     "title": "Headless console starting Python from SystemHealth",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "A Microsoft Defender exclusion for the whole C:\\Windows folder or for xmrig.exe",
+     "log_source": "EDR process and registry events (DeviceProcessEvents, DeviceRegistryEvents), Defender 5007",
+     "why": "Seqrite found xm_handler.py re-adding C:\\Windows as an excluded path and xmrig.exe as an excluded process every minute, which hides the whole kit and survives cleanup.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/ https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_name": "Seqrite Labs",
+     "title": "Defender exclusion for C:\\Windows or xmrig.exe",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Chrome, Edge or Brave started with --remote-debugging-port=9222 by python.exe or pythonw.exe",
+     "log_source": "EDR process events",
+     "why": "The got.py stealer pulls cookies through the Chrome DevTools Protocol on port 9222; a browser launched with that flag by Python is a strong lead.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+     "source_name": "Zscaler ThreatLabz",
+     "title": "Python launching a browser with remote debugging on 9222",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    }
+   ],
+   "ioa_count": 4,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Armorsteal-SEO-Poisoning-Python-Stealer/block_now.txt",
+     "download": "Armorsteal-SEO-Poisoning-Python-Stealer_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Armorsteal-SEO-Poisoning-Python-Stealer/defender_xdr_indicators.csv",
+     "download": "Armorsteal-SEO-Poisoning-Python-Stealer_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Armorsteal-SEO-Poisoning-Python-Stealer/hunt.kql",
+     "download": "Armorsteal-SEO-Poisoning-Python-Stealer_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Armorsteal-SEO-Poisoning-Python-Stealer/hunt.spl",
+     "download": "Armorsteal-SEO-Poisoning-Python-Stealer_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Armorsteal-SEO-Poisoning-Python-Stealer/hunt_raw.spl",
+     "download": "Armorsteal-SEO-Poisoning-Python-Stealer_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Armorsteal-SEO-Poisoning-Python-Stealer/hunt.yaral",
+     "download": "Armorsteal-SEO-Poisoning-Python-Stealer_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Armorsteal-SEO-Poisoning-Python-Stealer/iocs.csv",
+     "download": "Armorsteal-SEO-Poisoning-Python-Stealer_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Armorsteal-SEO-Poisoning-Python-Stealer",
+   "indicators": [
+    {
+     "value": "choclatey.org",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Typo-squatted Chocolatey site that SEO poisoning pushed to users searching for Chocolatey install commands; its PowerShell one-liner installs Armorsteal alongside the real Chocolatey.",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      }
+     ]
+    },
+    {
+     "value": "massgravel.net",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Fake Microsoft Activation Scripts (Massgrave) site whose PowerShell command installs Armorsteal.",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      },
+      {
+       "url": "https://urlhaus.abuse.ch/host/massgravel.net/",
+       "name": "URLhaus"
+      }
+     ]
+    },
+    {
+     "value": "workerstats.net",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Primary Armorsteal C2 domain (registered January 2026) used for /receive_infof, /get-global and /black-watch/ uploads.",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      },
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      },
+      {
+       "url": "https://urlhaus.abuse.ch/host/workerstats.net/",
+       "name": "URLhaus"
+      }
+     ]
+    },
+    {
+     "value": "pymons.is",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Armorsteal C2 domain, first in the newer build's 11-domain failover list and still resolving on 31 October 2026.",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      },
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    },
+    {
+     "value": "datamons.org",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Armorsteal C2 domain, standby in September and active from October 2026; Seqrite saw an infected machine talking to it.",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      },
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    },
+    {
+     "value": "niceer.net",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Armorsteal standby C2 domain in both the Zscaler and Seqrite builds.",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      },
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    },
+    {
+     "value": "supertrap.net",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Armorsteal standby C2 domain in both the Zscaler and Seqrite builds.",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      },
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    },
+    {
+     "value": "plaineagle.xyz",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Armorsteal C2 domain in the newer build's failover list.",
+     "source_url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+     "source_label": "Seqrite Labs – Armorsteal Unpacked: Breaking Down a Python Malware Kit That Steals Data and Mines Crypto",
+     "source_name": "Seqrite Labs",
+     "sources": [
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    },
+    {
+     "value": "univalley.top",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Armorsteal C2 domain in the newer build's failover list.",
+     "source_url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+     "source_label": "Seqrite Labs – Armorsteal Unpacked: Breaking Down a Python Malware Kit That Steals Data and Mines Crypto",
+     "source_name": "Seqrite Labs",
+     "sources": [
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    },
+    {
+     "value": "icedhatch.top",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Armorsteal C2 domain in the newer build's failover list.",
+     "source_url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+     "source_label": "Seqrite Labs – Armorsteal Unpacked: Breaking Down a Python Malware Kit That Steals Data and Mines Crypto",
+     "source_name": "Seqrite Labs",
+     "sources": [
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    },
+    {
+     "value": "icedhatch.xyz",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Armorsteal C2 domain in the newer build's failover list.",
+     "source_url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+     "source_label": "Seqrite Labs – Armorsteal Unpacked: Breaking Down a Python Malware Kit That Steals Data and Mines Crypto",
+     "source_name": "Seqrite Labs",
+     "sources": [
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    },
+    {
+     "value": "icedout.top",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Armorsteal C2 domain in the newer build's failover list.",
+     "source_url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+     "source_label": "Seqrite Labs – Armorsteal Unpacked: Breaking Down a Python Malware Kit That Steals Data and Mines Crypto",
+     "source_name": "Seqrite Labs",
+     "sources": [
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    },
+    {
+     "value": "pur.st",
+     "type": "domain",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Second entry in the newer Armorsteal build's C2 failover list.",
+     "source_url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+     "source_label": "Seqrite Labs – Armorsteal Unpacked: Breaking Down a Python Malware Kit That Steals Data and Mines Crypto",
+     "source_name": "Seqrite Labs",
+     "sources": [
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    },
+    {
+     "value": "209.99.186.187",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SKN Subnet & Telecom server that hosted the fake Chocolatey site and its subdomains in early September 2026.",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      },
+      {
+       "url": "https://www.spamhaus.org/drop/",
+       "name": "Spamhaus"
+      }
+     ]
+    },
+    {
+     "value": "82.153.135.80",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "AKILE LTD VPS in the United Kingdom that hosted both fake lure sites from mid-September 2026.",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      }
+     ]
+    },
+    {
+     "value": "186.2.175.183",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Address workerstats.net moved to in mid-September 2026 (IQWeb FZ-LLC, DDoS-Guard name servers).",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      }
+     ]
+    },
+    {
+     "value": "186.2.163.185",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Armorsteal C2 address listed by Zscaler (IQWeb FZ-LLC).",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      }
+     ]
+    },
+    {
+     "value": "190.115.31.69",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Armorsteal C2 address listed by Zscaler (IQWeb FZ-LLC).",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      }
+     ]
+    },
+    {
+     "value": "186.2.175.158",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Address pymons.is resolved to on 31 October 2026 (IQWeb FZ-LLC).",
+     "source_url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+     "source_label": "Seqrite Labs – Armorsteal Unpacked: Breaking Down a Python Malware Kit That Steals Data and Mines Crypto",
+     "source_name": "Seqrite Labs",
+     "sources": [
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    },
+    {
+     "value": "186.2.163.193",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Address datamons.org resolved to on 31 October 2026 (IQWeb FZ-LLC).",
+     "source_url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+     "source_label": "Seqrite Labs – Armorsteal Unpacked: Breaking Down a Python Malware Kit That Steals Data and Mines Crypto",
+     "source_name": "Seqrite Labs",
+     "sources": [
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    },
+    {
+     "value": "f3846ec2a6ff0a27d9ef2b9bf7908743b81d295ef29344acfb96ff83fff994f9",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of install.ps1 from the fake Massgrave lure.",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      }
+     ]
+    },
+    {
+     "value": "fb1181160e9f10ce1eb5e5dc9bc23e1498a39110ee9ea361fd150454cb01b292",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of install.ps1 from the fake Chocolatey lure.",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      }
+     ]
+    },
+    {
+     "value": "3e3b62a9836697d978cbb620dc8af8f6eefdf8cb73fc30d16bb394d1c58f4c97",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of Update.zip / Updatef.zip, the remote access module package.",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      }
+     ]
+    },
+    {
+     "value": "237ba698d7dc8936c43e0e78e7644002375e51e8baf9b3a7d4e18683f871ee31",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of nig20084.zip, the surveillance module package.",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      }
+     ]
+    },
+    {
+     "value": "be0329d0795dd62ae587faf97e704bb36413e5c98ddd8fe575f5077db3c84e5f",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of getthem20084.zip, the stealer module package.",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      }
+     ]
+    },
+    {
+     "value": "04d2828155ed2a276cfd3c97d4f966d328391dd818e04e773212cd601e49fa74",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of nig20083.zip, an older module package.",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      }
+     ]
+    },
+    {
+     "value": "56f05c4fb1c25c04e0dde60e2e5e41ac164a6dc53688d0f9eb52a55f82106389",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of getthem20083.zip, an older stealer package.",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      }
+     ]
+    },
+    {
+     "value": "0ea99fbbe29af6f797e3866ed5f822c7a5d3e9cdb990a8c382a715069f156499",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of SysMon.py, the remote access module (Zscaler build).",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      }
+     ]
+    },
+    {
+     "value": "8fb7aaf2b9270b8b75f6844aaefd5242b4f926fb89cba10fff3d9b908a769788",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of basrq.py, the surveillance module (Zscaler build).",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      }
+     ]
+    },
+    {
+     "value": "5410c2f239c3649928383c4478dea182f90b21f5b258081fec07e9d297ae4b1c",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of got.py, the stealer module (Zscaler build).",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      }
+     ]
+    },
+    {
+     "value": "972fe9edb13da76113047e6db39bcc44749aaeec1be107c975649f0c413a3067",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of SysMon.py from the newer build Seqrite analysed.",
+     "source_url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+     "source_label": "Seqrite Labs – Armorsteal Unpacked: Breaking Down a Python Malware Kit That Steals Data and Mines Crypto",
+     "source_name": "Seqrite Labs",
+     "sources": [
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    },
+    {
+     "value": "cb9db2b44476e160fdae0e840d62e7c5c0b07dc56d26d17acf82412e446274ca",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of xm_handler.py, the miner manager that adds the C:\\Windows Defender exclusion.",
+     "source_url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+     "source_label": "Seqrite Labs – Armorsteal Unpacked: Breaking Down a Python Malware Kit That Steals Data and Mines Crypto",
+     "source_name": "Seqrite Labs",
+     "sources": [
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    },
+    {
+     "value": "f1150680a69ca5e28f229e51c7b7bc9afa34f3e3a4ba424e3571b152009104b0",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of nig\\basrq.py from the newer build.",
+     "source_url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+     "source_label": "Seqrite Labs – Armorsteal Unpacked: Breaking Down a Python Malware Kit That Steals Data and Mines Crypto",
+     "source_name": "Seqrite Labs",
+     "sources": [
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    },
+    {
+     "value": "SysCheck2",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Scheduled task that starts SysMon.py at every logon through conhost.exe --headless.",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      },
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    },
+    {
+     "value": "SysCheckX",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Scheduled task that runs as SYSTEM 45 seconds after boot (controller in Zscaler's build, miner manager in Seqrite's).",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      },
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    },
+    {
+     "value": "SysHeal",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Newer SYSTEM scheduled task that ran the controller once, seen by Seqrite.",
+     "source_url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+     "source_label": "Seqrite Labs – Armorsteal Unpacked: Breaking Down a Python Malware Kit That Steals Data and Mines Crypto",
+     "source_name": "Seqrite Labs",
+     "sources": [
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    },
+    {
+     "value": "C:\\Windows\\SystemHealth\\Update\\",
+     "type": "filename",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Install folder for the portable Python 3.11 runtime and the Armorsteal modules; not a genuine Windows directory.",
+     "source_url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+     "source_label": "Zscaler ThreatLabz – SEO Poisoning Campaign Delivers New Armorsteal Malware",
+     "source_name": "Zscaler ThreatLabz",
+     "sources": [
+      {
+       "url": "https://www.zscaler.com/blogs/security-research/seo-poisoning-campaign-delivers-new-armorsteal-malware",
+       "name": "Zscaler ThreatLabz"
+      },
+      {
+       "url": "https://www.seqrite.com/blog/armorsteal-unpacked-breaking-down-a-python-malware-kit-that-steals-data-and-mines-crypto/",
+       "name": "Seqrite Labs"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Armorsteal-SEO-Poisoning-Python-Stealer/hunt.kql",
+     "download": "Armorsteal-SEO-Poisoning-Python-Stealer_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Armorsteal-SEO-Poisoning-Python-Stealer/hunt.spl",
+     "download": "Armorsteal-SEO-Poisoning-Python-Stealer_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Armorsteal-SEO-Poisoning-Python-Stealer/hunt_raw.spl",
+      "download": "Armorsteal-SEO-Poisoning-Python-Stealer_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Armorsteal-SEO-Poisoning-Python-Stealer/hunt.yaral",
+     "download": "Armorsteal-SEO-Poisoning-Python-Stealer_hunt.yaral"
+    }
+   ]
+  },
   {
    "id": "MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT",
    "folder": "threats/2026-11_November-2026/2026-11-12/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT",

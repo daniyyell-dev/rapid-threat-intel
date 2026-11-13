@@ -1,0 +1,133 @@
+``` Threat: Armorsteal: SEO-Poisoned Chocolatey and Massgrave Lures Deliver a Python Stealer, Backdoor and Miner
+    Author: Daniel Jeremiah | Date: 2026-11-13
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Armorsteal-SEO-Poisoning-Python-Stealer ```
+| tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+    FROM datamodel=Network_Traffic.All_Traffic
+    WHERE All_Traffic.dest_ip IN ("209.99.186.187", "82.153.135.80", "186.2.175.183", "186.2.163.185", "190.115.31.69", "186.2.175.158", "186.2.163.193")
+    BY All_Traffic.src_ip All_Traffic.dest_ip All_Traffic.dest_port All_Traffic.action All_Traffic.dvc All_Traffic.user
+| rename "All_Traffic.*" AS *
+| eval data_model="Network_Traffic", ioc_type="ipv4", ioc=dest_ip, host=dvc, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Network_Traffic.All_Traffic
+        WHERE All_Traffic.src_ip IN ("209.99.186.187", "82.153.135.80", "186.2.175.183", "186.2.163.185", "190.115.31.69", "186.2.175.158", "186.2.163.193")
+        BY All_Traffic.src_ip All_Traffic.dest_ip All_Traffic.dest_port All_Traffic.action All_Traffic.dvc All_Traffic.user
+    | rename "All_Traffic.*" AS *
+    | eval data_model="Network_Traffic", ioc_type="ipv4", ioc=src_ip, host=dvc, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Network_Resolution.DNS
+        WHERE DNS.query IN ("choclatey.org", "*.choclatey.org", "massgravel.net", "*.massgravel.net", "workerstats.net", "*.workerstats.net", "pymons.is", "*.pymons.is", "datamons.org", "*.datamons.org", "niceer.net", "*.niceer.net", "supertrap.net", "*.supertrap.net", "plaineagle.xyz", "*.plaineagle.xyz", "univalley.top", "*.univalley.top", "icedhatch.top", "*.icedhatch.top", "icedhatch.xyz", "*.icedhatch.xyz", "icedout.top", "*.icedout.top", "pur.st", "*.pur.st")
+        BY DNS.src DNS.dest DNS.query DNS.reply_code
+    | rename "DNS.*" AS *
+    | rex field=query "(?i)(?<ioc>(?:choclatey\.org|massgravel\.net|workerstats\.net|pymons\.is|datamons\.org|niceer\.net|supertrap\.net|plaineagle\.xyz|univalley\.top|icedhatch\.top|icedhatch\.xyz|icedout\.top|pur\.st))\.?$"
+    | eval data_model="Network_Resolution", ioc_type="domain", host=src, user="-", detail="DNS query ".query." (".reply_code.")"
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Web.Web
+        WHERE (Web.url IN ("*://choclatey.org*", "*.choclatey.org*", "choclatey.org*", "*://massgravel.net*", "*.massgravel.net*", "massgravel.net*", "*://workerstats.net*", "*.workerstats.net*", "workerstats.net*", "*://pymons.is*", "*.pymons.is*", "pymons.is*", "*://datamons.org*", "*.datamons.org*", "datamons.org*", "*://niceer.net*", "*.niceer.net*", "niceer.net*", "*://supertrap.net*", "*.supertrap.net*", "supertrap.net*", "*://plaineagle.xyz*", "*.plaineagle.xyz*", "plaineagle.xyz*", "*://univalley.top*", "*.univalley.top*", "univalley.top*", "*://icedhatch.top*", "*.icedhatch.top*", "icedhatch.top*", "*://icedhatch.xyz*", "*.icedhatch.xyz*", "icedhatch.xyz*", "*://icedout.top*", "*.icedout.top*", "icedout.top*", "*://pur.st*", "*.pur.st*", "pur.st*") OR Web.dest IN ("choclatey.org", "*.choclatey.org", "massgravel.net", "*.massgravel.net", "workerstats.net", "*.workerstats.net", "pymons.is", "*.pymons.is", "datamons.org", "*.datamons.org", "niceer.net", "*.niceer.net", "supertrap.net", "*.supertrap.net", "plaineagle.xyz", "*.plaineagle.xyz", "univalley.top", "*.univalley.top", "icedhatch.top", "*.icedhatch.top", "icedhatch.xyz", "*.icedhatch.xyz", "icedout.top", "*.icedout.top", "pur.st", "*.pur.st"))
+        BY Web.src Web.user Web.dest Web.url Web.http_user_agent Web.status
+    | rename "Web.*" AS *
+    | rex field=url "(?i)(?<ioc>choclatey\.org|massgravel\.net|workerstats\.net|pymons\.is|datamons\.org|niceer\.net|supertrap\.net|plaineagle\.xyz|univalley\.top|icedhatch\.top|icedhatch\.xyz|icedout\.top|pur\.st)"
+    | eval ioc=coalesce(ioc, dest), data_model="Web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.process_hash IN ("*f3846ec2a6ff0a27d9ef2b9bf7908743b81d295ef29344acfb96ff83fff994f9*", "*fb1181160e9f10ce1eb5e5dc9bc23e1498a39110ee9ea361fd150454cb01b292*", "*3e3b62a9836697d978cbb620dc8af8f6eefdf8cb73fc30d16bb394d1c58f4c97*", "*237ba698d7dc8936c43e0e78e7644002375e51e8baf9b3a7d4e18683f871ee31*", "*be0329d0795dd62ae587faf97e704bb36413e5c98ddd8fe575f5077db3c84e5f*", "*04d2828155ed2a276cfd3c97d4f966d328391dd818e04e773212cd601e49fa74*", "*56f05c4fb1c25c04e0dde60e2e5e41ac164a6dc53688d0f9eb52a55f82106389*", "*0ea99fbbe29af6f797e3866ed5f822c7a5d3e9cdb990a8c382a715069f156499*", "*8fb7aaf2b9270b8b75f6844aaefd5242b4f926fb89cba10fff3d9b908a769788*", "*5410c2f239c3649928383c4478dea182f90b21f5b258081fec07e9d297ae4b1c*", "*972fe9edb13da76113047e6db39bcc44749aaeec1be107c975649f0c413a3067*", "*cb9db2b44476e160fdae0e840d62e7c5c0b07dc56d26d17acf82412e446274ca*", "*f1150680a69ca5e28f229e51c7b7bc9afa34f3e3a4ba424e3571b152009104b0*")
+        BY Processes.dest Processes.user Processes.process_name Processes.process_path Processes.parent_process_name Processes.process_hash
+    | rename "Processes.*" AS *
+    | rex field=process_hash "(?i)(?<ioc>f3846ec2a6ff0a27d9ef2b9bf7908743b81d295ef29344acfb96ff83fff994f9|fb1181160e9f10ce1eb5e5dc9bc23e1498a39110ee9ea361fd150454cb01b292|3e3b62a9836697d978cbb620dc8af8f6eefdf8cb73fc30d16bb394d1c58f4c97|237ba698d7dc8936c43e0e78e7644002375e51e8baf9b3a7d4e18683f871ee31|be0329d0795dd62ae587faf97e704bb36413e5c98ddd8fe575f5077db3c84e5f|04d2828155ed2a276cfd3c97d4f966d328391dd818e04e773212cd601e49fa74|56f05c4fb1c25c04e0dde60e2e5e41ac164a6dc53688d0f9eb52a55f82106389|0ea99fbbe29af6f797e3866ed5f822c7a5d3e9cdb990a8c382a715069f156499|8fb7aaf2b9270b8b75f6844aaefd5242b4f926fb89cba10fff3d9b908a769788|5410c2f239c3649928383c4478dea182f90b21f5b258081fec07e9d297ae4b1c|972fe9edb13da76113047e6db39bcc44749aaeec1be107c975649f0c413a3067|cb9db2b44476e160fdae0e840d62e7c5c0b07dc56d26d17acf82412e446274ca|f1150680a69ca5e28f229e51c7b7bc9afa34f3e3a4ba424e3571b152009104b0)"
+    | eval data_model="Endpoint.Processes", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, src="-", detail="process ".process_path." (parent ".parent_process_name.")"
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.parent_process_hash IN ("*f3846ec2a6ff0a27d9ef2b9bf7908743b81d295ef29344acfb96ff83fff994f9*", "*fb1181160e9f10ce1eb5e5dc9bc23e1498a39110ee9ea361fd150454cb01b292*", "*3e3b62a9836697d978cbb620dc8af8f6eefdf8cb73fc30d16bb394d1c58f4c97*", "*237ba698d7dc8936c43e0e78e7644002375e51e8baf9b3a7d4e18683f871ee31*", "*be0329d0795dd62ae587faf97e704bb36413e5c98ddd8fe575f5077db3c84e5f*", "*04d2828155ed2a276cfd3c97d4f966d328391dd818e04e773212cd601e49fa74*", "*56f05c4fb1c25c04e0dde60e2e5e41ac164a6dc53688d0f9eb52a55f82106389*", "*0ea99fbbe29af6f797e3866ed5f822c7a5d3e9cdb990a8c382a715069f156499*", "*8fb7aaf2b9270b8b75f6844aaefd5242b4f926fb89cba10fff3d9b908a769788*", "*5410c2f239c3649928383c4478dea182f90b21f5b258081fec07e9d297ae4b1c*", "*972fe9edb13da76113047e6db39bcc44749aaeec1be107c975649f0c413a3067*", "*cb9db2b44476e160fdae0e840d62e7c5c0b07dc56d26d17acf82412e446274ca*", "*f1150680a69ca5e28f229e51c7b7bc9afa34f3e3a4ba424e3571b152009104b0*")
+        BY Processes.dest Processes.user Processes.process_name Processes.process_path Processes.parent_process_name Processes.parent_process_hash
+    | rename "Processes.*" AS *
+    | rex field=parent_process_hash "(?i)(?<ioc>f3846ec2a6ff0a27d9ef2b9bf7908743b81d295ef29344acfb96ff83fff994f9|fb1181160e9f10ce1eb5e5dc9bc23e1498a39110ee9ea361fd150454cb01b292|3e3b62a9836697d978cbb620dc8af8f6eefdf8cb73fc30d16bb394d1c58f4c97|237ba698d7dc8936c43e0e78e7644002375e51e8baf9b3a7d4e18683f871ee31|be0329d0795dd62ae587faf97e704bb36413e5c98ddd8fe575f5077db3c84e5f|04d2828155ed2a276cfd3c97d4f966d328391dd818e04e773212cd601e49fa74|56f05c4fb1c25c04e0dde60e2e5e41ac164a6dc53688d0f9eb52a55f82106389|0ea99fbbe29af6f797e3866ed5f822c7a5d3e9cdb990a8c382a715069f156499|8fb7aaf2b9270b8b75f6844aaefd5242b4f926fb89cba10fff3d9b908a769788|5410c2f239c3649928383c4478dea182f90b21f5b258081fec07e9d297ae4b1c|972fe9edb13da76113047e6db39bcc44749aaeec1be107c975649f0c413a3067|cb9db2b44476e160fdae0e840d62e7c5c0b07dc56d26d17acf82412e446274ca|f1150680a69ca5e28f229e51c7b7bc9afa34f3e3a4ba424e3571b152009104b0)"
+    | eval data_model="Endpoint.Processes", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, src="-", detail="parent process ".process_path." (parent ".parent_process_name.")"
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Filesystem
+        WHERE Filesystem.file_hash IN ("*f3846ec2a6ff0a27d9ef2b9bf7908743b81d295ef29344acfb96ff83fff994f9*", "*fb1181160e9f10ce1eb5e5dc9bc23e1498a39110ee9ea361fd150454cb01b292*", "*3e3b62a9836697d978cbb620dc8af8f6eefdf8cb73fc30d16bb394d1c58f4c97*", "*237ba698d7dc8936c43e0e78e7644002375e51e8baf9b3a7d4e18683f871ee31*", "*be0329d0795dd62ae587faf97e704bb36413e5c98ddd8fe575f5077db3c84e5f*", "*04d2828155ed2a276cfd3c97d4f966d328391dd818e04e773212cd601e49fa74*", "*56f05c4fb1c25c04e0dde60e2e5e41ac164a6dc53688d0f9eb52a55f82106389*", "*0ea99fbbe29af6f797e3866ed5f822c7a5d3e9cdb990a8c382a715069f156499*", "*8fb7aaf2b9270b8b75f6844aaefd5242b4f926fb89cba10fff3d9b908a769788*", "*5410c2f239c3649928383c4478dea182f90b21f5b258081fec07e9d297ae4b1c*", "*972fe9edb13da76113047e6db39bcc44749aaeec1be107c975649f0c413a3067*", "*cb9db2b44476e160fdae0e840d62e7c5c0b07dc56d26d17acf82412e446274ca*", "*f1150680a69ca5e28f229e51c7b7bc9afa34f3e3a4ba424e3571b152009104b0*")
+        BY Filesystem.dest Filesystem.user Filesystem.file_path Filesystem.file_name Filesystem.action Filesystem.file_hash
+    | rename "Filesystem.*" AS *
+    | rex field=file_hash "(?i)(?<ioc>f3846ec2a6ff0a27d9ef2b9bf7908743b81d295ef29344acfb96ff83fff994f9|fb1181160e9f10ce1eb5e5dc9bc23e1498a39110ee9ea361fd150454cb01b292|3e3b62a9836697d978cbb620dc8af8f6eefdf8cb73fc30d16bb394d1c58f4c97|237ba698d7dc8936c43e0e78e7644002375e51e8baf9b3a7d4e18683f871ee31|be0329d0795dd62ae587faf97e704bb36413e5c98ddd8fe575f5077db3c84e5f|04d2828155ed2a276cfd3c97d4f966d328391dd818e04e773212cd601e49fa74|56f05c4fb1c25c04e0dde60e2e5e41ac164a6dc53688d0f9eb52a55f82106389|0ea99fbbe29af6f797e3866ed5f822c7a5d3e9cdb990a8c382a715069f156499|8fb7aaf2b9270b8b75f6844aaefd5242b4f926fb89cba10fff3d9b908a769788|5410c2f239c3649928383c4478dea182f90b21f5b258081fec07e9d297ae4b1c|972fe9edb13da76113047e6db39bcc44749aaeec1be107c975649f0c413a3067|cb9db2b44476e160fdae0e840d62e7c5c0b07dc56d26d17acf82412e446274ca|f1150680a69ca5e28f229e51c7b7bc9afa34f3e3a4ba424e3571b152009104b0)"
+    | eval data_model="Endpoint.Filesystem", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, src="-", detail="file ".action." ".file_path
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Email.All_Email
+        WHERE (All_Email.file_hash IN ("*f3846ec2a6ff0a27d9ef2b9bf7908743b81d295ef29344acfb96ff83fff994f9*", "*fb1181160e9f10ce1eb5e5dc9bc23e1498a39110ee9ea361fd150454cb01b292*", "*3e3b62a9836697d978cbb620dc8af8f6eefdf8cb73fc30d16bb394d1c58f4c97*", "*237ba698d7dc8936c43e0e78e7644002375e51e8baf9b3a7d4e18683f871ee31*", "*be0329d0795dd62ae587faf97e704bb36413e5c98ddd8fe575f5077db3c84e5f*", "*04d2828155ed2a276cfd3c97d4f966d328391dd818e04e773212cd601e49fa74*", "*56f05c4fb1c25c04e0dde60e2e5e41ac164a6dc53688d0f9eb52a55f82106389*", "*0ea99fbbe29af6f797e3866ed5f822c7a5d3e9cdb990a8c382a715069f156499*", "*8fb7aaf2b9270b8b75f6844aaefd5242b4f926fb89cba10fff3d9b908a769788*", "*5410c2f239c3649928383c4478dea182f90b21f5b258081fec07e9d297ae4b1c*", "*972fe9edb13da76113047e6db39bcc44749aaeec1be107c975649f0c413a3067*", "*cb9db2b44476e160fdae0e840d62e7c5c0b07dc56d26d17acf82412e446274ca*", "*f1150680a69ca5e28f229e51c7b7bc9afa34f3e3a4ba424e3571b152009104b0*") OR All_Email.url IN ("*://choclatey.org*", "*.choclatey.org*", "choclatey.org*", "*://massgravel.net*", "*.massgravel.net*", "massgravel.net*", "*://workerstats.net*", "*.workerstats.net*", "workerstats.net*", "*://pymons.is*", "*.pymons.is*", "pymons.is*", "*://datamons.org*", "*.datamons.org*", "datamons.org*", "*://niceer.net*", "*.niceer.net*", "niceer.net*", "*://supertrap.net*", "*.supertrap.net*", "supertrap.net*", "*://plaineagle.xyz*", "*.plaineagle.xyz*", "plaineagle.xyz*", "*://univalley.top*", "*.univalley.top*", "univalley.top*", "*://icedhatch.top*", "*.icedhatch.top*", "icedhatch.top*", "*://icedhatch.xyz*", "*.icedhatch.xyz*", "icedhatch.xyz*", "*://icedout.top*", "*.icedout.top*", "icedout.top*", "*://pur.st*", "*.pur.st*", "pur.st*"))
+        BY All_Email.src_user All_Email.recipient All_Email.subject All_Email.file_name All_Email.file_hash All_Email.url
+    | rename "All_Email.*" AS *
+    | eval matched=file_hash." ".url
+    | rex field=matched "(?i)(?<ioc>f3846ec2a6ff0a27d9ef2b9bf7908743b81d295ef29344acfb96ff83fff994f9|fb1181160e9f10ce1eb5e5dc9bc23e1498a39110ee9ea361fd150454cb01b292|3e3b62a9836697d978cbb620dc8af8f6eefdf8cb73fc30d16bb394d1c58f4c97|237ba698d7dc8936c43e0e78e7644002375e51e8baf9b3a7d4e18683f871ee31|be0329d0795dd62ae587faf97e704bb36413e5c98ddd8fe575f5077db3c84e5f|04d2828155ed2a276cfd3c97d4f966d328391dd818e04e773212cd601e49fa74|56f05c4fb1c25c04e0dde60e2e5e41ac164a6dc53688d0f9eb52a55f82106389|0ea99fbbe29af6f797e3866ed5f822c7a5d3e9cdb990a8c382a715069f156499|8fb7aaf2b9270b8b75f6844aaefd5242b4f926fb89cba10fff3d9b908a769788|5410c2f239c3649928383c4478dea182f90b21f5b258081fec07e9d297ae4b1c|972fe9edb13da76113047e6db39bcc44749aaeec1be107c975649f0c413a3067|cb9db2b44476e160fdae0e840d62e7c5c0b07dc56d26d17acf82412e446274ca|f1150680a69ca5e28f229e51c7b7bc9afa34f3e3a4ba424e3571b152009104b0|choclatey\.org|massgravel\.net|workerstats\.net|pymons\.is|datamons\.org|niceer\.net|supertrap\.net|plaineagle\.xyz|univalley\.top|icedhatch\.top|icedhatch\.xyz|icedout\.top|pur\.st)"
+    | eval data_model="Email", ioc_type=case(match(ioc, "^[0-9a-fA-F]{64}$"), "sha256", match(ioc, "^[0-9a-fA-F]{40}$"), "sha1", match(ioc, "^[0-9a-fA-F]{32}$"), "md5", match(ioc, "/"), "url", 1==1, "domain"), host="-", user=recipient, src=src_user, dest=recipient, detail="email '".subject."' ".file_name
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.process_name="schtasks.exe" Processes.process IN ("*SysCheck2*", "*SysCheckX*", "*SysHeal*")
+        BY Processes.dest Processes.user Processes.parent_process_name Processes.process_name Processes.process
+    | rename "Processes.*" AS *
+    | eval host=dest, src="-", detail=parent_process_name." > ".process, data_model="Endpoint.Processes"
+    | eval ioc="SysCheck tasks or files in the fake SystemHealth folder", ioc_type="behaviour (alert)"
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Filesystem
+        WHERE Filesystem.file_path="*Windows*SystemHealth*Update*"
+        BY Filesystem.dest Filesystem.user Filesystem.file_path Filesystem.file_name Filesystem.action
+    | rename "Filesystem.*" AS *
+    | eval host=dest, src="-", detail="file ".action." ".file_path, data_model="Endpoint.Filesystem"
+    | eval ioc="SysCheck tasks or files in the fake SystemHealth folder", ioc_type="behaviour (alert)"
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.parent_process_name="conhost.exe" Processes.parent_process="*--headless*" Processes.process_name IN ("python.exe", "pythonw.exe")
+        BY Processes.dest Processes.user Processes.parent_process_name Processes.process_name Processes.process
+    | rename "Processes.*" AS *
+    | eval host=dest, src="-", detail=parent_process_name." > ".process, data_model="Endpoint.Processes"
+    | eval ioc="Headless console starting Python from SystemHealth", ioc_type="behaviour (alert)"
+]
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.process_name IN ("python.exe", "pythonw.exe") Processes.process_path="*SystemHealth*Update*"
+        BY Processes.dest Processes.user Processes.parent_process_name Processes.process_name Processes.process
+    | rename "Processes.*" AS *
+    | eval host=dest, src="-", detail=parent_process_name." > ".process, data_model="Endpoint.Processes"
+    | eval ioc="Headless console starting Python from SystemHealth", ioc_type="behaviour (alert)"
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.process="*Add-MpPreference*" Processes.process IN ("*xmrig*", "*ExclusionPath*C:*Windows*")
+        BY Processes.dest Processes.user Processes.parent_process_name Processes.process_name Processes.process
+    | rename "Processes.*" AS *
+    | eval host=dest, src="-", detail=parent_process_name." > ".process, data_model="Endpoint.Processes"
+    | eval ioc="Defender exclusion for C:\Windows or xmrig.exe", ioc_type="behaviour (alert)"
+]
+
+| append [
+    | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
+        FROM datamodel=Endpoint.Processes
+        WHERE Processes.process_name IN ("chrome.exe", "msedge.exe", "brave.exe") Processes.process="*--remote-debugging-port=9222*" Processes.parent_process_name IN ("python.exe", "pythonw.exe")
+        BY Processes.dest Processes.user Processes.parent_process_name Processes.process_name Processes.process
+    | rename "Processes.*" AS *
+    | eval host=dest, src="-", detail=parent_process_name." > ".process, data_model="Endpoint.Processes"
+    | eval ioc="Python launching a browser with remote debugging on 9222", ioc_type="behaviour (alert)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count
