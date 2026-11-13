@@ -6,6 +6,14 @@ http://45.115.26.23:80/hb,url,"ZeroQlik Returns: Qlik Sense Servers Exploited fo
 57.129.54.120,ipv4,Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
 65f061281c9a712e9502793dc4c5035cae490b84da05f7d4223cefa65ad396e4,sha256,Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
 1c7437dac21630f53c0b888b50662c6487e23fd7,sha1,Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
+45.32.117.34,ipv4,GeoVision Camera Software Abused to Deploy XMRig Cryptominer
+http://45.32.117.34/a,url,GeoVision Camera Software Abused to Deploy XMRig Cryptominer
+http://45.32.117.34/b,url,GeoVision Camera Software Abused to Deploy XMRig Cryptominer
+http://45.32.117.34/c,url,GeoVision Camera Software Abused to Deploy XMRig Cryptominer
+156.246.94.183,ipv4,GeoVision Camera Software Abused to Deploy XMRig Cryptominer
+cctv-update.top,domain,GeoVision Camera Software Abused to Deploy XMRig Cryptominer
+f1235751c9e48e5732b7b183dc2bb175a19e4c6401dfd0e96b4cfdd0d8c54b4c,sha256,GeoVision Camera Software Abused to Deploy XMRig Cryptominer
+b673c4d707828abedc767a2be6badef7454492e62c37e30cf3cc5a402fd3647b,sha256,GeoVision Camera Software Abused to Deploy XMRig Cryptominer
 185.224.132.148,ipv4,XaocMail ClickFix Campaign Dropping Phantom53 DoH C2 and Havoc
 162.252.198.204,ipv4,XaocMail ClickFix Campaign Dropping Phantom53 DoH C2 and Havoc
 162.252.199.92,ipv4,XaocMail ClickFix Campaign Dropping Phantom53 DoH C2 and Havoc

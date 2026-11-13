@@ -1,0 +1,104 @@
+// Threat: GeoVision Camera Software Abused to Deploy XMRig Cryptominer
+// Author: Daniel Jeremiah | Date: 2026-11-13
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer
+let Lookback = 30d;
+let IPs = dynamic(["45.32.117.34", "156.246.94.183", "2.59.133.151"]);
+let Domains = dynamic(["cctv-update.top"]);
+let Urls = dynamic(["http://45.32.117.34/a", "http://45.32.117.34/b", "http://45.32.117.34/c"]);
+let UrlKeys = dynamic(["45.32.117.34/a", "45.32.117.34/b", "45.32.117.34/c"]);
+let SHA256s = dynamic(["f1235751c9e48e5732b7b183dc2bb175a19e4c6401dfd0e96b4cfdd0d8c54b4c", "b673c4d707828abedc767a2be6badef7454492e62c37e30cf3cc5a402fd3647b", "ff5dbdcf6d7ae5d97b6f3ef412df0b977ba4a844c45b30ca78c0eeb2653d69a8"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " port ", RemotePort))),
+  (DeviceLogonEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceLogonEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", LogonType, " ", AccountName))),
+  (EntraIdSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSignInEvents", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (AADSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSignInEventsBeta", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (EntraIdSpnSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSpnSignInEvents", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (AADSpnSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSpnSignInEventsBeta", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(AccountDisplayName), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ActionType))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (DeviceEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType == "DnsQueryResponse" and tostring(parse_json(AdditionalFields).DnsQueryString) has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(parse_json(AdditionalFields).DnsQueryString), Context = tostring(strcat("DNS ", InitiatingProcessFileName))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (UrlKeys)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (EmailUrlInfo
+    | where Timestamp > ago(Lookback)
+    | where UrlDomain has_any (Domains) or Url has_any (UrlKeys)
+    | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = tostring(Url), Context = tostring("URL in email")),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url has_any (Domains) or Url has_any (UrlKeys)
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(ActionType, " ", FolderPath))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceImageLoadEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " loaded by ", InitiatingProcessFileName))),
+  (EmailAttachmentInfo
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "EmailAttachmentInfo", Entity = tostring(RecipientEmailAddress), Indicator = tostring(SHA256), Context = tostring(strcat(FileName, " from ", SenderFromAddress))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where InitiatingProcessFileName =~ "GeoStartupAgentService.exe" and FileName in~ ("cmd.exe", "powershell.exe", "pwsh.exe")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", FileName, " | ", AccountName))),
+  (DeviceEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType == "DriverLoad" and (FileName in~ ("wsftprm.sys", "kvckiller.sys") or SHA256 == "ff5dbdcf6d7ae5d97b6f3ef412df0b977ba4a844c45b30ca78c0eeb2653d69a8")
+    | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(ActionType, " ", FolderPath, "\\", FileName, " sha256=", SHA256, " by ", InitiatingProcessFileName))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in~ ("wsftprm.sys", "kvckiller.sys") or SHA256 == "ff5dbdcf6d7ae5d97b6f3ef412df0b977ba4a844c45b30ca78c0eeb2653d69a8"
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(ActionType, " ", FolderPath, " by ", InitiatingProcessFileName))),
+  (DeviceRegistryEvents
+    | where Timestamp > ago(Lookback)
+    | where RegistryKey has @"\Image File Execution Options\" and RegistryValueName =~ "Debugger" and (RegistryKey has_any ("MsMpEng.exe", "SecurityHealthService.exe", "SecurityHealthSystray.exe", "MpCmdRun.exe") or RegistryValueData has "systray.exe")
+    | project Timestamp, SourceTable = "DeviceRegistryEvents", Entity = tostring(DeviceName), Indicator = tostring(RegistryKey), Context = tostring(strcat(ActionType, " ", RegistryKey, " ", RegistryValueName, " = ", RegistryValueData, " by ", InitiatingProcessFileName))),
+  (DeviceEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType == "ScheduledTaskCreated" and (AdditionalFields has "PackageUpdater" or AdditionalFields has @"systemprofile\update.exe")
+    | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(parse_json(AdditionalFields).TaskName), Context = tostring(strcat(ActionType, " ", substring(tostring(parse_json(AdditionalFields).TaskContent), 0, 300)))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where (FileName =~ "schtasks.exe" and ProcessCommandLine has "PackageUpdater") or (FileName =~ "update.exe" and (FolderPath has @"\system32\config\systemprofile" or ProcessCommandLine has @"\system32\config\systemprofile\update.exe"))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(FileName, " ", FolderPath, " | ", AccountName))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "ApplyUpdate.exe" and ProcessCommandLine matches regex @"(?i)(--(url|user|pass|donate-level|coin|algo|tls)\b|\s-(o|u|p)\s|stratum\+)"
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(FolderPath, " | ", AccountName)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

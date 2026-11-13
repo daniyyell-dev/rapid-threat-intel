@@ -1,0 +1,18 @@
+# GeoVision Camera Software Abused to Deploy XMRig Cryptominer
+# Published 2026-11-13. High-confidence indicators to block. Updated 2026-11-13.
+
+## ipv4 (2)
+45.32.117.34
+156.246.94.183
+
+## domain (1)
+cctv-update.top
+
+## url (3)
+http://45.32.117.34/a
+http://45.32.117.34/b
+http://45.32.117.34/c
+
+## sha256 (2)
+f1235751c9e48e5732b7b183dc2bb175a19e4c6401dfd0e96b4cfdd0d8c54b4c
+b673c4d707828abedc767a2be6badef7454492e62c37e30cf3cc5a402fd3647b

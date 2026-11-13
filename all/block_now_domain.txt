@@ -1,3 +1,4 @@
+cctv-update.top
 dns.timesyncserver-312453.com
 securedoc.makeneg458.workers.dev
 securedoc.mesuttgulerr573.workers.dev

@@ -1,0 +1,58 @@
+// Threat: GeoVision Camera Software Abused to Deploy XMRig Cryptominer
+// Author: Daniel Jeremiah | Date: 2026-11-13
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer
+rule rti_geovision_camera_software_xmrig_cryptominer {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-13"
+    description = "GeoVision Camera Software Abused to Deploy XMRig Cryptominer"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer"
+
+  events:
+    (
+      $e.principal.ip = /^(?:45\.32\.117\.34|156\.246\.94\.183|2\.59\.133\.151)$/ or
+      $e.target.ip = /^(?:45\.32\.117\.34|156\.246\.94\.183|2\.59\.133\.151)$/ or
+      $e.network.dns.answers.data = /^(?:45\.32\.117\.34|156\.246\.94\.183|2\.59\.133\.151)$/ or
+      $e.network.dns.questions.name = /(?:^|\.)(?:cctv\-update\.top)\.?$/ nocase or
+      $e.target.hostname = /(?:^|\.)(?:cctv\-update\.top)\.?$/ nocase or
+      $e.target.domain.name = /(?:^|\.)(?:cctv\-update\.top)\.?$/ nocase or
+      re.regex($e.target.url, `^(?:[a-z][a-z0-9+.-]*://)?(?:[^/?#]*@)?(?:45\.32\.117\.34/a|45\.32\.117\.34/b|45\.32\.117\.34/c|(?:[^/?#@]*\.)?(?:cctv\-update\.top)(?::\d+)?(?:[/?#]|$))`) nocase or
+      $e.target.file.sha256 = /^(?:f1235751c9e48e5732b7b183dc2bb175a19e4c6401dfd0e96b4cfdd0d8c54b4c|b673c4d707828abedc767a2be6badef7454492e62c37e30cf3cc5a402fd3647b|ff5dbdcf6d7ae5d97b6f3ef412df0b977ba4a844c45b30ca78c0eeb2653d69a8)$/ nocase or
+      $e.target.process.file.sha256 = /^(?:f1235751c9e48e5732b7b183dc2bb175a19e4c6401dfd0e96b4cfdd0d8c54b4c|b673c4d707828abedc767a2be6badef7454492e62c37e30cf3cc5a402fd3647b|ff5dbdcf6d7ae5d97b6f3ef412df0b977ba4a844c45b30ca78c0eeb2653d69a8)$/ nocase or
+      $e.principal.process.file.sha256 = /^(?:f1235751c9e48e5732b7b183dc2bb175a19e4c6401dfd0e96b4cfdd0d8c54b4c|b673c4d707828abedc767a2be6badef7454492e62c37e30cf3cc5a402fd3647b|ff5dbdcf6d7ae5d97b6f3ef412df0b977ba4a844c45b30ca78c0eeb2653d69a8)$/ nocase or
+      $e.principal.process.parent_process.file.sha256 = /^(?:f1235751c9e48e5732b7b183dc2bb175a19e4c6401dfd0e96b4cfdd0d8c54b4c|b673c4d707828abedc767a2be6badef7454492e62c37e30cf3cc5a402fd3647b|ff5dbdcf6d7ae5d97b6f3ef412df0b977ba4a844c45b30ca78c0eeb2653d69a8)$/ nocase or
+      ($e.metadata.event_type = "PROCESS_LAUNCH" and re.regex($e.principal.process.file.full_path, `GeoStartupAgentService\.exe$`) nocase and re.regex($e.target.process.file.full_path, `(cmd|powershell|pwsh)\.exe$`) nocase) or
+      re.regex($e.target.file.full_path, `(wsftprm|kvckiller)\.sys$`) nocase or
+      ($e.metadata.event_type = "REGISTRY_MODIFICATION" and re.regex($e.target.registry.registry_value_name, `^Debugger$`) nocase and re.regex($e.target.registry.registry_value_data, `systray\.exe`) nocase) or
+      ($e.metadata.event_type = "PROCESS_LAUNCH" and ((re.regex($e.target.process.file.full_path, `schtasks\.exe$`) nocase and re.regex($e.target.process.command_line, `PackageUpdater`) nocase) or (re.regex($e.target.process.file.full_path, `update\.exe$`) nocase and re.regex(coalesce($e.target.process.file.full_path, $e.target.process.command_line), `system32\\config\\systemprofile\\update\.exe`) nocase))) or
+      ($e.metadata.event_type = "PROCESS_LAUNCH" and re.regex($e.target.process.file.full_path, `ApplyUpdate\.exe$`) nocase and re.regex($e.target.process.command_line, `(--(url|user|pass|donate-level|coin|algo|tls)\b|\s-(o|u|p)\s|stratum\+)`) nocase)
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+    $dns_query = array_distinct($e.network.dns.questions.name)
+    $target_hostname = array_distinct($e.target.hostname)
+    $target_url = array_distinct($e.target.url)
+    $file_sha256 = array_distinct($e.target.file.sha256)
+    $process_sha256 = array_distinct($e.target.process.file.sha256)
+    $process_path = array_distinct($e.target.process.file.full_path)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}

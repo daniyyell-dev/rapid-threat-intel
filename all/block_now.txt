@@ -13,6 +13,16 @@ http://45.115.26.23:80/hb
 1c7437dac21630f53c0b888b50662c6487e23fd7
 086d4a83181971e883c53a4c44f46da2
 
+## 2026-11-13 GeoVision Camera Software Abused to Deploy XMRig Cryptominer
+45.32.117.34
+http://45.32.117.34/a
+http://45.32.117.34/b
+http://45.32.117.34/c
+156.246.94.183
+cctv-update.top
+f1235751c9e48e5732b7b183dc2bb175a19e4c6401dfd0e96b4cfdd0d8c54b4c
+b673c4d707828abedc767a2be6badef7454492e62c37e30cf3cc5a402fd3647b
+
 ## 2026-11-13 XaocMail ClickFix Campaign Dropping Phantom53 DoH C2 and Havoc
 185.224.132.148
 162.252.198.204
