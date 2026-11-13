@@ -1,0 +1,18 @@
+# BlackNevas: Ransomware Wipes ESXi and vCenter Through Legitimate Management Features
+# Published 2026-11-13. High-confidence indicators to block. Updated 2026-11-13.
+
+## ipv4 (4)
+45.149.154.135
+91.92.242.121
+31.41.33.212
+188.240.57.94
+
+## domain (1)
+api.cloudvflare.com
+
+## sha256 (2)
+15dc419b7fbeb50c50820a7cd27997541deafa4fa710f074bb657f0149574baf
+5a9b7a0d3f25757aea957713d7e84cabec87597b3474368328a8fd5ed7a12f78
+
+## sha1 (1)
+28f8da19ddcdf26e426875c7a834b34a79bc1c33

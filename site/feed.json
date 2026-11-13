@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-13 19:25",
- "threat_count": 53,
- "indicator_count": 1541,
- "block_now_count": 714,
+ "last_updated": "2026-11-13 20:22",
+ "threat_count": 54,
+ "indicator_count": 1549,
+ "block_now_count": 722,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -111,7 +111,7 @@
    "published": "2026-11-11",
    "entry_date": "2026-11-13 11:40",
    "last_updated": "2026-11-13",
-   "seq": 53,
+   "seq": 54,
    "headline": "Old Qlik Sense flaws exploited at EU firms for PowerShell reverse shells, a Go agent and SSH-key persistence",
    "summary": "Cynet reports that in October 2026 the Qlik Sense Scheduler.exe process on servers at several EU customers launched cmd.exe and a hidden, base64-encoded PowerShell reverse shell, all within about three minutes. The process tree matches the 2023 Cactus ransomware intrusions, so the operator most likely used the old Qlik Sense flaws CVE-2023-41266 with CVE-2023-41265, or CVE-2023-48365 (DoubleQlik). The shell is a trimmed Nishang one-liner that checks in to 45.115.26.23 over HTTP at /hb and connects back on TCP 4455. An open directory on the same server (TCP 8012) held a Go reverse-shell agent (wsvc.exe, TCP 4456) for Windows and several Linux architectures, a Bash agent (TCP 4457), a persist.ps1 script that installs OpenSSH, adds the ed25519 key node6-sm to administrators_authorized_keys, writes C:\\ProgramData\\ssh\\winc.ps1 and creates the WinUpdCheck task every five minutes, plus ActiveMQ CVE-2023-46604 payloads and a modified Veeam CVE-2024-40711 toolchain still in testing. The server address and the two persist.ps1 hashes are on the block list.",
    "caveat": "Cynet did not confirm which Qlik Sense vulnerability was used. The ActiveMQ and Veeam tooling looked unfinished and Cynet saw no successful exploitation with it. OpenSSH-Win64.zip on the staging server was the legitimate package, so it is not listed.",
@@ -462,7 +462,7 @@
    "published": "2026-11-09",
    "entry_date": "2026-11-13 11:40",
    "last_updated": "2026-11-13",
-   "seq": 52,
+   "seq": 53,
    "headline": "Stolen Qubole vendor credentials used to assume customer AWS integration roles, steal secrets and download S3 data",
    "summary": "Wiz, working with Sentra and Mandiant, reports that between 14 and 26 October 2026 a threat actor used IAM credentials from AWS account 805246085872, which Qubole's data platform uses to reach customer accounts, to assume the cross-account integration roles that dozens of customers had created to trust Qubole. Every AssumeRole call carried a valid External ID and succeeded, and most of the roles were otherwise unused. Using session names starting quiam-, the actor enumerated S3, EC2, RDS, IAM and KMS, read Lambda environment variables, Secrets Manager secrets and SSM parameters, downloaded whole S3 buckets, and validated the credentials it found with TruffleHog against AWS, Entra ID and Okta. Traffic came from an OVH server (57.129.54.120, which also hosted a bootable sso_agent.iso that beacons to TCP 23458) and Mullvad VPN exits. An actor calling itself n0n has claimed the intrusion. The OVH address and the ISO hashes are on the block list; the Mullvad exits, the vendor account and its principal IDs are alert-only hunt leads.",
    "caveat": "Account 805246085872 and the principal AIDAJYRRH5Y3A7AAJM2HW also carry legitimate Qubole traffic from AWS infrastructure; alert on them only when the source address is not an AWS address. AIDA3W7DIFLYOLTK63SFS was seen only in attacker activity. The Mullvad addresses are shared VPN exits and are not blocked. 57.129.54.120 was attacker-controlled from 15 to 26 October 2026 and may be reassigned later. The user agents Wiz lists are common and are only useful alongside another indicator.",
@@ -900,7 +900,7 @@
    "published": "2026-11-12",
    "entry_date": "2026-11-13 11:25",
    "last_updated": "2026-11-13",
-   "seq": 51,
+   "seq": 52,
    "headline": "A public exploit gives root on clustered Cisco Expressway nodes through hard-coded Erlang credentials on TCP 4372",
    "summary": "Cisco fixed CVE-2026-76466 (CVSS 9.8) on 21 October 2026: clustered Cisco Expressway-C and Expressway-E nodes, virtual and appliance, on X15.5.3 and earlier (and X14 and earlier) let an unauthenticated attacker run operating-system commands as root through the cluster database service. On 12 November researcher Nicolas Krassas (dinosn) published a working exploit and fleet detector on GitHub. It opens TLS to TCP 4372, completes the Erlang distribution handshake as the hard-coded maintenance node wombat@127.0.0.1 with the hard-coded cookie that is the same on every affected install, and calls os:cmd as root; it was tested on Expressway-C X15.3.2 in the factory-default TLS Permissive mode. Cisco says there is no workaround and, at the time of its advisory, knew of no malicious use; no exploitation has been reported since the code went public. No attacker infrastructure exists yet, so this entry is hunt and alert only. Its hunts flag connections to TCP 4371 or 4372 from anything that is not a cluster peer, and the public exploit being run from a managed host.",
    "caveat": "No exploitation or attacker indicators have been published; the CVE row is a tracking identifier, not something to block. The network hunt needs your Expressway cluster peer addresses filled in before it alerts, and it only sees traffic your firewall or NetFlow logs record. Expressway nodes do not run Defender for Endpoint, so the KQL can only see managed devices that connect out to the cluster ports or run the exploit.",
@@ -1097,6 +1097,356 @@
      "name": "hunt.yaral",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/hunt.yaral",
      "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse",
+   "folder": "threats/2026-11_November-2026/2026-11-13/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse",
+   "name": "BlackNevas: Ransomware Wipes ESXi and vCenter Through Legitimate Management Features",
+   "short": "BlackNevas ESXi ransomware",
+   "category": "Ransomware / hypervisor",
+   "published": "2026-11-13",
+   "entry_date": "2026-11-13 20:22",
+   "last_updated": "2026-11-13",
+   "seq": 51,
+   "headline": "Stolen admin credentials and vCenter Host Profiles used to open SSH on ESXi and wipe every VM and the backups",
+   "summary": "Kaspersky GERT describes a 10-day BlackNevas intrusion that destroyed four ESXi hosts, every VM on them, both vCenter Server Appliances and the backup estate without exploiting any VMware flaw. The operator reused stolen admin credentials to log in to vCenter, installed MeshAgent and a Ligolo-ng tunnel disguised as the systemd service vmware-vdma, then used a Host Profile change to switch on SSH (TSM-SSH) on the ESXi hosts and connected from the trusted vCenter address. Backup services were stopped and the backup servers encrypted first. The encryptor was uploaded by SFTP to /tmp, test-run with /selftest about three hours early, then run as esx64 /p /vmfs/ /depth 5 /wipe /allsys /detach, stopping all VMs within 23 seconds.",
+   "caveat": "Kaspersky calls these indicators incident-specific: service names, file names, the domain and the VPS addresses can change. No hash exists for the ESXi encryptor or the Ligolo-ng binary.",
+   "targets": {
+    "countries": [],
+    "regions": [],
+    "sectors": [],
+    "note": "Kaspersky does not name the victim, its country or sector. Any organisation running ESXi and vCenter is in scope.",
+    "source": {
+     "url": "https://securelist.com/esxi-ransomware/121959/",
+     "label": "Kaspersky GERT (Securelist) – Ransomware at the hypervisor layer: how attackers use ESXi and vCenter features for malicious purposes",
+     "name": "Kaspersky"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1078.002",
+     "name": "Domain Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/002/"
+    },
+    {
+     "id": "T1021.004",
+     "name": "SSH",
+     "url": "https://attack.mitre.org/techniques/T1021/004/"
+    },
+    {
+     "id": "T1219",
+     "name": "Remote Access Software",
+     "url": "https://attack.mitre.org/techniques/T1219/"
+    },
+    {
+     "id": "T1543.002",
+     "name": "Systemd Service",
+     "url": "https://attack.mitre.org/techniques/T1543/002/"
+    },
+    {
+     "id": "T1572",
+     "name": "Protocol Tunneling",
+     "url": "https://attack.mitre.org/techniques/T1572/"
+    },
+    {
+     "id": "T1490",
+     "name": "Inhibit System Recovery",
+     "url": "https://attack.mitre.org/techniques/T1490/"
+    },
+    {
+     "id": "T1486",
+     "name": "Data Encrypted for Impact",
+     "url": "https://attack.mitre.org/techniques/T1486/"
+    }
+   ],
+   "recommended_actions": [
+    "Block the five network indicators and the three file hashes, and search 30 days of firewall, proxy and DNS logs for them, including traffic from vCenter and backup servers.",
+    "Alert on any executable run from /tmp on ESXi, on the vmware-vdma unit on a vCenter appliance, and on a vspbind Windows service.",
+    "Alert when a Host Profile change enables TSM-SSH and an SSH session to the same host follows within 15 minutes.",
+    "Treat vCenter as Tier 0: separate virtualisation and backup admin accounts from domain admins, forward ESXi and vCenter logs off-host, and keep execInstalledOnly on."
+   ],
+   "sources": [
+    {
+     "url": "https://securelist.com/esxi-ransomware/121959/",
+     "label": "Kaspersky GERT (Securelist) – Ransomware at the hypervisor layer: how attackers use ESXi and vCenter features for malicious purposes",
+     "name": "Kaspersky"
+    }
+   ],
+   "indicator_count": 8,
+   "block_now_count": 8,
+   "hunt_count": 0,
+   "hunt_counts": {},
+   "indicator_counts": {
+    "ipv4": 4,
+    "sha256": 2,
+    "domain": 1,
+    "sha1": 1
+   },
+   "ioas": [
+    {
+     "artefact": "An executable run from /tmp on an ESXi host with BlackNevas-style switches: /selftest, or /p /vmfs/ together with /wipe, /allsys or /detach",
+     "log_source": "ESXi shell.log forwarded by syslog",
+     "why": "Kaspersky saw the encryptor uploaded to /tmp, made executable, test-run with ./tmp/esx64 /selftest about three hours before detonation, then run as ./tmp/esx64 /p /vmfs/ /depth 5 /wipe /allsys /detach. The forward-slash switches match SentinelOne's BlackNevas notes. Tuning: needs both the /tmp path and the switches. Expected false positives: none known; admins do not run binaries from /tmp against /vmfs. A /selftest hit is the pre-impact window to act.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://securelist.com/esxi-ransomware/121959/",
+     "source_name": "Kaspersky",
+     "title": "ESXi encryptor run from /tmp against /vmfs",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "A systemd unit named vmware-vdma, or a service running /opt/vmware/bin/agent described as \"DNS, time, VM settings sync\", on a vCenter Server Appliance",
+     "log_source": "vCenter appliance syslog (systemd) and file checks of /etc/systemd/system",
+     "why": "The operator installed Ligolo-ng v0.8.2 as /etc/systemd/system/vmware-vdma.service with Restart=always, calling out to api.cloudvflare.com:443, about four hours after first SSH login, through MeshAgent. vmware-vdma is not a VMware service. Tuning: exact unit name and description. Expected false positives: none known; also compare all units under /etc/systemd/system against a clean VCSA build.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://securelist.com/esxi-ransomware/121959/",
+     "source_name": "Kaspersky",
+     "title": "Fake vmware-vdma tunnel service on vCenter",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "A Windows service named vspbind (the operator's MeshAgent install)",
+     "log_source": "Defender XDR DeviceRegistryEvents; Windows 7045 or Sysmon 13 in Splunk or Google SecOps",
+     "why": "Kaspersky lists vspbind as the Windows service for the remote-management agent in this intrusion. Tuning: exact service key name. Expected false positives: none known; check any hit for MeshAgent files and traffic to 45.149.154.135.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://securelist.com/esxi-ransomware/121959/",
+     "source_name": "Kaspersky",
+     "title": "vspbind remote-management service",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "A Host Profile change that sets TSM-SSH (or TSM) to running on an ESXi host outside a change window, followed within 15 minutes by an SSH login to that host from the vCenter or another management appliance",
+     "log_source": "vCenter Events and Tasks, ESXi vpxa.log, vobd.log, hostprofiletrace.log and auth.log",
+     "why": "In this case the profile push came 10 minutes after the profile was read, SSH reached RUNNING 33 seconds later, and the next SSH session came from the vCenter IP. Each step is normal on its own; Kaspersky rates the sequence Critical. Tuning: join on the ESXi host, 15-minute window, exclude approved change windows. Expected false positives: planned maintenance that enables SSH through Host Profiles; check the change record.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://securelist.com/esxi-ransomware/121959/",
+     "source_name": "Kaspersky",
+     "title": "Host Profile turns on SSH, then SSH from vCenter",
+     "queries": []
+    }
+   ],
+   "ioa_count": 4,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse/block_now.txt",
+     "download": "BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse/defender_xdr_indicators.csv",
+     "download": "BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse/hunt.kql",
+     "download": "BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse/hunt.spl",
+     "download": "BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse/hunt_raw.spl",
+     "download": "BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse/hunt.yaral",
+     "download": "BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse/iocs.csv",
+     "download": "BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse",
+   "share_url": "https://daniyyell.com/rapid-threat-intel/t/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse/",
+   "indicators": [
+    {
+     "value": "45.149.154.135",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Remote-management (MeshAgent) C2 server the BlackNevas operator used to return to the compromised vCenter appliance and install the Ligolo-ng tunnel.",
+     "source_url": "https://securelist.com/esxi-ransomware/121959/",
+     "source_label": "Kaspersky GERT (Securelist) – Ransomware at the hypervisor layer: how attackers use ESXi and vCenter features for malicious purposes",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/esxi-ransomware/121959/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "91.92.242.121",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "VPS the BlackNevas operator used for initial access to the victim's portal with stolen credentials.",
+     "source_url": "https://securelist.com/esxi-ransomware/121959/",
+     "source_label": "Kaspersky GERT (Securelist) – Ransomware at the hypervisor layer: how attackers use ESXi and vCenter features for malicious purposes",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/esxi-ransomware/121959/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "31.41.33.212",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "VPS the BlackNevas operator used for initial access to the victim's portal with stolen credentials.",
+     "source_url": "https://securelist.com/esxi-ransomware/121959/",
+     "source_label": "Kaspersky GERT (Securelist) – Ransomware at the hypervisor layer: how attackers use ESXi and vCenter features for malicious purposes",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/esxi-ransomware/121959/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "188.240.57.94",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "VPS the BlackNevas operator used for initial access to the victim's portal with stolen credentials.",
+     "source_url": "https://securelist.com/esxi-ransomware/121959/",
+     "source_label": "Kaspersky GERT (Securelist) – Ransomware at the hypervisor layer: how attackers use ESXi and vCenter features for malicious purposes",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/esxi-ransomware/121959/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "api.cloudvflare.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Ligolo-ng tunnel C2 (port 443) hard-coded in the fake vmware-vdma service on the compromised vCenter appliance; one-letter typosquat of cloudflare.com.",
+     "source_url": "https://securelist.com/esxi-ransomware/121959/",
+     "source_label": "Kaspersky GERT (Securelist) – Ransomware at the hypervisor layer: how attackers use ESXi and vCenter features for malicious purposes",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/esxi-ransomware/121959/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "28f8da19ddcdf26e426875c7a834b34a79bc1c33",
+     "type": "sha1",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA1 of the Windows payload recovered as svhost.exe / lock.exe in the BlackNevas intrusion.",
+     "source_url": "https://securelist.com/esxi-ransomware/121959/",
+     "source_label": "Kaspersky GERT (Securelist) – Ransomware at the hypervisor layer: how attackers use ESXi and vCenter features for malicious purposes",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/esxi-ransomware/121959/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "15dc419b7fbeb50c50820a7cd27997541deafa4fa710f074bb657f0149574baf",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of the remote-management agent (MeshAgent build tied to the operator's server) used for persistence in the BlackNevas intrusion.",
+     "source_url": "https://securelist.com/esxi-ransomware/121959/",
+     "source_label": "Kaspersky GERT (Securelist) – Ransomware at the hypervisor layer: how attackers use ESXi and vCenter features for malicious purposes",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/esxi-ransomware/121959/",
+       "name": "Kaspersky"
+      }
+     ]
+    },
+    {
+     "value": "5a9b7a0d3f25757aea957713d7e84cabec87597b3474368328a8fd5ed7a12f78",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of the installed variant of the operator's remote-management agent from the BlackNevas intrusion.",
+     "source_url": "https://securelist.com/esxi-ransomware/121959/",
+     "source_label": "Kaspersky GERT (Securelist) – Ransomware at the hypervisor layer: how attackers use ESXi and vCenter features for malicious purposes",
+     "source_name": "Kaspersky",
+     "sources": [
+      {
+       "url": "https://securelist.com/esxi-ransomware/121959/",
+       "name": "Kaspersky"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse/hunt.kql",
+     "download": "BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse/hunt.spl",
+     "download": "BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse/hunt_raw.spl",
+      "download": "BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse/hunt.yaral",
+     "download": "BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse_hunt.yaral"
     }
    ]
   },

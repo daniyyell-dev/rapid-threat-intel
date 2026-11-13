@@ -1,0 +1,60 @@
+``` Threat: BlackNevas: Ransomware Wipes ESXi and vCenter Through Legitimate Management Features
+    Author: Daniel Jeremiah | Date: 2026-11-13
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse ```
+| multisearch
+  [ search `rti_network(45.149.154.135 OR 91.92.242.121 OR 31.41.33.212 OR 188.240.57.94)`
+    | search dest_ip IN ("45.149.154.135", "91.92.242.121", "31.41.33.212", "188.240.57.94")
+    | eval data_model="network", ioc_type="ipv4", ioc=dest_ip, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_network(45.149.154.135 OR 91.92.242.121 OR 31.41.33.212 OR 188.240.57.94)`
+    | search src_ip IN ("45.149.154.135", "91.92.242.121", "31.41.33.212", "188.240.57.94")
+    | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_dns(api.cloudvflare.com)`
+    | search query IN ("api.cloudvflare.com", "*.api.cloudvflare.com")
+    | rex field=query "(?i)(?<ioc>(?:api\.cloudvflare\.com))\.?$"
+    | eval data_model="dns", ioc_type="domain", host=src, detail="DNS query ".query
+  ]
+  [ search `rti_web(api.cloudvflare.com)`
+    | search url IN ("*://api.cloudvflare.com*", "*.api.cloudvflare.com*", "api.cloudvflare.com*") OR dest IN ("api.cloudvflare.com", "*.api.cloudvflare.com")
+    | rex field=url "(?i)(?<ioc>api\.cloudvflare\.com)"
+    | eval ioc=coalesce(ioc, dest), data_model="web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+  ]
+  [ search `rti_endpoint(15dc419b7fbeb50c50820a7cd27997541deafa4fa710f074bb657f0149574baf OR 5a9b7a0d3f25757aea957713d7e84cabec87597b3474368328a8fd5ed7a12f78 OR 28f8da19ddcdf26e426875c7a834b34a79bc1c33)`
+    | search file_hash IN ("*15dc419b7fbeb50c50820a7cd27997541deafa4fa710f074bb657f0149574baf*", "*5a9b7a0d3f25757aea957713d7e84cabec87597b3474368328a8fd5ed7a12f78*", "*28f8da19ddcdf26e426875c7a834b34a79bc1c33*") OR process_hash IN ("*15dc419b7fbeb50c50820a7cd27997541deafa4fa710f074bb657f0149574baf*", "*5a9b7a0d3f25757aea957713d7e84cabec87597b3474368328a8fd5ed7a12f78*", "*28f8da19ddcdf26e426875c7a834b34a79bc1c33*") OR parent_process_hash IN ("*15dc419b7fbeb50c50820a7cd27997541deafa4fa710f074bb657f0149574baf*", "*5a9b7a0d3f25757aea957713d7e84cabec87597b3474368328a8fd5ed7a12f78*", "*28f8da19ddcdf26e426875c7a834b34a79bc1c33*")
+    | eval matched=file_hash." ".process_hash." ".parent_process_hash
+    | rex field=matched "(?i)(?<ioc>15dc419b7fbeb50c50820a7cd27997541deafa4fa710f074bb657f0149574baf|5a9b7a0d3f25757aea957713d7e84cabec87597b3474368328a8fd5ed7a12f78|28f8da19ddcdf26e426875c7a834b34a79bc1c33)"
+    | eval data_model="endpoint", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, detail=coalesce(process, file_path)
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search index=* "/tmp/" ("/selftest" OR ("/vmfs/" ("/wipe" OR "/allsys" OR "/detach")))
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="ESXi logs"
+    | eval ioc="ESXi encryptor run from /tmp against /vmfs", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search index=* ("vmware-vdma" OR "DNS, time, VM settings sync")
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="vCenter appliance logs"
+    | eval ioc="Fake vmware-vdma tunnel service on vCenter", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search index=* vspbind
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="Windows service events"
+    | eval ioc="vspbind remote-management service", ioc_type="behaviour (alert)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

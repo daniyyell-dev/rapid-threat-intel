@@ -6,6 +6,14 @@ http://45.115.26.23:80/hb,url,"ZeroQlik Returns: Qlik Sense Servers Exploited fo
 57.129.54.120,ipv4,Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
 65f061281c9a712e9502793dc4c5035cae490b84da05f7d4223cefa65ad396e4,sha256,Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
 1c7437dac21630f53c0b888b50662c6487e23fd7,sha1,Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
+45.149.154.135,ipv4,BlackNevas: Ransomware Wipes ESXi and vCenter Through Legitimate Management Features
+91.92.242.121,ipv4,BlackNevas: Ransomware Wipes ESXi and vCenter Through Legitimate Management Features
+31.41.33.212,ipv4,BlackNevas: Ransomware Wipes ESXi and vCenter Through Legitimate Management Features
+188.240.57.94,ipv4,BlackNevas: Ransomware Wipes ESXi and vCenter Through Legitimate Management Features
+api.cloudvflare.com,domain,BlackNevas: Ransomware Wipes ESXi and vCenter Through Legitimate Management Features
+28f8da19ddcdf26e426875c7a834b34a79bc1c33,sha1,BlackNevas: Ransomware Wipes ESXi and vCenter Through Legitimate Management Features
+15dc419b7fbeb50c50820a7cd27997541deafa4fa710f074bb657f0149574baf,sha256,BlackNevas: Ransomware Wipes ESXi and vCenter Through Legitimate Management Features
+5a9b7a0d3f25757aea957713d7e84cabec87597b3474368328a8fd5ed7a12f78,sha256,BlackNevas: Ransomware Wipes ESXi and vCenter Through Legitimate Management Features
 45.32.117.34,ipv4,GeoVision Camera Software Abused to Deploy XMRig Cryptominer
 http://45.32.117.34/a,url,GeoVision Camera Software Abused to Deploy XMRig Cryptominer
 http://45.32.117.34/b,url,GeoVision Camera Software Abused to Deploy XMRig Cryptominer
