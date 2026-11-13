@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-13 09:55",
- "threat_count": 44,
- "indicator_count": 1409,
- "block_now_count": 639,
+ "last_updated": "2026-11-13 11:03",
+ "threat_count": 46,
+ "indicator_count": 1418,
+ "block_now_count": 648,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -102,6 +102,568 @@
   }
  ],
  "threats": [
+  {
+   "id": "DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations",
+   "folder": "threats/2026-11_November-2026/2026-11-13/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations",
+   "name": "DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe",
+   "short": "DarkLunnen",
+   "category": "Espionage / APT",
+   "published": "2026-11-11",
+   "entry_date": "2026-11-13 11:03",
+   "last_updated": "2026-11-13",
+   "seq": 46,
+   "headline": "An unattributed operator used a FortiGate CVE-2024-55591 exploit to create a service super-admin and ran 14 months of attacks on Europe",
+   "summary": "Group-IB, writing on 11 November 2026 and updating the post on 13 November, describes an open directory on a Latvia-hosted server (46.8.236.121:8090) that exposed 14 months of work by an unattributed operator they name DarkLunnen. Exploit code in the recovered files carries Russian-language comments, but Group-IB has not linked the activity to a known group. The operator used a modified watchTowr proof of concept for FortiGate CVE-2024-55591 that creates a backdoor super-admin account named service; a stolen FortiGate configuration from a Romanian organisation contained that same account, and the operator extracted 10 cleartext VPN passwords from it. Scan results listed about 600 vulnerable FortiGates in Turkey, 16 in Ukraine, 14 in Azerbaijan and one in Algeria. Other recovered activity includes VNC brute force against about 5,800 endpoints (roughly a quarter with industrial HMI desktop names), Hikvision camera scans in Ukraine and Poland, attempted source-code collection from Ukrainian defence and aviation sites, Exchange webshells, a possible German-network intrusion with a stolen NTLM hash, restic access to an S3 backup, and Roundcube CVE-2025-49113 attempts. A second server at 129.146.87.174 on Oracle Cloud staged the exploit scripts. Both addresses, the staging URLs and the modified exploit hash are on the block list.",
+   "caveat": "Group-IB recovered 35 of 457 exposed files, so the picture is incomplete and the operator remains unattributed. SSH connections from the operator's history to hosts in the Netherlands, the United States, Thailand and France may be compromised intermediaries, including two with educational TLS certificates; those addresses, the victim and educational domains, and legitimate services such as temp.sh are not on the block list. A patch does not remove a service super-admin account already created, so hunt patched FortiGates too.",
+   "targets": {
+    "countries": [
+     {
+      "code": "UA",
+      "name": "Ukraine"
+     },
+     {
+      "code": "RO",
+      "name": "Romania"
+     },
+     {
+      "code": "PL",
+      "name": "Poland"
+     },
+     {
+      "code": "DE",
+      "name": "Germany"
+     },
+     {
+      "code": "CZ",
+      "name": "Czech Republic"
+     },
+     {
+      "code": "TR",
+      "name": "Turkey"
+     },
+     {
+      "code": "AZ",
+      "name": "Azerbaijan"
+     },
+     {
+      "code": "DZ",
+      "name": "Algeria"
+     }
+    ],
+    "regions": [
+     "Europe"
+    ],
+    "sectors": [
+     "Government",
+     "Defence",
+     "Aviation",
+     "ICS/OT",
+     "Healthcare"
+    ],
+    "note": "Group-IB reports Ukrainian defence and aviation among the apparent targets, a stolen FortiGate configuration from a Romanian organisation, VNC and Hikvision campaigns focused on Ukrainian and Polish addresses, a possible German-network intrusion, a Czech backup archive, and FortiGate scan results for about 600 devices in Turkey, 16 in Ukraine, 14 in Azerbaijan and one in Algeria. Further FortiGate target lists covered Switzerland, South Korea and Ireland, with unrecovered lists named for other countries.",
+    "source": {
+     "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "name": "Group-IB"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1136.001",
+     "name": "Create Account: Local Account",
+     "url": "https://attack.mitre.org/techniques/T1136/001/"
+    },
+    {
+     "id": "T1078",
+     "name": "Valid Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/"
+    },
+    {
+     "id": "T1572",
+     "name": "Protocol Tunneling",
+     "url": "https://attack.mitre.org/techniques/T1572/"
+    },
+    {
+     "id": "T1505.003",
+     "name": "Web Shell",
+     "url": "https://attack.mitre.org/techniques/T1505/003/"
+    },
+    {
+     "id": "T1071",
+     "name": "Application Layer Protocol",
+     "url": "https://attack.mitre.org/techniques/T1071/"
+    },
+    {
+     "id": "T1105",
+     "name": "Ingress Tool Transfer",
+     "url": "https://attack.mitre.org/techniques/T1105/"
+    },
+    {
+     "id": "T1110.001",
+     "name": "Password Guessing",
+     "url": "https://attack.mitre.org/techniques/T1110/001/"
+    },
+    {
+     "id": "T1003",
+     "name": "OS Credential Dumping",
+     "url": "https://attack.mitre.org/techniques/T1003/"
+    },
+    {
+     "id": "T1550.002",
+     "name": "Pass the Hash",
+     "url": "https://attack.mitre.org/techniques/T1550/002/"
+    },
+    {
+     "id": "T1567",
+     "name": "Exfiltration Over Web Service",
+     "url": "https://attack.mitre.org/techniques/T1567/"
+    }
+   ],
+   "recommended_actions": [
+    "Block 46.8.236.121 and 129.146.87.174, the staging URLs on 129.146.87.174:18080, and the SHA256 of popoc.py, and search proxy, firewall, DNS and EDR logs for them back to at least April 2025.",
+    "Hunt FortiGate syslog for an administrator named service being added or given the super_admin profile from a jsconsole or websocket login (logdesc Admin added or Object attribute configured), and inspect the running config of every FortiGate for that account even if the device is already patched.",
+    "If you find the account or the device was internet-exposed while vulnerable, rotate every secret the configuration stores (local VPN user passwords, administrator passwords, IPsec pre-shared keys, and LDAP or RADIUS credentials), review VPN logs for those accounts, and take HTTP and HTTPS administrative access off internet-facing interfaces.",
+    "Patch FortiOS and FortiProxy against CVE-2024-55591 and the other edge-device bugs in Group-IB's targeted-vulnerabilities table."
+   ],
+   "sources": [
+    {
+     "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "name": "Group-IB"
+    }
+   ],
+   "indicator_count": 7,
+   "block_now_count": 7,
+   "hunt_count": 0,
+   "hunt_counts": {},
+   "indicator_counts": {
+    "url": 4,
+    "ipv4": 2,
+    "sha256": 1
+   },
+   "ioas": [
+    {
+     "artefact": "A FortiGate administrator named service being added or given the super_admin profile from a jsconsole or websocket login (logdesc 'Admin added' or 'Object attribute configured')",
+     "log_source": "FortiGate syslog ingested into Defender XDR or Sentinel (CommonSecurityLog or a FortiGate custom table), Splunk (forti/fgt sourcetypes) or Google SecOps (Fortinet UDM)",
+     "why": "DarkLunnen's modified CVE-2024-55591 exploit creates a backdoor super-admin named service through the jsconsole websocket used by the authentication bypass. A patch does not remove an account already created, so hunt patched devices too and inspect the running config for an unexpected service super_admin. Tuning: match only FortiGate or Fortinet events whose logdesc is Admin added or Object attribute configured; the account must be the admin named service (user, cfgobj, or the 'added new administrator service' message), not the ordinary FortiGate service= protocol field; the ui or method must be jsconsole or websocket. Expected false positives: a legitimate administrator who is actually named service and is created or changed from the FortiGate GUI CLI (jsconsole) by your own staff. Confirm the source address and whether the change was approved. The hunt returns nothing until FortiGate syslog is ingested.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_name": "Group-IB",
+     "title": "FortiGate super-admin named service added from jsconsole",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    }
+   ],
+   "ioa_count": 1,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/block_now.txt",
+     "download": "DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/defender_xdr_indicators.csv",
+     "download": "DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/hunt.kql",
+     "download": "DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/hunt.spl",
+     "download": "DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/hunt_raw.spl",
+     "download": "DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/hunt.yaral",
+     "download": "DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/iocs.csv",
+     "download": "DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations",
+   "indicators": [
+    {
+     "value": "46.8.236.121",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "DarkLunnen operator server in Latvia on CloudBackbone (AS56971), running Sliver command-and-control and the Python HTTP open directory on TCP 8090 that Group-IB found in late July 2026.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "129.146.87.174",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "DarkLunnen staging server on Oracle Cloud Infrastructure (AS31898) in the United States, serving exploit scripts and FortiGate target lists over HTTP on TCP 18080.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "http://129.146.87.174:18080/hJCdxq/popoc.py",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Staging URL on 129.146.87.174:18080 that served the modified FortiGate CVE-2024-55591 exploit popoc.py, recorded in the operator's shell history.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "http://129.146.87.174:18080/UzIwMH/forti-ca.txt",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Staging URL on 129.146.87.174:18080 that served a FortiGate target list (forti-ca.txt), recorded in the operator's shell history.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "http://129.146.87.174:18080/aN2MLr/forti_GB.txt",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Staging URL on 129.146.87.174:18080 that served a FortiGate target list (forti_GB.txt), recorded in the operator's shell history.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "http://129.146.87.174:18080/OJGWIP/son2.tar.gz",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Staging URL on 129.146.87.174:18080 that served son2.tar.gz, an exploit package Group-IB assesses may relate to a June 2025 campaign against 12 US firewall targets.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "b8a76bd31984c13d2b0a47d2aaf68e7472d24f6e63575d1feb2fe50956c32acb",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of chfrt/popoc.py, the modified watchTowr proof of concept for FortiGate CVE-2024-55591 that creates a backdoor super-admin account named service.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/hunt.kql",
+     "download": "DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/hunt.spl",
+     "download": "DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/hunt_raw.spl",
+      "download": "DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/hunt.yaral",
+     "download": "DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "LIMINAL-PANDA-GTPDoor-v3-SilentAir",
+   "folder": "threats/2026-11_November-2026/2026-11-13/LIMINAL-PANDA-GTPDoor-v3-SilentAir",
+   "name": "LIMINAL PANDA GTPDoor v3 and SilentAir Mobile-Network Espionage",
+   "short": "LIMINAL PANDA GTPDoor v3",
+   "category": "Nation-state / espionage",
+   "published": "2026-11-11",
+   "entry_date": "2026-11-13 11:03",
+   "last_updated": "2026-11-13",
+   "seq": 45,
+   "headline": "China-nexus actors hide mobile-network C2 in GTP-U and abuse SS7 and Diameter to intercept calls, texts and 2FA",
+   "summary": "Enea, writing on 11 November 2026 and adding key takeaways on 12 November, reports ongoing 2026 activity by the China-nexus actor LIMINAL PANDA inside mobile-operator networks, and names a second signalling-plane actor, SilentAir, whose activity it also believes aligns with China-nexus operations, with the link between the two unconfirmed. SilentAir has been observed in at least six Asian operators, with Taiwanese subscribers the primary target and high-profile people in about a dozen other countries, Europe included; it abuses SS7 and Diameter to track location, intercept calls and text messages (including two-factor authentication codes) and send silent SMS. LIMINAL PANDA now uses GTPDoor v3, which hides command-and-control inside GTP-U rather than GTP-C and captures traffic with libpcap instead of a raw-socket receive path. Enea also publishes an MD5 for SCTPE, a kernel-level tool that sends and receives SS7 and Diameter, as a sample reference. Both hashes are on the block list. This activity is specific to mobile-operator and signalling networks.",
+   "caveat": "Enea published only MD5s, with no SHA256 or network indicators. A raw-socket or libpcap process on a telco node is too common (packet capture, probes, signalling firewalls) to hunt on its own without a published process name or path, so that behaviour is omitted. SilentAir's link to LIMINAL PANDA is unconfirmed.",
+   "targets": {
+    "countries": [
+     {
+      "code": "TW",
+      "name": "Taiwan"
+     }
+    ],
+    "regions": [
+     "Asia",
+     "Europe"
+    ],
+    "sectors": [
+     "Telecommunications",
+     "Government"
+    ],
+    "note": "Enea says SilentAir-related sources in at least six Asian countries targeted a dozen additional countries and territories, with Taiwan the primary target, including political and government VIPs and activity affecting Europe. LIMINAL PANDA was detected across multiple mobile operators (an estimated 5 to 10 infected, with dozens more potentially affected). This activity is specific to mobile-operator and signalling networks.",
+    "source": {
+     "url": "https://www.enea.com/insights/the-enemy-within-tracking-liminal-panda-and-silentair-through-mobile-networks/",
+     "label": "Enea – The Enemy Within: Tracking LIMINAL PANDA and SilentAir through Mobile Networks",
+     "name": "Enea"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1572",
+     "name": "Protocol Tunneling",
+     "url": "https://attack.mitre.org/techniques/T1572/"
+    },
+    {
+     "id": "T1040",
+     "name": "Network Sniffing",
+     "url": "https://attack.mitre.org/techniques/T1040/"
+    },
+    {
+     "id": "T1205",
+     "name": "Traffic Signaling",
+     "url": "https://attack.mitre.org/techniques/T1205/"
+    },
+    {
+     "id": "T1036",
+     "name": "Masquerading",
+     "url": "https://attack.mitre.org/techniques/T1036/"
+    },
+    {
+     "id": "T1059",
+     "name": "Command and Scripting Interpreter",
+     "url": "https://attack.mitre.org/techniques/T1059/"
+    }
+   ],
+   "recommended_actions": [
+    "Block the MD5s 35f0d4d0c5519a2957338e448fce53bc (GTPDoor v3) and da35d98c9a22e8ede93595d21fe7e63e (SCTPE), and hunt file and process hashes on Linux hosts, especially telco and signalling nodes.",
+    "On mobile-operator networks, deploy or tighten GTP-C and GTP-U security and align it with SS7 and Diameter signalling defences.",
+    "For high-risk people who may be SilentAir targets, stop relying on SMS two-factor authentication."
+   ],
+   "sources": [
+    {
+     "url": "https://www.enea.com/insights/the-enemy-within-tracking-liminal-panda-and-silentair-through-mobile-networks/",
+     "label": "Enea – The Enemy Within: Tracking LIMINAL PANDA and SilentAir through Mobile Networks",
+     "name": "Enea"
+    }
+   ],
+   "indicator_count": 2,
+   "block_now_count": 2,
+   "hunt_count": 0,
+   "hunt_counts": {},
+   "indicator_counts": {
+    "md5": 2
+   },
+   "ioas": [
+    {
+     "artefact": "A file or process whose MD5 is 35f0d4d0c5519a2957338e448fce53bc (GTPDoor v3) or da35d98c9a22e8ede93595d21fe7e63e (SCTPE) on a Linux host, especially a telco or signalling node",
+     "log_source": "Defender XDR DeviceFileEvents and DeviceProcessEvents, Splunk endpoint file and process logs, Google SecOps file and process UDM",
+     "why": "These are the only indicators Enea published for GTPDoor v3 and SCTPE. A hash match is high fidelity. This activity is specific to mobile-operator and signalling networks; a generic raw-socket or libpcap process on a telco node is too common (packet capture, probes, signalling firewalls) to hunt without a published process name, so that behaviour is omitted. Expected false positives: none of practical concern for an exact MD5 match.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://www.enea.com/insights/the-enemy-within-tracking-liminal-panda-and-silentair-through-mobile-networks/",
+     "source_name": "Enea",
+     "title": "GTPDoor v3 or SCTPE MD5 on a Linux host",
+     "queries": [
+      "SPL",
+      "YARA-L"
+     ]
+    }
+   ],
+   "ioa_count": 1,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/LIMINAL-PANDA-GTPDoor-v3-SilentAir/block_now.txt",
+     "download": "LIMINAL-PANDA-GTPDoor-v3-SilentAir_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/LIMINAL-PANDA-GTPDoor-v3-SilentAir/defender_xdr_indicators.csv",
+     "download": "LIMINAL-PANDA-GTPDoor-v3-SilentAir_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/LIMINAL-PANDA-GTPDoor-v3-SilentAir/hunt.kql",
+     "download": "LIMINAL-PANDA-GTPDoor-v3-SilentAir_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/LIMINAL-PANDA-GTPDoor-v3-SilentAir/hunt.spl",
+     "download": "LIMINAL-PANDA-GTPDoor-v3-SilentAir_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/LIMINAL-PANDA-GTPDoor-v3-SilentAir/hunt_raw.spl",
+     "download": "LIMINAL-PANDA-GTPDoor-v3-SilentAir_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/LIMINAL-PANDA-GTPDoor-v3-SilentAir/hunt.yaral",
+     "download": "LIMINAL-PANDA-GTPDoor-v3-SilentAir_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/LIMINAL-PANDA-GTPDoor-v3-SilentAir/iocs.csv",
+     "download": "LIMINAL-PANDA-GTPDoor-v3-SilentAir_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/LIMINAL-PANDA-GTPDoor-v3-SilentAir",
+   "indicators": [
+    {
+     "value": "35f0d4d0c5519a2957338e448fce53bc",
+     "type": "md5",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "MD5 of LIMINAL PANDA GTPDoor v3 (GTP-U-Door), the Linux implant that hides command-and-control inside GTP-U and uses libpcap for packet capture. Telco-specific.",
+     "source_url": "https://www.enea.com/insights/the-enemy-within-tracking-liminal-panda-and-silentair-through-mobile-networks/",
+     "source_label": "Enea – The Enemy Within: Tracking LIMINAL PANDA and SilentAir through Mobile Networks",
+     "source_name": "Enea",
+     "sources": [
+      {
+       "url": "https://www.enea.com/insights/the-enemy-within-tracking-liminal-panda-and-silentair-through-mobile-networks/",
+       "name": "Enea"
+      }
+     ]
+    },
+    {
+     "value": "da35d98c9a22e8ede93595d21fe7e63e",
+     "type": "md5",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "MD5 of SCTPE, a kernel-level Linux tool that sends and receives SS7 and Diameter, published by Enea as a sample reference alongside SilentAir and LIMINAL PANDA. Telco-specific.",
+     "source_url": "https://www.enea.com/insights/the-enemy-within-tracking-liminal-panda-and-silentair-through-mobile-networks/",
+     "source_label": "Enea – The Enemy Within: Tracking LIMINAL PANDA and SilentAir through Mobile Networks",
+     "source_name": "Enea",
+     "sources": [
+      {
+       "url": "https://www.enea.com/insights/the-enemy-within-tracking-liminal-panda-and-silentair-through-mobile-networks/",
+       "name": "Enea"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/LIMINAL-PANDA-GTPDoor-v3-SilentAir/hunt.kql",
+     "download": "LIMINAL-PANDA-GTPDoor-v3-SilentAir_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/LIMINAL-PANDA-GTPDoor-v3-SilentAir/hunt.spl",
+     "download": "LIMINAL-PANDA-GTPDoor-v3-SilentAir_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/LIMINAL-PANDA-GTPDoor-v3-SilentAir/hunt_raw.spl",
+      "download": "LIMINAL-PANDA-GTPDoor-v3-SilentAir_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/LIMINAL-PANDA-GTPDoor-v3-SilentAir/hunt.yaral",
+     "download": "LIMINAL-PANDA-GTPDoor-v3-SilentAir_hunt.yaral"
+    }
+   ]
+  },
   {
    "id": "AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie",
    "folder": "threats/2026-11_November-2026/2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie",

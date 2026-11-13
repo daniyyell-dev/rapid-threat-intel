@@ -1,4 +1,11 @@
 indicator,type,threat
+46.8.236.121,ipv4,DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe
+129.146.87.174,ipv4,DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe
+http://129.146.87.174:18080/hJCdxq/popoc.py,url,DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe
+http://129.146.87.174:18080/UzIwMH/forti-ca.txt,url,DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe
+http://129.146.87.174:18080/aN2MLr/forti_GB.txt,url,DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe
+http://129.146.87.174:18080/OJGWIP/son2.tar.gz,url,DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe
+b8a76bd31984c13d2b0a47d2aaf68e7472d24f6e63575d1feb2fe50956c32acb,sha256,DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe
 204.194.49.129,ipv4,"AI-Assisted Intrusion at a U.S. Retailer: SolarWinds Orion Erlang Cookie Abuse, Side-Loaded Loaders and Yuze Tunnels"
 166.0.25.106,ipv4,"AI-Assisted Intrusion at a U.S. Retailer: SolarWinds Orion Erlang Cookie Abuse, Side-Loaded Loaders and Yuze Tunnels"
 154.81.37.136,ipv4,"AI-Assisted Intrusion at a U.S. Retailer: SolarWinds Orion Erlang Cookie Abuse, Side-Loaded Loaders and Yuze Tunnels"

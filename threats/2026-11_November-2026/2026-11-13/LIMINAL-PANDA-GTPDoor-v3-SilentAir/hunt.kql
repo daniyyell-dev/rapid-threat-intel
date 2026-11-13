@@ -1,0 +1,20 @@
+// Threat: LIMINAL PANDA GTPDoor v3 and SilentAir Mobile-Network Espionage
+// Author: Daniel Jeremiah | Date: 2026-11-13
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/LIMINAL-PANDA-GTPDoor-v3-SilentAir
+let Lookback = 30d;
+let MD5s = dynamic(["35f0d4d0c5519a2957338e448fce53bc", "da35d98c9a22e8ede93595d21fe7e63e"]);
+union isfuzzy=true
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where MD5 in~ (MD5s)
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(MD5), Context = tostring(strcat(ActionType, " ", FolderPath))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where MD5 in~ (MD5s)
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(MD5), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceImageLoadEvents
+    | where Timestamp > ago(Lookback)
+    | where MD5 in~ (MD5s)
+    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(MD5), Context = tostring(strcat(FolderPath, " loaded by ", InitiatingProcessFileName)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

@@ -60,15 +60,15 @@ union isfuzzy=true
   (DeviceFileEvents
     | where Timestamp > ago(Lookback)
     | where SHA1 in~ (SHA1s) or SHA256 in~ (SHA256s)
-    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(iff(SHA256 in~ (SHA256s), SHA256, SHA1)), Context = tostring(strcat(ActionType, " ", FolderPath))),
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(coalesce(iff(SHA256 in~ (SHA256s), SHA256, ''), iff(SHA1 in~ (SHA1s), SHA1, ''))), Context = tostring(strcat(ActionType, " ", FolderPath))),
   (DeviceProcessEvents
     | where Timestamp > ago(Lookback)
     | where SHA1 in~ (SHA1s) or SHA256 in~ (SHA256s)
-    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(iff(SHA256 in~ (SHA256s), SHA256, SHA1)), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(coalesce(iff(SHA256 in~ (SHA256s), SHA256, ''), iff(SHA1 in~ (SHA1s), SHA1, ''))), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
   (DeviceImageLoadEvents
     | where Timestamp > ago(Lookback)
     | where SHA1 in~ (SHA1s) or SHA256 in~ (SHA256s)
-    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(iff(SHA256 in~ (SHA256s), SHA256, SHA1)), Context = tostring(strcat(FolderPath, " loaded by ", InitiatingProcessFileName))),
+    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(coalesce(iff(SHA256 in~ (SHA256s), SHA256, ''), iff(SHA1 in~ (SHA1s), SHA1, ''))), Context = tostring(strcat(FolderPath, " loaded by ", InitiatingProcessFileName))),
   (EmailAttachmentInfo
     | where Timestamp > ago(Lookback)
     | where SHA256 in~ (SHA256s)

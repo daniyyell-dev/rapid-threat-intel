@@ -1,5 +1,18 @@
 # All high-confidence indicators to block. Updated 2026-11-13.
 
+## 2026-11-11 DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe
+46.8.236.121
+129.146.87.174
+http://129.146.87.174:18080/hJCdxq/popoc.py
+http://129.146.87.174:18080/UzIwMH/forti-ca.txt
+http://129.146.87.174:18080/aN2MLr/forti_GB.txt
+http://129.146.87.174:18080/OJGWIP/son2.tar.gz
+b8a76bd31984c13d2b0a47d2aaf68e7472d24f6e63575d1feb2fe50956c32acb
+
+## 2026-11-11 LIMINAL PANDA GTPDoor v3 and SilentAir Mobile-Network Espionage
+35f0d4d0c5519a2957338e448fce53bc
+da35d98c9a22e8ede93595d21fe7e63e
+
 ## 2026-11-12 AI-Assisted Intrusion at a U.S. Retailer: SolarWinds Orion Erlang Cookie Abuse, Side-Loaded Loaders and Yuze Tunnels
 204.194.49.129
 166.0.25.106

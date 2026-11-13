@@ -1,3 +1,7 @@
+http://129.146.87.174:18080/hJCdxq/popoc.py
+http://129.146.87.174:18080/UzIwMH/forti-ca.txt
+http://129.146.87.174:18080/aN2MLr/forti_GB.txt
+http://129.146.87.174:18080/OJGWIP/son2.tar.gz
 http://154.81.37.136/server.ps1
 http://166.0.25.106/server.ps1
 http://166.0.25.106/filemanager.asp

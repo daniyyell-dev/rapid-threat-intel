@@ -1,0 +1,32 @@
+``` Threat: LIMINAL PANDA GTPDoor v3 and SilentAir Mobile-Network Espionage
+    Author: Daniel Jeremiah | Date: 2026-11-13
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/LIMINAL-PANDA-GTPDoor-v3-SilentAir ```
+search `rti_endpoint(35f0d4d0c5519a2957338e448fce53bc OR da35d98c9a22e8ede93595d21fe7e63e)`
+| search file_hash IN ("*35f0d4d0c5519a2957338e448fce53bc*", "*da35d98c9a22e8ede93595d21fe7e63e*") OR process_hash IN ("*35f0d4d0c5519a2957338e448fce53bc*", "*da35d98c9a22e8ede93595d21fe7e63e*") OR parent_process_hash IN ("*35f0d4d0c5519a2957338e448fce53bc*", "*da35d98c9a22e8ede93595d21fe7e63e*")
+| eval matched=file_hash." ".process_hash." ".parent_process_hash
+| rex field=matched "(?i)(?<ioc>35f0d4d0c5519a2957338e448fce53bc|da35d98c9a22e8ede93595d21fe7e63e)"
+| eval data_model="endpoint", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, detail=coalesce(process, file_path)
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search `rti_endpoint(35f0d4d0c5519a2957338e448fce53bc OR da35d98c9a22e8ede93595d21fe7e63e)`
+    | where match(lower(coalesce(file_hash, md5, MD5, "")), "35f0d4d0c5519a2957338e448fce53bc|da35d98c9a22e8ede93595d21fe7e63e")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="GTPDoor v3 or SCTPE MD5 on a Linux host", ioc_type="behaviour (alert)"
+]
+| append [
+    search `rti_endpoint(35f0d4d0c5519a2957338e448fce53bc OR da35d98c9a22e8ede93595d21fe7e63e)`
+    | where match(lower(coalesce(process_hash, md5, MD5, "")), "35f0d4d0c5519a2957338e448fce53bc|da35d98c9a22e8ede93595d21fe7e63e")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="GTPDoor v3 or SCTPE MD5 on a Linux host", ioc_type="behaviour (alert)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count
