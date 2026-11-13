@@ -8,7 +8,7 @@
 **Agentic AI collects it. Analysts verify it. Community acts on it.**<br>
 <sub>AI threat intel from defenders, for defenders.</sub>
 
-[![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-56-informational)](threats/) ![IOCs](https://img.shields.io/badge/IOCs-1577-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--13_11:25-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
+[![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-56-informational)](threats/) ![IOCs](https://img.shields.io/badge/IOCs-1581-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--13_23:30-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
 </div>
 
