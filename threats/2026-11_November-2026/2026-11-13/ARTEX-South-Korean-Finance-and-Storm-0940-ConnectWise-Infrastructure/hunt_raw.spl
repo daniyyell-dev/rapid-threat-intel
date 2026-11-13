@@ -1,0 +1,27 @@
+``` Threat: ARTEX Intrusions: South Korean Finance Operator and Storm-0940 ConnectWise Cloud Backup Access
+    Author: Daniel Jeremiah | Date: 2026-11-13
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure ```
+| multisearch
+  [ search `rti_network(38.244.50.120 OR 144.172.64.60 OR 144.172.64.99 OR 144.172.64.128 OR 187.15.88.186 OR 187.15.90.217 OR 187.15.89.186 OR 101.53.80.20 OR 205.214.59.31 OR 124.155.252.63 OR 154.201.79.246 OR 23.248.249.90 OR 23.158.220.98 OR 103.248.148.84 OR 203.160.133.172 OR 209.209.85.38)`
+    | search dest_ip IN ("38.244.50.120", "144.172.64.60", "144.172.64.99", "144.172.64.128", "187.15.88.186", "187.15.90.217", "187.15.89.186", "101.53.80.20", "205.214.59.31", "124.155.252.63", "154.201.79.246", "23.248.249.90", "23.158.220.98", "103.248.148.84", "203.160.133.172", "209.209.85.38")
+    | eval data_model="network", ioc_type="ipv4", ioc=dest_ip, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_network(38.244.50.120 OR 144.172.64.60 OR 144.172.64.99 OR 144.172.64.128 OR 187.15.88.186 OR 187.15.90.217 OR 187.15.89.186 OR 101.53.80.20 OR 205.214.59.31 OR 124.155.252.63 OR 154.201.79.246 OR 23.248.249.90 OR 23.158.220.98 OR 103.248.148.84 OR 203.160.133.172 OR 209.209.85.38)`
+    | search src_ip IN ("38.244.50.120", "144.172.64.60", "144.172.64.99", "144.172.64.128", "187.15.88.186", "187.15.90.217", "187.15.89.186", "101.53.80.20", "205.214.59.31", "124.155.252.63", "154.201.79.246", "23.248.249.90", "23.158.220.98", "103.248.148.84", "203.160.133.172", "209.209.85.38")
+    | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_dns(xcai.pro)`
+    | search query IN ("xcai.pro", "*.xcai.pro")
+    | rex field=query "(?i)(?<ioc>(?:xcai\.pro))\.?$"
+    | eval data_model="dns", ioc_type="domain", host=src, detail="DNS query ".query
+  ]
+  [ search `rti_web(xcai.pro)`
+    | search url IN ("*://xcai.pro*", "*.xcai.pro*", "xcai.pro*") OR dest IN ("xcai.pro", "*.xcai.pro")
+    | rex field=url "(?i)(?<ioc>xcai\.pro)"
+    | eval ioc=coalesce(ioc, dest), data_model="web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

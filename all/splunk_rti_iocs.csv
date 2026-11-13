@@ -6,6 +6,10 @@ http://45.115.26.23:80/hb,url,"ZeroQlik Returns: Qlik Sense Servers Exploited fo
 57.129.54.120,ipv4,Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
 65f061281c9a712e9502793dc4c5035cae490b84da05f7d4223cefa65ad396e4,sha256,Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
 1c7437dac21630f53c0b888b50662c6487e23fd7,sha1,Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
+38.244.50.120,ipv4,ARTEX Intrusions: South Korean Finance Operator and Storm-0940 ConnectWise Cloud Backup Access
+144.172.64.60,ipv4,ARTEX Intrusions: South Korean Finance Operator and Storm-0940 ConnectWise Cloud Backup Access
+144.172.64.99,ipv4,ARTEX Intrusions: South Korean Finance Operator and Storm-0940 ConnectWise Cloud Backup Access
+144.172.64.128,ipv4,ARTEX Intrusions: South Korean Finance Operator and Storm-0940 ConnectWise Cloud Backup Access
 45.149.154.135,ipv4,BlackNevas: Ransomware Wipes ESXi and vCenter Through Legitimate Management Features
 91.92.242.121,ipv4,BlackNevas: Ransomware Wipes ESXi and vCenter Through Legitimate Management Features
 31.41.33.212,ipv4,BlackNevas: Ransomware Wipes ESXi and vCenter Through Legitimate Management Features

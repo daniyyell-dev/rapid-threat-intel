@@ -1,0 +1,8 @@
+# ARTEX Intrusions: South Korean Finance Operator and Storm-0940 ConnectWise Cloud Backup Access
+# Published 2026-11-13. High-confidence indicators to block. Updated 2026-11-13.
+
+## ipv4 (4)
+38.244.50.120
+144.172.64.60
+144.172.64.99
+144.172.64.128

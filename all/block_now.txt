@@ -13,6 +13,12 @@ http://45.115.26.23:80/hb
 1c7437dac21630f53c0b888b50662c6487e23fd7
 086d4a83181971e883c53a4c44f46da2
 
+## 2026-11-13 ARTEX Intrusions: South Korean Finance Operator and Storm-0940 ConnectWise Cloud Backup Access
+38.244.50.120
+144.172.64.60
+144.172.64.99
+144.172.64.128
+
 ## 2026-11-13 BlackNevas: Ransomware Wipes ESXi and vCenter Through Legitimate Management Features
 45.149.154.135
 91.92.242.121

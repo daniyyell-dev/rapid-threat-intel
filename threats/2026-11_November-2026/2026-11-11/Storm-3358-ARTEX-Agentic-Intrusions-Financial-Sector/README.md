@@ -139,6 +139,7 @@ Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql)
 - [Microsoft Threat Intelligence – ARTEX abuse expands as cybercriminals target financial sector](https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/)
 - [Unit 42 – ARTEX and AI-Powered Red Teaming Tools: What Defenders Need to Know](https://unit42.paloaltonetworks.com/artex-and-ai-powered-red-teaming-tools/)
 - [Sophos X-Ops – ARTEX attackers apply agentic AI](https://www.sophos.com/en-us/blog/artex-attackers-apply-agentic-ai)
+- [FBI FLASH-20261113-001 – Threat Overview of ARTEX Autonomous Penetration Testing Framework](https://www.ic3.gov/CSA/2026/261113.pdf)
 
 ---
 

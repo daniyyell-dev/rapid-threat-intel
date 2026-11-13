@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-13 20:22",
- "threat_count": 54,
- "indicator_count": 1549,
- "block_now_count": 722,
+ "last_updated": "2026-11-13 21:40",
+ "threat_count": 55,
+ "indicator_count": 1566,
+ "block_now_count": 726,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -111,7 +111,7 @@
    "published": "2026-11-11",
    "entry_date": "2026-11-13 11:40",
    "last_updated": "2026-11-13",
-   "seq": 54,
+   "seq": 55,
    "headline": "Old Qlik Sense flaws exploited at EU firms for PowerShell reverse shells, a Go agent and SSH-key persistence",
    "summary": "Cynet reports that in October 2026 the Qlik Sense Scheduler.exe process on servers at several EU customers launched cmd.exe and a hidden, base64-encoded PowerShell reverse shell, all within about three minutes. The process tree matches the 2023 Cactus ransomware intrusions, so the operator most likely used the old Qlik Sense flaws CVE-2023-41266 with CVE-2023-41265, or CVE-2023-48365 (DoubleQlik). The shell is a trimmed Nishang one-liner that checks in to 45.115.26.23 over HTTP at /hb and connects back on TCP 4455. An open directory on the same server (TCP 8012) held a Go reverse-shell agent (wsvc.exe, TCP 4456) for Windows and several Linux architectures, a Bash agent (TCP 4457), a persist.ps1 script that installs OpenSSH, adds the ed25519 key node6-sm to administrators_authorized_keys, writes C:\\ProgramData\\ssh\\winc.ps1 and creates the WinUpdCheck task every five minutes, plus ActiveMQ CVE-2023-46604 payloads and a modified Veeam CVE-2024-40711 toolchain still in testing. The server address and the two persist.ps1 hashes are on the block list.",
    "caveat": "Cynet did not confirm which Qlik Sense vulnerability was used. The ActiveMQ and Veeam tooling looked unfinished and Cynet saw no successful exploitation with it. OpenSSH-Win64.zip on the staging server was the legitimate package, so it is not listed.",
@@ -462,7 +462,7 @@
    "published": "2026-11-09",
    "entry_date": "2026-11-13 11:40",
    "last_updated": "2026-11-13",
-   "seq": 53,
+   "seq": 54,
    "headline": "Stolen Qubole vendor credentials used to assume customer AWS integration roles, steal secrets and download S3 data",
    "summary": "Wiz, working with Sentra and Mandiant, reports that between 14 and 26 October 2026 a threat actor used IAM credentials from AWS account 805246085872, which Qubole's data platform uses to reach customer accounts, to assume the cross-account integration roles that dozens of customers had created to trust Qubole. Every AssumeRole call carried a valid External ID and succeeded, and most of the roles were otherwise unused. Using session names starting quiam-, the actor enumerated S3, EC2, RDS, IAM and KMS, read Lambda environment variables, Secrets Manager secrets and SSM parameters, downloaded whole S3 buckets, and validated the credentials it found with TruffleHog against AWS, Entra ID and Okta. Traffic came from an OVH server (57.129.54.120, which also hosted a bootable sso_agent.iso that beacons to TCP 23458) and Mullvad VPN exits. An actor calling itself n0n has claimed the intrusion. The OVH address and the ISO hashes are on the block list; the Mullvad exits, the vendor account and its principal IDs are alert-only hunt leads.",
    "caveat": "Account 805246085872 and the principal AIDAJYRRH5Y3A7AAJM2HW also carry legitimate Qubole traffic from AWS infrastructure; alert on them only when the source address is not an AWS address. AIDA3W7DIFLYOLTK63SFS was seen only in attacker activity. The Mullvad addresses are shared VPN exits and are not blocked. 57.129.54.120 was attacker-controlled from 15 to 26 October 2026 and may be reassigned later. The user agents Wiz lists are common and are only useful alongside another indicator.",
@@ -900,7 +900,7 @@
    "published": "2026-11-12",
    "entry_date": "2026-11-13 11:25",
    "last_updated": "2026-11-13",
-   "seq": 52,
+   "seq": 53,
    "headline": "A public exploit gives root on clustered Cisco Expressway nodes through hard-coded Erlang credentials on TCP 4372",
    "summary": "Cisco fixed CVE-2026-76466 (CVSS 9.8) on 21 October 2026: clustered Cisco Expressway-C and Expressway-E nodes, virtual and appliance, on X15.5.3 and earlier (and X14 and earlier) let an unauthenticated attacker run operating-system commands as root through the cluster database service. On 12 November researcher Nicolas Krassas (dinosn) published a working exploit and fleet detector on GitHub. It opens TLS to TCP 4372, completes the Erlang distribution handshake as the hard-coded maintenance node wombat@127.0.0.1 with the hard-coded cookie that is the same on every affected install, and calls os:cmd as root; it was tested on Expressway-C X15.3.2 in the factory-default TLS Permissive mode. Cisco says there is no workaround and, at the time of its advisory, knew of no malicious use; no exploitation has been reported since the code went public. No attacker infrastructure exists yet, so this entry is hunt and alert only. Its hunts flag connections to TCP 4371 or 4372 from anything that is not a cluster peer, and the public exploit being run from a managed host.",
    "caveat": "No exploitation or attacker indicators have been published; the CVE row is a tracking identifier, not something to block. The network hunt needs your Expressway cluster peer addresses filled in before it alerts, and it only sees traffic your firewall or NetFlow logs record. Expressway nodes do not run Defender for Endpoint, so the KQL can only see managed devices that connect out to the cluster ports or run the exploit.",
@@ -1097,6 +1097,492 @@
      "name": "hunt.yaral",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/hunt.yaral",
      "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure",
+   "folder": "threats/2026-11_November-2026/2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure",
+   "name": "ARTEX Intrusions: South Korean Finance Operator and Storm-0940 ConnectWise Cloud Backup Access",
+   "short": "ARTEX Korean finance and Storm-0940",
+   "category": "Financially motivated and state-aligned intrusion / financial sector",
+   "published": "2026-11-13",
+   "entry_date": "2026-11-13 21:40",
+   "last_updated": "2026-11-13",
+   "seq": 52,
+   "headline": "FBI FLASH on ARTEX: Korean-finance actor server and Storm-0940 ConnectWise sign-in addresses",
+   "summary": "An FBI FLASH issued on 13 November 2026 warns that several actors are using ARTEX, an open-source LLM-driven penetration testing framework, against financial services, government, defence, energy, healthcare and other sectors, with some intrusions reaching privileged access in under three hours. It publishes infrastructure from two campaigns that were not yet in this feed. CrowdStrike reported on 7 October that a likely Chinese-speaking, financially motivated operator ran ARTEX from an actor-controlled server with an open directory (38.244.50.120) against South Korean financial organisations from late September to early October, stealing personal data; the FBI puts it at about 67,000 people. The operator reached DeepSeek through the LLM API reseller xcai.pro and worked through nine proxy addresses. Microsoft reported on 21 October that Storm-0940, a China-state-aligned actor, used ARTEX with stolen ConnectWise Cloud Backup application credentials to attempt more than 2,250 Microsoft 365 tenants, then ran Graph reconnaissance and changed application credentials and privileges. The actor server and the three Storm-0940 sign-in addresses are on the block list; the proxies, the VPN addresses and the reseller domain are alert only. The FBI FLASH also repeats the Storm-3358 ARTEX infrastructure already in this feed.",
+   "caveat": "The FBI says these addresses are historically observed infrastructure that may be reassigned. The proxy addresses, the three Storm-0940 VPN addresses (15-16 October only) and xcai.pro are alert only and must not be blocked.",
+   "targets": {
+    "countries": [
+     {
+      "code": "KR",
+      "name": "South Korea"
+     }
+    ],
+    "regions": [
+     "Asia"
+    ],
+    "sectors": [
+     "Financial services",
+     "Government",
+     "Technology",
+     "Defence",
+     "Energy",
+     "Healthcare",
+     "Manufacturing",
+     "Telecommunications",
+     "Legal"
+    ],
+    "note": "CrowdStrike and the FBI name South Korean financial organisations; the FBI and Microsoft list the other sectors targeted with ARTEX worldwide, including more than 2,250 Microsoft 365 tenants reached through ConnectWise Cloud Backup.",
+    "source": {
+     "url": "https://www.ic3.gov/CSA/2026/261113.pdf",
+     "label": "FBI FLASH-20261113-001 – Threat Overview of ARTEX Autonomous Penetration Testing Framework",
+     "name": "FBI IC3"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1595",
+     "name": "Active Scanning",
+     "url": "https://attack.mitre.org/techniques/T1595/"
+    },
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1078.004",
+     "name": "Cloud Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/004/"
+    },
+    {
+     "id": "T1550.001",
+     "name": "Application Access Token",
+     "url": "https://attack.mitre.org/techniques/T1550/001/"
+    },
+    {
+     "id": "T1098.001",
+     "name": "Additional Cloud Credentials",
+     "url": "https://attack.mitre.org/techniques/T1098/001/"
+    },
+    {
+     "id": "T1087.004",
+     "name": "Cloud Account Discovery",
+     "url": "https://attack.mitre.org/techniques/T1087/004/"
+    },
+    {
+     "id": "T1090",
+     "name": "Proxy",
+     "url": "https://attack.mitre.org/techniques/T1090/"
+    },
+    {
+     "id": "T1041",
+     "name": "Exfiltration Over C2 Channel",
+     "url": "https://attack.mitre.org/techniques/T1041/"
+    }
+   ],
+   "recommended_actions": [
+    "Block 38.244.50.120 and the three Storm-0940 addresses (144.172.64.60, .99, .128) at the perimeter and in Defender XDR, and search 30 days of firewall, proxy, web and Entra sign-in logs for every address in this entry.",
+    "Review service principal sign-ins, application credential additions and role assignments from 15 October 2026 onward, especially for ConnectWise Cloud Backup apps, and follow ConnectWise's containment guidance.",
+    "Alert on unexpected outbound connections to LLM API endpoints or resellers such as xcai.pro from servers that have no reason to use them.",
+    "Watch public web portals (loan, broker and employee mobile systems) for high-rate sequential enumeration of login and search endpoints, and for bulk outbound transfers of structured personal data."
+   ],
+   "sources": [
+    {
+     "url": "https://www.ic3.gov/CSA/2026/261113.pdf",
+     "label": "FBI FLASH-20261113-001 – Threat Overview of ARTEX Autonomous Penetration Testing Framework",
+     "name": "FBI IC3"
+    },
+    {
+     "url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+     "label": "CrowdStrike – Unknown Threat Actor Uses AI-Driven ARTEX to Target South Korean Finance",
+     "name": "CrowdStrike"
+    },
+    {
+     "url": "https://www.microsoft.com/en-us/security/blog/2026/10/21/storm-0940-uses-artex-agentic-ai-connectwise-supply-chain-compromise/",
+     "label": "Microsoft Threat Intelligence – AI-driven, large-scale nation-state campaign using ARTEX enables supply chain compromise",
+     "name": "Microsoft"
+    }
+   ],
+   "indicator_count": 17,
+   "block_now_count": 4,
+   "hunt_count": 13,
+   "hunt_counts": {
+    "alert": 13
+   },
+   "indicator_counts": {
+    "ipv4": 16,
+    "domain": 1
+   },
+   "ioas": [],
+   "ioa_count": 0,
+   "ioa_note": null,
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure/block_now.txt",
+     "download": "ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure/defender_xdr_indicators.csv",
+     "download": "ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure/hunt.kql",
+     "download": "ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure/hunt.spl",
+     "download": "ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure/hunt_raw.spl",
+     "download": "ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure/hunt.yaral",
+     "download": "ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure/iocs.csv",
+     "download": "ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure",
+   "share_url": "https://daniyyell.com/rapid-threat-intel/t/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure/",
+   "indicators": [
+    {
+     "value": "38.244.50.120",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Actor-controlled server that hosted the ARTEX instance and an open directory (port 18899) used against South Korean financial organisations; listed by CrowdStrike and the FBI.",
+     "source_url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+     "source_label": "CrowdStrike – Unknown Threat Actor Uses AI-Driven ARTEX to Target South Korean Finance",
+     "source_name": "CrowdStrike",
+     "sources": [
+      {
+       "url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+       "name": "CrowdStrike"
+      },
+      {
+       "url": "https://www.ic3.gov/CSA/2026/261113.pdf",
+       "name": "FBI IC3"
+      }
+     ]
+    },
+    {
+     "value": "144.172.64.60",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Storm-0940 address used for sign-ins and Microsoft Graph activity in customer tenants through abused ConnectWise Cloud Backup application credentials.",
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/10/21/storm-0940-uses-artex-agentic-ai-connectwise-supply-chain-compromise/",
+     "source_label": "Microsoft Threat Intelligence – AI-driven, large-scale nation-state campaign using ARTEX enables supply chain compromise",
+     "source_name": "Microsoft",
+     "sources": [
+      {
+       "url": "https://www.microsoft.com/en-us/security/blog/2026/10/21/storm-0940-uses-artex-agentic-ai-connectwise-supply-chain-compromise/",
+       "name": "Microsoft"
+      },
+      {
+       "url": "https://www.ic3.gov/CSA/2026/261113.pdf",
+       "name": "FBI IC3"
+      }
+     ]
+    },
+    {
+     "value": "144.172.64.99",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Storm-0940 address used for sign-ins and Microsoft Graph activity in customer tenants through abused ConnectWise Cloud Backup application credentials.",
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/10/21/storm-0940-uses-artex-agentic-ai-connectwise-supply-chain-compromise/",
+     "source_label": "Microsoft Threat Intelligence – AI-driven, large-scale nation-state campaign using ARTEX enables supply chain compromise",
+     "source_name": "Microsoft",
+     "sources": [
+      {
+       "url": "https://www.microsoft.com/en-us/security/blog/2026/10/21/storm-0940-uses-artex-agentic-ai-connectwise-supply-chain-compromise/",
+       "name": "Microsoft"
+      },
+      {
+       "url": "https://www.ic3.gov/CSA/2026/261113.pdf",
+       "name": "FBI IC3"
+      }
+     ]
+    },
+    {
+     "value": "144.172.64.128",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Storm-0940 address used for sign-ins and Microsoft Graph activity in customer tenants through abused ConnectWise Cloud Backup application credentials.",
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/10/21/storm-0940-uses-artex-agentic-ai-connectwise-supply-chain-compromise/",
+     "source_label": "Microsoft Threat Intelligence – AI-driven, large-scale nation-state campaign using ARTEX enables supply chain compromise",
+     "source_name": "Microsoft",
+     "sources": [
+      {
+       "url": "https://www.microsoft.com/en-us/security/blog/2026/10/21/storm-0940-uses-artex-agentic-ai-connectwise-supply-chain-compromise/",
+       "name": "Microsoft"
+      },
+      {
+       "url": "https://www.ic3.gov/CSA/2026/261113.pdf",
+       "name": "FBI IC3"
+      }
+     ]
+    },
+    {
+     "value": "187.15.88.186",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Transient VPN address Storm-0940 used for Graph API access through compromised applications on 15-16 October 2026.",
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/10/21/storm-0940-uses-artex-agentic-ai-connectwise-supply-chain-compromise/",
+     "source_label": "Microsoft Threat Intelligence – AI-driven, large-scale nation-state campaign using ARTEX enables supply chain compromise",
+     "source_name": "Microsoft",
+     "sources": [
+      {
+       "url": "https://www.microsoft.com/en-us/security/blog/2026/10/21/storm-0940-uses-artex-agentic-ai-connectwise-supply-chain-compromise/",
+       "name": "Microsoft"
+      }
+     ]
+    },
+    {
+     "value": "187.15.90.217",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Transient VPN address Storm-0940 used for Graph API access through compromised applications on 15-16 October 2026.",
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/10/21/storm-0940-uses-artex-agentic-ai-connectwise-supply-chain-compromise/",
+     "source_label": "Microsoft Threat Intelligence – AI-driven, large-scale nation-state campaign using ARTEX enables supply chain compromise",
+     "source_name": "Microsoft",
+     "sources": [
+      {
+       "url": "https://www.microsoft.com/en-us/security/blog/2026/10/21/storm-0940-uses-artex-agentic-ai-connectwise-supply-chain-compromise/",
+       "name": "Microsoft"
+      }
+     ]
+    },
+    {
+     "value": "187.15.89.186",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Transient VPN address Storm-0940 used for Graph API access through compromised applications on 15-16 October 2026.",
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/10/21/storm-0940-uses-artex-agentic-ai-connectwise-supply-chain-compromise/",
+     "source_label": "Microsoft Threat Intelligence – AI-driven, large-scale nation-state campaign using ARTEX enables supply chain compromise",
+     "source_name": "Microsoft",
+     "sources": [
+      {
+       "url": "https://www.microsoft.com/en-us/security/blog/2026/10/21/storm-0940-uses-artex-agentic-ai-connectwise-supply-chain-compromise/",
+       "name": "Microsoft"
+      }
+     ]
+    },
+    {
+     "value": "101.53.80.20",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Proxy address the operator used during ARTEX activity against South Korean financial organisations, seen in recovered Claude Code session histories.",
+     "source_url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+     "source_label": "CrowdStrike – Unknown Threat Actor Uses AI-Driven ARTEX to Target South Korean Finance",
+     "source_name": "CrowdStrike",
+     "sources": [
+      {
+       "url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+       "name": "CrowdStrike"
+      }
+     ]
+    },
+    {
+     "value": "205.214.59.31",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Proxy address the operator used during ARTEX activity against South Korean financial organisations, seen in recovered Claude Code session histories.",
+     "source_url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+     "source_label": "CrowdStrike – Unknown Threat Actor Uses AI-Driven ARTEX to Target South Korean Finance",
+     "source_name": "CrowdStrike",
+     "sources": [
+      {
+       "url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+       "name": "CrowdStrike"
+      }
+     ]
+    },
+    {
+     "value": "124.155.252.63",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Proxy address the operator used during ARTEX activity against South Korean financial organisations, seen in recovered Claude Code session histories.",
+     "source_url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+     "source_label": "CrowdStrike – Unknown Threat Actor Uses AI-Driven ARTEX to Target South Korean Finance",
+     "source_name": "CrowdStrike",
+     "sources": [
+      {
+       "url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+       "name": "CrowdStrike"
+      }
+     ]
+    },
+    {
+     "value": "154.201.79.246",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Proxy address the operator used during ARTEX activity against South Korean financial organisations, seen in recovered Claude Code session histories.",
+     "source_url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+     "source_label": "CrowdStrike – Unknown Threat Actor Uses AI-Driven ARTEX to Target South Korean Finance",
+     "source_name": "CrowdStrike",
+     "sources": [
+      {
+       "url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+       "name": "CrowdStrike"
+      }
+     ]
+    },
+    {
+     "value": "23.248.249.90",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Proxy address the operator used during ARTEX activity against South Korean financial organisations, seen in recovered Claude Code session histories.",
+     "source_url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+     "source_label": "CrowdStrike – Unknown Threat Actor Uses AI-Driven ARTEX to Target South Korean Finance",
+     "source_name": "CrowdStrike",
+     "sources": [
+      {
+       "url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+       "name": "CrowdStrike"
+      }
+     ]
+    },
+    {
+     "value": "23.158.220.98",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Proxy address the operator used during ARTEX activity against South Korean financial organisations, seen in recovered Claude Code session histories.",
+     "source_url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+     "source_label": "CrowdStrike – Unknown Threat Actor Uses AI-Driven ARTEX to Target South Korean Finance",
+     "source_name": "CrowdStrike",
+     "sources": [
+      {
+       "url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+       "name": "CrowdStrike"
+      }
+     ]
+    },
+    {
+     "value": "103.248.148.84",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Proxy address the operator used during ARTEX activity against South Korean financial organisations, seen in recovered Claude Code session histories.",
+     "source_url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+     "source_label": "CrowdStrike – Unknown Threat Actor Uses AI-Driven ARTEX to Target South Korean Finance",
+     "source_name": "CrowdStrike",
+     "sources": [
+      {
+       "url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+       "name": "CrowdStrike"
+      }
+     ]
+    },
+    {
+     "value": "203.160.133.172",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Proxy address the operator used during ARTEX activity against South Korean financial organisations, seen in recovered Claude Code session histories.",
+     "source_url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+     "source_label": "CrowdStrike – Unknown Threat Actor Uses AI-Driven ARTEX to Target South Korean Finance",
+     "source_name": "CrowdStrike",
+     "sources": [
+      {
+       "url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+       "name": "CrowdStrike"
+      }
+     ]
+    },
+    {
+     "value": "209.209.85.38",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Proxy address the operator used during ARTEX activity against South Korean financial organisations, seen in recovered Claude Code session histories.",
+     "source_url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+     "source_label": "CrowdStrike – Unknown Threat Actor Uses AI-Driven ARTEX to Target South Korean Finance",
+     "source_name": "CrowdStrike",
+     "sources": [
+      {
+       "url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+       "name": "CrowdStrike"
+      }
+     ]
+    },
+    {
+     "value": "xcai.pro",
+     "type": "domain",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Likely LLM API proxy or reseller the operator used to reach DeepSeek for the ARTEX instance.",
+     "source_url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+     "source_label": "CrowdStrike – Unknown Threat Actor Uses AI-Driven ARTEX to Target South Korean Finance",
+     "source_name": "CrowdStrike",
+     "sources": [
+      {
+       "url": "https://www.crowdstrike.com/en-us/blog/unknown-threat-actor-uses-artex-to-target-south-korean-finance/",
+       "name": "CrowdStrike"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure/hunt.kql",
+     "download": "ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure/hunt.spl",
+     "download": "ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure/hunt_raw.spl",
+      "download": "ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure/hunt.yaral",
+     "download": "ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure_hunt.yaral"
     }
    ]
   },
@@ -30006,6 +30492,11 @@
      "name": "Sophos"
     },
     {
+     "url": "https://www.ic3.gov/CSA/2026/261113.pdf",
+     "label": "FBI FLASH-20261113-001 – Threat Overview of ARTEX Autonomous Penetration Testing Framework",
+     "name": "FBI IC3"
+    },
+    {
      "url": "https://urlhaus.abuse.ch/host/85.11.167.52/",
      "label": "urlhaus.abuse.ch",
      "name": "URLhaus"
@@ -30221,6 +30712,10 @@
       {
        "url": "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/",
        "name": "Microsoft"
+      },
+      {
+       "url": "https://www.ic3.gov/CSA/2026/261113.pdf",
+       "name": "FBI IC3"
       }
      ]
     },
@@ -30237,6 +30732,10 @@
       {
        "url": "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/",
        "name": "Microsoft"
+      },
+      {
+       "url": "https://www.ic3.gov/CSA/2026/261113.pdf",
+       "name": "FBI IC3"
       }
      ]
     },
@@ -30253,6 +30752,10 @@
       {
        "url": "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/",
        "name": "Microsoft"
+      },
+      {
+       "url": "https://www.ic3.gov/CSA/2026/261113.pdf",
+       "name": "FBI IC3"
       }
      ]
     },
@@ -30269,6 +30772,10 @@
       {
        "url": "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/",
        "name": "Microsoft"
+      },
+      {
+       "url": "https://www.ic3.gov/CSA/2026/261113.pdf",
+       "name": "FBI IC3"
       }
      ]
     },
@@ -30285,6 +30792,10 @@
       {
        "url": "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/",
        "name": "Microsoft"
+      },
+      {
+       "url": "https://www.ic3.gov/CSA/2026/261113.pdf",
+       "name": "FBI IC3"
       }
      ]
     },
@@ -30305,6 +30816,10 @@
       {
        "url": "https://urlhaus.abuse.ch/host/85.11.167.52/",
        "name": "URLhaus"
+      },
+      {
+       "url": "https://www.ic3.gov/CSA/2026/261113.pdf",
+       "name": "FBI IC3"
       }
      ]
     },
@@ -30321,6 +30836,10 @@
       {
        "url": "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/",
        "name": "Microsoft"
+      },
+      {
+       "url": "https://www.ic3.gov/CSA/2026/261113.pdf",
+       "name": "FBI IC3"
       }
      ]
     },
@@ -30337,6 +30856,10 @@
       {
        "url": "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/",
        "name": "Microsoft"
+      },
+      {
+       "url": "https://www.ic3.gov/CSA/2026/261113.pdf",
+       "name": "FBI IC3"
       }
      ]
     }

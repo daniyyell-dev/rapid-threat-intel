@@ -1,0 +1,43 @@
+// Threat: ARTEX Intrusions: South Korean Finance Operator and Storm-0940 ConnectWise Cloud Backup Access
+// Author: Daniel Jeremiah | Date: 2026-11-13
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure
+rule rti_artex_south_korean_finance_and_storm_0940_connectwise {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-13"
+    description = "ARTEX Intrusions: South Korean Finance Operator and Storm-0940 ConnectWise Cloud Backup Access"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure"
+
+  events:
+    (
+      $e.principal.ip = /^(?:38\.244\.50\.120|144\.172\.64\.60|144\.172\.64\.99|144\.172\.64\.128|187\.15\.88\.186|187\.15\.90\.217|187\.15\.89\.186|101\.53\.80\.20|205\.214\.59\.31|124\.155\.252\.63|154\.201\.79\.246|23\.248\.249\.90|23\.158\.220\.98|103\.248\.148\.84|203\.160\.133\.172|209\.209\.85\.38)$/ or
+      $e.target.ip = /^(?:38\.244\.50\.120|144\.172\.64\.60|144\.172\.64\.99|144\.172\.64\.128|187\.15\.88\.186|187\.15\.90\.217|187\.15\.89\.186|101\.53\.80\.20|205\.214\.59\.31|124\.155\.252\.63|154\.201\.79\.246|23\.248\.249\.90|23\.158\.220\.98|103\.248\.148\.84|203\.160\.133\.172|209\.209\.85\.38)$/ or
+      $e.network.dns.answers.data = /^(?:38\.244\.50\.120|144\.172\.64\.60|144\.172\.64\.99|144\.172\.64\.128|187\.15\.88\.186|187\.15\.90\.217|187\.15\.89\.186|101\.53\.80\.20|205\.214\.59\.31|124\.155\.252\.63|154\.201\.79\.246|23\.248\.249\.90|23\.158\.220\.98|103\.248\.148\.84|203\.160\.133\.172|209\.209\.85\.38)$/ or
+      $e.network.dns.questions.name = /(?:^|\.)(?:xcai\.pro)\.?$/ nocase or
+      $e.target.hostname = /(?:^|\.)(?:xcai\.pro)\.?$/ nocase or
+      $e.target.domain.name = /(?:^|\.)(?:xcai\.pro)\.?$/ nocase or
+      re.regex($e.target.url, `^(?:[a-z][a-z0-9+.-]*://)?(?:[^/?#]*@)?(?:(?:[^/?#@]*\.)?(?:xcai\.pro)(?::\d+)?(?:[/?#]|$))`) nocase
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $dns_query = array_distinct($e.network.dns.questions.name)
+    $target_hostname = array_distinct($e.target.hostname)
+    $target_url = array_distinct($e.target.url)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}
