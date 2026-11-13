@@ -1,5 +1,5 @@
 # PHP2Shell on Check Point Gateways: TSGA Backdoor, TSProxy and destroy_v6 ESXi Wiper
-# Published 2026-11-12. High-confidence indicators to block. Updated 2026-11-12.
+# Published 2026-11-12. High-confidence indicators to block. Updated 2026-11-13 11:25.
 
 ## ipv4 (2)
 130.94.19.204

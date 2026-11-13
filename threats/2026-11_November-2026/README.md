@@ -2,12 +2,13 @@
 
 [Back to index](../../README.md)
 
-46 threats, 1452 indicators, 648 to block now. Newest first.
+47 threats, 1454 indicators, 648 to block now. Newest first.
 
 ### [2026-11-13](2026-11-13/)
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
+| 2026-11-12 | [Cisco Expressway CVE-2026-76466: Public Root RCE Exploit (Hunt Only)](2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/) | Exploitation / edge appliance | 1 | 0 | A public exploit gives root on clustered Cisco Expressway nodes through hard-coded Erlang credentials on TCP 4372 |
 | 2026-11-11 | [DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe](2026-11-13/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/) | Espionage / APT | 41 | 7 | An unattributed operator used a FortiGate CVE-2024-55591 exploit to create a service super-admin and ran 14 months of attacks on Europe |
 | 2026-11-11 | [LIMINAL PANDA GTPDoor v3 and SilentAir Mobile-Network Espionage](2026-11-13/LIMINAL-PANDA-GTPDoor-v3-SilentAir/) | Nation-state / espionage | 2 | 2 | China-nexus actors hide mobile-network C2 in GTP-U and abuse SS7 and Diameter to intercept calls, texts and 2FA |
 | 2026-11-12 | [AI-Assisted Intrusion at a U.S. Retailer: SolarWinds Orion Erlang Cookie Abuse, Side-Loaded Loaders and Yuze Tunnels](2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/) | Intrusion / financially motivated | 62 | 35 | Attackers using AI-written PowerShell abuse SolarWinds Orion's RabbitMQ Erlang cookie to move laterally at a U.S. retailer |
@@ -25,7 +26,7 @@
 | 2026-11-12 | [Microsoft Teams Booking-Flow Device-Code Phishing](2026-11-12/Teams-Booking-Flow-Device-Code-Phishing/) | Phishing / identity | 4 | 2 | Device-code phishing hidden inside a fake Microsoft Teams meeting-booking flow, with backend on gpimmlgration.com |
 | 2026-11-12 | [CL-STA-1238: Autonomous AI Intrusions with the Cairn Framework Against Semiconductor, Defence and Civil Society](2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions/) | Nation-state / AI-driven intrusion | 2 | 2 | China-nexus operator running the Cairn AI pentest framework autonomously against semiconductor, defence and civil-society targets |
 | 2026-11-02 | [BITTER PapRAT and WmRAT: ftp.exe, VHDX and WebDAV MSI Espionage Chains](2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage/) | Nation-state / espionage | 18 | 18 | BITTER espionage chains using ftp.exe, VHDX and WebDAV MSI installs to drop PapRAT and WmRAT |
-| 2026-11-12 | [PHP2Shell on Check Point Gateways: TSGA Backdoor, TSProxy and destroy_v6 ESXi Wiper](2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/) | Exploitation / edge device | 10 | 10 | PHP2Shell exploitation of Check Point Mobile Access gateways leading to the TSGA backdoor and a destroy_v6 wiper on ESXi |
+| 2026-11-12 | [PHP2Shell on Check Point Gateways: TSGA Backdoor, TSProxy and destroy_v6 ESXi Wiper](2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/) | Exploitation / edge device | 11 | 10 | PHP2Shell exploitation of Check Point Mobile Access gateways leading to the TSGA backdoor and a destroy_v6 wiper on ESXi |
 | 2026-11-05 | [BBNet: Multi-Architecture Linux Botnet with Divergent Scanners](2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners/) | Malware / botnet | 8 | 0 | Multi-arch Linux botnet that scans before it talks to C2, with no published C2 addresses or hashes |
 | 2026-11-12 | [StrikeStub: ClickFix PowerShell Dropper and Modular RAT/Stealer](2026-11-12/StrikeStub-ClickFix-RAT-Stealer/) | Malware / RAT and stealer | 6 | 2 | ClickFix PowerShell that drops a modular WebSocket RAT and stealer, with attacker staging on squidscript.com |
 | 2026-11-11 | [Panzer RaaS: Self-Propagating Ransomware Spread Through Network Shares](2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware/) | Ransomware | 5 | 0 | Rust RaaS payload that copies itself to every share and runs as PanzerUpdateTask; names and behaviour only, no hashes |

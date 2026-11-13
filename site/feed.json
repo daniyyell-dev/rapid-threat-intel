@@ -4,9 +4,9 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-13 11:12",
- "threat_count": 46,
- "indicator_count": 1452,
+ "last_updated": "2026-11-13 11:25",
+ "threat_count": 47,
+ "indicator_count": 1454,
  "block_now_count": 648,
  "combined_files": [
   {
@@ -102,6 +102,214 @@
   }
  ],
  "threats": [
+  {
+   "id": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC",
+   "folder": "threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC",
+   "name": "Cisco Expressway CVE-2026-76466: Public Root RCE Exploit (Hunt Only)",
+   "short": "Cisco Expressway CVE-2026-76466",
+   "category": "Exploitation / edge appliance",
+   "published": "2026-11-12",
+   "entry_date": "2026-11-13 11:25",
+   "last_updated": "2026-11-13",
+   "seq": 47,
+   "headline": "A public exploit gives root on clustered Cisco Expressway nodes through hard-coded Erlang credentials on TCP 4372",
+   "summary": "Cisco fixed CVE-2026-76466 (CVSS 9.8) on 21 October 2026: clustered Cisco Expressway-C and Expressway-E nodes, virtual and appliance, on X15.5.3 and earlier (and X14 and earlier) let an unauthenticated attacker run operating-system commands as root through the cluster database service. On 12 November researcher Nicolas Krassas (dinosn) published a working exploit and fleet detector on GitHub. It opens TLS to TCP 4372, completes the Erlang distribution handshake as the hard-coded maintenance node wombat@127.0.0.1 with the hard-coded cookie that is the same on every affected install, and calls os:cmd as root; it was tested on Expressway-C X15.3.2 in the factory-default TLS Permissive mode. Cisco says there is no workaround and, at the time of its advisory, knew of no malicious use; no exploitation has been reported since the code went public. No attacker infrastructure exists yet, so this entry is hunt and alert only. Its hunts flag connections to TCP 4371 or 4372 from anything that is not a cluster peer, and the public exploit being run from a managed host.",
+   "caveat": "No exploitation or attacker indicators have been published; the CVE row is a tracking identifier, not something to block. The network hunt needs your Expressway cluster peer addresses filled in before it alerts, and it only sees traffic your firewall or NetFlow logs record. Expressway nodes do not run Defender for Endpoint, so the KQL can only see managed devices that connect out to the cluster ports or run the exploit.",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Global"
+    ],
+    "sectors": [],
+    "note": "No victims reported. Any organisation running clustered Cisco Expressway-C or Expressway-E for Webex, Jabber or video mobile and remote access is in scope; Expressway-E sits at the network edge.",
+    "source": {
+     "url": "https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-vcs-static-cred-hr7EWZ8t",
+     "label": "Cisco – Cisco Expressway Series Remote Code Execution Vulnerability (cisco-sa-vcs-static-cred-hr7EWZ8t)",
+     "name": "Cisco"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1078.001",
+     "name": "Default Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/001/"
+    },
+    {
+     "id": "T1059.004",
+     "name": "Unix Shell",
+     "url": "https://attack.mitre.org/techniques/T1059/004/"
+    },
+    {
+     "id": "T1210",
+     "name": "Exploitation of Remote Services",
+     "url": "https://attack.mitre.org/techniques/T1210/"
+    }
+   ],
+   "recommended_actions": [
+    "Upgrade clustered Expressway-C and Expressway-E nodes on X15.5.3 or earlier to X15.5.20, and migrate X14 and earlier to a fixed release; Cisco lists no workaround.",
+    "Until then, allow TCP 4371 and 4372 to each node only from its configured cluster peers, at the perimeter and on internal firewalls, and confirm from a non-peer network that the ports are closed.",
+    "Fill the cluster peer placeholders in the hunts with your Expressway peer addresses and run them over traffic since 12 November 2026.",
+    "Treat a non-peer connection to TCP 4372 on an affected node as a possible root compromise: collect a diagnostic snapshot, check for new admin accounts, configuration changes and unexpected outbound connections from the node, and rebuild from a fixed release if in doubt.",
+    "Where clustering is not needed, run Expressway as a standalone node; Cisco ties the flaw to clustered deployments."
+   ],
+   "sources": [
+    {
+     "url": "https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-vcs-static-cred-hr7EWZ8t",
+     "label": "Cisco – Cisco Expressway Series Remote Code Execution Vulnerability (cisco-sa-vcs-static-cred-hr7EWZ8t)",
+     "name": "Cisco"
+    },
+    {
+     "url": "https://github.com/dinosn/cve-2026-76466",
+     "label": "dinosn (Nicolas Krassas) – CVE-2026-76466 Cisco Expressway cluster database root RCE exploit and fleet detector",
+     "name": "github.com"
+    },
+    {
+     "url": "https://gbhackers.com/poc-exploit-released-for-critical-cisco-expressway-rce/",
+     "label": "GBHackers – PoC exploit released for critical Cisco Expressway RCE vulnerability",
+     "name": "GBHackers"
+    },
+    {
+     "url": "https://www.caloes.ca.gov/wp-content/uploads/CSIC_Cyber_Advisory_Remote-Root-Command-Execution-Vulnerability-in-Cisco-Expressway-Series-Database-Service.pdf",
+     "label": "Cal-CSIC – Remote root command execution vulnerability in Cisco Expressway Series database service",
+     "name": "Cal-CSIC"
+    }
+   ],
+   "indicator_count": 1,
+   "block_now_count": 0,
+   "hunt_count": 1,
+   "hunt_counts": {
+    "monitor": 1
+   },
+   "indicator_counts": {
+    "other": 1
+   },
+   "ioas": [
+    {
+     "artefact": "Connections to TCP 4371 or 4372 on a Cisco Expressway node from any address that is not one of its configured cluster peers",
+     "log_source": "Firewall, NetFlow or load-balancer logs in front of Expressway (Splunk Network_Traffic, Google SecOps NETWORK_CONNECTION); Defender XDR DeviceNetworkEvents for managed devices that connect out to those ports",
+     "why": "The CVE-2026-76466 exploit reaches the Erlang cluster database service on TCP 4372 and authenticates with a hard-coded node name and cookie, then runs commands as root. Only cluster peers should ever connect on 4371 or 4372. Tuning: replace the documentation peer addresses 192.0.2.10 and 192.0.2.11 with your peers; in Defender XDR any managed device connecting out to these ports is unexpected, because Expressway nodes and their peers do not run Defender for Endpoint. Expected false positives: a newly added cluster peer before the allowlist is updated, and authorised vulnerability scans.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-vcs-static-cred-hr7EWZ8t",
+     "source_name": "Cisco",
+     "title": "Non-peer connection to Expressway cluster port 4371 or 4372",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "The public CVE-2026-76466 exploit run from a managed host: a command line naming cve_2026_76466 or the Erlang node wombat@127.0.0.1",
+     "log_source": "Defender XDR DeviceProcessEvents; Sysmon event 1 or Linux process auditing in Splunk or Google SecOps",
+     "why": "dinosn's exploit ships as exploit/cve_2026_76466.py with probe, ping and uid modes and hard-codes the node name wombat@127.0.0.1. Running it from inside the network means someone is testing or attacking Expressway nodes. Tuning: the script name and node name are specific; no broad tool names are matched. Expected false positives: your own authorised scans with the detector; confirm with the team that ran them.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://github.com/dinosn/cve-2026-76466",
+     "source_name": "github.com",
+     "title": "CVE-2026-76466 exploit script or wombat node name",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    }
+   ],
+   "ioa_count": 2,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/block_now.txt",
+     "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_block_now.txt"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/hunt.kql",
+     "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/hunt.spl",
+     "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/hunt_raw.spl",
+     "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/hunt.yaral",
+     "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/iocs.csv",
+     "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC",
+   "indicators": [
+    {
+     "value": "CVE-2026-76466",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "monitor",
+     "description": "Cisco identifier for the clustered Expressway-C and Expressway-E flaw that gives an unauthenticated attacker root through the cluster database service on TCP 4372; fixed in X15.5.20. A public exploit was released on 12 November 2026. Hunt for connections to TCP 4371 or 4372 from addresses that are not cluster peers.",
+     "source_url": "https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-vcs-static-cred-hr7EWZ8t",
+     "source_label": "Cisco – Cisco Expressway Series Remote Code Execution Vulnerability (cisco-sa-vcs-static-cred-hr7EWZ8t)",
+     "source_name": "Cisco",
+     "sources": [
+      {
+       "url": "https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-vcs-static-cred-hr7EWZ8t",
+       "name": "Cisco"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/hunt.kql",
+     "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/hunt.spl",
+     "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/hunt_raw.spl",
+      "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/hunt.yaral",
+     "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_hunt.yaral"
+    }
+   ]
+  },
   {
    "id": "DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations",
    "folder": "threats/2026-11_November-2026/2026-11-13/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations",
@@ -9806,7 +10014,7 @@
    "category": "Exploitation / edge device",
    "published": "2026-11-12",
    "entry_date": "2026-11-12 15:52",
-   "last_updated": "2026-11-12",
+   "last_updated": "2026-11-13 11:25",
    "seq": 34,
    "headline": "PHP2Shell exploitation of Check Point Mobile Access gateways leading to the TSGA backdoor and a destroy_v6 wiper on ESXi",
    "summary": "Check Point Research reports that from 30 October 2026, about a week after the fix shipped, an attacker scanned and exploited unpatched Check Point Security Gateways through their Mobile Access portals using PHP2Shell (CVE-2026-109618 and CVE-2026-109619). The first wave hit Israeli organisations and included destructive activity; a broader second wave on 2 November reached organisations in many countries and sectors with no sign of destruction. In the investigated intrusion the attacker escalated from the portal service account to root through the DynamicCLI interface (CVE-2026-123039), planted zz*.tpl PHP webshells in the portal templates directory, then launched the TSGA backdoor from /tmp/CPconfigdaemon, which relaunches as slot_CPconfigdaemon, listens on TCP 11072 and drops the TSProxy library as /lib/libcpfwcommon.so. They ran the gogo scanner, moved to a VMware ESXi host over SSH with the vpxuser account, and ran the destroy_v6 wiper, leaving DREAM_ANNEXATION.txt notes. TSGA and TSProxy are modified PhiliKit tools, which ESET tied to China-nexus UNC5221 and Ivanti attacks, but Check Point does not attribute the operation with high confidence. Both attacker IPs and all eight hashes are on the block list.",
@@ -9890,6 +10098,7 @@
     "Patch Check Point Security Gateways for PHP2Shell (CVE-2026-109618, CVE-2026-109619) and CVE-2026-123039, and restrict who can reach Mobile Access portals.",
     "Block 130.94.19.204 and 130.94.19.168 and search 90 days of firewall, VPN and gateway logs for them from 30 October 2026.",
     "On gateways, look for zz*.tpl files or challenge_render.tpl in the portal templates directory, /tmp/.up.tpl, /tmp/CPconfigdaemon, slot_CPconfigdaemon, /tmp/.bd.log, /lib/libcpfwcommon.so, /tmp/.p_sock and a listener on TCP 11072; treat any hit as a full gateway compromise.",
+    "On every Gaia gateway, management and log server, grep /var/log/dynamicCli.log for Received = lines without the Clish wrapper (CPprofile.sh >> /dev/null; export SP_DISTRIBUTE=0; set -o noglob;) and, after the Jumbo Hotfix, for Rejected connection from unauthorized uid; either is a CVE-2026-123039 escalation attempt. If the hotfix cannot go on yet, stop dynamic_server as sk1000362 describes.",
     "Check ESXi hosts for SSH logins as vpxuser from a gateway, /tmp/des and DREAM_ANNEXATION.txt files, and rotate the vpxuser and gateway credentials if a gateway was exposed."
    ],
    "sources": [
@@ -9907,15 +10116,28 @@
      "url": "https://www.spamhaus.org/drop/asndrop.json",
      "label": "Spamhaus – ASN-DROP list (AS154177 LightNode listed)",
      "name": "Spamhaus"
+    },
+    {
+     "url": "https://support.checkpoint.com/results/sk/sk1000362",
+     "label": "Check Point – sk1000362: CVE-2026-123039 local privilege escalation to root in the DynamicCLI process",
+     "name": "Check Point"
+    },
+    {
+     "url": "https://blog.checkpoint.com/security/security-advisory-active-exploitation-of-php2shell-and-local-privilege-escalation/",
+     "label": "Check Point – Security advisory: active exploitation of PHP2Shell and local privilege escalation",
+     "name": "Check Point (2)"
     }
    ],
-   "indicator_count": 10,
+   "indicator_count": 11,
    "block_now_count": 10,
-   "hunt_count": 0,
-   "hunt_counts": {},
+   "hunt_count": 1,
+   "hunt_counts": {
+    "monitor": 1
+   },
    "indicator_counts": {
     "sha256": 8,
-    "ipv4": 2
+    "ipv4": 2,
+    "other": 1
    },
    "ioas": [
     {
@@ -9929,6 +10151,19 @@
      "title": "PHP2Shell session artefacts on the Mobile Access portal",
      "queries": [
       "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "dynamicCli.log entries showing CVE-2026-123039: Received = lines without the Clish wrapper, or Rejected connection from unauthorized uid",
+     "log_source": "Check Point Gaia /var/log/dynamicCli.log on gateways, management and log servers, forwarded by syslog to Splunk or Google SecOps (not in Defender XDR)",
+     "why": "Check Point's sk1000362 says the root dynamic_server daemon logs every command it receives. Legitimate requests use the wrapper . /opt/CPshared/5.0/tmp/.CPprofile.sh >> /dev/null; export SP_DISTRIBUTE=0; set -o noglob; and anything else was run as root through the world-writable /tmp/dynamic_socket, the escalation used after PHP2Shell. After the November Jumbo Hotfix, blocked attempts log Rejected connection from unauthorized uid with a UID such as 99 (nobody). Tuning: both conditions come from the vendor's own indicator of compromise. Expected false positives: none known; confirm any hit with Check Point TAC.",
+     "action": "alert",
+     "has_query": false,
+     "source_url": "https://support.checkpoint.com/results/sk/sk1000362",
+     "source_name": "Check Point",
+     "title": "DynamicCLI root commands without the Clish wrapper (CVE-2026-123039)",
+     "queries": [
       "SPL"
      ]
     },
@@ -9978,7 +10213,7 @@
      ]
     }
    ],
-   "ioa_count": 4,
+   "ioa_count": 5,
    "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
    "files": [
     {
@@ -10042,6 +10277,10 @@
        "name": "Check Point Research"
       },
       {
+       "url": "https://blog.checkpoint.com/security/security-advisory-active-exploitation-of-php2shell-and-local-privilege-escalation/",
+       "name": "Check Point"
+      },
+      {
        "url": "https://www.spamhaus.org/drop/asndrop.json",
        "name": "Spamhaus"
       }
@@ -10060,6 +10299,10 @@
       {
        "url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
        "name": "Check Point Research"
+      },
+      {
+       "url": "https://blog.checkpoint.com/security/security-advisory-active-exploitation-of-php2shell-and-local-privilege-escalation/",
+       "name": "Check Point"
       },
       {
        "url": "https://www.spamhaus.org/drop/asndrop.json",
@@ -10192,6 +10435,22 @@
       {
        "url": "https://research.checkpoint.com/2026/php2shell-exploitation-on-check-point-gateway/",
        "name": "Check Point Research"
+      }
+     ]
+    },
+    {
+     "value": "CVE-2026-123039",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "monitor",
+     "description": "Check Point identifier for the exploited Gaia DynamicCLI local privilege escalation: the root dynamic_server daemon accepts commands from anyone on the world-writable /tmp/dynamic_socket. Fixed in the November 2026 Jumbo Hotfix. Hunt /var/log/dynamicCli.log for Received = lines without the Clish wrapper.",
+     "source_url": "https://support.checkpoint.com/results/sk/sk1000362",
+     "source_label": "Check Point – sk1000362: CVE-2026-123039 local privilege escalation to root in the DynamicCLI process",
+     "source_name": "Check Point",
+     "sources": [
+      {
+       "url": "https://support.checkpoint.com/results/sk/sk1000362",
+       "name": "Check Point"
       }
      ]
     }

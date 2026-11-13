@@ -29,6 +29,16 @@
 ]
 
 | append [
+    search index=* ("Received =" OR "Rejected connection from unauthorized uid")
+    | where match(_raw, "Rejected connection from unauthorized uid") OR (match(coalesce(source, "")." ".coalesce(_raw, ""), "(?i)dynamicCli|Received = #[0-9]+#") AND match(_raw, "Received =") AND NOT match(_raw, "CPprofile\\.sh >> /dev/null; export SP_DISTRIBUTE=0; set -o noglob;"))
+    | eval host=host, user="-", src="-", dest=host, detail=substr(replace(_raw, "\\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="Gaia dynamicCli.log"
+    | eval ioc="DynamicCLI root commands without the Clish wrapper (CVE-2026-123039)", ioc_type="behaviour (alert)"
+]
+
+| append [
     search `rti_endpoint((".tpl"))`
     | where match(coalesce(file_name, file_path, ""), "(?i)(^|/)zz[A-Za-z0-9_-]*\.tpl$|challenge_render\.tpl$|^/tmp/\.up\.tpl$")
     | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")

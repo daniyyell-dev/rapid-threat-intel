@@ -1,4 +1,4 @@
-# All high-confidence indicators to block. Updated 2026-11-13 11:12.
+# All high-confidence indicators to block. Updated 2026-11-13 11:25.
 
 ## 2026-11-11 DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe
 46.8.236.121

@@ -2,7 +2,7 @@
 
 [Back to index](../../../README.md) · [November 2026](../README.md)
 
-21 threats, 229 indicators, 125 to block now. Newest first.
+21 threats, 230 indicators, 125 to block now. Newest first.
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
@@ -11,7 +11,7 @@
 | 2026-11-12 | [Microsoft Teams Booking-Flow Device-Code Phishing](Teams-Booking-Flow-Device-Code-Phishing/) | Phishing / identity | 4 | 2 | Device-code phishing hidden inside a fake Microsoft Teams meeting-booking flow, with backend on gpimmlgration.com |
 | 2026-11-12 | [CL-STA-1238: Autonomous AI Intrusions with the Cairn Framework Against Semiconductor, Defence and Civil Society](CL-STA-1238-Cairn-Autonomous-AI-Intrusions/) | Nation-state / AI-driven intrusion | 2 | 2 | China-nexus operator running the Cairn AI pentest framework autonomously against semiconductor, defence and civil-society targets |
 | 2026-11-02 | [BITTER PapRAT and WmRAT: ftp.exe, VHDX and WebDAV MSI Espionage Chains](BITTER-PapRAT-WmRAT-South-Asia-Espionage/) | Nation-state / espionage | 18 | 18 | BITTER espionage chains using ftp.exe, VHDX and WebDAV MSI installs to drop PapRAT and WmRAT |
-| 2026-11-12 | [PHP2Shell on Check Point Gateways: TSGA Backdoor, TSProxy and destroy_v6 ESXi Wiper](Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/) | Exploitation / edge device | 10 | 10 | PHP2Shell exploitation of Check Point Mobile Access gateways leading to the TSGA backdoor and a destroy_v6 wiper on ESXi |
+| 2026-11-12 | [PHP2Shell on Check Point Gateways: TSGA Backdoor, TSProxy and destroy_v6 ESXi Wiper](Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/) | Exploitation / edge device | 11 | 10 | PHP2Shell exploitation of Check Point Mobile Access gateways leading to the TSGA backdoor and a destroy_v6 wiper on ESXi |
 | 2026-11-05 | [BBNet: Multi-Architecture Linux Botnet with Divergent Scanners](BBNet-Linux-Botnet-Multi-Arch-Scanners/) | Malware / botnet | 8 | 0 | Multi-arch Linux botnet that scans before it talks to C2, with no published C2 addresses or hashes |
 | 2026-11-12 | [StrikeStub: ClickFix PowerShell Dropper and Modular RAT/Stealer](StrikeStub-ClickFix-RAT-Stealer/) | Malware / RAT and stealer | 6 | 2 | ClickFix PowerShell that drops a modular WebSocket RAT and stealer, with attacker staging on squidscript.com |
 | 2026-11-11 | [Panzer RaaS: Self-Propagating Ransomware Spread Through Network Shares](Panzer-RaaS-Share-Propagation-Ransomware/) | Ransomware | 5 | 0 | Rust RaaS payload that copies itself to every share and runs as PanzerUpdateTask; names and behaviour only, no hashes |

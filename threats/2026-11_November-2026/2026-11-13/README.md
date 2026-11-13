@@ -2,10 +2,11 @@
 
 [Back to index](../../../README.md) · [November 2026](../README.md)
 
-7 threats, 312 indicators, 216 to block now. Newest first.
+8 threats, 313 indicators, 216 to block now. Newest first.
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
+| 2026-11-12 | [Cisco Expressway CVE-2026-76466: Public Root RCE Exploit (Hunt Only)](Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/) | Exploitation / edge appliance | 1 | 0 | A public exploit gives root on clustered Cisco Expressway nodes through hard-coded Erlang credentials on TCP 4372 |
 | 2026-11-11 | [DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe](DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/) | Espionage / APT | 41 | 7 | An unattributed operator used a FortiGate CVE-2024-55591 exploit to create a service super-admin and ran 14 months of attacks on Europe |
 | 2026-11-11 | [LIMINAL PANDA GTPDoor v3 and SilentAir Mobile-Network Espionage](LIMINAL-PANDA-GTPDoor-v3-SilentAir/) | Nation-state / espionage | 2 | 2 | China-nexus actors hide mobile-network C2 in GTP-U and abuse SS7 and Diameter to intercept calls, texts and 2FA |
 | 2026-11-12 | [AI-Assisted Intrusion at a U.S. Retailer: SolarWinds Orion Erlang Cookie Abuse, Side-Loaded Loaders and Yuze Tunnels](AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/) | Intrusion / financially motivated | 62 | 35 | Attackers using AI-written PowerShell abuse SolarWinds Orion's RabbitMQ Erlang cookie to move laterally at a U.S. retailer |
