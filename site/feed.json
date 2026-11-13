@@ -15040,8 +15040,8 @@
    "last_updated": "2026-11-12",
    "seq": 20,
    "headline": "Exploited Outlook flaw that leaks NTLMv2 hashes, with no published network indicators",
-   "summary": "CISA added CVE-2026-124194 to its Known Exploited Vulnerabilities catalog on 10 November 2026, confirming in-the-wild exploitation of a Microsoft Outlook flaw that can expose a user's NTLMv2 hash when a crafted message is processed, without meaningful user interaction. No campaign IP addresses, domains or file hashes have been published. This entry is hunt-only: look for OUTLOOK.EXE making outbound SMB connections (TCP 445 or 139) to addresses that are not private, patch Office, and block outbound SMB to the internet as a control.",
-   "caveat": "No campaign network or file indicators were published. This is a hunt-only entry. Internal SMB from Outlook is expected; exclude private destinations.",
+   "summary": "Microsoft patched CVE-2026-124194 on 10 November 2026 and marks it Exploitation Detected; CISA added it to its Known Exploited Vulnerabilities catalog the same day, with a 24 November deadline. A user who opens a crafted message file (.msg or .eml) makes Outlook connect to an attacker-controlled network location without the usual external-content warning, and Windows sends the user's NTLMv2 response, which can be cracked or relayed. The Preview Pane is not an attack vector. Microsoft, CISA and the researchers who covered the flaw have published no attacker IP addresses, domains, file hashes, sender addresses or file names, so this entry is hunt and alert only. Its three correlated hunts tie a message-file open in Outlook to SMB, WebDAV or NTLM traffic to a new public address on the same device within 2 minutes.",
+   "caveat": "No campaign network or file indicators have been published. Addresses in public proof-of-concept write-ups are examples or placeholders, not indicators. The hunts are correlated and tuned for low noise: fill in the allowlist placeholders with your own public ranges, partner file shares and WebDAV domains before alerting.",
    "targets": {
     "countries": [],
     "regions": [],
@@ -15065,32 +15065,83 @@
      "url": "https://attack.mitre.org/techniques/T1566/001/"
     },
     {
+     "id": "T1557.001",
+     "name": "LLMNR/NBT-NS Poisoning and SMB Relay",
+     "url": "https://attack.mitre.org/techniques/T1557/001/"
+    },
+    {
      "id": "T1550.002",
      "name": "Pass the Hash",
      "url": "https://attack.mitre.org/techniques/T1550/002/"
     }
    ],
    "recommended_actions": [
-    "Patch Microsoft Office and Outlook for CVE-2026-124194.",
-    "Hunt for OUTLOOK.EXE making outbound SMB (TCP 445 or 139) connections to addresses that are not private.",
-    "Block outbound SMB to the internet at the perimeter.",
-    "If a hit is confirmed, treat exposed NTLMv2 hashes as compromised: reset the account password and review subsequent logons."
+    "Install the November 2026 Office updates: Office LTSC 2024 16.0.17932.21140, Office LTSC 2021 16.0.14334.21048, or the fixed Microsoft 365 Apps build for your channel.",
+    "Block outbound TCP 445 and 139 to the internet at the perimeter and in the host firewall for laptops on public networks, and review whether WebDAV to arbitrary hosts is allowed.",
+    "Set Network security: Restrict NTLM: Outgoing NTLM traffic to remote servers to Audit all, then Deny all with an exception list; on Windows 11 24H2 and Windows Server 2025, block NTLM for remote outbound SMB.",
+    "Fill in the allowlist placeholders in the hunts with your own public ranges, partner file shares and WebDAV domains, then run them over the last 30 days.",
+    "If a hunt fires, treat the user's NTLMv2 response as exposed: reset the password, revoke sessions, and search mail for the same sender, subject or attachment across other recipients."
    ],
    "sources": [
+    {
+     "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-124194",
+     "label": "Microsoft – CVE-2026-124194 Microsoft Outlook Spoofing Vulnerability",
+     "name": "Microsoft"
+    },
     {
      "url": "https://www.cisa.gov/news-events/alerts/2026/11/10/cisa-adds-six-known-exploited-vulnerabilities-catalog",
      "label": "CISA – Adds six known exploited vulnerabilities to catalog, including CVE-2026-124194",
      "name": "CISA"
     },
     {
-     "url": "https://www.malwarebytes.com/blog/bugs/2026/11/microsoft-patch-tuesday-fixes-outlook-flaw-already-under-attack",
-     "label": "Malwarebytes – Microsoft Patch Tuesday fixes Outlook flaw already under attack",
-     "name": "Malwarebytes"
+     "url": "https://atarussecurity.com/research/outlook-zero-day-cve-2026-124194-ntlm-hash-leak/",
+     "label": "Atarus Research – Outlook zero-day CVE-2026-124194 leaks NTLM hashes",
+     "name": "atarussecurity.com"
+    },
+    {
+     "url": "https://ctxsec.com/items/hunt-outlook-cve-2026-124194-ntlm-leak-outbound-smb-webdav-from-outlook",
+     "label": "ctxsec – Hunt: Outlook reaching out over SMB or WebDAV after a message file is opened",
+     "name": "ctxsec.com"
+    },
+    {
+     "url": "https://isecradar.com/blog/outlook-zero-day-cve-2026-124194-ntlm-hash-leak-and-how-to-hunt-it",
+     "label": "iSecRadar – Outlook zero-day CVE-2026-124194: NTLM hash leak and how to hunt it",
+     "name": "isecradar.com"
+    },
+    {
+     "url": "https://socprime.com/blog/cve-2026-124194-microsoft-outlook-zero-day-exploited-to-steal-ntlm-hashes/",
+     "label": "SOC Prime – CVE-2026-124194: Outlook zero-day exposes NTLM hashes",
+     "name": "socprime.com"
+    },
+    {
+     "url": "https://zerohunt.ai/blog/outlook-cve-2026-124194-ntlm-hash-leak-spoofing/",
+     "label": "zerohunt – Outlook CVE-2026-124194: exploited spoofing bug leaks NTLM hashes",
+     "name": "zerohunt.ai"
+    },
+    {
+     "url": "https://www.security.com/expert-perspectives/protecting-against-outlook-elevation-privilege-escalation",
+     "label": "Symantec – Detecting WebDAV fallback (davclnt.dll,DavSetCookie) in Outlook NTLM leaks",
+     "name": "Symantec Threat Hunter Team"
+    },
+    {
+     "url": "https://thehackernews.com/2026/11/microsoft-patches-1259-flaws-including.html",
+     "label": "The Hacker News – Microsoft patches exploited Outlook bug that may expose NTLMv2 hashes",
+     "name": "The Hacker News"
     },
     {
      "url": "https://www.securityweek.com/exploited-outlook-zero-day-among-1094-flaws-patched-by-microsoft/",
      "label": "SecurityWeek – Exploited Outlook zero-day among flaws patched by Microsoft",
      "name": "SecurityWeek"
+    },
+    {
+     "url": "https://www.tenable.com/blog/microsoft-november-2026-patch-tuesday-addresses-1093-cves-cve-2026-124194",
+     "label": "Tenable – Microsoft's November 2026 Patch Tuesday",
+     "name": "Tenable"
+    },
+    {
+     "url": "https://www.malwarebytes.com/blog/bugs/2026/11/microsoft-patch-tuesday-fixes-outlook-flaw-already-under-attack",
+     "label": "Malwarebytes – Microsoft Patch Tuesday fixes Outlook flaw already under attack",
+     "name": "Malwarebytes"
     }
    ],
    "indicator_count": 1,
@@ -15104,21 +15155,51 @@
    },
    "ioas": [
     {
-     "artefact": "OUTLOOK.EXE making outbound SMB on TCP 445 or 139 to addresses that are not private",
-     "log_source": "EDR network events on workstations and mail hosts",
-     "why": "CVE-2026-124194 can expose an NTLMv2 hash over SMB when Outlook processes a crafted message, with no meaningful user click. No campaign indicators were published. Hunt outbound or previously unseen destinations only; this is not a block list.",
+     "artefact": "SMB (TCP 445 or 139) to a public address that is new to the estate, made by OUTLOOK.EXE, or by the System kernel SMB client within 2 minutes after Outlook opens a .msg or .eml file on the same device",
+     "log_source": "Defender XDR DeviceNetworkEvents, DeviceFileEvents and DeviceProcessEvents; Sysmon event 3 with event 1 and 11 in Splunk or Google SecOps",
+     "why": "Opening a crafted message file makes Outlook connect to the attacker's server without the external-content warning, and Windows sends the user's NTLMv2 response. The SMB client often runs in the kernel, so the connection is logged against System rather than Outlook. Tuning: public addresses only; Azure Files endpoints and your own allowlisted ranges are excluded; the address must be new to the estate (not seen on SMB from any device in the first day of the window, and the hit within a day of its first sighting); System connections count only within 2 minutes after a message-file open on the same device. Blocked or failed attempts still match, because they mean the file was opened. Expected false positives: a new, legitimate partner or cloud file share reached by IP right after opening a message. Allowlist it once.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://atarussecurity.com/research/outlook-zero-day-cve-2026-124194-ntlm-hash-leak/",
+     "source_name": "atarussecurity.com",
+     "title": "Outlook message file opened, then SMB to a new public address",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "WebDAV fallback: rundll32 davclnt.dll,DavSetCookie to a public, non-Microsoft host within 2 minutes after Outlook opens a .msg or .eml file, or after a failed SMB attempt to the same address",
+     "log_source": "Defender XDR DeviceProcessEvents, DeviceFileEvents and DeviceNetworkEvents; Sysmon event 1 and 11 in Splunk or Google SecOps",
+     "why": "When outbound SMB is blocked, Windows retries the same path over WebDAV through the WebClient service, which starts rundll32 davclnt.dll,DavSetCookie with the target URL and still sends NTLM. The rundll32 parent is svchost, not Outlook, so the hunt ties it to Outlook by time and device instead of process tree. Tuning: SharePoint, OneDrive, Office, Live and other Microsoft hosts are excluded, as are private and single-label hosts, and your own domains through the allowlist pattern; the WebDAV call must follow a message-file open within 2 minutes, or follow an SMB attempt to the same IP. Expected false positives: a message that links to an approved external WebDAV server, such as a partner's Nextcloud. Allowlist the domain.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.security.com/expert-perspectives/protecting-against-outlook-elevation-privilege-escalation",
+     "source_name": "Symantec Threat Hunter Team",
+     "title": "Outlook message file opened, then WebDAV to a public host",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Outgoing NTLM (Microsoft-Windows-NTLM/Operational event 8001) to a public IP address within 2 minutes after Outlook opens a .msg or .eml file on the same device",
+     "log_source": "Microsoft-Windows-NTLM/Operational on workstations (WindowsEvent or Event table in Sentinel, WinEventLog in Splunk), with Defender XDR DeviceFileEvents and DeviceProcessEvents for the Outlook open. Needs the policy Network security: Restrict NTLM: Outgoing NTLM traffic to remote servers set to Audit all",
+     "why": "Event 8001 records every NTLM authentication a workstation attempts to a remote server, whichever program was tricked, and covers SMB and WebDAV. Tuning: only targets that are public IP addresses (cifs/, http/, host/ or ldap/ followed by an IP) count; private, loopback, link-local, CGNAT and multicast ranges and your allowlisted ranges are dropped; the event must follow a message-file open on the same host within 2 minutes. Generic 4624 and 4648 logons are left out because they cannot show the destination of an outgoing NTLM attempt. Expected false positives: an approved external server reached by IP right after opening a message. Allowlist it. The hunt returns nothing until the audit policy is on.",
      "action": "hunt",
      "has_query": true,
-     "source_url": "https://www.cisa.gov/news-events/alerts/2026/11/10/cisa-adds-six-known-exploited-vulnerabilities-catalog",
-     "source_name": "CISA",
-     "title": "Outlook outbound SMB to a non-private address",
+     "source_url": "https://ctxsec.com/items/hunt-outlook-cve-2026-124194-ntlm-leak-outbound-smb-webdav-from-outlook",
+     "source_name": "ctxsec.com",
+     "title": "Outlook message file opened, then NTLM sent to a public IP",
      "queries": [
       "KQL",
       "SPL"
      ]
     }
    ],
-   "ioa_count": 1,
+   "ioa_count": 3,
    "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
    "files": [
     {
@@ -15145,6 +15226,12 @@
      "note": "hunt_raw.spl, for data not mapped to CIM",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Outlook-CVE-2026-124194-NTLM-Hash-Leak/hunt_raw.spl",
      "download": "Outlook-CVE-2026-124194-NTLM-Hash-Leak_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Outlook-CVE-2026-124194-NTLM-Hash-Leak/hunt.yaral",
+     "download": "Outlook-CVE-2026-124194-NTLM-Hash-Leak_hunt.yaral"
     },
     {
      "name": "iocs.csv",
@@ -15192,6 +15279,13 @@
       "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Outlook-CVE-2026-124194-NTLM-Hash-Leak/hunt_raw.spl",
       "download": "Outlook-CVE-2026-124194-NTLM-Hash-Leak_hunt_raw.spl"
      }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Outlook-CVE-2026-124194-NTLM-Hash-Leak/hunt.yaral",
+     "download": "Outlook-CVE-2026-124194-NTLM-Hash-Leak_hunt.yaral"
     }
    ]
   },
