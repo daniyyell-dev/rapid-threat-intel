@@ -1,6 +1,6 @@
 # NIKKE Launcher Abused to Deliver the k2f-agent Stealer
 
-[Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
+[Live entry](https://daniyyell.com/rapid-threat-intel/t/NIKKE-Launcher-k2f-agent-Credential-Theft/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

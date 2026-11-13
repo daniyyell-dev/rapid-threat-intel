@@ -1,6 +1,6 @@
 # Fake Zillow Pages Deliver NetSupport RAT through ClickFix
 
-[Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
+[Live entry](https://daniyyell.com/rapid-threat-intel/t/Fake-Zillow-ClickFix-NetSupport-RAT/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

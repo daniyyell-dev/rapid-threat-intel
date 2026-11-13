@@ -1,6 +1,6 @@
 # GhostFrame: ESXi Hypervisor Implant Linked to Settra Ransomware (TAG-218)
 
-[Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-11](../README.md)
+[Live entry](https://daniyyell.com/rapid-threat-intel/t/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-11](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

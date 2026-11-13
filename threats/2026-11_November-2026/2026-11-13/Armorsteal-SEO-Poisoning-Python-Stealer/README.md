@@ -1,6 +1,6 @@
 # Armorsteal: SEO-Poisoned Chocolatey and Massgrave Lures Deliver a Python Stealer, Backdoor and Miner
 
-[Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
+[Live entry](https://daniyyell.com/rapid-threat-intel/t/Armorsteal-SEO-Poisoning-Python-Stealer/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

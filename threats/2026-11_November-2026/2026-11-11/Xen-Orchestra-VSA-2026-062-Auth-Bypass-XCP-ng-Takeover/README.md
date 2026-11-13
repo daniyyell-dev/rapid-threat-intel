@@ -1,6 +1,6 @@
 # Xen Orchestra Authentication Bypass (VSA-2026-062) Exploited to Take Over XCP-ng Hosts
 
-[Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-11](../README.md)
+[Live entry](https://daniyyell.com/rapid-threat-intel/t/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-11](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

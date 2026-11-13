@@ -1,6 +1,6 @@
 # Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
 
-[Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
+[Live entry](https://daniyyell.com/rapid-threat-intel/t/Qubole-Cross-Account-AWS-Role-Abuse/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

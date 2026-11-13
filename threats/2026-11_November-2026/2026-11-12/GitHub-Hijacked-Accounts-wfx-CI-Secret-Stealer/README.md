@@ -1,6 +1,6 @@
 # wfx: Hijacked GitHub Accounts Plant a CI Secret Stealer in Thousands of Repositories
 
-[Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
+[Live entry](https://daniyyell.com/rapid-threat-intel/t/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

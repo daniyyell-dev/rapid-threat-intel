@@ -295,6 +295,7 @@ option, optgroup { background: var(--raise); color: var(--ink); }
 .facts dt { font: 500 12px/1.2 var(--sans); color: var(--ink-3); }
 .facts dd { margin: 6px 0 0; font: 700 16px/1.2 var(--sans); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .facts .hot dd { color: var(--block); }
+.share-line { margin: 16px 0 0; }
 .det-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 48px; padding-top: 32px; }
 .det-main { min-width: 0; }
 /* Hunt is full-width, directly under the threat header, before the other detail sections. */

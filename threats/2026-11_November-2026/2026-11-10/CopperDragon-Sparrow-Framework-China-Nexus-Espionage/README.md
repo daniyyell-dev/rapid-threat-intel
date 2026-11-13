@@ -1,6 +1,6 @@
 # CopperDragon: China-Nexus Sparrow Framework Targeting Government and Telecoms
 
-[Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-10](../README.md)
+[Live entry](https://daniyyell.com/rapid-threat-intel/t/CopperDragon-Sparrow-Framework-China-Nexus-Espionage/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-10](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

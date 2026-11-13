@@ -1,6 +1,6 @@
 # Falcon C2 (XG): Browser Framework and Antino Implant Targeting Government Webmail
 
-[Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
+[Live entry](https://daniyyell.com/rapid-threat-intel/t/Falcon-C2-XG-Antino-Browser-Implant/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

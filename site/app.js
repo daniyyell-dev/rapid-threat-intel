@@ -101,12 +101,20 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { t.classList.remove("show"); }, 1800);
   }
+  function shareUrl(id) {
+    var path = (location.pathname || "/").replace(/\/t\/[^/]+\/?$/, "/");
+    if (path.charAt(0) !== "/") path = "/" + path;
+    if (path.charAt(path.length - 1) !== "/") path += "/";
+    return location.origin + path + "t/" + encodeURIComponent(id) + "/";
+  }
   function copyText(text, btn, msg) {
     function done(ok) {
       toast(ok ? (msg || "Copied the real value") : "Copy failed");
       if (ok && btn) {
+        var prev = btn.getAttribute("data-label") || btn.textContent;
+        btn.setAttribute("data-label", prev);
         btn.textContent = "Copied"; btn.classList.add("done");
-        setTimeout(function () { btn.textContent = "Copy"; btn.classList.remove("done"); }, 1400);
+        setTimeout(function () { btn.textContent = prev; btn.classList.remove("done"); }, 1400);
       }
     }
     function fallback() {
@@ -681,7 +689,8 @@
       h("p", { class: "lede", text: t.headline }),
       h("dl", { class: "facts" },
         [["Published", fmtDay(t.published)], ["Added", fmtAdded(t.entry_date)], ["Last updated", fmtDay(t.last_updated)]]
-          .map(function (f) { return h("div", { class: f[2] || null }, h("dt", { text: f[0] }), h("dd", { text: String(f[1]) })); }))));
+          .map(function (f) { return h("div", { class: f[2] || null }, h("dt", { text: f[0] }), h("dd", { text: String(f[1]) })); })),
+      h("p", { class: "share-line" }, h("button", { type: "button", class: "link-btn", onclick: function () { copyText(shareUrl(t.id), this, "Copied link"); } }, "Copy link"))));
 
     var hq = huntSection(t);
     if (hq) wrap.appendChild(hq);

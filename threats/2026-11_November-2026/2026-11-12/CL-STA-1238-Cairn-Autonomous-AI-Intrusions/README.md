@@ -1,6 +1,6 @@
 # CL-STA-1238: Autonomous AI Intrusions with the Cairn Framework Against Semiconductor, Defence and Civil Society
 
-[Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
+[Live entry](https://daniyyell.com/rapid-threat-intel/t/CL-STA-1238-Cairn-Autonomous-AI-Intrusions/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

@@ -1,6 +1,6 @@
 # SkyW4lker: Microsoft 365 Device-Code Phishing Kit Targeting Enterprises
 
-[Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-11](../README.md)
+[Live entry](https://daniyyell.com/rapid-threat-intel/t/SkyW4lker-Microsoft-365-Device-Code-Phishing/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-11](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
