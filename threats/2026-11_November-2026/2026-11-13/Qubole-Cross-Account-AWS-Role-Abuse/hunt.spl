@@ -54,7 +54,7 @@
 ]
 
 | append [
-    search index=* sourcetype="aws:cloudtrail" (805246085872 OR AIDA3W7DIFLYOLTK63SFS OR AIDAJYRRH5Y3A7AAJM2HW) | where (eventName="AssumeRole" AND match(sourceIPAddress, "^[0-9a-fA-F:.]+$") AND ('userIdentity.accountId'="805246085872" OR like('userIdentity.principalId', "%AIDAJYRRH5Y3A7AAJM2HW%"))) OR like('userIdentity.principalId', "%AIDA3W7DIFLYOLTK63SFS%")
+    search index=* sourcetype="aws:cloudtrail" (805246085872 OR AIDA3W7DIFLYOLTK63SFS OR AIDAJYRRH5Y3A7AAJM2HW) | where (eventName="AssumeRole" AND (sourceIPAddress IN ("57.129.54.120", "45.83.220.211", "185.209.199.73", "89.37.63.175") OR match(sourceIPAddress, "^2001:41d0:70d:7800:")) AND ('userIdentity.accountId'="805246085872" OR like('userIdentity.principalId', "%AIDAJYRRH5Y3A7AAJM2HW%"))) OR like('userIdentity.principalId', "%AIDA3W7DIFLYOLTK63SFS%")
     | eval host=coalesce(recipientAccountId, 'userIdentity.accountId'), user=coalesce('userIdentity.sessionContext.sessionIssuer.arn', 'userIdentity.arn'), src=sourceIPAddress, dest=coalesce('requestParameters.roleArn', "-"), detail=eventName." session ".coalesce('requestParameters.roleSessionName', "-")." from ".sourceIPAddress
     | fillnull value="-" host user src dest detail
     | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail

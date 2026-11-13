@@ -56,8 +56,8 @@ union isfuzzy=true
     | where Application == "Amazon Web Services"
     | extend R = parse_json(tostring(RawEventData))
     | extend Acct = tostring(R.userIdentity.accountId), Pid = tostring(R.userIdentity.principalId), Src = tostring(R.sourceIPAddress), Sess = tostring(R.requestParameters.roleSessionName), Ev = tostring(R.eventName)
-    | where (Ev == "AssumeRole" and (Acct == "805246085872" or Pid has "AIDAJYRRH5Y3A7AAJM2HW") and Src matches regex @"^[0-9a-fA-F:.]+$") or Pid has "AIDA3W7DIFLYOLTK63SFS"
-    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(R.recipientAccountId), Indicator = strcat(Acct, " ", Pid), Context = strcat(Ev, " from ", Src, " session ", Sess, " UA ", tostring(R.userAgent))),
+    | where (Ev == "AssumeRole" and (Acct == "805246085872" or Pid has "AIDAJYRRH5Y3A7AAJM2HW") and Src matches regex @"^[0-9a-fA-F:.]+$" and not(ISP has_any ("Amazon", "AWS"))) or Pid has "AIDA3W7DIFLYOLTK63SFS"
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(R.recipientAccountId), Indicator = strcat(Acct, " ", Pid), Context = strcat(Ev, " from ", Src, " (", ISP, ") session ", Sess, " UA ", tostring(R.userAgent))),
   (CloudAppEvents
     | where Timestamp > ago(Lookback)
     | where Application == "Amazon Web Services"

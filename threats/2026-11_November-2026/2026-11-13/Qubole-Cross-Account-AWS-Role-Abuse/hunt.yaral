@@ -25,7 +25,7 @@ rule rti_qubole_cross_account_aws_role_abuse {
       $e.target.process.file.md5 = /^(?:086d4a83181971e883c53a4c44f46da2)$/ nocase or
       $e.principal.process.file.md5 = /^(?:086d4a83181971e883c53a4c44f46da2)$/ nocase or
       $e.principal.process.parent_process.file.md5 = /^(?:086d4a83181971e883c53a4c44f46da2)$/ nocase or
-      ($e.metadata.log_type = "AWS_CLOUDTRAIL" and $e.metadata.product_event_type = "AssumeRole" and re.regex($e.principal.user.userid, `805246085872|AIDA3W7DIFLYOLTK63SFS|AIDAJYRRH5Y3A7AAJM2HW`) and not re.regex($e.principal.hostname, `amazonaws\.com$`)) or
+      ($e.metadata.log_type = "AWS_CLOUDTRAIL" and $e.metadata.product_event_type = "AssumeRole" and (re.regex($e.principal.user.userid, `AIDA3W7DIFLYOLTK63SFS`) or (re.regex($e.principal.user.userid, `805246085872|AIDAJYRRH5Y3A7AAJM2HW`) and re.regex($e.principal.ip, `^(57\.129\.54\.120|45\.83\.220\.211|185\.209\.199\.73|89\.37\.63\.175|2001:41d0:70d:7800:)`)))) or
       ($e.metadata.log_type = "AWS_CLOUDTRAIL" and (re.regex($e.target.resource.name, `quiam-`) or re.regex($e.principal.user.userid, `quiam-`))) or
       (re.regex($e.principal.ip, `^(57\.129\.54\.120|45\.83\.220\.211|185\.209\.199\.73|89\.37\.63\.175|2001:41d0:70d:7800:)`))
     )
