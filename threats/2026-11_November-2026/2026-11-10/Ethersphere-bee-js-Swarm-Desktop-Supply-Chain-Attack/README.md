@@ -1,6 +1,6 @@
 # Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 
-[Back to index](../../../../README.md#latest-threats) · [November 2026](../../README.md) · [2026-11-10](../README.md)
+[Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-10](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
@@ -70,4 +70,4 @@ Leads that are not network or hash indicators are in [`iocs.csv`](iocs.csv), and
 
 ---
 
-[Back to index](../../../../README.md#latest-threats)
+[Back to index](../../../../README.md)

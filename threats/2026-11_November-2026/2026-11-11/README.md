@@ -1,6 +1,6 @@
 # 2026-11-11
 
-[Back to index](../../../README.md#latest-threats) · [November 2026](../README.md)
+[Back to index](../../../README.md) · [November 2026](../README.md)
 
 7 threats, 454 indicators, 38 to block now. Newest first.
 

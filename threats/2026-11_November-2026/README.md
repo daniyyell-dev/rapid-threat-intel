@@ -1,6 +1,6 @@
 # November 2026
 
-[Back to index](../../README.md#latest-threats)
+[Back to index](../../README.md)
 
 43 threats, 1347 indicators, 604 to block now. Newest first.
 
