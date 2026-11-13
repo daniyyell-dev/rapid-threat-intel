@@ -1,0 +1,40 @@
+// Threat: ARTEX Agents Steal AI Gateway Keys and Try Deepfake KYC Bypass at Crypto Exchanges
+// Author: Daniel Jeremiah | Date: 2026-11-13
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass
+rule rti_artex_ai_gateway_credential_theft_and_crypto_kyc_deepfake {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-13"
+    description = "ARTEX Agents Steal AI Gateway Keys and Try Deepfake KYC Bypass at Crypto Exchanges"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass"
+
+  events:
+    (
+      $e.principal.ip = /^(?:104\.28\.225\.223|31\.22\.91\.156|150\.136\.38\.110|128\.242\.115\.131|216\.176\.239\.231|212\.107\.28\.51|103\.142\.140\.158|104\.28\.251\.98|104\.28\.251\.99|104\.28\.219\.97|125\.103\.213\.41)$/ or
+      $e.target.ip = /^(?:104\.28\.225\.223|31\.22\.91\.156|150\.136\.38\.110|128\.242\.115\.131|216\.176\.239\.231|212\.107\.28\.51|103\.142\.140\.158|104\.28\.251\.98|104\.28\.251\.99|104\.28\.219\.97|125\.103\.213\.41)$/ or
+      $e.network.dns.answers.data = /^(?:104\.28\.225\.223|31\.22\.91\.156|150\.136\.38\.110|128\.242\.115\.131|216\.176\.239\.231|212\.107\.28\.51|103\.142\.140\.158|104\.28\.251\.98|104\.28\.251\.99|104\.28\.219\.97|125\.103\.213\.41)$/ or
+      ($e.metadata.event_type = "PROCESS_LAUNCH" and re.regex($e.principal.process.command_line, `langflow`) nocase and re.regex($e.target.process.file.full_path, `/(sh|bash|dash|curl|wget|nc|ncat|netcat)$`) nocase)
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}

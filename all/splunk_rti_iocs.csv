@@ -6,6 +6,10 @@ http://45.115.26.23:80/hb,url,"ZeroQlik Returns: Qlik Sense Servers Exploited fo
 57.129.54.120,ipv4,Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
 65f061281c9a712e9502793dc4c5035cae490b84da05f7d4223cefa65ad396e4,sha256,Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
 1c7437dac21630f53c0b888b50662c6487e23fd7,sha1,Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles
+31.22.91.156,ipv4,ARTEX Agents Steal AI Gateway Keys and Try Deepfake KYC Bypass at Crypto Exchanges
+216.176.239.231,ipv4,ARTEX Agents Steal AI Gateway Keys and Try Deepfake KYC Bypass at Crypto Exchanges
+212.107.28.51,ipv4,ARTEX Agents Steal AI Gateway Keys and Try Deepfake KYC Bypass at Crypto Exchanges
+103.142.140.158,ipv4,ARTEX Agents Steal AI Gateway Keys and Try Deepfake KYC Bypass at Crypto Exchanges
 38.244.50.120,ipv4,ARTEX Intrusions: South Korean Finance Operator and Storm-0940 ConnectWise Cloud Backup Access
 144.172.64.60,ipv4,ARTEX Intrusions: South Korean Finance Operator and Storm-0940 ConnectWise Cloud Backup Access
 144.172.64.99,ipv4,ARTEX Intrusions: South Korean Finance Operator and Storm-0940 ConnectWise Cloud Backup Access

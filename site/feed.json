@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-13 21:40",
- "threat_count": 55,
- "indicator_count": 1566,
- "block_now_count": 726,
+ "last_updated": "2026-11-13 22:30",
+ "threat_count": 56,
+ "indicator_count": 1577,
+ "block_now_count": 730,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -111,7 +111,7 @@
    "published": "2026-11-11",
    "entry_date": "2026-11-13 11:40",
    "last_updated": "2026-11-13",
-   "seq": 55,
+   "seq": 56,
    "headline": "Old Qlik Sense flaws exploited at EU firms for PowerShell reverse shells, a Go agent and SSH-key persistence",
    "summary": "Cynet reports that in October 2026 the Qlik Sense Scheduler.exe process on servers at several EU customers launched cmd.exe and a hidden, base64-encoded PowerShell reverse shell, all within about three minutes. The process tree matches the 2023 Cactus ransomware intrusions, so the operator most likely used the old Qlik Sense flaws CVE-2023-41266 with CVE-2023-41265, or CVE-2023-48365 (DoubleQlik). The shell is a trimmed Nishang one-liner that checks in to 45.115.26.23 over HTTP at /hb and connects back on TCP 4455. An open directory on the same server (TCP 8012) held a Go reverse-shell agent (wsvc.exe, TCP 4456) for Windows and several Linux architectures, a Bash agent (TCP 4457), a persist.ps1 script that installs OpenSSH, adds the ed25519 key node6-sm to administrators_authorized_keys, writes C:\\ProgramData\\ssh\\winc.ps1 and creates the WinUpdCheck task every five minutes, plus ActiveMQ CVE-2023-46604 payloads and a modified Veeam CVE-2024-40711 toolchain still in testing. The server address and the two persist.ps1 hashes are on the block list.",
    "caveat": "Cynet did not confirm which Qlik Sense vulnerability was used. The ActiveMQ and Veeam tooling looked unfinished and Cynet saw no successful exploitation with it. OpenSSH-Win64.zip on the staging server was the legitimate package, so it is not listed.",
@@ -462,7 +462,7 @@
    "published": "2026-11-09",
    "entry_date": "2026-11-13 11:40",
    "last_updated": "2026-11-13",
-   "seq": 54,
+   "seq": 55,
    "headline": "Stolen Qubole vendor credentials used to assume customer AWS integration roles, steal secrets and download S3 data",
    "summary": "Wiz, working with Sentra and Mandiant, reports that between 14 and 26 October 2026 a threat actor used IAM credentials from AWS account 805246085872, which Qubole's data platform uses to reach customer accounts, to assume the cross-account integration roles that dozens of customers had created to trust Qubole. Every AssumeRole call carried a valid External ID and succeeded, and most of the roles were otherwise unused. Using session names starting quiam-, the actor enumerated S3, EC2, RDS, IAM and KMS, read Lambda environment variables, Secrets Manager secrets and SSM parameters, downloaded whole S3 buckets, and validated the credentials it found with TruffleHog against AWS, Entra ID and Okta. Traffic came from an OVH server (57.129.54.120, which also hosted a bootable sso_agent.iso that beacons to TCP 23458) and Mullvad VPN exits. An actor calling itself n0n has claimed the intrusion. The OVH address and the ISO hashes are on the block list; the Mullvad exits, the vendor account and its principal IDs are alert-only hunt leads.",
    "caveat": "Account 805246085872 and the principal AIDAJYRRH5Y3A7AAJM2HW also carry legitimate Qubole traffic from AWS infrastructure; alert on them only when the source address is not an AWS address. AIDA3W7DIFLYOLTK63SFS was seen only in attacker activity. The Mullvad addresses are shared VPN exits and are not blocked. 57.129.54.120 was attacker-controlled from 15 to 26 October 2026 and may be reassigned later. The user agents Wiz lists are common and are only useful alongside another indicator.",
@@ -900,7 +900,7 @@
    "published": "2026-11-12",
    "entry_date": "2026-11-13 11:25",
    "last_updated": "2026-11-13",
-   "seq": 53,
+   "seq": 54,
    "headline": "A public exploit gives root on clustered Cisco Expressway nodes through hard-coded Erlang credentials on TCP 4372",
    "summary": "Cisco fixed CVE-2026-76466 (CVSS 9.8) on 21 October 2026: clustered Cisco Expressway-C and Expressway-E nodes, virtual and appliance, on X15.5.3 and earlier (and X14 and earlier) let an unauthenticated attacker run operating-system commands as root through the cluster database service. On 12 November researcher Nicolas Krassas (dinosn) published a working exploit and fleet detector on GitHub. It opens TLS to TCP 4372, completes the Erlang distribution handshake as the hard-coded maintenance node wombat@127.0.0.1 with the hard-coded cookie that is the same on every affected install, and calls os:cmd as root; it was tested on Expressway-C X15.3.2 in the factory-default TLS Permissive mode. Cisco says there is no workaround and, at the time of its advisory, knew of no malicious use; no exploitation has been reported since the code went public. No attacker infrastructure exists yet, so this entry is hunt and alert only. Its hunts flag connections to TCP 4371 or 4372 from anything that is not a cluster peer, and the public exploit being run from a managed host.",
    "caveat": "No exploitation or attacker indicators have been published; the CVE row is a tracking identifier, not something to block. The network hunt needs your Expressway cluster peer addresses filled in before it alerts, and it only sees traffic your firewall or NetFlow logs record. Expressway nodes do not run Defender for Endpoint, so the KQL can only see managed devices that connect out to the cluster ports or run the exploit.",
@@ -1097,6 +1097,387 @@
      "name": "hunt.yaral",
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/hunt.yaral",
      "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass",
+   "folder": "threats/2026-11_November-2026/2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass",
+   "name": "ARTEX Agents Steal AI Gateway Keys and Try Deepfake KYC Bypass at Crypto Exchanges",
+   "short": "ARTEX AI key theft and KYC bypass",
+   "category": "Financially motivated intrusion / AI services and crypto exchanges",
+   "published": "2026-11-13",
+   "entry_date": "2026-11-13 22:30",
+   "last_updated": "2026-11-13",
+   "seq": 53,
+   "headline": "ARTEX agents steal provider keys from exposed AI gateways and try deepfake KYC bypass at crypto exchanges",
+   "summary": "Amazon Threat Intelligence reported on 13 November 2026 that its MadPot sensors, posing as LLM inference APIs, captured the working memory of ARTEX agents run by what it assesses, with moderate confidence, are separate Chinese-nexus groups between 3 October and 5 November. The main campaign hunted internet-exposed LLM gateways and AI app builders (One API, New API, Veloera, Sub2API, LiteLLM, Dify, FastGPT, Langflow, RAGFlow, Open WebUI, LobeChat, Ollama), pulled the provider API keys they hold and fed them back into the operators' own model pool, then used stolen cloud credentials to reach managed AI services, secrets stores and parameter stores. Exploits included unclaimed installs, anonymous management endpoints, default admin credentials such as the LiteLLM master key, Langflow CVE-2025-3248, RAGFlow CVE-2026-28797, the isCliRequest header bypass in One API family systems and SSRF to cloud metadata. A second campaign tried to pass KYC checks at two cryptocurrency exchanges with real-time deepfake video and forged ID photos; the vendor's server-side check rejected every recorded attempt. Four hosting addresses are on the block list; the Cloudflare, Oracle Cloud and carrier addresses are alert only.",
+   "caveat": "Amazon says the operators sent all outbound traffic through proxies, so these addresses are short-lived egress points. Do not block Cloudflare (104.28.x), Oracle Cloud or the NTT and ARTERIA carrier addresses; alert on them only.",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Worldwide"
+    ],
+    "sectors": [
+     "Technology",
+     "AI services",
+     "Cryptocurrency exchanges",
+     "Financial services"
+    ],
+    "note": "Amazon describes worldwide targeting of exposed AI gateways and app builders, worked through a fixed country sequence, and two unnamed cryptocurrency exchanges; operators excluded mainland China and government domains.",
+    "source": {
+     "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+     "label": "Amazon Threat Intelligence – Threat actors running cybercrime campaigns with ARTEX AI agents",
+     "name": "Amazon Threat Intelligence"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1595",
+     "name": "Active Scanning",
+     "url": "https://attack.mitre.org/techniques/T1595/"
+    },
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1078.001",
+     "name": "Default Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/001/"
+    },
+    {
+     "id": "T1552.001",
+     "name": "Credentials In Files",
+     "url": "https://attack.mitre.org/techniques/T1552/001/"
+    },
+    {
+     "id": "T1552.005",
+     "name": "Cloud Instance Metadata API",
+     "url": "https://attack.mitre.org/techniques/T1552/005/"
+    },
+    {
+     "id": "T1078.004",
+     "name": "Cloud Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/004/"
+    },
+    {
+     "id": "T1496",
+     "name": "Resource Hijacking",
+     "url": "https://attack.mitre.org/techniques/T1496/"
+    },
+    {
+     "id": "T1090",
+     "name": "Proxy",
+     "url": "https://attack.mitre.org/techniques/T1090/"
+    }
+   ],
+   "recommended_actions": [
+    "Block the four hosting addresses and alert on the other seven in firewall, WAF, reverse-proxy and cloud sign-in logs for October and November 2026.",
+    "Take LLM gateways and AI app builders (One API, New API, LiteLLM, Dify, Langflow, RAGFlow, Open WebUI, Ollama) off the internet or put them behind authentication; change default admin and master keys and finish any unclaimed setup.",
+    "Patch Langflow for CVE-2025-3248 and RAGFlow for CVE-2026-28797, and hunt Langflow hosts for shells or downloaders started by the Langflow process.",
+    "Rotate every provider API key stored in an exposed gateway, and alert on unexpected AI model spend or calls from new addresses.",
+    "Crypto exchanges and KYC teams: review liveness and document checks for injected video and edited ID photos with forged camera metadata."
+   ],
+   "sources": [
+    {
+     "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+     "label": "Amazon Threat Intelligence – Threat actors running cybercrime campaigns with ARTEX AI agents",
+     "name": "Amazon Threat Intelligence"
+    }
+   ],
+   "indicator_count": 11,
+   "block_now_count": 4,
+   "hunt_count": 7,
+   "hunt_counts": {
+    "alert": 7
+   },
+   "indicator_counts": {
+    "ipv4": 11
+   },
+   "ioas": [
+    {
+     "artefact": "A shell, downloader or netcat started by the Langflow server process",
+     "log_source": "Defender XDR DeviceProcessEvents on Linux servers (MDE for Linux); EDR process events in Splunk or Google SecOps",
+     "why": "Amazon lists Langflow CVE-2025-3248 in the ARTEX playbook; the flaw runs attacker code inside the Langflow Python process, so a payload shows up as a child shell or downloader. Tuning: the parent command line must contain langflow and the child must be sh, bash, dash, curl, wget or nc. Expected false positives: custom Langflow components that shell out by design; baseline those per host before alerting.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+     "source_name": "Amazon Threat Intelligence",
+     "title": "Langflow process starting a shell or downloader",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Requests to One API, New API or LiteLLM admin endpoints from outside your network that carry an isCliRequest header or authenticate with the default master key",
+     "log_source": "WAF, reverse-proxy and AI gateway access logs",
+     "why": "Amazon names the isCliRequest header bypass in One API family systems and the LiteLLM default master key as ARTEX entry points for pulling stored provider keys. Tuning: only external sources, and only management or channel/key endpoints. Expected false positives: your own admin CLI if it sets the header; these logs are not in Defender XDR tables, so no XDR query is given.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+     "source_name": "Amazon Threat Intelligence",
+     "title": "isCliRequest or default-key use on AI gateway admin APIs",
+     "queries": []
+    }
+   ],
+   "ioa_count": 2,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass/block_now.txt",
+     "download": "ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass/defender_xdr_indicators.csv",
+     "download": "ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass/hunt.kql",
+     "download": "ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass/hunt.spl",
+     "download": "ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass/hunt_raw.spl",
+     "download": "ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass/hunt.yaral",
+     "download": "ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass/iocs.csv",
+     "download": "ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass",
+   "share_url": "https://daniyyell.com/rapid-threat-intel/t/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass/",
+   "indicators": [
+    {
+     "value": "104.28.225.223",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Source address of ARTEX agent traffic in the campaign that stole AI model API keys and cloud credentials from exposed LLM gateways and AI app builders, published by Amazon Threat Intelligence.",
+     "source_url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+     "source_label": "Amazon Threat Intelligence – Threat actors running cybercrime campaigns with ARTEX AI agents",
+     "source_name": "Amazon Threat Intelligence",
+     "sources": [
+      {
+       "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+       "name": "Amazon Threat Intelligence"
+      }
+     ]
+    },
+    {
+     "value": "31.22.91.156",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Source address of ARTEX agent traffic in the campaign that stole AI model API keys and cloud credentials from exposed LLM gateways and AI app builders, published by Amazon Threat Intelligence.",
+     "source_url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+     "source_label": "Amazon Threat Intelligence – Threat actors running cybercrime campaigns with ARTEX AI agents",
+     "source_name": "Amazon Threat Intelligence",
+     "sources": [
+      {
+       "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+       "name": "Amazon Threat Intelligence"
+      }
+     ]
+    },
+    {
+     "value": "150.136.38.110",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Source address of ARTEX agent traffic in the campaign that stole AI model API keys and cloud credentials from exposed LLM gateways and AI app builders, published by Amazon Threat Intelligence.",
+     "source_url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+     "source_label": "Amazon Threat Intelligence – Threat actors running cybercrime campaigns with ARTEX AI agents",
+     "source_name": "Amazon Threat Intelligence",
+     "sources": [
+      {
+       "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+       "name": "Amazon Threat Intelligence"
+      }
+     ]
+    },
+    {
+     "value": "128.242.115.131",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Source address of ARTEX agent traffic in the campaign that stole AI model API keys and cloud credentials from exposed LLM gateways and AI app builders, published by Amazon Threat Intelligence.",
+     "source_url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+     "source_label": "Amazon Threat Intelligence – Threat actors running cybercrime campaigns with ARTEX AI agents",
+     "source_name": "Amazon Threat Intelligence",
+     "sources": [
+      {
+       "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+       "name": "Amazon Threat Intelligence"
+      }
+     ]
+    },
+    {
+     "value": "216.176.239.231",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Source address of ARTEX agent traffic in the campaign that stole AI model API keys and cloud credentials from exposed LLM gateways and AI app builders, published by Amazon Threat Intelligence.",
+     "source_url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+     "source_label": "Amazon Threat Intelligence – Threat actors running cybercrime campaigns with ARTEX AI agents",
+     "source_name": "Amazon Threat Intelligence",
+     "sources": [
+      {
+       "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+       "name": "Amazon Threat Intelligence"
+      }
+     ]
+    },
+    {
+     "value": "212.107.28.51",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Source address of ARTEX agent traffic in the campaign that tried to bypass cryptocurrency exchange KYC checks with real-time deepfakes, published by Amazon Threat Intelligence.",
+     "source_url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+     "source_label": "Amazon Threat Intelligence – Threat actors running cybercrime campaigns with ARTEX AI agents",
+     "source_name": "Amazon Threat Intelligence",
+     "sources": [
+      {
+       "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+       "name": "Amazon Threat Intelligence"
+      }
+     ]
+    },
+    {
+     "value": "103.142.140.158",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Source address of ARTEX agent traffic in the campaign that tried to bypass cryptocurrency exchange KYC checks with real-time deepfakes, published by Amazon Threat Intelligence.",
+     "source_url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+     "source_label": "Amazon Threat Intelligence – Threat actors running cybercrime campaigns with ARTEX AI agents",
+     "source_name": "Amazon Threat Intelligence",
+     "sources": [
+      {
+       "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+       "name": "Amazon Threat Intelligence"
+      }
+     ]
+    },
+    {
+     "value": "104.28.251.98",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Source address of ARTEX agent traffic in the campaign that tried to bypass cryptocurrency exchange KYC checks with real-time deepfakes, published by Amazon Threat Intelligence.",
+     "source_url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+     "source_label": "Amazon Threat Intelligence – Threat actors running cybercrime campaigns with ARTEX AI agents",
+     "source_name": "Amazon Threat Intelligence",
+     "sources": [
+      {
+       "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+       "name": "Amazon Threat Intelligence"
+      }
+     ]
+    },
+    {
+     "value": "104.28.251.99",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Source address of ARTEX agent traffic in the campaign that tried to bypass cryptocurrency exchange KYC checks with real-time deepfakes, published by Amazon Threat Intelligence.",
+     "source_url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+     "source_label": "Amazon Threat Intelligence – Threat actors running cybercrime campaigns with ARTEX AI agents",
+     "source_name": "Amazon Threat Intelligence",
+     "sources": [
+      {
+       "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+       "name": "Amazon Threat Intelligence"
+      }
+     ]
+    },
+    {
+     "value": "104.28.219.97",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Source address of ARTEX agent traffic in the campaign that tried to bypass cryptocurrency exchange KYC checks with real-time deepfakes, published by Amazon Threat Intelligence.",
+     "source_url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+     "source_label": "Amazon Threat Intelligence – Threat actors running cybercrime campaigns with ARTEX AI agents",
+     "source_name": "Amazon Threat Intelligence",
+     "sources": [
+      {
+       "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+       "name": "Amazon Threat Intelligence"
+      }
+     ]
+    },
+    {
+     "value": "125.103.213.41",
+     "type": "ipv4",
+     "confidence": "medium",
+     "recommended_action": "alert",
+     "description": "Source address of ARTEX agent traffic in the campaign that tried to bypass cryptocurrency exchange KYC checks with real-time deepfakes, published by Amazon Threat Intelligence.",
+     "source_url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+     "source_label": "Amazon Threat Intelligence – Threat actors running cybercrime campaigns with ARTEX AI agents",
+     "source_name": "Amazon Threat Intelligence",
+     "sources": [
+      {
+       "url": "https://aws.amazon.com/blogs/security/amazon-threat-intelligence-observes-threat-actors-running-cybercrime-campaigns-with-artex-ai-agents/",
+       "name": "Amazon Threat Intelligence"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass/hunt.kql",
+     "download": "ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass/hunt.spl",
+     "download": "ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass/hunt_raw.spl",
+      "download": "ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass/hunt.yaral",
+     "download": "ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass_hunt.yaral"
     }
    ]
   },

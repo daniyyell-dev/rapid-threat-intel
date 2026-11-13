@@ -2,7 +2,7 @@
 
 [Back to index](../../README.md)
 
-55 threats, 1566 indicators, 726 to block now. Newest first.
+56 threats, 1577 indicators, 730 to block now. Newest first.
 
 ### [2026-11-13](2026-11-13/)
 
@@ -11,6 +11,7 @@
 | 2026-11-11 | [ZeroQlik Returns: Qlik Sense Servers Exploited for Reverse Shells, Go Agent and ActiveMQ/Veeam Tooling](2026-11-13/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam/) | Exploitation / initial access | 7 | 4 | Old Qlik Sense flaws exploited at EU firms for PowerShell reverse shells, a Go agent and SSH-key persistence |
 | 2026-11-09 | [Qubole Cross-Account Access Abused: Vendor IAM Credentials Used to Assume Customer AWS Roles](2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse/) | Supply chain / cloud intrusion | 12 | 5 | Stolen Qubole vendor credentials used to assume customer AWS integration roles, steal secrets and download S3 data |
 | 2026-11-12 | [Cisco Expressway CVE-2026-76466: Public Root RCE Exploit (Hunt Only)](2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/) | Exploitation / edge appliance | 1 | 0 | A public exploit gives root on clustered Cisco Expressway nodes through hard-coded Erlang credentials on TCP 4372 |
+| 2026-11-13 | [ARTEX Agents Steal AI Gateway Keys and Try Deepfake KYC Bypass at Crypto Exchanges](2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass/) | Financially motivated intrusion / AI services and crypto exchanges | 11 | 4 | ARTEX agents steal provider keys from exposed AI gateways and try deepfake KYC bypass at crypto exchanges |
 | 2026-11-13 | [ARTEX Intrusions: South Korean Finance Operator and Storm-0940 ConnectWise Cloud Backup Access](2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure/) | Financially motivated and state-aligned intrusion / financial sector | 17 | 4 | FBI FLASH on ARTEX: Korean-finance actor server and Storm-0940 ConnectWise sign-in addresses |
 | 2026-11-13 | [BlackNevas: Ransomware Wipes ESXi and vCenter Through Legitimate Management Features](2026-11-13/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse/) | Ransomware / hypervisor | 8 | 8 | Stolen admin credentials and vCenter Host Profiles used to open SSH on ESXi and wipe every VM and the backups |
 | 2026-11-12 | [SignDrop: Public Windows CLFS Zero-Day for SYSTEM Privilege Escalation (Hunt Only)](2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation/) | Exploitation / Windows privilege escalation | 1 | 0 | Public unpatched Windows exploit turns CLFS authentication into SYSTEM via a hid.dll planted in the ink folder |

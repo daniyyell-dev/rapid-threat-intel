@@ -1,0 +1,27 @@
+``` Threat: ARTEX Agents Steal AI Gateway Keys and Try Deepfake KYC Bypass at Crypto Exchanges
+    Author: Daniel Jeremiah | Date: 2026-11-13
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass ```
+| multisearch
+  [ search `rti_network(104.28.225.223 OR 31.22.91.156 OR 150.136.38.110 OR 128.242.115.131 OR 216.176.239.231 OR 212.107.28.51 OR 103.142.140.158 OR 104.28.251.98 OR 104.28.251.99 OR 104.28.219.97 OR 125.103.213.41)`
+    | search dest_ip IN ("104.28.225.223", "31.22.91.156", "150.136.38.110", "128.242.115.131", "216.176.239.231", "212.107.28.51", "103.142.140.158", "104.28.251.98", "104.28.251.99", "104.28.219.97", "125.103.213.41")
+    | eval data_model="network", ioc_type="ipv4", ioc=dest_ip, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_network(104.28.225.223 OR 31.22.91.156 OR 150.136.38.110 OR 128.242.115.131 OR 216.176.239.231 OR 212.107.28.51 OR 103.142.140.158 OR 104.28.251.98 OR 104.28.251.99 OR 104.28.219.97 OR 125.103.213.41)`
+    | search src_ip IN ("104.28.225.223", "31.22.91.156", "150.136.38.110", "128.242.115.131", "216.176.239.231", "212.107.28.51", "103.142.140.158", "104.28.251.98", "104.28.251.99", "104.28.219.97", "125.103.213.41")
+    | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search `rti_endpoint(langflow (sh OR bash OR dash OR curl OR wget OR nc OR ncat OR netcat))`
+    | where match(coalesce(parent_process, ""), "(?i)langflow") AND match(coalesce(process_name, ""), "(?i)^(sh|bash|dash|curl|wget|nc|ncat|netcat)$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Langflow process starting a shell or downloader", ioc_type="behaviour (alert)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

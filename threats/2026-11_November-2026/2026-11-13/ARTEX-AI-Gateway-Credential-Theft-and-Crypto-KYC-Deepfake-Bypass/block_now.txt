@@ -1,0 +1,8 @@
+# ARTEX Agents Steal AI Gateway Keys and Try Deepfake KYC Bypass at Crypto Exchanges
+# Published 2026-11-13. High-confidence indicators to block. Updated 2026-11-13.
+
+## ipv4 (4)
+31.22.91.156
+216.176.239.231
+212.107.28.51
+103.142.140.158
