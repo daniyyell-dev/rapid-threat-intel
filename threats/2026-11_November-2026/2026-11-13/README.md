@@ -2,11 +2,11 @@
 
 [Back to index](../../../README.md) · [November 2026](../README.md)
 
-7 threats, 278 indicators, 216 to block now. Newest first.
+7 threats, 312 indicators, 216 to block now. Newest first.
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
-| 2026-11-11 | [DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe](DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/) | Espionage / APT | 7 | 7 | An unattributed operator used a FortiGate CVE-2024-55591 exploit to create a service super-admin and ran 14 months of attacks on Europe |
+| 2026-11-11 | [DarkLunnen: FortiGate CVE-2024-55591 Backdoor Account and Offensive Operations Against Europe](DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/) | Espionage / APT | 41 | 7 | An unattributed operator used a FortiGate CVE-2024-55591 exploit to create a service super-admin and ran 14 months of attacks on Europe |
 | 2026-11-11 | [LIMINAL PANDA GTPDoor v3 and SilentAir Mobile-Network Espionage](LIMINAL-PANDA-GTPDoor-v3-SilentAir/) | Nation-state / espionage | 2 | 2 | China-nexus actors hide mobile-network C2 in GTP-U and abuse SS7 and Diameter to intercept calls, texts and 2FA |
 | 2026-11-12 | [AI-Assisted Intrusion at a U.S. Retailer: SolarWinds Orion Erlang Cookie Abuse, Side-Loaded Loaders and Yuze Tunnels](AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/) | Intrusion / financially motivated | 62 | 35 | Attackers using AI-written PowerShell abuse SolarWinds Orion's RabbitMQ Erlang cookie to move laterally at a U.S. retailer |
 | 2026-11-12 | [Fake Zillow Pages Deliver NetSupport RAT through ClickFix](Fake-Zillow-ClickFix-NetSupport-RAT/) | Malware / RAT | 25 | 21 | EfficientIP Research Labs, writing on 12 November 2026, traces a ClickFix campaign that used fake Zillow apartment-re... |

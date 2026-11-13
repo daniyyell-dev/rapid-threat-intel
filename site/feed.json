@@ -4,9 +4,9 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-13 11:03",
+ "last_updated": "2026-11-13 11:12",
  "threat_count": 46,
- "indicator_count": 1418,
+ "indicator_count": 1452,
  "block_now_count": 648,
  "combined_files": [
   {
@@ -110,11 +110,11 @@
    "category": "Espionage / APT",
    "published": "2026-11-11",
    "entry_date": "2026-11-13 11:03",
-   "last_updated": "2026-11-13",
+   "last_updated": "2026-11-13 11:12",
    "seq": 46,
    "headline": "An unattributed operator used a FortiGate CVE-2024-55591 exploit to create a service super-admin and ran 14 months of attacks on Europe",
-   "summary": "Group-IB, writing on 11 November 2026 and updating the post on 13 November, describes an open directory on a Latvia-hosted server (46.8.236.121:8090) that exposed 14 months of work by an unattributed operator they name DarkLunnen. Exploit code in the recovered files carries Russian-language comments, but Group-IB has not linked the activity to a known group. The operator used a modified watchTowr proof of concept for FortiGate CVE-2024-55591 that creates a backdoor super-admin account named service; a stolen FortiGate configuration from a Romanian organisation contained that same account, and the operator extracted 10 cleartext VPN passwords from it. Scan results listed about 600 vulnerable FortiGates in Turkey, 16 in Ukraine, 14 in Azerbaijan and one in Algeria. Other recovered activity includes VNC brute force against about 5,800 endpoints (roughly a quarter with industrial HMI desktop names), Hikvision camera scans in Ukraine and Poland, attempted source-code collection from Ukrainian defence and aviation sites, Exchange webshells, a possible German-network intrusion with a stolen NTLM hash, restic access to an S3 backup, and Roundcube CVE-2025-49113 attempts. A second server at 129.146.87.174 on Oracle Cloud staged the exploit scripts. Both addresses, the staging URLs and the modified exploit hash are on the block list.",
-   "caveat": "Group-IB recovered 35 of 457 exposed files, so the picture is incomplete and the operator remains unattributed. SSH connections from the operator's history to hosts in the Netherlands, the United States, Thailand and France may be compromised intermediaries, including two with educational TLS certificates; those addresses, the victim and educational domains, and legitimate services such as temp.sh are not on the block list. A patch does not remove a service super-admin account already created, so hunt patched FortiGates too.",
+   "summary": "Group-IB, writing on 11 November 2026 and updating the post on 13 November, describes an open directory on a Latvia-hosted server (46.8.236.121:8090) that exposed 14 months of work by an unattributed operator they name DarkLunnen. Exploit code in the recovered files carries Russian-language comments, but Group-IB has not linked the activity to a known group. The operator used a modified watchTowr proof of concept for FortiGate CVE-2024-55591 that creates a backdoor super-admin account named service; a stolen FortiGate configuration from a Romanian organisation contained that same account, and the operator extracted 10 cleartext VPN passwords from it. Scan results listed about 600 vulnerable FortiGates in Turkey, 16 in Ukraine, 14 in Azerbaijan and one in Algeria. Other recovered activity includes VNC brute force against about 5,800 endpoints (roughly a quarter with industrial HMI desktop names), Hikvision camera scans in Ukraine and Poland, attempted source-code collection from Ukrainian defence and aviation sites, Exchange webshells, a possible German-network intrusion with a stolen NTLM hash, restic access to an S3 backup, and Roundcube CVE-2025-49113 attempts. A second server at 129.146.87.174 on Oracle Cloud staged the exploit scripts. Both addresses, the staging URLs and the modified exploit hash are on the block list. The other recovered-file hashes from the open directory, and the SSH hop addresses in the operator's history, are alert only and must not be blocked.",
+   "caveat": "Group-IB recovered 35 of 457 exposed files, so the picture is incomplete and the operator remains unattributed. SSH connections from the operator's history to hosts in the Netherlands, the United States, Thailand and France may be compromised intermediaries, including two with educational TLS certificates; those addresses, the recovered-file hashes other than popoc.py, the victim and educational domains, and legitimate services such as temp.sh are alert only and must not be blocked. A patch does not remove a service super-admin account already created, so hunt patched FortiGates too.",
    "targets": {
     "countries": [
      {
@@ -227,6 +227,8 @@
    "recommended_actions": [
     "Block 46.8.236.121 and 129.146.87.174, the staging URLs on 129.146.87.174:18080, and the SHA256 of popoc.py, and search proxy, firewall, DNS and EDR logs for them back to at least April 2025.",
     "Hunt FortiGate syslog for an administrator named service being added or given the super_admin profile from a jsconsole or websocket login (logdesc Admin added or Object attribute configured), and inspect the running config of every FortiGate for that account even if the device is already patched.",
+    "Alert on files or processes named suo5, reGeorgSocksProxy.py, neo-reGeorg or tunnel.tomcat.5.jsp, and on a Roundcube web or PHP process spawning a shell or transfer tool.",
+    "Alert on the other recovered-file hashes from the open directory and on the SSH hop addresses in the operator's history; do not block those hops, dltv.ac.th, education-bf.com, freeddns.org or temp.sh.",
     "If you find the account or the device was internet-exposed while vulnerable, rotate every secret the configuration stores (local VPN user passwords, administrator passwords, IPsec pre-shared keys, and LDAP or RADIUS credentials), review VPN logs for those accounts, and take HTTP and HTTPS administrative access off internet-facing interfaces.",
     "Patch FortiOS and FortiProxy against CVE-2024-55591 and the other edge-device bugs in Group-IB's targeted-vulnerabilities table."
    ],
@@ -237,14 +239,17 @@
      "name": "Group-IB"
     }
    ],
-   "indicator_count": 7,
+   "indicator_count": 41,
    "block_now_count": 7,
-   "hunt_count": 0,
-   "hunt_counts": {},
+   "hunt_count": 34,
+   "hunt_counts": {
+    "alert": 34
+   },
    "indicator_counts": {
+    "sha256": 30,
+    "ipv4": 6,
     "url": 4,
-    "ipv4": 2,
-    "sha256": 1
+    "domain": 1
    },
    "ioas": [
     {
@@ -261,9 +266,39 @@
       "SPL",
       "YARA-L"
      ]
+    },
+    {
+     "artefact": "Files or processes named suo5, reGeorgSocksProxy.py, neo-reGeorg or tunnel.tomcat.5.jsp",
+     "log_source": "Defender XDR DeviceFileEvents and DeviceProcessEvents; Splunk endpoint file and process logs; Google SecOps file and process UDM",
+     "why": "DarkLunnen deployed suo5 and Neo-reGeorg/reGeorg tunnelling webshells on compromised Exchange and other web servers. These tool names are distinctive. Tuning: match the file or process name, or a command line that contains suo5, reGeorgSocksProxy, neo-reGeorg, neoreGeorg or tunnel.tomcat.5.jsp. Generic names such as tunnel.php or tunnel.aspx are left out because they are too common. Expected false positives: a security, red-team or research process that runs the public tools.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_name": "Group-IB",
+     "title": "suo5 or Neo-reGeorg/reGeorg tunnelling tools",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "A Roundcube web or PHP process spawning a shell, Python, Perl, or a transfer tool such as curl, wget or netcat",
+     "log_source": "Defender XDR DeviceProcessEvents and DeviceFileEvents; Splunk endpoint process and file logs; Google SecOps process UDM",
+     "why": "DarkLunnen's shell history shows CVE-2025-49113 exploitation attempts against Roundcube. A successful exploit gives code execution in the webmail process, which then often starts a shell or transfer tool. Tuning: the parent must be a web or PHP process (php-fpm, php, php-cgi, httpd, apache2 or nginx) and the child a shell, Python, Perl, curl, wget or netcat; and either the parent or child path or command line contains roundcube, or a file under a roundcube path is created or modified on the same device within 2 minutes of the spawn. Expected false positives: an administrator or cron job updating Roundcube, which can both touch files under the application path and start a shell script. Confirm whether a change or update was expected.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_name": "Group-IB",
+     "title": "Roundcube web process spawning a shell or transfer tool",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
     }
    ],
-   "ioa_count": 1,
+   "ioa_count": 3,
    "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
    "files": [
     {
@@ -414,6 +449,550 @@
      "confidence": "high",
      "recommended_action": "block",
      "description": "SHA256 of chfrt/popoc.py, the modified watchTowr proof of concept for FortiGate CVE-2024-55591 that creates a backdoor super-admin account named service.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "d9edfa7e57067b0a175577e511a9a7ac3d885d15ce28080fa779203317f7616a",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./.bash_history, recovered from the DarkLunnen open directory. Operator bash history recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "e15780896245c5f8cbff9303a517e782e94e20f39bb87221a5cb1faac5372c07",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./.bashrc, recovered from the DarkLunnen open directory. Operator bashrc recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "0b65f60dc4ace2506003e18bf3ce4a25a149473b57c18af22167afc7037da3bb",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./chfrt/acv-gw_7-0_0489_202506271512.conf, recovered from the DarkLunnen open directory. Stolen FortiGate 81F configuration from a Romanian organisation, recovered from the operator's server. This is victim data; do not treat the owner's own copy as malware. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "27ddcf81362f87d865329e07235e950fb69ed175afa1f71f76ccfd24ef50fb46",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./chfrt/ip.txt, recovered from the DarkLunnen open directory. FortiGate scanning target list recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "61e706f5606e025ae8c85a8d1fe7096e0418e16d66acab75b009704d5529a94b",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./chfrt/passwds.txt, recovered from the DarkLunnen open directory. Password-extraction results from the stolen FortiGate configuration, recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "8a43a9c335d9dfe642a0fc5082800753f5ed450fb13b4823cae17e3d0a5bfa1f",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./chfrt/v_az, recovered from the DarkLunnen open directory. FortiGate results file for Azerbaijan, recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "3732b1ffd1a28cf0cc35532bcbea7c179928b8aaa20b16684cd0255ad0f075d1",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./chfrt/v_tr.txt, recovered from the DarkLunnen open directory. FortiGate results file for Turkey, recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "482d16f6c2fa15c10cfc46e37cb298ccee3da1c1ac058a045166fa1429aeb8f7",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./chfrt/v_ua.txt, recovered from the DarkLunnen open directory. FortiGate results file for Ukraine, recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "c7a1e7f8c81e5deb8e63132e942a56aa88acfddabb14ef10141b5c950477b61e",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./chfrt/vulnerable_targets.txt, recovered from the DarkLunnen open directory. FortiGate vulnerable-target list recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "c2a37e9f628d7bfe2e8403c451120f314ef65edb1fde1ab83444714fce85d787",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./fgate_ch.json, recovered from the DarkLunnen open directory. FortiGate target list for Switzerland, recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "ce8faad7a4074429d532a39dfd4aedd3afaf1145a3c8c89d2060fc7d8de5d598",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./fgate_irl.json, recovered from the DarkLunnen open directory. FortiGate target list for Ireland, recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "8c6969152a0e1ac530909d426797b8326c755ac174a354b67a25f0d0e50b87fa",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./fgate_kr.json, recovered from the DarkLunnen open directory. FortiGate target list for South Korea, recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "97826498e0bdebb04d6372a8aae3f86a63d22aeadd6edf15ae2931b037e21958",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./.fzf.bash, recovered from the DarkLunnen open directory. Operator fzf bash config recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "5ebceb30834144677c09faf41fa238d1e1eabbb60a4e565c43a337f02381aed9",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./.fzf.zsh, recovered from the DarkLunnen open directory. Operator fzf zsh config recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "73624b493febe5af0b9f5893adc2ae41c6b09bf1bf2e6fc05ab3a5908b9a7a2a",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./HikVision-CVE-2017-7921/targets.txt, recovered from the DarkLunnen open directory. Hikvision CVE-2017-7921 target list recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "05f6e90c037205bf230a1784b0df09a49bc99ccca7643284e290c58679760ab2",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./HikVision-CVE-2017-7921/vulnerable.txt, recovered from the DarkLunnen open directory. Hikvision CVE-2017-7921 vulnerable-camera results recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "5c65130964db07a2a3fa86b809430aec3ec61d49678349ec693e1ef39cd10b97",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./pl/bruteforced.log, recovered from the DarkLunnen open directory. VNC brute-force results log recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "6a619a8710badffadead19d75d6aaf4db0d477282fbf44553a36bf7bc83c3a0c",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./pl/good.txt, recovered from the DarkLunnen open directory. VNC endpoints reported as successfully authenticated, recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "52e85a33f216ce6e258d82eb7fa79c2bfdb3b7479751571b6c225884a61a10e8",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./.profile, recovered from the DarkLunnen open directory. Operator profile recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "d3d6c5c91d856abfcd3dc05a33d7f602b2c59c7a6950c1b641edeee88793600e",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./.todo.cfg, recovered from the DarkLunnen open directory. Operator todo config recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "ffee49eed5f8095e30b124eaeaa1ff5e925e3ebd9f85ed1252abfbedd42dbbd2",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./.wezterm.lua, recovered from the DarkLunnen open directory. Operator wezterm config recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "dcec7e94a3a76f9f233bcfbb3e7b37b1bb869c1871a4bb29141db3e09344a8f8",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./.wget-hsts, recovered from the DarkLunnen open directory. Operator wget HSTS database recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "73bc1226e3fafaab0189adb293bbd9a9a1bbfd8d6e68e4ad8efc309d59aaa050",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./.z, recovered from the DarkLunnen open directory. Operator zoxide directory history recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "02575593e5259f5ba22d524d1fefd71d56d60d0e49d2597333cd4de83ccac9a8",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./.zcompdump, recovered from the DarkLunnen open directory. Operator zsh completion dump recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "2abc95ce81460a1f018a3ad97a82b4cf201ad1944f2e6fa5a625f301c48b54b7",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./.zcompdump-test-5.8.1, recovered from the DarkLunnen open directory. Operator zsh completion dump recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "57220bac36ac74a003ac09a4c1b6248b43ad10cae2cde4019ceb3144abf6879c",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./.zcompdump-test-5.8.1.zwc, recovered from the DarkLunnen open directory. Operator compiled zsh completion dump recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "5e36c5b3c592172d46d1fc73ab594611c2f8fb600a18f4bd33dbf5719313a00e",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./.zshenv, recovered from the DarkLunnen open directory. Operator zshenv recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "19b00abb2caa589b8d2d5cd4816be65e5f456e0c7edbccf17df8fc17dd97cbfe",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./.zsh_history, recovered from the DarkLunnen open directory. Operator zsh history recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "bc7870c02f5d74828064a0d08a275e927ca205a85e847ed4f48cc4b45bc87b3c",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "SHA256 of ./.zshrc, recovered from the DarkLunnen open directory. Operator zshrc recovered from the open directory. Alert only; do not block.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "103.28.71.82",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SSH destination as root in the operator's shell history, hosted in the Netherlands on Zenex 5ive (AS209181). Group-IB has not confirmed the host was attacker-owned; it may be a compromised intermediary.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "108.175.14.121",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SSH destination as root in the operator's shell history, hosted in the United States on IONOS (AS8560). The TLS certificate presented all-smart.freeddns.org. Group-IB has not confirmed the host was attacker-owned; it may be a compromised intermediary.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "122.155.11.107",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SSH destination as popcloud in the operator's shell history, hosted in Thailand on CAT Telecom (AS9335). The TLS certificate presented *.dltv.ac.th, an educational institution. This may be a compromised intermediary; do not block the address or dltv.ac.th.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "144.91.77.125",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SSH destination as sigec on TCP 1702 in the operator's shell history, hosted in France on Contabo (AS51167). The TLS certificate presented sp-psdebs.education-bf.com. This may be a compromised intermediary; do not block the address or the educational hostname.",
+     "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+     "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
+     "source_name": "Group-IB",
+     "sources": [
+      {
+       "url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
+       "name": "Group-IB"
+      }
+     ]
+    },
+    {
+     "value": "all-smart.freeddns.org",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Hostname from the TLS certificate on SSH hop 108.175.14.121 (IONOS). Alert only; do not block the freeddns.org dynamic-DNS service.",
      "source_url": "https://www.group-ib.com/blog/offensive-cyber-operations-europe/",
      "source_label": "Group-IB – Inside The Server: 14 Months of Offensive Cyber Operations Targeting Europe",
      "source_name": "Group-IB",
