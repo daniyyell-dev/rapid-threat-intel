@@ -2,12 +2,13 @@
 
 [Back to index](../../README.md)
 
-43 threats, 1347 indicators, 604 to block now. Newest first.
+44 threats, 1409 indicators, 639 to block now. Newest first.
 
 ### [2026-11-13](2026-11-13/)
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
+| 2026-11-12 | [AI-Assisted Intrusion at a U.S. Retailer: SolarWinds Orion Erlang Cookie Abuse, Side-Loaded Loaders and Yuze Tunnels](2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/) | Intrusion / financially motivated | 62 | 35 | Attackers using AI-written PowerShell abuse SolarWinds Orion's RabbitMQ Erlang cookie to move laterally at a U.S. retailer |
 | 2026-11-12 | [Fake Zillow Pages Deliver NetSupport RAT through ClickFix](2026-11-13/Fake-Zillow-ClickFix-NetSupport-RAT/) | Malware / RAT | 25 | 21 | EfficientIP Research Labs, writing on 12 November 2026, traces a ClickFix campaign that used fake Zillow apartment-re... |
 | 2026-11-12 | [SANSAR: Linux GPU Cryptomining Toolkit with a Tor Orchestrator, Rootkit and Ethereum C2](2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit/) | Crimeware / cryptomining | 11 | 5 | Elastic Security Labs, writing on 12 November 2026, describes REF3364, a Linux cryptomining intrusion on GPU hosts th... |
 | 2026-11-12 | [FaceStealer: BlueNoroff Fake Zoom and Teams Meetings, Stolen Webcam Video and ClickFix Lures](2026-11-13/FaceStealer-BlueNoroff-Fake-Meeting-Lures/) | Nation-state / social engineering | 134 | 120 | North Korean fake Zoom and Teams calls replaying stolen webcam video to trick targets into running a malicious fix |

@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-13 03:50",
- "threat_count": 43,
- "indicator_count": 1347,
- "block_now_count": 604,
+ "last_updated": "2026-11-13 09:55",
+ "threat_count": 44,
+ "indicator_count": 1409,
+ "block_now_count": 639,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -102,6 +102,1424 @@
   }
  ],
  "threats": [
+  {
+   "id": "AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie",
+   "folder": "threats/2026-11_November-2026/2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie",
+   "name": "AI-Assisted Intrusion at a U.S. Retailer: SolarWinds Orion Erlang Cookie Abuse, Side-Loaded Loaders and Yuze Tunnels",
+   "short": "AI-assisted retail intrusion",
+   "category": "Intrusion / financially motivated",
+   "published": "2026-11-12",
+   "entry_date": "2026-11-13 09:55",
+   "last_updated": "2026-11-13",
+   "seq": 44,
+   "headline": "Attackers using AI-written PowerShell abuse SolarWinds Orion's RabbitMQ Erlang cookie to move laterally at a U.S. retailer",
+   "summary": "Symantec's Threat Hunter Team describes a September 2026 intrusion at a U.S. retailer that stalled while the attackers typed commands by hand, then sped up once they switched to long, labelled, error-free PowerShell scripts that read like a language model's output relayed by an operator. Commands ran as cmd.exe under sqlservr.exe (xp_cmdshell) on SQL servers and under w3wp.exe on a web server. The attackers staged an old Bitdefender bdreinit.exe with log.dll and log.txt, and a G DATA signed ask.exe with ask.dll, from 204.194.49.129:8080, used a BreakChain launcher to move payloads out from under w3wp.exe, dropped the AES-encrypted server.ps1 reverse shell to 166.0.25.106:443 and two ASP web shells, and built EfsPotato with certutil and csc.exe to dump the SAM, SYSTEM and SECURITY hives. About 10 minutes after first querying SolarWinds Orion they read the .erlang.cookie of Orion's bundled RabbitMQ and ran Orion's erl.exe with that cookie to execute commands on a second server, with each command encoded as decimal character codes. They then hunted NTDS.dit, Group Policy cpassword and LAPS passwords, sprayed passwords with i<number>_winspray.ps1 scripts and tunnelled with Chisel and Yuze. Symantec links the loaders and staging server to an August 2026 intrusion and a July 2026 intrusion at a securities firm, and 155.254.22.215, which the attackers tested egress to, matches the AI console Gambit Security tied to an operator stealing card data from online retailers. Attacker servers, payload URLs and malicious tool hashes are on the block list.",
+   "caveat": "bdreinit.exe and ask.exe are legitimate signed binaries abused for side-loading and are alert only. The 8.219.82.21 (Alibaba Cloud) and 43.208.224.101 (AWS) Yuze hosts may be reassigned and are alert only. Files Symantec lists only as suspicious are alert only, and two listed hashes that match known-good files were left out. The initial access route is unknown and no data theft or encryption was observed.",
+   "targets": {
+    "countries": [
+     {
+      "code": "US",
+      "name": "United States"
+     }
+    ],
+    "regions": [
+     "North America",
+     "East Africa",
+     "South Asia"
+    ],
+    "sectors": [
+     "Retail",
+     "Securities and financial services",
+     "ICT providers to banks and telecoms",
+     "Energy"
+    ],
+    "note": "The main victim is an unnamed U.S. retailer; Symantec links its loaders and staging server to an August 2026 intrusion at another organization and a July 2026 intrusion at a securities firm, and describes other AI-assisted attacks on an East African ICT provider serving banks and telecoms and on south Asian organizations.",
+    "source": {
+     "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "name": "Symantec Threat Hunter Team"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1505.003",
+     "name": "Web Shell",
+     "url": "https://attack.mitre.org/techniques/T1505/003/"
+    },
+    {
+     "id": "T1059.001",
+     "name": "PowerShell",
+     "url": "https://attack.mitre.org/techniques/T1059/001/"
+    },
+    {
+     "id": "T1059.003",
+     "name": "Windows Command Shell",
+     "url": "https://attack.mitre.org/techniques/T1059/003/"
+    },
+    {
+     "id": "T1574.002",
+     "name": "DLL Side-Loading",
+     "url": "https://attack.mitre.org/techniques/T1574/002/"
+    },
+    {
+     "id": "T1036.005",
+     "name": "Match Legitimate Name or Location",
+     "url": "https://attack.mitre.org/techniques/T1036/005/"
+    },
+    {
+     "id": "T1068",
+     "name": "Exploitation for Privilege Escalation",
+     "url": "https://attack.mitre.org/techniques/T1068/"
+    },
+    {
+     "id": "T1027.004",
+     "name": "Compile After Delivery",
+     "url": "https://attack.mitre.org/techniques/T1027/004/"
+    },
+    {
+     "id": "T1140",
+     "name": "Deobfuscate/Decode Files or Information",
+     "url": "https://attack.mitre.org/techniques/T1140/"
+    },
+    {
+     "id": "T1003.002",
+     "name": "Security Account Manager",
+     "url": "https://attack.mitre.org/techniques/T1003/002/"
+    },
+    {
+     "id": "T1003.004",
+     "name": "LSA Secrets",
+     "url": "https://attack.mitre.org/techniques/T1003/004/"
+    },
+    {
+     "id": "T1003.003",
+     "name": "NTDS",
+     "url": "https://attack.mitre.org/techniques/T1003/003/"
+    },
+    {
+     "id": "T1552.001",
+     "name": "Credentials In Files",
+     "url": "https://attack.mitre.org/techniques/T1552/001/"
+    },
+    {
+     "id": "T1552.006",
+     "name": "Group Policy Preferences",
+     "url": "https://attack.mitre.org/techniques/T1552/006/"
+    },
+    {
+     "id": "T1021",
+     "name": "Remote Services",
+     "url": "https://attack.mitre.org/techniques/T1021/"
+    },
+    {
+     "id": "T1110.003",
+     "name": "Password Spraying",
+     "url": "https://attack.mitre.org/techniques/T1110/003/"
+    },
+    {
+     "id": "T1090.001",
+     "name": "Internal Proxy",
+     "url": "https://attack.mitre.org/techniques/T1090/001/"
+    },
+    {
+     "id": "T1572",
+     "name": "Protocol Tunneling",
+     "url": "https://attack.mitre.org/techniques/T1572/"
+    }
+   ],
+   "recommended_actions": [
+    "Block the staging and C2 servers (204.194.49.129, 166.0.25.106, 154.81.37.136, 108.165.20.205, 155.254.22.215, 103.142.103.225, 176.97.117.157 and the Yuze hosts 103.79.79.191 and 103.79.79.120), the payload URLs and the malicious hashes, and search 90 days of proxy, firewall and EDR logs for them; alert on 8.219.82.21 and 43.208.224.101.",
+    "Hunt for erl.exe from a SolarWinds Orion folder run with -setcookie and an rpc:call to os:cmd, and treat any hit as lateral movement.",
+    "Alert on cmd.exe or PowerShell started by sqlservr.exe or w3wp.exe, and on bdreinit.exe, ask.exe or a w3wp.exe copy running from ProgramData.",
+    "Hunt for certutil decoding into ProgramData followed by csc.exe, reg save of the SAM, SYSTEM or SECURITY hives, BreakChain launchers and scripts named i<number>_*.ps1.",
+    "If Orion runs in your estate, restrict access to the RabbitMQ .erlang.cookie file and the Erlang distribution ports, rotate the cookie after any compromise, and disable xp_cmdshell where it is not needed.",
+    "On a confirmed host, rotate SQL logins, domain and local administrator passwords, FTP, WinSCP, PuTTY and RDP saved credentials, and the Zabbix pre-shared key."
+   ],
+   "sources": [
+    {
+     "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "name": "Symantec Threat Hunter Team"
+    },
+    {
+     "url": "https://www.broadcom.com/support/security-center/protection-bulletin/how-ai-revived-a-stalled-attack-on-a-u-s-retailer",
+     "label": "Broadcom Symantec Protection Bulletin – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "name": "Symantec Threat Hunter Team (2)"
+    },
+    {
+     "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+     "label": "Gambit Security – AI Agents Are Hacking Online Retailers for $25 a Company (155.254.22.215)",
+     "name": "Gambit Security"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/1957978/",
+     "label": "ThreatFox – 176.97.117.157:443 VShell C2 (IOC 1957978)",
+     "name": "ThreatFox"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/5db5e7f655c4ee94411df8110d1b6d02bb15574ac199fa7a553ce6c3cb25bf03/",
+     "label": "MalwareBazaar – Chisel sample ch.exe",
+     "name": "MalwareBazaar"
+    },
+    {
+     "url": "https://www.spamhaus.org/drop/",
+     "label": "Spamhaus – DROP and ASN-DROP lists",
+     "name": "Spamhaus"
+    }
+   ],
+   "indicator_count": 62,
+   "block_now_count": 35,
+   "hunt_count": 27,
+   "hunt_counts": {
+    "alert": 27
+   },
+   "indicator_counts": {
+    "sha256": 40,
+    "ipv4": 11,
+    "url": 11
+   },
+   "ioas": [
+    {
+     "artefact": "erl.exe from a SolarWinds Orion folder run with -setcookie and an -eval rpc:call to os:cmd, the command written as decimal character codes",
+     "log_source": "EDR process events (DeviceProcessEvents), Windows 4688 with command line",
+     "why": "The attackers read the .erlang.cookie of the RabbitMQ broker that ships with Orion and used Orion's own erl.exe to run operating system commands on a second server about 10 minutes after first querying Orion. Encoding the command as character codes keeps it out of plain text. Legitimate RabbitMQ administration rarely passes os:cmd through rpc:call.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "title": "Orion erl.exe with a stolen Erlang cookie running os:cmd",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "cmd.exe or PowerShell started by sqlservr.exe or w3wp.exe, followed within 60 minutes on the same device by bdreinit.exe, ask.exe, a BreakChain launcher or a w3wp.exe copy running from ProgramData",
+     "log_source": "Defender XDR DeviceProcessEvents (join on DeviceId within 60 minutes)",
+     "why": "Every stage of this intrusion ran through the SQL Server service (xp_cmdshell) or the IIS worker process, and the attackers then launched side-loading hosts and BreakChain from ProgramData, also copying ask.exe to ProgramData\\w3wp.exe. The pairing is a stronger lead than either event alone. Database maintenance jobs that shell out can match the first half; exclude known SQL Agent and deployment accounts.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "title": "SQL or IIS shell then a ProgramData side-loading host within 60m",
+     "queries": [
+      "KQL"
+     ]
+    },
+    {
+     "artefact": "cmd.exe or PowerShell spawned by sqlservr.exe or w3wp.exe",
+     "log_source": "EDR process events (DeviceProcessEvents), Windows 4688 with command line",
+     "why": "Symantec saw the first activity as cmd.exe directly under sqlservr.exe on three SQL servers, pointing to xp_cmdshell, and later as cmd.exe under w3wp.exe on a compromised web application. Both are rare on a healthy server.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "title": "Shell spawned by sqlservr.exe or w3wp.exe",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "bdreinit.exe or ask.exe (run with -gdata) loading log.dll or ask.dll from ProgramData, or w3wp.exe running outside the IIS inetsrv folder",
+     "log_source": "EDR process and image-load events (DeviceProcessEvents, DeviceImageLoadEvents)",
+     "why": "The attackers side-loaded log.dll through an old Bitdefender bdreinit.exe and ask.dll through a G DATA signed ask.exe, both from ProgramData, and copied ask.exe to a file named w3wp.exe to blend in. The bdreinit.exe and log.dll pairing is also used by other actors, so it is a lead rather than attribution.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "title": "bdreinit.exe or ask.exe side-loading from ProgramData",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "A BreakChain launcher (breakchain*.exe) run with -m wmi or the shell mode to relaunch a payload",
+     "log_source": "EDR process events (DeviceProcessEvents)",
+     "why": "After repeated terminations the attackers used BreakChain so their payloads would no longer appear as children of w3wp.exe; a second build arrived about 75 minutes after the first was blocked.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "title": "BreakChain launcher relaunching payloads",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "certutil decoding a file into ProgramData followed by csc.exe compiling it, and SAM, SYSTEM or SECURITY hives saved to disk",
+     "log_source": "EDR process events (DeviceProcessEvents), Windows 4688 with command line",
+     "why": "On a SQL server the attackers appended about 20 base64 chunks to a file under ProgramData, decoded it with certutil and compiled EfsPotato with csc.exe, then saved the SAM, SYSTEM and SECURITY hives; the same hive dumps recurred on other servers. Developers and build agents use csc.exe, so scope the hunt to servers.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "title": "certutil and csc.exe in ProgramData, or hive dumps",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Long PowerShell scripts from a web or database service with labelled output banners such as ===FILES MENTIONING CONN STRINGS=== or ### whoami/priv ###",
+     "log_source": "EDR process events (DeviceProcessEvents), PowerShell 4104 script block logging",
+     "why": "The AI-assisted phase sent about 50 scripts in two hours, median over 500 characters, each bundling several probes under quoted banners and capping output. Banner formatting alone also appears in admin scripts, so pair it with a sqlservr.exe or w3wp.exe parent.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "title": "Long labelled PowerShell scripts from a server process",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Password-spraying scripts named i<number>_<name>.ps1, such as i187_winspray.ps1",
+     "log_source": "EDR process and file events (DeviceProcessEvents, DeviceFileEvents)",
+     "why": "Several file names in this intrusion began with i and a number, which may be a per-target numbering scheme; the sprayer tested credential pairs downloaded from the later staging server.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "title": "Numbered i<n>_*.ps1 spraying scripts",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    }
+   ],
+   "ioa_count": 8,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/block_now.txt",
+     "download": "AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/defender_xdr_indicators.csv",
+     "download": "AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/hunt.kql",
+     "download": "AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/hunt.spl",
+     "download": "AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/hunt_raw.spl",
+     "download": "AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/hunt.yaral",
+     "download": "AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/iocs.csv",
+     "download": "AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie",
+   "indicators": [
+    {
+     "value": "204.194.49.129",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Payload staging server on port 8080 that served bdreinit.exe, log.dll, log.txt and the ask.exe kit to the retailer's web server; the Yuze tunnel in an earlier August 2026 intrusion connected back to it.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      },
+      {
+       "url": "https://www.spamhaus.org/drop/",
+       "name": "Spamhaus"
+      }
+     ]
+    },
+    {
+     "value": "166.0.25.106",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Host for server.ps1 and the filemanager.asp web shell, and the C2 that the AES-encrypted PowerShell reverse shell calls on port 443.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "154.81.37.136",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Fallback host that served server.ps1 after 166.0.25.106.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      },
+      {
+       "url": "https://www.spamhaus.org/drop/",
+       "name": "Spamhaus"
+      }
+     ]
+    },
+    {
+     "value": "155.254.22.215",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Address the attackers tested egress to on TCP 9458 from the victim's SQL servers; Gambit Security named it the staging, command server and AI console of a financially motivated operator attacking online retailers.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      },
+      {
+       "url": "https://gambit.security/blog-posts/autonomous-ai-agents-online-retailers-25-a-company",
+       "name": "Gambit Security"
+      }
+     ]
+    },
+    {
+     "value": "108.165.20.205",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Later staging server on port 8080 that served sqlrun2.ps1 and the credential lists for password spraying.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      },
+      {
+       "url": "https://www.spamhaus.org/drop/",
+       "name": "Spamhaus"
+      }
+     ]
+    },
+    {
+     "value": "103.142.103.225",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Address seen in the earlier intrusion at a different organization that shared loaders and the staging server with this attack.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      },
+      {
+       "url": "https://www.spamhaus.org/drop/",
+       "name": "Spamhaus"
+      }
+     ]
+    },
+    {
+     "value": "176.97.117.157",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Address listed among the network indicators for this intrusion cluster; abuse.ch tracks it as a VShell C2 on port 443.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/1957978/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "103.79.79.191",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Yuze tunnelling cluster host that served the Yuze reverse proxy.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "103.79.79.120",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Yuze tunnelling cluster host listening on port 8088.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "8.219.82.21",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Yuze cluster host that served yuze-Windows-X64.exe.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "43.208.224.101",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Yuze cluster host.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "http://154.81.37.136/server.ps1",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Download of server.ps1, the AES-encrypted PowerShell reverse shell, from the fallback host.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "http://166.0.25.106/server.ps1",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Download of server.ps1, the AES-encrypted PowerShell reverse shell.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "http://166.0.25.106/filemanager.asp",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "ASP web shell the attackers planted in the web application's images folder for persistent access.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "http://204.194.49.129:8080/log.dll",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Malicious DLL side-loaded by the old Bitdefender bdreinit.exe.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      },
+      {
+       "url": "https://www.spamhaus.org/drop/",
+       "name": "Spamhaus"
+      }
+     ]
+    },
+    {
+     "value": "http://204.194.49.129:8080/log.txt",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Encrypted payload file that log.dll reads and decrypts.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      },
+      {
+       "url": "https://www.spamhaus.org/drop/",
+       "name": "Spamhaus"
+      }
+     ]
+    },
+    {
+     "value": "http://204.194.49.129:8080/bdreinit.exe",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Legitimate old Bitdefender executable staged on the attacker server for DLL side-loading.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      },
+      {
+       "url": "https://www.spamhaus.org/drop/",
+       "name": "Spamhaus"
+      }
+     ]
+    },
+    {
+     "value": "http://204.194.49.129:8080/ASK.exe",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "G DATA signed executable staged for the second side-loading kit (ask.exe, ask.dll, ask.txt).",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      },
+      {
+       "url": "https://www.spamhaus.org/drop/",
+       "name": "Spamhaus"
+      }
+     ]
+    },
+    {
+     "value": "http://204.194.49.129:8080/qwdajhsd.asp",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Second ASP web shell written into the web application's images folder.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      },
+      {
+       "url": "https://www.spamhaus.org/drop/",
+       "name": "Spamhaus"
+      }
+     ]
+    },
+    {
+     "value": "http://108.165.20.205:8080/sqlrun2.ps1",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "PowerShell script fetched by a download cradle on the web server from the later staging server.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      },
+      {
+       "url": "https://www.spamhaus.org/drop/",
+       "name": "Spamhaus"
+      }
+     ]
+    },
+    {
+     "value": "http://103.79.79.191/yuze",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Yuze reverse proxy download.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "http://8.219.82.21/yuze-Windows-X64.exe",
+     "type": "url",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Yuze reverse proxy download from an Alibaba Cloud address.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "54fb493822bcd832f7b2256015f13e3dfde815e1931e7fd39a90ea8ad3fdbd0a",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "server.ps1, an AES-encrypted PowerShell reverse shell that calls 166.0.25.106 on port 443.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "a6579b16f895cf9ac4c31ba20606f2ad1ac4d1458e95c296da2afc1039881513",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "bdreinit.exe, a legitimate old Bitdefender executable the attackers dropped in ProgramData to side-load log.dll.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "9c866c403e6bd5778fa3788cac9aac39aab1bf2d18a22c9999a4c27e30c0abf3",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "log.dll, malicious DLL side-loaded by bdreinit.exe that decrypts the payload in log.txt.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "e95a265bf220a4330f77f842b3eeed8b1ed8c61f51d7e3f2fd33bac14b6b26af",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "log.dll, a second build of the malicious side-loaded DLL.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "c21e4fb40f871e418def63a5cdf3603ed4c3c6d1b218710db8ba45538b66fa01",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Malicious DLL from the side-loading kits.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "6500890307f3860899f96452fea3effde777e6fcf369dc1e8861bdb65836d55e",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "ask.exe, a legitimate G DATA signed executable launched with -gdata to side-load ask.dll.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "7265d69dd8d8939dc888ce5f05190ce200ee2660f928f3b84f60e6a7b3383205",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "ask.dll, malicious DLL side-loaded by ask.exe.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "3d79628bf7804dbf17e7b396ecd62ebf5d66518940c6d23daccf59a20953438a",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BreakChainCs.exe, a launcher that relaunches payloads through WMI or the shell so they no longer appear under w3wp.exe.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "f042d705e1de3b5f9b8161ff59aa3ff80c684f5aaeac42be589a579ab1c7cf51",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "BreakChain process-tree-breaking launcher, first build.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "5db5e7f655c4ee94411df8110d1b6d02bb15574ac199fa7a553ce6c3cb25bf03",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "ch.exe, the Chisel tunnelling build detected on the web server.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/5db5e7f655c4ee94411df8110d1b6d02bb15574ac199fa7a553ce6c3cb25bf03/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "f8b67854d119da08c704b78f7c9fae0501417f5e63ffece86d2e811f1c7dea68",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Yuze reverse SOCKS proxy build used by the attackers.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "ef7c23619cf9293002fbe4f50147e806de0168cf186ca01fea2e113dc2eb1dce",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "DNS-over-HTTPS backdoor.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "b739635832c7f7f2be4821982980d2977165a2c8226f5912e6431db8c0cf6eea",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "DNS-over-HTTPS backdoor, second build.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "0241f569f4ce1bf0f2470867d6ba40f23f78d4d3ee2fbc423c91f3b591f446bc",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "DNS-over-HTTPS backdoor, third build.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "c9a5e9799f2844a71d0085697b3c2adb5528f4b9516146826193ddbe4d89423c",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Privilege escalation tool.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "fad5dc8987df3206fdc50d0f4889bee06721d54a373bdc2f5545ba560562647e",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Privilege escalation tool, second build.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "2b7ed8dc34a83430029764d64f81c8f42e19c81fe923742558c96799a34dcf19",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Sandbox-evasion test utility.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "7c8eb7d23337536ed2aec14f1425c2fcd13976a4390cfecf653533e6a3bd87c4",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "test.ps1, seen in the earlier linked intrusion at a different organization.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "ba4038fd20e474c047be8aad5bfacdb1bfc1ddbe12f803f473b7918d8d819436",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "deabe064a12641c4e95d4b133746f148d8ed4bcffd1dfe9ce1b6621dde2aa774",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "d92f20d73ade9a6134bec960aed0c02873e19cd03d707c85064c73ce0f852104",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "bcccfca65602e2691e25e8590a7029fa40712e05eac8bf203f3f5dc900b31ad4",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "9b077fc464d9a4a2e6b227e61eae8a759de13b728e7cd2f06563a1af0de93d19",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "59e51c54cf3ac4d375de96a358c15bc125fe5453ee29cf923276c429097b9eac",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "330e9314bd39898984e52e2e3cc01e84c9c4c95f5bc467cf5bc75cd539dd0438",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "2be9c2222cb177747f58f2ccb224a85879f1c2ffb0240e0b8968536d320b8edf",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "1df54c1c5ee76f2f8f962963df3962f1a688806631da01d0e5ce85b817a5e2f7",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "11b26168927a622ddc3beb592edc3bf476b897a360cbab36ad3ef0039068dd67",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "1f8565e14f8bcde3eb48a6676596d0cd8b7cc3c12d903f97b0e0b3ac8725c17c",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "d376e01930adabbe40634b8b16664a088d8bec2dc99aa88c16db9d302e45aaf5",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "642ea33ddf7eba3043cf7b567ccffe57d6671f640e7734072f02975dfa44d893",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "5ee783076e9c8b3830d8e2dccda9abf65be81a0b8dfc281ff12188f7607f1d38",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "dac237636f2fb1e44e28117999e77fc42a53d3b59b80cfb84928452ffe561793",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "76adf3141ccd877d98c85dbb7f6f227e70f71e8158392ac9797927260dd2faa3",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "5666332a66b1fb46bfbc7e076b21a8081f22931f5688686550d42bcec6aa3207",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "2ffe8c6910d08072ccb8fef133a4570c6a085289b669373b1b508bd294fe9b23",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "717319bc981c2b8f76907e2985f363540cb286f68aff0c75a5841eec2d0c9b04",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "7e9b60d021067dfe22b28783162ce9f55c2ccce7d221cadbf1f0f155dca6779e",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "9b7b2dadba43634e8f6b38f612287865800b6c790e83a69211da55434c26a74a",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    },
+    {
+     "value": "318ce2ca913ff8297f23886a6d6640f28f63ba2bb62c0c6897972265d71e1407",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "File Symantec lists as suspicious in this intrusion without naming its role.",
+     "source_url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+     "source_label": "Symantec Threat Hunter Team – How AI Revived a Stalled Attack on a U.S. Retailer",
+     "source_name": "Symantec Threat Hunter Team",
+     "sources": [
+      {
+       "url": "https://www.security.com/threat-intelligence/ai-assisted-attack-us-retailer",
+       "name": "Symantec Threat Hunter Team"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/hunt.kql",
+     "download": "AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/hunt.spl",
+     "download": "AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/hunt_raw.spl",
+      "download": "AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/hunt.yaral",
+     "download": "AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie_hunt.yaral"
+    }
+   ]
+  },
   {
    "id": "Fake-Zillow-ClickFix-NetSupport-RAT",
    "folder": "threats/2026-11_November-2026/2026-11-13/Fake-Zillow-ClickFix-NetSupport-RAT",

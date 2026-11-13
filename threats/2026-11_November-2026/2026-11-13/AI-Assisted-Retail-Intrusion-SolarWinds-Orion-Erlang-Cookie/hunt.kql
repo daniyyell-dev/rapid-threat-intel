@@ -1,0 +1,116 @@
+// Threat: AI-Assisted Intrusion at a U.S. Retailer: SolarWinds Orion Erlang Cookie Abuse, Side-Loaded Loaders and Yuze Tunnels
+// Author: Daniel Jeremiah | Date: 2026-11-13
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie
+let Lookback = 30d;
+let IPs = dynamic(["204.194.49.129", "166.0.25.106", "154.81.37.136", "155.254.22.215", "108.165.20.205", "103.142.103.225", "176.97.117.157", "103.79.79.191", "103.79.79.120", "8.219.82.21", "43.208.224.101"]);
+let Urls = dynamic(["http://154.81.37.136/server.ps1", "http://166.0.25.106/server.ps1", "http://166.0.25.106/filemanager.asp", "http://204.194.49.129:8080/log.dll", "http://204.194.49.129:8080/log.txt", "http://204.194.49.129:8080/bdreinit.exe", "http://204.194.49.129:8080/ASK.exe", "http://204.194.49.129:8080/qwdajhsd.asp", "http://108.165.20.205:8080/sqlrun2.ps1", "http://103.79.79.191/yuze", "http://8.219.82.21/yuze-Windows-X64.exe"]);
+let UrlKeys = dynamic(["154.81.37.136/server.ps1", "166.0.25.106/server.ps1", "166.0.25.106/filemanager.asp", "204.194.49.129:8080/log.dll", "204.194.49.129:8080/log.txt", "204.194.49.129:8080/bdreinit.exe", "204.194.49.129:8080/ASK.exe", "204.194.49.129:8080/qwdajhsd.asp", "108.165.20.205:8080/sqlrun2.ps1", "103.79.79.191/yuze", "8.219.82.21/yuze-Windows-X64.exe"]);
+let SHA256s = dynamic(["54fb493822bcd832f7b2256015f13e3dfde815e1931e7fd39a90ea8ad3fdbd0a", "a6579b16f895cf9ac4c31ba20606f2ad1ac4d1458e95c296da2afc1039881513", "9c866c403e6bd5778fa3788cac9aac39aab1bf2d18a22c9999a4c27e30c0abf3", "e95a265bf220a4330f77f842b3eeed8b1ed8c61f51d7e3f2fd33bac14b6b26af", "c21e4fb40f871e418def63a5cdf3603ed4c3c6d1b218710db8ba45538b66fa01", "6500890307f3860899f96452fea3effde777e6fcf369dc1e8861bdb65836d55e", "7265d69dd8d8939dc888ce5f05190ce200ee2660f928f3b84f60e6a7b3383205", "3d79628bf7804dbf17e7b396ecd62ebf5d66518940c6d23daccf59a20953438a", "f042d705e1de3b5f9b8161ff59aa3ff80c684f5aaeac42be589a579ab1c7cf51", "5db5e7f655c4ee94411df8110d1b6d02bb15574ac199fa7a553ce6c3cb25bf03", "f8b67854d119da08c704b78f7c9fae0501417f5e63ffece86d2e811f1c7dea68", "ef7c23619cf9293002fbe4f50147e806de0168cf186ca01fea2e113dc2eb1dce", "b739635832c7f7f2be4821982980d2977165a2c8226f5912e6431db8c0cf6eea", "0241f569f4ce1bf0f2470867d6ba40f23f78d4d3ee2fbc423c91f3b591f446bc", "c9a5e9799f2844a71d0085697b3c2adb5528f4b9516146826193ddbe4d89423c", "fad5dc8987df3206fdc50d0f4889bee06721d54a373bdc2f5545ba560562647e", "2b7ed8dc34a83430029764d64f81c8f42e19c81fe923742558c96799a34dcf19", "7c8eb7d23337536ed2aec14f1425c2fcd13976a4390cfecf653533e6a3bd87c4", "ba4038fd20e474c047be8aad5bfacdb1bfc1ddbe12f803f473b7918d8d819436", "deabe064a12641c4e95d4b133746f148d8ed4bcffd1dfe9ce1b6621dde2aa774", "d92f20d73ade9a6134bec960aed0c02873e19cd03d707c85064c73ce0f852104", "bcccfca65602e2691e25e8590a7029fa40712e05eac8bf203f3f5dc900b31ad4", "9b077fc464d9a4a2e6b227e61eae8a759de13b728e7cd2f06563a1af0de93d19", "59e51c54cf3ac4d375de96a358c15bc125fe5453ee29cf923276c429097b9eac", "330e9314bd39898984e52e2e3cc01e84c9c4c95f5bc467cf5bc75cd539dd0438", "2be9c2222cb177747f58f2ccb224a85879f1c2ffb0240e0b8968536d320b8edf", "1df54c1c5ee76f2f8f962963df3962f1a688806631da01d0e5ce85b817a5e2f7", "11b26168927a622ddc3beb592edc3bf476b897a360cbab36ad3ef0039068dd67", "1f8565e14f8bcde3eb48a6676596d0cd8b7cc3c12d903f97b0e0b3ac8725c17c", "d376e01930adabbe40634b8b16664a088d8bec2dc99aa88c16db9d302e45aaf5", "642ea33ddf7eba3043cf7b567ccffe57d6671f640e7734072f02975dfa44d893", "5ee783076e9c8b3830d8e2dccda9abf65be81a0b8dfc281ff12188f7607f1d38", "dac237636f2fb1e44e28117999e77fc42a53d3b59b80cfb84928452ffe561793", "76adf3141ccd877d98c85dbb7f6f227e70f71e8158392ac9797927260dd2faa3", "5666332a66b1fb46bfbc7e076b21a8081f22931f5688686550d42bcec6aa3207", "2ffe8c6910d08072ccb8fef133a4570c6a085289b669373b1b508bd294fe9b23", "717319bc981c2b8f76907e2985f363540cb286f68aff0c75a5841eec2d0c9b04", "7e9b60d021067dfe22b28783162ce9f55c2ccce7d221cadbf1f0f155dca6779e", "9b7b2dadba43634e8f6b38f612287865800b6c790e83a69211da55434c26a74a", "318ce2ca913ff8297f23886a6d6640f28f63ba2bb62c0c6897972265d71e1407"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " port ", RemotePort))),
+  (DeviceLogonEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceLogonEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", LogonType, " ", AccountName))),
+  (EntraIdSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSignInEvents", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (AADSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSignInEventsBeta", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (EntraIdSpnSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSpnSignInEvents", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (AADSpnSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSpnSignInEventsBeta", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(AccountDisplayName), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ActionType))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (UrlKeys)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (EmailUrlInfo
+    | where Timestamp > ago(Lookback)
+    | where Url has_any (UrlKeys)
+    | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = tostring(Url), Context = tostring("URL in email")),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url has_any (UrlKeys)
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(ActionType, " ", FolderPath))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceImageLoadEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " loaded by ", InitiatingProcessFileName))),
+  (EmailAttachmentInfo
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "EmailAttachmentInfo", Entity = tostring(RecipientEmailAddress), Indicator = tostring(SHA256), Context = tostring(strcat(FileName, " from ", SenderFromAddress))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "erl.exe" and ProcessCommandLine has "-setcookie" and (ProcessCommandLine has "rpc:call" or ProcessCommandLine has "os,cmd")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(FolderPath, " | parent ", InitiatingProcessFileName, " | ", AccountName))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where InitiatingProcessFileName in~ ("sqlservr.exe", "w3wp.exe") and FileName in~ ("cmd.exe", "powershell.exe", "pwsh.exe")
+    | project ShellTime = Timestamp, DeviceId, DeviceName, Parent = InitiatingProcessFileName, ShellCmd = ProcessCommandLine
+    | join kind=inner (
+        DeviceProcessEvents
+        | where Timestamp > ago(Lookback)
+        | where FolderPath has @"\ProgramData\" and (FileName in~ ("bdreinit.exe", "ask.exe", "w3wp.exe", "mmc.exe") or FileName startswith "breakchain")
+        | project StageTime = Timestamp, DeviceId, StageFile = FileName, StageCmd = ProcessCommandLine
+    ) on DeviceId
+    | where StageTime between (ShellTime .. ShellTime + 60m)
+    | summarize Timestamp = max(StageTime), Stages = make_set(StageFile, 10), Shell = any(ShellCmd), ParentProc = any(Parent) by DeviceId, DeviceName
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(strcat_array(Stages, ", ")), Context = tostring(strcat(ParentProc, " shell then ProgramData stage within 60m: ", Shell))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where InitiatingProcessFileName in~ ("sqlservr.exe", "w3wp.exe") and FileName in~ ("cmd.exe", "powershell.exe", "pwsh.exe")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", FileName, " | ", AccountName))),
+  (DeviceImageLoadEvents
+    | where Timestamp > ago(Lookback)
+    | where InitiatingProcessFileName in~ ("bdreinit.exe", "ask.exe") and FileName in~ ("log.dll", "ask.dll")
+    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(InitiatingProcessFolderPath, " loaded ", FileName, " | SHA256 ", SHA256))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where (FileName in~ ("bdreinit.exe", "ask.exe") and FolderPath has @"\ProgramData\") or (FileName =~ "w3wp.exe" and not(FolderPath has @"\inetsrv\"))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(InitiatingProcessFileName, " > ", ProcessCommandLine))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName startswith "breakchain" or ProcessCommandLine has "breakchain"
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", FileName, " | SHA256 ", SHA256))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where (FileName =~ "certutil.exe" and ProcessCommandLine has "-decode" and ProcessCommandLine has "ProgramData") or (FileName =~ "csc.exe" and ProcessCommandLine has "ProgramData" and InitiatingProcessFileName in~ ("powershell.exe", "cmd.exe", "pwsh.exe"))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", FileName, " | ", AccountName))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "reg.exe" and ProcessCommandLine has "save" and (ProcessCommandLine has @"hklm\sam" or ProcessCommandLine has @"hklm\security" or ProcessCommandLine has @"hklm\system")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", FileName, " | ", AccountName))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in~ ("powershell.exe", "pwsh.exe") and InitiatingProcessParentFileName in~ ("sqlservr.exe", "w3wp.exe", "cmd.exe") and strlen(ProcessCommandLine) > 500 and ProcessCommandLine matches regex @"===[A-Z ]{4,}===|###[^#]{3,}###"
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessParentFileName, " > ", InitiatingProcessFileName, " | ", AccountName))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName matches regex @"(?i)^i\d+_[a-z0-9]+\.ps1$"
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(ActionType, " ", FolderPath, " by ", InitiatingProcessFileName)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

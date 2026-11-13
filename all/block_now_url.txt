@@ -1,3 +1,13 @@
+http://154.81.37.136/server.ps1
+http://166.0.25.106/server.ps1
+http://166.0.25.106/filemanager.asp
+http://204.194.49.129:8080/log.dll
+http://204.194.49.129:8080/log.txt
+http://204.194.49.129:8080/bdreinit.exe
+http://204.194.49.129:8080/ASK.exe
+http://204.194.49.129:8080/qwdajhsd.asp
+http://108.165.20.205:8080/sqlrun2.ps1
+http://103.79.79.191/yuze
 http://89.34.90.203/winup2
 http://89.34.90.203/mestos2.zip
 https://vip.novaplayer.online/view/7091322YJEemPZd0V5R4258BX3xe292n0
