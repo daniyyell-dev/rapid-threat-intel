@@ -1,4 +1,30 @@
 indicator,type,threat
+apartments-review8509831.sbs,domain,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+apartments-review28829031.sbs,domain,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+apartments-review6125431.sbs,domain,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+apartments-review261679200.sbs,domain,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+apartments-review2138768.sbs,domain,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+apartments-review261634860.sbs,domain,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+apartments-review9384643.sbs,domain,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+asgomd.com,domain,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+bksju.com,domain,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+bksnb.com,domain,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+decrmd.com,domain,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+jpgomd.com,domain,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+nogomd.com,domain,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+asgrsv.com,domain,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+decrsv.com,domain,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+jpgrsv.com,domain,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+89.34.90.203,ipv4,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+45.227.254.179,ipv4,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+45.227.254.10,ipv4,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+http://89.34.90.203/winup2,url,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+http://89.34.90.203/mestos2.zip,url,Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+00c9ac44291f83c72d54302e99d155a3e26d02225a3e516764d5833a99657c9e,sha256,"SANSAR: Linux GPU Cryptomining Toolkit with a Tor Orchestrator, Rootkit and Ethereum C2"
+675c24728f87f7aa0fa07527027c95c24c246049c65eaef89270ab04ea50a180,sha256,"SANSAR: Linux GPU Cryptomining Toolkit with a Tor Orchestrator, Rootkit and Ethereum C2"
+6ba1aa275e0e2826e8b48b36473539ca56cbdc41f429e539a45f8532b084d7a4,sha256,"SANSAR: Linux GPU Cryptomining Toolkit with a Tor Orchestrator, Rootkit and Ethereum C2"
+df8ab6fd699e6ae90e63e9696bae8f01342708bafc2ed88af414337e4f237194,sha256,"SANSAR: Linux GPU Cryptomining Toolkit with a Tor Orchestrator, Rootkit and Ethereum C2"
+efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id.onion,domain,"SANSAR: Linux GPU Cryptomining Toolkit with a Tor Orchestrator, Rootkit and Ethereum C2"
 uu01webzoom.us,domain,"FaceStealer: BlueNoroff Fake Zoom and Teams Meetings, Stolen Webcam Video and ClickFix Lures"
 teams.livemeet.us,domain,"FaceStealer: BlueNoroff Fake Zoom and Teams Meetings, Stolen Webcam Video and ClickFix Lures"
 104.168.149.230,ipv4,"FaceStealer: BlueNoroff Fake Zoom and Teams Meetings, Stolen Webcam Video and ClickFix Lures"

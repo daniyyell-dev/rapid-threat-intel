@@ -1,0 +1,77 @@
+// Threat: SANSAR: Linux GPU Cryptomining Toolkit with a Tor Orchestrator, Rootkit and Ethereum C2
+// Author: Daniel Jeremiah | Date: 2026-11-13
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit
+let Lookback = 30d;
+let Domains = dynamic(["efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id.onion"]);
+let SHA256s = dynamic(["00c9ac44291f83c72d54302e99d155a3e26d02225a3e516764d5833a99657c9e", "675c24728f87f7aa0fa07527027c95c24c246049c65eaef89270ab04ea50a180", "6ba1aa275e0e2826e8b48b36473539ca56cbdc41f429e539a45f8532b084d7a4", "df8ab6fd699e6ae90e63e9696bae8f01342708bafc2ed88af414337e4f237194", "96fc528ca5e7d1c2b3add5e31b8797cb126f704976c8fbeaecdbf0aa4309ad46", "acc706afc9322a3eae1ef49049749e0a7c9f1a123895ac56dc8a289beb2fb5b7"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (DeviceEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType == "DnsQueryResponse" and tostring(parse_json(AdditionalFields).DnsQueryString) has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(parse_json(AdditionalFields).DnsQueryString), Context = tostring(strcat("DNS ", InitiatingProcessFileName))),
+  (EmailUrlInfo
+    | where Timestamp > ago(Lookback)
+    | where UrlDomain has_any (Domains)
+    | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = tostring(Url), Context = tostring("URL in email")),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url has_any (Domains)
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(ActionType, " ", FolderPath))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceImageLoadEvents
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "DeviceImageLoadEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(FolderPath, " loaded by ", InitiatingProcessFileName))),
+  (EmailAttachmentInfo
+    | where Timestamp > ago(Lookback)
+    | where SHA256 in~ (SHA256s)
+    | project Timestamp, SourceTable = "EmailAttachmentInfo", Entity = tostring(RecipientEmailAddress), Indicator = tostring(SHA256), Context = tostring(strcat(FileName, " from ", SenderFromAddress))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FolderPath has "/opt/vadi_" or FileName in~ ("sansar", "acpi_thermal_mgr.ko", "acpi_thermal_mgr") or (ProcessCommandLine has "eth_call" and ProcessCommandLine has_any ("0x43eb291f56688c63c93e8a93c4591fc997cf6349", "0x6ded96e7")) or (FileName in~ ("python", "python3") and ProcessCommandLine has "ray" and ProcessCommandLine has_any ("nvidia-smi", "/bin/sh", "/bin/bash", "reverse"))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(FolderPath, " ", ProcessCommandLine))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FolderPath has "/opt/vadi_" or FileName in~ ("sansar", "acpi_thermal_mgr.ko")
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " ", FolderPath, "/", FileName))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where FolderPath has "/opt/vadi_" or FileName in~ ("sansar", "kurt", "tilki")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(FileName, " ", ProcessCommandLine))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName in~ ("acpi_thermal_mgr.ko", "acpi_thermal_mgr") or FolderPath has "acpi_thermal_mgr"
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FileName), Context = tostring(strcat(ActionType, " ", FolderPath, "/", FileName, " by ", InitiatingProcessFileName))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where ProcessCommandLine has "acpi_thermal_mgr"
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(FileName, " ", ProcessCommandLine))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where ProcessCommandLine has "eth_call" and ProcessCommandLine has_any ("0x43eb291f56688c63c93e8a93c4591fc997cf6349", "0x6ded96e7")
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(FileName, " ", ProcessCommandLine))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemotePort == 8080 and InitiatingProcessFileName =~ "netns"
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(InitiatingProcessFileName, " ", RemoteIP, ":", RemotePort))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where (FileName in~ ("python", "python3") and ProcessCommandLine has "ray" and ProcessCommandLine has_any ("nvidia-smi", "/bin/sh", "/bin/bash", "socket", "reverse", "authorized_keys")) or (FileName =~ "nvidia-smi" and InitiatingProcessFileName in~ ("python", "python3", "ray"))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", FileName, " ", ProcessCommandLine))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "libnvidia-ml.so.1" and ActionType in~ ("FileCreated", "FileModified", "FileRenamed")
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(SHA256), Context = tostring(strcat(ActionType, " ", FolderPath, "/", FileName, " ", SHA256, " by ", InitiatingProcessFileName)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

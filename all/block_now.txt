@@ -1,5 +1,35 @@
 # All high-confidence indicators to block. Updated 2026-11-13.
 
+## 2026-11-12 Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+apartments-review8509831.sbs
+apartments-review28829031.sbs
+apartments-review6125431.sbs
+apartments-review261679200.sbs
+apartments-review2138768.sbs
+apartments-review261634860.sbs
+apartments-review9384643.sbs
+asgomd.com
+bksju.com
+bksnb.com
+decrmd.com
+jpgomd.com
+nogomd.com
+asgrsv.com
+decrsv.com
+jpgrsv.com
+89.34.90.203
+45.227.254.179
+45.227.254.10
+http://89.34.90.203/winup2
+http://89.34.90.203/mestos2.zip
+
+## 2026-11-12 SANSAR: Linux GPU Cryptomining Toolkit with a Tor Orchestrator, Rootkit and Ethereum C2
+00c9ac44291f83c72d54302e99d155a3e26d02225a3e516764d5833a99657c9e
+675c24728f87f7aa0fa07527027c95c24c246049c65eaef89270ab04ea50a180
+6ba1aa275e0e2826e8b48b36473539ca56cbdc41f429e539a45f8532b084d7a4
+df8ab6fd699e6ae90e63e9696bae8f01342708bafc2ed88af414337e4f237194
+efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id.onion
+
 ## 2026-11-12 FaceStealer: BlueNoroff Fake Zoom and Teams Meetings, Stolen Webcam Video and ClickFix Lures
 uu01webzoom.us
 teams.livemeet.us

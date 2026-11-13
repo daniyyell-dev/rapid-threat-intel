@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-13 00:20",
- "threat_count": 41,
- "indicator_count": 1311,
- "block_now_count": 578,
+ "last_updated": "2026-11-13 03:50",
+ "threat_count": 43,
+ "indicator_count": 1347,
+ "block_now_count": 604,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -102,6 +102,1209 @@
   }
  ],
  "threats": [
+  {
+   "id": "Fake-Zillow-ClickFix-NetSupport-RAT",
+   "folder": "threats/2026-11_November-2026/2026-11-13/Fake-Zillow-ClickFix-NetSupport-RAT",
+   "name": "Fake Zillow Pages Deliver NetSupport RAT through ClickFix",
+   "short": "Fake Zillow ClickFix NetSupport RAT",
+   "category": "Malware / RAT",
+   "published": "2026-11-12",
+   "entry_date": "2026-11-13 03:50",
+   "last_updated": "2026-11-13",
+   "seq": 43,
+   "headline": "EfficientIP Research Labs, writing on 12 November 2026, traces a ClickFix campaign that used fake Zillow apartment-re...",
+   "summary": "EfficientIP Research Labs, writing on 12 November 2026, traces a ClickFix campaign that used fake Zillow apartment-review pages on short-lived apartments-review<digits>.sbs domains, first spotted in passive DNS in August 2026. Clicking Continue copied a PowerShell command that fetched a script from the decimal address 1495423691, which is 89.34.90.203, at /winup2. The script hid its window, used a downloaded Python runtime to pull http://89.34.90.203/mestos2.zip, installed NetSupport RAT into %APPDATA%\\NetSupport and dropped a NetSupport.lnk shortcut in the user Startup folder pointing at Service.exe. The installed client was configured to use the gateway domains asgomd.com and asgrsv.com; pivoting on their Flyservers addresses 45.227.254.179 and 45.227.254.10 uncovered seven further short -md and -rsv domains on the same hosts. Help Net Security reported the same findings on 13 November. The landing domains, payload host, URLs and gateway infrastructure are on the block list. Do not block the Cloudflare addresses that only fronted the short-lived landing pages, and do not treat legitimate NetSupport Manager as malware.",
+   "caveat": "The landing domains were short-lived and sat behind Cloudflare; those Cloudflare anycast addresses also serve unrelated sites and must not be blocked. NetSupport Manager is legitimate remote administration software: block only the attacker staging and gateway infrastructure, and hunt the ClickFix command and mestos2.zip install path rather than the product name alone. EfficientIP did not publish a sample hash or confirm victims.",
+   "targets": {
+    "countries": [],
+    "regions": [],
+    "sectors": [],
+    "note": null,
+    "source": null
+   },
+   "mitre": [
+    {
+     "id": "T1583.001",
+     "name": "Domains",
+     "url": "https://attack.mitre.org/techniques/T1583/001/"
+    },
+    {
+     "id": "T1204.001",
+     "name": "Malicious Link",
+     "url": "https://attack.mitre.org/techniques/T1204/001/"
+    },
+    {
+     "id": "T1059.001",
+     "name": "PowerShell",
+     "url": "https://attack.mitre.org/techniques/T1059/001/"
+    },
+    {
+     "id": "T1059.006",
+     "name": "Python",
+     "url": "https://attack.mitre.org/techniques/T1059/006/"
+    },
+    {
+     "id": "T1105",
+     "name": "Ingress Tool Transfer",
+     "url": "https://attack.mitre.org/techniques/T1105/"
+    },
+    {
+     "id": "T1547.001",
+     "name": "Registry Run Keys / Startup Folder",
+     "url": "https://attack.mitre.org/techniques/T1547/001/"
+    },
+    {
+     "id": "T1219",
+     "name": "Remote Access Software",
+     "url": "https://attack.mitre.org/techniques/T1219/"
+    },
+    {
+     "id": "T1036.005",
+     "name": "Match Legitimate Name or Location",
+     "url": "https://attack.mitre.org/techniques/T1036/005/"
+    }
+   ],
+   "recommended_actions": [
+    "Block the seven apartments-review*.sbs landing domains, 89.34.90.203, the /winup2 and /mestos2.zip URLs, the nine gateway domains and the two Flyservers addresses (they are in the Defender XDR import file), and search 90 days of DNS, proxy and firewall logs for them and for the decimal address 1495423691.",
+    "Hunt for explorer.exe launching PowerShell that uses iwr to fetch winup2, for %TEMP%\\winup2.ps1, and for a Startup-folder NetSupport.lnk whose target is Service.exe under %APPDATA%\\NetSupport after a hidden PowerShell or Python download.",
+    "Treat genuine NetSupport Manager installs as legitimate; do not block the product. If a host ran the ClickFix command, isolate it, remove the Startup shortcut and the %APPDATA%\\NetSupport copy, and rotate credentials the logged-on user could reach."
+   ],
+   "sources": [
+    {
+     "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "name": "EfficientIP"
+    },
+    {
+     "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+     "label": "Help Net Security – Fake Zillow pages use ClickFix NetSupport RAT to target apartment hunters",
+     "name": "Help Net Security"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/1837183/",
+     "label": "ThreatFox – bksnb.com",
+     "name": "ThreatFox"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/1837182/",
+     "label": "ThreatFox – jpgomd.com",
+     "name": "ThreatFox (2)"
+    },
+    {
+     "url": "https://urlhaus.abuse.ch/host/89.34.90.203/",
+     "label": "URLhaus – 89.34.90.203",
+     "name": "URLhaus"
+    }
+   ],
+   "indicator_count": 25,
+   "block_now_count": 21,
+   "hunt_count": 4,
+   "hunt_counts": {
+    "alert": 4
+   },
+   "indicator_counts": {
+    "domain": 16,
+    "ipv4": 3,
+    "filename": 2,
+    "other": 2,
+    "url": 2
+   },
+   "ioas": [
+    {
+     "artefact": "explorer.exe launching powershell.exe that uses Invoke-WebRequest (iwr) to fetch winup2 from 89.34.90.203 or the decimal address 1495423691",
+     "log_source": "Defender XDR DeviceProcessEvents",
+     "why": "EfficientIP recovered the ClickFix clipboard command: after the victim pressed Win+R, explorer.exe launched PowerShell, which downloaded /winup2 from the decimal DWORD 1495423691 (89.34.90.203) to %TEMP%\\winup2.ps1 and ran it.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/ https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+     "source_name": "EfficientIP",
+     "title": "ClickFix PowerShell iwr of winup2 from the decimal IP",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "PowerShell writing or running %TEMP%\\winup2.ps1, or downloading http://89.34.90.203/mestos2.zip",
+     "log_source": "Defender XDR DeviceProcessEvents and DeviceFileEvents",
+     "why": "winup2.ps1 relaunches itself hidden, writes an embedded Python script and uses a downloaded Python runtime to retrieve mestos2.zip from the same host, then unpacks NetSupport RAT.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/ https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+     "source_name": "EfficientIP",
+     "title": "winup2.ps1 or mestos2.zip written or downloaded",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "A Startup-folder shortcut named NetSupport.lnk whose target is Service.exe under %APPDATA%\\NetSupport",
+     "log_source": "Defender XDR DeviceFileEvents and DeviceProcessEvents",
+     "why": "The downloader copies the ZIP contents to %APPDATA%\\NetSupport, finds Service.exe and drops NetSupport.lnk in the user Startup folder, then starts Service.exe hidden. Genuine NetSupport Manager can also live under AppData, so treat this as a lead unless winup2 or mestos2.zip is also present.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/ https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+     "source_name": "EfficientIP",
+     "title": "Startup NetSupport.lnk pointing at AppData Service.exe",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "DNS or web requests for apartments-review followed by digits on the .sbs TLD, or for the NetSupport gateway domains asgomd.com, asgrsv.com and the related -md and -rsv hosts",
+     "log_source": "Defender XDR DeviceNetworkEvents, DNS and proxy logs",
+     "why": "The landing pages used the apartments-review<digits>.sbs pattern, including *.verify.apartments-review*.sbs wildcards. The installed NetSupport client used asgomd.com and asgrsv.com, and EfficientIP found seven further short gateway names on the same Flyservers addresses.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/ https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+     "source_name": "EfficientIP",
+     "title": "Lookups for apartments-review*.sbs or the gateway domains",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    }
+   ],
+   "ioa_count": 4,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Fake-Zillow-ClickFix-NetSupport-RAT/block_now.txt",
+     "download": "Fake-Zillow-ClickFix-NetSupport-RAT_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Fake-Zillow-ClickFix-NetSupport-RAT/defender_xdr_indicators.csv",
+     "download": "Fake-Zillow-ClickFix-NetSupport-RAT_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Fake-Zillow-ClickFix-NetSupport-RAT/hunt.kql",
+     "download": "Fake-Zillow-ClickFix-NetSupport-RAT_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Fake-Zillow-ClickFix-NetSupport-RAT/hunt.spl",
+     "download": "Fake-Zillow-ClickFix-NetSupport-RAT_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Fake-Zillow-ClickFix-NetSupport-RAT/hunt_raw.spl",
+     "download": "Fake-Zillow-ClickFix-NetSupport-RAT_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Fake-Zillow-ClickFix-NetSupport-RAT/hunt.yaral",
+     "download": "Fake-Zillow-ClickFix-NetSupport-RAT_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Fake-Zillow-ClickFix-NetSupport-RAT/iocs.csv",
+     "download": "Fake-Zillow-ClickFix-NetSupport-RAT_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Fake-Zillow-ClickFix-NetSupport-RAT",
+   "indicators": [
+    {
+     "value": "apartments-review8509831.sbs",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "One of the fake Zillow apartment-review landing domains used for the ClickFix lure; also seen as *.verify.apartments-review8509831.sbs.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "apartments-review28829031.sbs",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Fake Zillow apartment-review landing domain used for the ClickFix lure.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "apartments-review6125431.sbs",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Fake Zillow apartment-review landing domain used for the ClickFix lure.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "apartments-review261679200.sbs",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Fake Zillow apartment-review landing domain used for the ClickFix lure.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "apartments-review2138768.sbs",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Fake Zillow apartment-review landing domain used for the ClickFix lure.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "apartments-review261634860.sbs",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Fake Zillow apartment-review landing domain used for the ClickFix lure.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "apartments-review9384643.sbs",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Fake Zillow apartment-review landing domain used for the ClickFix lure.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "asgomd.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "NetSupport RAT gateway domain configured in the installed client; resolves to 45.227.254.179 (Flyservers).",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "bksju.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Additional NetSupport gateway domain on the same Flyservers address as asgomd.com.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "bksnb.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Additional NetSupport gateway domain on the same Flyservers address as asgomd.com.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/1837183/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "decrmd.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Additional NetSupport gateway domain on the same Flyservers address as asgomd.com.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "jpgomd.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Additional NetSupport gateway domain on the same Flyservers address as asgomd.com.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/1837182/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "nogomd.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Additional NetSupport gateway domain on the same Flyservers address as asgomd.com.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "asgrsv.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "NetSupport RAT gateway domain configured in the installed client; resolves to 45.227.254.10 (Flyservers).",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "decrsv.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Additional NetSupport gateway domain on the same Flyservers address as asgrsv.com.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "jpgrsv.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Additional NetSupport gateway domain on the same Flyservers address as asgrsv.com.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "89.34.90.203",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Dedicated payload host (Dedik Services, AS207043) that served /winup2 and /mestos2.zip; the ClickFix command writes this address as the decimal DWORD 1495423691.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      },
+      {
+       "url": "https://urlhaus.abuse.ch/host/89.34.90.203/",
+       "name": "URLhaus"
+      }
+     ]
+    },
+    {
+     "value": "45.227.254.179",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Flyservers (AS267784) address used by the asgomd.com cluster of NetSupport gateway domains.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "45.227.254.10",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Flyservers (AS267784) address used by the asgrsv.com cluster of NetSupport gateway domains.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "http://89.34.90.203/winup2",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "URL of the PowerShell downloader that the ClickFix command saves as %TEMP%\\winup2.ps1 and runs.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      },
+      {
+       "url": "https://urlhaus.abuse.ch/host/89.34.90.203/",
+       "name": "URLhaus"
+      }
+     ]
+    },
+    {
+     "value": "http://89.34.90.203/mestos2.zip",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "ZIP archive of the NetSupport RAT payload retrieved by the embedded Python script after winup2.ps1 runs.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      },
+      {
+       "url": "https://urlhaus.abuse.ch/host/89.34.90.203/",
+       "name": "URLhaus"
+      }
+     ]
+    },
+    {
+     "value": "winup2.ps1",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Filename of the PowerShell downloader written to %TEMP% by the ClickFix command.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "mestos2.zip",
+     "type": "filename",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Filename of the NetSupport RAT archive downloaded from 89.34.90.203 after the ClickFix script runs.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "apartments-review[0-9]+\\.sbs",
+     "type": "other",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Naming pattern for the short-lived fake Zillow landing domains; new numeric suffixes may appear after the listed names expire.",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    },
+    {
+     "value": "1495423691",
+     "type": "other",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Decimal DWORD form of 89.34.90.203 used in the ClickFix PowerShell command (iwr 1495423691/winup2).",
+     "source_url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+     "source_label": "EfficientIP Research Labs – From Fake Zillow Pages to ClickFix NetSupport RAT",
+     "source_name": "EfficientIP",
+     "sources": [
+      {
+       "url": "https://efficientip.com/blog/clickfix-netsupport-rat/",
+       "name": "EfficientIP"
+      },
+      {
+       "url": "https://www.helpnetsecurity.com/2026/11/13/fake-zillow-clickfix-netsupport-rat/",
+       "name": "Help Net Security"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Fake-Zillow-ClickFix-NetSupport-RAT/hunt.kql",
+     "download": "Fake-Zillow-ClickFix-NetSupport-RAT_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Fake-Zillow-ClickFix-NetSupport-RAT/hunt.spl",
+     "download": "Fake-Zillow-ClickFix-NetSupport-RAT_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Fake-Zillow-ClickFix-NetSupport-RAT/hunt_raw.spl",
+      "download": "Fake-Zillow-ClickFix-NetSupport-RAT_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Fake-Zillow-ClickFix-NetSupport-RAT/hunt.yaral",
+     "download": "Fake-Zillow-ClickFix-NetSupport-RAT_hunt.yaral"
+    }
+   ]
+  },
+  {
+   "id": "SANSAR-Linux-GPU-Cryptomining-Toolkit",
+   "folder": "threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit",
+   "name": "SANSAR: Linux GPU Cryptomining Toolkit with a Tor Orchestrator, Rootkit and Ethereum C2",
+   "short": "SANSAR Linux GPU cryptomining toolkit",
+   "category": "Crimeware / cryptomining",
+   "published": "2026-11-12",
+   "entry_date": "2026-11-13 03:50",
+   "last_updated": "2026-11-13",
+   "seq": 42,
+   "headline": "Elastic Security Labs, writing on 12 November 2026, describes REF3364, a Linux cryptomining intrusion on GPU hosts th...",
+   "summary": "Elastic Security Labs, writing on 12 November 2026, describes REF3364, a Linux cryptomining intrusion on GPU hosts that started through an exposed, unauthenticated Ray job agent between 22 and 25 October. After a job ran nvidia-smi and a Python reverse shell, the actor obtained root, staged a toolkit under /opt/vadi_/, and installed SANSAR, a Rust orchestrator that talks to the onion service efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id.onion:9051 over Tor. The toolkit also includes an acpi_thermal_mgr kernel rootkit loaded through DKMS and initramfs, an NVML wrapper that reports 0% GPU utilisation, public XMRig and SRBMiner binaries, and a backdoor named netns that retrieves its controller IPv4 address from Ethereum contract 0x43eb291f56688c63c93e8a93c4591fc997cf6349 using selector 0x6ded96e7, then connects to that address on TCP port 8080. The custom SANSAR, netns, rootkit and NVML-wrapper hashes and the onion C2 are on the block list. The XMRig and SRBMiner hashes are alert only because those are public miners. Do not block the Tor Project's lyrebird helper, public Ethereum RPC services, or Ray itself.",
+   "caveat": "Elastic published the official Tor lyrebird 0.8.1 helper hash alongside the toolkit; it is legitimate Tor software and is not listed. Public Ethereum RPC endpoints must not be blocked; hunt eth_call to the published contract from non-crypto hosts. Ray is a legitimate distributed-computing framework; restrict who can submit jobs and whether the job agent is exposed to the internet. The acpi_thermal_mgr module name could collide with a plausible ACPI helper, so confirm the published hash.",
+   "targets": {
+    "countries": [],
+    "regions": [],
+    "sectors": [],
+    "note": null,
+    "source": null
+   },
+   "mitre": [
+    {
+     "id": "T1190",
+     "name": "Exploit Public-Facing Application",
+     "url": "https://attack.mitre.org/techniques/T1190/"
+    },
+    {
+     "id": "T1059.006",
+     "name": "Python",
+     "url": "https://attack.mitre.org/techniques/T1059/006/"
+    },
+    {
+     "id": "T1059.004",
+     "name": "Unix Shell",
+     "url": "https://attack.mitre.org/techniques/T1059/004/"
+    },
+    {
+     "id": "T1098.004",
+     "name": "SSH Authorized Keys",
+     "url": "https://attack.mitre.org/techniques/T1098/004/"
+    },
+    {
+     "id": "T1543.002",
+     "name": "Systemd Service",
+     "url": "https://attack.mitre.org/techniques/T1543/002/"
+    },
+    {
+     "id": "T1547.006",
+     "name": "Kernel Modules and Extensions",
+     "url": "https://attack.mitre.org/techniques/T1547/006/"
+    },
+    {
+     "id": "T1014",
+     "name": "Rootkit",
+     "url": "https://attack.mitre.org/techniques/T1014/"
+    },
+    {
+     "id": "T1562",
+     "name": "Impair Defenses",
+     "url": "https://attack.mitre.org/techniques/T1562/"
+    },
+    {
+     "id": "T1090.003",
+     "name": "Multi-hop Proxy",
+     "url": "https://attack.mitre.org/techniques/T1090/003/"
+    },
+    {
+     "id": "T1102.001",
+     "name": "Dead Drop Resolver",
+     "url": "https://attack.mitre.org/techniques/T1102/001/"
+    },
+    {
+     "id": "T1496.001",
+     "name": "Compute Hijacking",
+     "url": "https://attack.mitre.org/techniques/T1496/001/"
+    }
+   ],
+   "recommended_actions": [
+    "Block the four custom hashes (sansar, the NVML wrapper, acpi_thermal_mgr.ko and netns) and the onion C2 (they are in the Defender XDR import file), and hunt 90 days of logs for /opt/vadi_/ and for eth_call to 0x43eb291f56688c63c93e8a93c4591fc997cf6349.",
+    "Treat the XMRig (kurt) and SRBMiner (tilki) hashes as alert-only public miners; confirm the /opt/vadi_/ path or the custom implants before calling the host this intrusion.",
+    "Hunt for an internet-exposed unauthenticated Ray job agent, nvidia-smi output leaving the host shortly before a Python reverse shell, DKMS builds of acpi_thermal_mgr, and unexpected replacement of libnvidia-ml.so.1.",
+    "If confirmed, isolate the host, rebuild it from known-good media rather than just removing files (the rootkit hides processes and can reload from initramfs), rotate SSH keys and credentials, and close the exposed Ray job agent."
+   ],
+   "sources": [
+    {
+     "url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+     "label": "Elastic Security Labs – 0% GPU utilization: How SANSAR hides Linux cryptomining",
+     "name": "Elastic"
+    }
+   ],
+   "indicator_count": 11,
+   "block_now_count": 5,
+   "hunt_count": 6,
+   "hunt_counts": {
+    "alert": 4,
+    "monitor": 2
+   },
+   "indicator_counts": {
+    "sha256": 6,
+    "filename": 2,
+    "domain": 1,
+    "eth_address": 1,
+    "function_selector": 1
+   },
+   "ioas": [
+    {
+     "artefact": "Files or processes under /opt/vadi_/, including sansar, kurt, tilki or netns",
+     "log_source": "Linux EDR, auditd, and Defender XDR DeviceFileEvents or DeviceProcessEvents where Linux onboarding is present",
+     "why": "After obtaining root, the actor staged the toolkit under /opt/vadi_/. A kernel log later recorded /opt/vadi_/tilki starting on one GPU host.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+     "source_name": "Elastic",
+     "title": "Files or processes under /opt/vadi_/",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "The acpi_thermal_mgr kernel module being built through DKMS or loaded at boot",
+     "log_source": "Linux syslog, kernel logs, DKMS logs, and EDR file or process events",
+     "why": "The actor built acpi_thermal_mgr.ko through DKMS and added an initramfs loader so the rootkit could hide processes, files and sockets and reload after reboot. Confirm the published hash; the name could collide with a plausible ACPI helper.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+     "source_name": "Elastic",
+     "title": "acpi_thermal_mgr kernel module built or loaded",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "eth_call requests to Ethereum contract 0x43eb291f56688c63c93e8a93c4591fc997cf6349 with selector 0x6ded96e7, followed by a TCP connection to port 8080",
+     "log_source": "Proxy, TLS-inspection and Linux process or network logs; public Ethereum RPC services must not be blocked",
+     "why": "netns sends eth_call through public Ethereum RPC services to this embedded contract, decodes an IPv4 address from the response and connects to it on TCP 8080, then can be told to open a Bash reverse shell to a different host.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+     "source_name": "Elastic",
+     "title": "eth_call to the netns Ethereum C2 contract",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "An internet-exposed Ray job agent accepting unauthenticated job submissions, or nvidia-smi output leaving the host shortly before a Python reverse shell",
+     "log_source": "Ray dashboard and job-agent logs, Linux process and network telemetry",
+     "why": "On the first host the Ray dashboard listened only on loopback but the job agent remained reachable from the internet without authentication. Between 22 and 25 October 2026, probes were followed by a job that ran nvidia-smi and sent the GPU inventory out, then a Python reverse shell and an SSH key added to authorized_keys. Ray itself is legitimate software.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+     "source_name": "Elastic",
+     "title": "Exposed Ray job agent or nvidia-smi then a Python shell",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    },
+    {
+     "artefact": "Replacement of libnvidia-ml.so.1 with a wrapper that falsifies GPU utilisation",
+     "log_source": "Linux file integrity, package and EDR file events",
+     "why": "The toolkit replaces the NVIDIA Management Library with a wrapper so monitoring tools report 0% GPU utilisation while mining continues. Hunt unexpected replacement of this library; do not block the legitimate NVIDIA file name.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+     "source_name": "Elastic",
+     "title": "Unexpected replacement of libnvidia-ml.so.1",
+     "queries": [
+      "KQL",
+      "SPL"
+     ]
+    }
+   ],
+   "ioa_count": 5,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit/block_now.txt",
+     "download": "SANSAR-Linux-GPU-Cryptomining-Toolkit_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit/defender_xdr_indicators.csv",
+     "download": "SANSAR-Linux-GPU-Cryptomining-Toolkit_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit/hunt.kql",
+     "download": "SANSAR-Linux-GPU-Cryptomining-Toolkit_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit/hunt.spl",
+     "download": "SANSAR-Linux-GPU-Cryptomining-Toolkit_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit/hunt_raw.spl",
+     "download": "SANSAR-Linux-GPU-Cryptomining-Toolkit_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit/hunt.yaral",
+     "download": "SANSAR-Linux-GPU-Cryptomining-Toolkit_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit/iocs.csv",
+     "download": "SANSAR-Linux-GPU-Cryptomining-Toolkit_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit",
+   "indicators": [
+    {
+     "value": "00c9ac44291f83c72d54302e99d155a3e26d02225a3e516764d5833a99657c9e",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of sansar, the Rust 0.1.3 miner orchestrator that talks to the onion C2 over Tor and supervises CPU and GPU miners.",
+     "source_url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+     "source_label": "Elastic Security Labs – 0% GPU utilization: How SANSAR hides Linux cryptomining",
+     "source_name": "Elastic",
+     "sources": [
+      {
+       "url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+       "name": "Elastic"
+      }
+     ]
+    },
+    {
+     "value": "675c24728f87f7aa0fa07527027c95c24c246049c65eaef89270ab04ea50a180",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of the malicious libnvidia-ml.so.1 wrapper that falsifies GPU utilisation readings.",
+     "source_url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+     "source_label": "Elastic Security Labs – 0% GPU utilization: How SANSAR hides Linux cryptomining",
+     "source_name": "Elastic",
+     "sources": [
+      {
+       "url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+       "name": "Elastic"
+      }
+     ]
+    },
+    {
+     "value": "6ba1aa275e0e2826e8b48b36473539ca56cbdc41f429e539a45f8532b084d7a4",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of acpi_thermal_mgr.ko, the kernel rootkit loaded through DKMS and an initramfs loader to hide processes, files and sockets.",
+     "source_url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+     "source_label": "Elastic Security Labs – 0% GPU utilization: How SANSAR hides Linux cryptomining",
+     "source_name": "Elastic",
+     "sources": [
+      {
+       "url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+       "name": "Elastic"
+      }
+     ]
+    },
+    {
+     "value": "df8ab6fd699e6ae90e63e9696bae8f01342708bafc2ed88af414337e4f237194",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "SHA256 of netns, the backdoor that retrieves its controller IPv4 address from an Ethereum contract and then connects on TCP port 8080.",
+     "source_url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+     "source_label": "Elastic Security Labs – 0% GPU utilization: How SANSAR hides Linux cryptomining",
+     "source_name": "Elastic",
+     "sources": [
+      {
+       "url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+       "name": "Elastic"
+      }
+     ]
+    },
+    {
+     "value": "efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id.onion",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Tor onion service used as SANSAR C2 (observed as efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id.onion:9051).",
+     "source_url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+     "source_label": "Elastic Security Labs – 0% GPU utilization: How SANSAR hides Linux cryptomining",
+     "source_name": "Elastic",
+     "sources": [
+      {
+       "url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+       "name": "Elastic"
+      }
+     ]
+    },
+    {
+     "value": "96fc528ca5e7d1c2b3add5e31b8797cb126f704976c8fbeaecdbf0aa4309ad46",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of kurt, an XMRig 6.25.0 miner dropped under /opt/vadi_/ as part of the SANSAR toolkit.",
+     "source_url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+     "source_label": "Elastic Security Labs – 0% GPU utilization: How SANSAR hides Linux cryptomining",
+     "source_name": "Elastic",
+     "sources": [
+      {
+       "url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+       "name": "Elastic"
+      }
+     ]
+    },
+    {
+     "value": "acc706afc9322a3eae1ef49049749e0a7c9f1a123895ac56dc8a289beb2fb5b7",
+     "type": "sha256",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "SHA256 of tilki, an SRBMiner-MULTI GPU miner dropped under /opt/vadi_/ as part of the SANSAR toolkit.",
+     "source_url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+     "source_label": "Elastic Security Labs – 0% GPU utilization: How SANSAR hides Linux cryptomining",
+     "source_name": "Elastic",
+     "sources": [
+      {
+       "url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+       "name": "Elastic"
+      }
+     ]
+    },
+    {
+     "value": "/opt/vadi_/",
+     "type": "filename",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Staging directory for the SANSAR toolkit (sansar, kurt, tilki, netns and related files) on compromised Linux GPU hosts.",
+     "source_url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+     "source_label": "Elastic Security Labs – 0% GPU utilization: How SANSAR hides Linux cryptomining",
+     "source_name": "Elastic",
+     "sources": [
+      {
+       "url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+       "name": "Elastic"
+      }
+     ]
+    },
+    {
+     "value": "acpi_thermal_mgr.ko",
+     "type": "filename",
+     "confidence": "high",
+     "recommended_action": "alert",
+     "description": "Filename of the SANSAR kernel rootkit, built through DKMS and loaded from initramfs as acpi_thermal_mgr.",
+     "source_url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+     "source_label": "Elastic Security Labs – 0% GPU utilization: How SANSAR hides Linux cryptomining",
+     "source_name": "Elastic",
+     "sources": [
+      {
+       "url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+       "name": "Elastic"
+      }
+     ]
+    },
+    {
+     "value": "0x43eb291f56688c63c93e8a93c4591fc997cf6349",
+     "type": "eth_address",
+     "confidence": "high",
+     "recommended_action": "monitor",
+     "description": "Ethereum contract the netns backdoor queries with eth_call (selector 0x6ded96e7) to retrieve its controller IPv4 address. Hunt for eth_call; do not block public Ethereum RPC services.",
+     "source_url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+     "source_label": "Elastic Security Labs – 0% GPU utilization: How SANSAR hides Linux cryptomining",
+     "source_name": "Elastic",
+     "sources": [
+      {
+       "url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+       "name": "Elastic"
+      }
+     ]
+    },
+    {
+     "value": "0x6ded96e7",
+     "type": "function_selector",
+     "confidence": "high",
+     "recommended_action": "monitor",
+     "description": "ABI function selector sent as eth_call data against 0x43eb291f56688c63c93e8a93c4591fc997cf6349 to retrieve the netns controller address.",
+     "source_url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+     "source_label": "Elastic Security Labs – 0% GPU utilization: How SANSAR hides Linux cryptomining",
+     "source_name": "Elastic",
+     "sources": [
+      {
+       "url": "https://www.elastic.co/security-labs/threat-command/sansar-linux-cryptomining-malware",
+       "name": "Elastic"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit/hunt.kql",
+     "download": "SANSAR-Linux-GPU-Cryptomining-Toolkit_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit/hunt.spl",
+     "download": "SANSAR-Linux-GPU-Cryptomining-Toolkit_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit/hunt_raw.spl",
+      "download": "SANSAR-Linux-GPU-Cryptomining-Toolkit_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit/hunt.yaral",
+     "download": "SANSAR-Linux-GPU-Cryptomining-Toolkit_hunt.yaral"
+    }
+   ]
+  },
   {
    "id": "FaceStealer-BlueNoroff-Fake-Meeting-Lures",
    "folder": "threats/2026-11_November-2026/2026-11-13/FaceStealer-BlueNoroff-Fake-Meeting-Lures",

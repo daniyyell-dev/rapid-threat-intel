@@ -1,0 +1,109 @@
+``` Threat: SANSAR: Linux GPU Cryptomining Toolkit with a Tor Orchestrator, Rootkit and Ethereum C2
+    Author: Daniel Jeremiah | Date: 2026-11-13
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit ```
+| multisearch
+  [ search `rti_dns(efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id.onion)`
+    | search query IN ("efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id.onion", "*.efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id.onion")
+    | rex field=query "(?i)(?<ioc>(?:efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id\.onion))\.?$"
+    | eval data_model="dns", ioc_type="domain", host=src, detail="DNS query ".query
+  ]
+  [ search `rti_web(efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id.onion)`
+    | search url IN ("*://efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id.onion*", "*.efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id.onion*", "efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id.onion*") OR dest IN ("efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id.onion", "*.efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id.onion")
+    | rex field=url "(?i)(?<ioc>efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id\.onion)"
+    | eval ioc=coalesce(ioc, dest), data_model="web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+  ]
+  [ search `rti_endpoint(00c9ac44291f83c72d54302e99d155a3e26d02225a3e516764d5833a99657c9e OR 675c24728f87f7aa0fa07527027c95c24c246049c65eaef89270ab04ea50a180 OR 6ba1aa275e0e2826e8b48b36473539ca56cbdc41f429e539a45f8532b084d7a4 OR df8ab6fd699e6ae90e63e9696bae8f01342708bafc2ed88af414337e4f237194 OR 96fc528ca5e7d1c2b3add5e31b8797cb126f704976c8fbeaecdbf0aa4309ad46 OR acc706afc9322a3eae1ef49049749e0a7c9f1a123895ac56dc8a289beb2fb5b7)`
+    | search file_hash IN ("*00c9ac44291f83c72d54302e99d155a3e26d02225a3e516764d5833a99657c9e*", "*675c24728f87f7aa0fa07527027c95c24c246049c65eaef89270ab04ea50a180*", "*6ba1aa275e0e2826e8b48b36473539ca56cbdc41f429e539a45f8532b084d7a4*", "*df8ab6fd699e6ae90e63e9696bae8f01342708bafc2ed88af414337e4f237194*", "*96fc528ca5e7d1c2b3add5e31b8797cb126f704976c8fbeaecdbf0aa4309ad46*", "*acc706afc9322a3eae1ef49049749e0a7c9f1a123895ac56dc8a289beb2fb5b7*") OR process_hash IN ("*00c9ac44291f83c72d54302e99d155a3e26d02225a3e516764d5833a99657c9e*", "*675c24728f87f7aa0fa07527027c95c24c246049c65eaef89270ab04ea50a180*", "*6ba1aa275e0e2826e8b48b36473539ca56cbdc41f429e539a45f8532b084d7a4*", "*df8ab6fd699e6ae90e63e9696bae8f01342708bafc2ed88af414337e4f237194*", "*96fc528ca5e7d1c2b3add5e31b8797cb126f704976c8fbeaecdbf0aa4309ad46*", "*acc706afc9322a3eae1ef49049749e0a7c9f1a123895ac56dc8a289beb2fb5b7*") OR parent_process_hash IN ("*00c9ac44291f83c72d54302e99d155a3e26d02225a3e516764d5833a99657c9e*", "*675c24728f87f7aa0fa07527027c95c24c246049c65eaef89270ab04ea50a180*", "*6ba1aa275e0e2826e8b48b36473539ca56cbdc41f429e539a45f8532b084d7a4*", "*df8ab6fd699e6ae90e63e9696bae8f01342708bafc2ed88af414337e4f237194*", "*96fc528ca5e7d1c2b3add5e31b8797cb126f704976c8fbeaecdbf0aa4309ad46*", "*acc706afc9322a3eae1ef49049749e0a7c9f1a123895ac56dc8a289beb2fb5b7*")
+    | eval matched=file_hash." ".process_hash." ".parent_process_hash
+    | rex field=matched "(?i)(?<ioc>00c9ac44291f83c72d54302e99d155a3e26d02225a3e516764d5833a99657c9e|675c24728f87f7aa0fa07527027c95c24c246049c65eaef89270ab04ea50a180|6ba1aa275e0e2826e8b48b36473539ca56cbdc41f429e539a45f8532b084d7a4|df8ab6fd699e6ae90e63e9696bae8f01342708bafc2ed88af414337e4f237194|96fc528ca5e7d1c2b3add5e31b8797cb126f704976c8fbeaecdbf0aa4309ad46|acc706afc9322a3eae1ef49049749e0a7c9f1a123895ac56dc8a289beb2fb5b7)"
+    | eval data_model="endpoint", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, detail=coalesce(process, file_path)
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search `rti_endpoint(("/opt/vadi_" OR sansar OR "acpi_thermal_mgr.ko"))`
+    | where match(coalesce(file_path, file_name, ""), "(?i)(/opt/vadi_|acpi_thermal_mgr\.ko)") OR match(coalesce(file_name, ""), "(?i)^sansar$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Files or processes under /opt/vadi_/", ioc_type="behaviour (alert)"
+]
+| append [
+    search `rti_endpoint(("/opt/vadi_" OR sansar OR kurt OR tilki))`
+    | where match(coalesce(process_path, process, ""), "(?i)/opt/vadi_") OR match(coalesce(process_name, ""), "(?i)^(sansar|kurt|tilki)$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Files or processes under /opt/vadi_/", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(acpi_thermal_mgr)`
+    | where match(coalesce(file_path, file_name, ""), "acpi_thermal_mgr")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="acpi_thermal_mgr kernel module built or loaded", ioc_type="behaviour (alert)"
+]
+| append [
+    search `rti_endpoint(acpi_thermal_mgr)`
+    | where match(coalesce(process, process_name, ""), "acpi_thermal_mgr")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="acpi_thermal_mgr kernel module built or loaded", ioc_type="behaviour (alert)"
+]
+| append [
+    search index=* acpi_thermal_mgr
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="raw events"
+    | eval ioc="acpi_thermal_mgr kernel module built or loaded", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(eth_call OR 0x43eb291f56688c63c93e8a93c4591fc997cf6349 OR 0x6ded96e7)`
+    | where match(coalesce(process, ""), "(?i)eth_call") AND match(coalesce(process, ""), "(?i)(0x43eb291f56688c63c93e8a93c4591fc997cf6349|0x6ded96e7)")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="eth_call to the netns Ethereum C2 contract", ioc_type="behaviour (hunt)"
+]
+| append [
+    search index=* "0x43eb291f56688c63c93e8a93c4591fc997cf6349" OR "0x6ded96e7"
+    | eval host=host, user=coalesce(user, "-"), src=coalesce(src, src_ip, "-"), dest=sourcetype, detail=substr(replace(_raw, "\s+", " "), 1, 300)
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="raw events"
+    | eval ioc="eth_call to the netns Ethereum C2 contract", ioc_type="behaviour (hunt)"
+]
+
+| append [
+    search `rti_endpoint(("nvidia-smi" OR ray OR authorized_keys))`
+    | where match(coalesce(process_name, ""), "(?i)^(python3?|nvidia-smi)$") AND (match(coalesce(process, ""), "(?i)(ray.*(nvidia-smi|/bin/sh|/bin/bash|authorized_keys))") OR (match(coalesce(process_name, ""), "(?i)^nvidia-smi$") AND match(coalesce(parent_process_name, ""), "(?i)^(python3?|ray)$")))
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Exposed Ray job agent or nvidia-smi then a Python shell", ioc_type="behaviour (hunt)"
+]
+
+| append [
+    search `rti_endpoint("libnvidia-ml.so.1")`
+    | where match(coalesce(file_name, file_path, ""), "libnvidia-ml\.so\.1")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Unexpected replacement of libnvidia-ml.so.1", ioc_type="behaviour (hunt)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

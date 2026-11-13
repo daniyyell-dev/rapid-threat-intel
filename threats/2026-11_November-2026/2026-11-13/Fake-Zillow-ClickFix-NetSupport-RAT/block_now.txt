@@ -1,0 +1,29 @@
+# Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+# Published 2026-11-12. High-confidence indicators to block. Updated 2026-11-13.
+
+## ipv4 (3)
+89.34.90.203
+45.227.254.179
+45.227.254.10
+
+## domain (16)
+apartments-review8509831.sbs
+apartments-review28829031.sbs
+apartments-review6125431.sbs
+apartments-review261679200.sbs
+apartments-review2138768.sbs
+apartments-review261634860.sbs
+apartments-review9384643.sbs
+asgomd.com
+bksju.com
+bksnb.com
+decrmd.com
+jpgomd.com
+nogomd.com
+asgrsv.com
+decrsv.com
+jpgrsv.com
+
+## url (2)
+http://89.34.90.203/winup2
+http://89.34.90.203/mestos2.zip

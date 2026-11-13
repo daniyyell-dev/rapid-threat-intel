@@ -1,0 +1,52 @@
+// Threat: SANSAR: Linux GPU Cryptomining Toolkit with a Tor Orchestrator, Rootkit and Ethereum C2
+// Author: Daniel Jeremiah | Date: 2026-11-13
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit
+rule rti_sansar_linux_gpu_cryptomining_toolkit {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-13"
+    description = "SANSAR: Linux GPU Cryptomining Toolkit with a Tor Orchestrator, Rootkit and Ethereum C2"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit"
+
+  events:
+    (
+      $e.network.dns.questions.name = /(?:^|\.)(?:efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id\.onion)\.?$/ nocase or
+      $e.target.hostname = /(?:^|\.)(?:efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id\.onion)\.?$/ nocase or
+      $e.target.domain.name = /(?:^|\.)(?:efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id\.onion)\.?$/ nocase or
+      re.regex($e.target.url, `^(?:[a-z][a-z0-9+.-]*://)?(?:[^/?#]*@)?(?:(?:[^/?#@]*\.)?(?:efxisnqldelyr5ra25oqfrsut54b34g26e7zrsiuupsoekjof2gho2id\.onion)(?::\d+)?(?:[/?#]|$))`) nocase or
+      $e.target.file.sha256 = /^(?:00c9ac44291f83c72d54302e99d155a3e26d02225a3e516764d5833a99657c9e|675c24728f87f7aa0fa07527027c95c24c246049c65eaef89270ab04ea50a180|6ba1aa275e0e2826e8b48b36473539ca56cbdc41f429e539a45f8532b084d7a4|df8ab6fd699e6ae90e63e9696bae8f01342708bafc2ed88af414337e4f237194|96fc528ca5e7d1c2b3add5e31b8797cb126f704976c8fbeaecdbf0aa4309ad46|acc706afc9322a3eae1ef49049749e0a7c9f1a123895ac56dc8a289beb2fb5b7)$/ nocase or
+      $e.target.process.file.sha256 = /^(?:00c9ac44291f83c72d54302e99d155a3e26d02225a3e516764d5833a99657c9e|675c24728f87f7aa0fa07527027c95c24c246049c65eaef89270ab04ea50a180|6ba1aa275e0e2826e8b48b36473539ca56cbdc41f429e539a45f8532b084d7a4|df8ab6fd699e6ae90e63e9696bae8f01342708bafc2ed88af414337e4f237194|96fc528ca5e7d1c2b3add5e31b8797cb126f704976c8fbeaecdbf0aa4309ad46|acc706afc9322a3eae1ef49049749e0a7c9f1a123895ac56dc8a289beb2fb5b7)$/ nocase or
+      $e.principal.process.file.sha256 = /^(?:00c9ac44291f83c72d54302e99d155a3e26d02225a3e516764d5833a99657c9e|675c24728f87f7aa0fa07527027c95c24c246049c65eaef89270ab04ea50a180|6ba1aa275e0e2826e8b48b36473539ca56cbdc41f429e539a45f8532b084d7a4|df8ab6fd699e6ae90e63e9696bae8f01342708bafc2ed88af414337e4f237194|96fc528ca5e7d1c2b3add5e31b8797cb126f704976c8fbeaecdbf0aa4309ad46|acc706afc9322a3eae1ef49049749e0a7c9f1a123895ac56dc8a289beb2fb5b7)$/ nocase or
+      $e.principal.process.parent_process.file.sha256 = /^(?:00c9ac44291f83c72d54302e99d155a3e26d02225a3e516764d5833a99657c9e|675c24728f87f7aa0fa07527027c95c24c246049c65eaef89270ab04ea50a180|6ba1aa275e0e2826e8b48b36473539ca56cbdc41f429e539a45f8532b084d7a4|df8ab6fd699e6ae90e63e9696bae8f01342708bafc2ed88af414337e4f237194|96fc528ca5e7d1c2b3add5e31b8797cb126f704976c8fbeaecdbf0aa4309ad46|acc706afc9322a3eae1ef49049749e0a7c9f1a123895ac56dc8a289beb2fb5b7)$/ nocase or
+      (re.regex($e.target.file.full_path, `/opt/vadi_`) nocase or re.regex($e.target.process.file.full_path, `/opt/vadi_`) nocase) or
+      (re.regex($e.target.file.full_path, `acpi_thermal_mgr`) nocase or re.regex($e.target.process.command_line, `acpi_thermal_mgr`) nocase)
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+    $dns_query = array_distinct($e.network.dns.questions.name)
+    $target_hostname = array_distinct($e.target.hostname)
+    $target_url = array_distinct($e.target.url)
+    $file_sha256 = array_distinct($e.target.file.sha256)
+    $process_sha256 = array_distinct($e.target.process.file.sha256)
+    $process_path = array_distinct($e.target.process.file.full_path)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}

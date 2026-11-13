@@ -1,0 +1,76 @@
+``` Threat: Fake Zillow Pages Deliver NetSupport RAT through ClickFix
+    Author: Daniel Jeremiah | Date: 2026-11-13
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Fake-Zillow-ClickFix-NetSupport-RAT ```
+| multisearch
+  [ search `rti_network(89.34.90.203 OR 45.227.254.179 OR 45.227.254.10)`
+    | search dest_ip IN ("89.34.90.203", "45.227.254.179", "45.227.254.10")
+    | eval data_model="network", ioc_type="ipv4", ioc=dest_ip, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_network(89.34.90.203 OR 45.227.254.179 OR 45.227.254.10)`
+    | search src_ip IN ("89.34.90.203", "45.227.254.179", "45.227.254.10")
+    | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_dns(apartments-review8509831.sbs OR apartments-review28829031.sbs OR apartments-review6125431.sbs OR apartments-review261679200.sbs OR apartments-review2138768.sbs OR apartments-review261634860.sbs OR apartments-review9384643.sbs OR asgomd.com OR bksju.com OR bksnb.com OR decrmd.com OR jpgomd.com OR nogomd.com OR asgrsv.com OR decrsv.com OR jpgrsv.com)`
+    | search query IN ("apartments-review8509831.sbs", "*.apartments-review8509831.sbs", "apartments-review28829031.sbs", "*.apartments-review28829031.sbs", "apartments-review6125431.sbs", "*.apartments-review6125431.sbs", "apartments-review261679200.sbs", "*.apartments-review261679200.sbs", "apartments-review2138768.sbs", "*.apartments-review2138768.sbs", "apartments-review261634860.sbs", "*.apartments-review261634860.sbs", "apartments-review9384643.sbs", "*.apartments-review9384643.sbs", "asgomd.com", "*.asgomd.com", "bksju.com", "*.bksju.com", "bksnb.com", "*.bksnb.com", "decrmd.com", "*.decrmd.com", "jpgomd.com", "*.jpgomd.com", "nogomd.com", "*.nogomd.com", "asgrsv.com", "*.asgrsv.com", "decrsv.com", "*.decrsv.com", "jpgrsv.com", "*.jpgrsv.com")
+    | rex field=query "(?i)(?<ioc>(?:apartments\-review8509831\.sbs|apartments\-review28829031\.sbs|apartments\-review6125431\.sbs|apartments\-review261679200\.sbs|apartments\-review2138768\.sbs|apartments\-review261634860\.sbs|apartments\-review9384643\.sbs|asgomd\.com|bksju\.com|bksnb\.com|decrmd\.com|jpgomd\.com|nogomd\.com|asgrsv\.com|decrsv\.com|jpgrsv\.com))\.?$"
+    | eval data_model="dns", ioc_type="domain", host=src, detail="DNS query ".query
+  ]
+  [ search `rti_web(apartments-review8509831.sbs OR apartments-review28829031.sbs OR apartments-review6125431.sbs OR apartments-review261679200.sbs OR apartments-review2138768.sbs OR apartments-review261634860.sbs OR apartments-review9384643.sbs OR asgomd.com OR bksju.com OR bksnb.com OR decrmd.com OR jpgomd.com OR nogomd.com OR asgrsv.com OR decrsv.com OR jpgrsv.com OR 89.34.90.203)`
+    | search url IN ("*://apartments-review8509831.sbs*", "*.apartments-review8509831.sbs*", "apartments-review8509831.sbs*", "*://apartments-review28829031.sbs*", "*.apartments-review28829031.sbs*", "apartments-review28829031.sbs*", "*://apartments-review6125431.sbs*", "*.apartments-review6125431.sbs*", "apartments-review6125431.sbs*", "*://apartments-review261679200.sbs*", "*.apartments-review261679200.sbs*", "apartments-review261679200.sbs*", "*://apartments-review2138768.sbs*", "*.apartments-review2138768.sbs*", "apartments-review2138768.sbs*", "*://apartments-review261634860.sbs*", "*.apartments-review261634860.sbs*", "apartments-review261634860.sbs*", "*://apartments-review9384643.sbs*", "*.apartments-review9384643.sbs*", "apartments-review9384643.sbs*", "*://asgomd.com*", "*.asgomd.com*", "asgomd.com*", "*://bksju.com*", "*.bksju.com*", "bksju.com*", "*://bksnb.com*", "*.bksnb.com*", "bksnb.com*", "*://decrmd.com*", "*.decrmd.com*", "decrmd.com*", "*://jpgomd.com*", "*.jpgomd.com*", "jpgomd.com*", "*://nogomd.com*", "*.nogomd.com*", "nogomd.com*", "*://asgrsv.com*", "*.asgrsv.com*", "asgrsv.com*", "*://decrsv.com*", "*.decrsv.com*", "decrsv.com*", "*://jpgrsv.com*", "*.jpgrsv.com*", "jpgrsv.com*", "*89.34.90.203/winup2*", "*89.34.90.203/mestos2.zip*") OR dest IN ("apartments-review8509831.sbs", "*.apartments-review8509831.sbs", "apartments-review28829031.sbs", "*.apartments-review28829031.sbs", "apartments-review6125431.sbs", "*.apartments-review6125431.sbs", "apartments-review261679200.sbs", "*.apartments-review261679200.sbs", "apartments-review2138768.sbs", "*.apartments-review2138768.sbs", "apartments-review261634860.sbs", "*.apartments-review261634860.sbs", "apartments-review9384643.sbs", "*.apartments-review9384643.sbs", "asgomd.com", "*.asgomd.com", "bksju.com", "*.bksju.com", "bksnb.com", "*.bksnb.com", "decrmd.com", "*.decrmd.com", "jpgomd.com", "*.jpgomd.com", "nogomd.com", "*.nogomd.com", "asgrsv.com", "*.asgrsv.com", "decrsv.com", "*.decrsv.com", "jpgrsv.com", "*.jpgrsv.com")
+    | rex field=url "(?i)(?<ioc>89\.34\.90\.203/winup2|89\.34\.90\.203/mestos2\.zip|apartments\-review8509831\.sbs|apartments\-review28829031\.sbs|apartments\-review6125431\.sbs|apartments\-review261679200\.sbs|apartments\-review2138768\.sbs|apartments\-review261634860\.sbs|apartments\-review9384643\.sbs|asgomd\.com|bksju\.com|bksnb\.com|decrmd\.com|jpgomd\.com|nogomd\.com|asgrsv\.com|decrsv\.com|jpgrsv\.com)"
+    | eval ioc=coalesce(ioc, dest), data_model="web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search `rti_endpoint(explorer.exe OR powershell.exe OR winup2 OR 1495423691)`
+    | where match(coalesce(parent_process_name, ""), "(?i)^explorer\.exe$") AND match(coalesce(process_name, ""), "(?i)^powershell\.exe$") AND match(coalesce(process, ""), "(?i)(iwr|irm|Invoke-WebRequest|Invoke-RestMethod)") AND match(coalesce(process, ""), "(?i)(winup2|1495423691|89\.34\.90\.203)")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="ClickFix PowerShell iwr of winup2 from the decimal IP", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(("winup2.ps1" OR mestos2.zip))`
+    | where match(coalesce(file_name, file_path, ""), "(?i)(winup2\.ps1|mestos2\.zip)")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="winup2.ps1 or mestos2.zip written or downloaded", ioc_type="behaviour (alert)"
+]
+| append [
+    search `rti_endpoint(winup2.ps1 OR mestos2.zip)`
+    | where match(coalesce(process, ""), "(?i)(winup2\.ps1|mestos2\.zip|89\.34\.90\.203/mestos2)")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="winup2.ps1 or mestos2.zip written or downloaded", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint(("NetSupport.lnk" OR "Service.exe"))`
+    | where match(coalesce(file_name, ""), "(?i)^NetSupport\.lnk$") OR (match(coalesce(file_name, ""), "(?i)^Service\.exe$") AND match(coalesce(file_path, ""), "(?i)AppData.Roaming.NetSupport"))
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="Startup NetSupport.lnk pointing at AppData Service.exe", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_web(apartments-review OR asgomd.com OR asgrsv.com OR 89.34.90.203 OR 45.227.254.179 OR 45.227.254.10)`
+    | where match(coalesce(url, dest, dest_host, ""), "(?i)(apartments-review|asgomd\.com|asgrsv\.com|bksju\.com|bksnb\.com|decrmd\.com|jpgomd\.com|nogomd\.com|decrsv\.com|jpgrsv\.com|89\.34\.90\.203|45\.227\.254\.179|45\.227\.254\.10)")
+    | eval host=dest, user=user, src=src, dest=dest, detail="HTTP ".coalesce(status, "-")." ".coalesce(url, "-")." UA: ".coalesce(http_user_agent, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="web"
+    | eval ioc="Lookups for apartments-review*.sbs or the gateway domains", ioc_type="behaviour (alert)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count
