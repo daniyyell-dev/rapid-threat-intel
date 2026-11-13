@@ -83,7 +83,7 @@ If nothing matches, the page says the value is not in this feed, and that this d
 | Sector | Threats whose sources name that sector. *Not stated* shows threats with no sector in their sources |
 | Reset filters | Clears all the filters |
 
-Each option shows how many threats match it. The count next to the *Live feed* heading reads *n threats, newest first* when nothing is filtered, or *n of m threats* when something is. A filter that is in use is outlined in pink.
+Each option shows how many threats match it. The count next to the *Live feed* heading reads *n threats, newest first* when nothing is filtered, or *n of m threats* when something is. A filter that is in use is outlined in red.
 
 ## Defanging and the copy button
 
