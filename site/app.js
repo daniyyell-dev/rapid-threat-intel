@@ -1315,27 +1315,76 @@
       }))
     ]);
   }
+  var SOURCE_ORGS = null;
+  var SOURCE_GROUPS = [
+    { id: "vendors", label: "Vendors", kinds: { vendor: 1, research: 1 } },
+    { id: "certs", label: "CERTs & government", kinds: { cert: 1 } },
+    { id: "community", label: "Community", kinds: { community: 1 } },
+    { id: "news", label: "News", kinds: { news: 1 } }
+  ];
+  function loadSourceOrgs() {
+    if (SOURCE_ORGS) return Promise.resolve(SOURCE_ORGS);
+    return getJSON("sources.json").then(function (d) {
+      SOURCE_ORGS = (d && d.organizations) || [];
+      return SOURCE_ORGS;
+    }, function () { SOURCE_ORGS = []; return SOURCE_ORGS; });
+  }
+  function srcTile(o, decorative) {
+    var cls = "src-tile" + (o.logo ? "" : " is-text") + (o.wide ? " is-wide" : "") +
+      (o.tone === "light" ? " is-light" : " is-dark") + (o.colorful ? " is-colorful" : "") +
+      (o.solid ? " is-solid" : "");
+    var inner;
+    if (o.logo) {
+      inner = [h("img", { src: o.logo, alt: o.name, title: o.name, width: "96", height: "40" }),
+               h("span", { class: "src-nm", text: o.name })];
+    } else {
+      inner = h("span", { class: "src-nm src-nm-only", text: o.name, title: o.name });
+    }
+    var attrs = { class: cls, href: o.homepage, target: "_blank", rel: "noopener", title: o.name };
+    if (decorative) { attrs.tabindex = "-1"; attrs["aria-hidden"] = "true"; }
+    return h("a", attrs, inner);
+  }
+  function srcMarquee(orgs) {
+    var withLogo = orgs.filter(function (o) { return o.logo; });
+    if (withLogo.length < 6) return null;
+    var rows = [[], [], []];
+    withLogo.forEach(function (o, i) { rows[i % 3].push(o); });
+    return h("div", { class: "src-marquee", "aria-hidden": "true" }, rows.map(function (row, i) {
+      if (!row.length) return null;
+      // Repeat the row so a CSS -50% translate loops without a gap.
+      var tiles = row.concat(row).map(function (o) { return srcTile(o, true); });
+      // If a row is short, double again so the strip is wider than the page.
+      if (row.length < 8) tiles = tiles.concat(row.concat(row).map(function (o) { return srcTile(o, true); }));
+      return h("div", { class: "src-marquee-row" }, h("div", { class: "src-track" }, tiles));
+    }));
+  }
   function renderSources() {
     var el = $("view-sources");
     if (!el || !DATA) return;
-    var list = uniqueSources();
-    clear(el);
-    add(el, [
-      h("div", { class: "catalog-head" }, h("h1", null, "Sources"), h("span", { class: "src-count", text: plural(list.length, "source") })),
-      h("p", { class: "catalog-meta" }, "Every cited source in this feed, with the threats it supports."),
-      h("ol", { class: "catalog" }, list.map(function (s) {
-        return h("li", { class: "catalog-item" },
-          s.url ? extLink(s.url, s.name, "tlink") : h("b", { text: s.name }),
-          h("p", { class: "catalog-meta" },
-            plural(s.count, "threat"), " · ",
-            s.threats.slice(0, 4).map(function (t, i) {
-              return [i ? ", " : null, h("a", { class: "tlink", href: "#threat/" + encodeURIComponent(t.id), text: stitle(t) })];
-            }),
-            s.threats.length > 4 ? " +" + (s.threats.length - 4) + " more" : null));
-      }))
-    ]);
+    loadSourceOrgs().then(function (orgs) {
+      if (VIEW !== "sources") return;
+      clear(el);
+      var n = orgs.length;
+      var groups = SOURCE_GROUPS.map(function (g) {
+        var list = orgs.filter(function (o) { return g.kinds[o.kind]; })
+          .sort(function (a, b) { return a.name.localeCompare(b.name); });
+        if (!list.length) return null;
+        return h("section", { class: "src-group", "data-kind": g.id, "aria-labelledby": "src-h-" + g.id },
+          h("h2", { class: "src-group-h", id: "src-h-" + g.id, text: g.label }),
+          h("ul", { class: "src-grid" }, list.map(function (o) {
+            return h("li", null, srcTile(o, false));
+          })));
+      });
+      add(el, [
+        h("div", { class: "catalog-head" }, h("h1", null, "Sources"), h("span", { class: "src-count", text: plural(n, "source") })),
+        h("p", { class: "catalog-meta" }, "Every organisation cited in this feed. Each mark links to the organisation's site."),
+        srcMarquee(orgs),
+        groups,
+        h("p", { class: "src-legal" }, "Logos are trademarks of their owners, used only to credit sources. No endorsement implied.")
+      ]);
+      el.classList.add("src-page");
+    });
   }
-
 
   function rumourStatusClass(st) {
     if (st === "Promoted") return "promoted";
