@@ -25,12 +25,41 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
       - name: Setup Pages
         uses: actions/configure-pages@v6
       - name: Upload site
         uses: actions/upload-pages-artifact@v5
         with:
           path: site
+          include-hidden-files: true
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+      - name: Ping IndexNow
+        if: success()
+        continue-on-error: true
+        env:
+          KEY: 58cd380068e92e34466fb559e7dd9e5f
+        run: |
+          # Notify search engines of pages changed by this push. A failure here never fails the deploy.
+          git diff --name-only HEAD~1 HEAD -- site/index.html site/feed.json 'site/t/*/index.html' > "$RUNNER_TEMP/changed.txt" 2>/dev/null || true
+          urls=$(python3 - "$RUNNER_TEMP/changed.txt" <<'PY'
+          import json, re, sys
+          out = []
+          for line in open(sys.argv[1]):
+              line = line.strip()
+              m = re.fullmatch(r"site/t/([^/]+)/index\.html", line)
+              if m:
+                  out.append(f"https://iocwatch.com/t/{m.group(1)}/")
+              elif line in ("site/index.html", "site/feed.json") and "https://iocwatch.com/" not in out:
+                  out.append("https://iocwatch.com/")
+          print(json.dumps(out))
+          PY
+          )
+          if [ "$urls" = "[]" ] || [ -z "$urls" ]; then echo "No changed pages"; exit 0; fi
+          sleep 30
+          body=$(printf '{"host":"iocwatch.com","key":"%s","keyLocation":"https://iocwatch.com/%s.txt","urlList":%s}' "$KEY" "$KEY" "$urls")
+          code=$(curl -s -m 30 -o /dev/null -w '%{http_code}' -X POST https://api.indexnow.org/indexnow -H 'Content-Type: application/json; charset=utf-8' --data "$body" || echo 000)
+          echo "IndexNow HTTP $code"
