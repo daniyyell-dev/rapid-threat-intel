@@ -10,7 +10,7 @@
   var RUMOURS = { rumours: [], disclaimer: "Early reports, no IOCs yet. Not on the block list." };
   var ALL_IND = [];
   var TYPE_LABEL = {
-    ipv4: "IPv4", domain: "Domain", url: "URL", sha256: "SHA256", sha1: "SHA1", md5: "MD5", filename: "File name",
+    ipv4: "IPv4", ipv6: "IPv6", domain: "Domain", url: "URL", sha256: "SHA256", sha1: "SHA1", md5: "MD5", filename: "File name",
     email: "Email", eth_address: "Ethereum/Polygon address", ssh_pubkey: "SSH public key", session_id: "Session ID",
     function_selector: "Function selector", xmr_address: "Monero address", other: "Other"
   };
@@ -1248,52 +1248,305 @@
   function renderBlock() {
     var el = $("view-block");
     if (!el || !DATA) return;
+    var PAGE = 50;
+    var RAW = "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/all/";
     var items = [];
     DATA.threats.forEach(function (t) {
-      t.indicators.forEach(function (ind) {
-        if (ind.recommended_action === "block") items.push({ ind: ind, threat: t });
+      var when = ukTime(t.entry_date);
+      (t.indicators || []).forEach(function (ind) {
+        if (ind.recommended_action !== "block") return;
+        items.push({ ind: ind, threat: t, added: t.entry_date, ms: when ? when.ms : 0 });
       });
     });
-    var q = h("input", { type: "search", id: "block-q", placeholder: "Filter by value or description", spellcheck: "false", "aria-label": "Filter block list" });
-    var ts = h("select", { id: "block-type", "aria-label": "Indicator type" }, h("option", { value: "" }, "All types"));
-    var types = {};
-    items.forEach(function (x) { types[x.ind.type] = (types[x.ind.type] || 0) + 1; });
-    Object.keys(types).sort(function (a, b) { return types[b] - types[a] || a.localeCompare(b); })
-      .forEach(function (t) { ts.appendChild(h("option", { value: t }, typeLabel(t) + " (" + types[t] + ")")); });
-    var body = h("tbody");
-    var countEl = h("span");
-    function fill() {
-      clear(body);
-      var needle = refang(q.value).toLowerCase(), ty = ts.value, n = 0;
-      items.forEach(function (x) {
-        var ind = x.ind;
-        if (ty && ind.type !== ty) return;
-        if (needle && (ind.value + " " + (ind.description || "")).toLowerCase().indexOf(needle) === -1) return;
-        n++;
-        body.appendChild(h("tr", null,
-          h("td", { class: "ind" }, iocCell(ind)),
-          h("td", null, typeTag(ind.type)),
-          h("td", null, confMeter(ind.confidence)),
-          h("td", null, h("a", { class: "tlink", href: "#threat/" + encodeURIComponent(x.threat.id), text: stitle(x.threat), title: x.threat.name })),
-          h("td", { class: "desc" }, ind.description || "")));
-      });
-      countEl.textContent = n === items.length ? plural(n, "indicator") : n + " of " + items.length;
-      if (!n) body.appendChild(h("tr", null, h("td", { colspan: "5", class: "none" }, "No indicators match this filter.")));
+    var counts = { all: items.length, ip: 0, domain: 0, url: 0, sha256: 0, sha1: 0, other: 0 };
+    items.forEach(function (x) {
+      var ty = x.ind.type;
+      if (ty === "ipv4" || ty === "ipv6") counts.ip++;
+      else if (ty === "domain") counts.domain++;
+      else if (ty === "url") counts.url++;
+      else if (ty === "sha256") counts.sha256++;
+      else if (ty === "sha1") counts.sha1++;
+      else counts.other++;
+    });
+    var tabs = [
+      { id: "all", label: "All", file: "block_now.txt" },
+      { id: "ip", label: "IPs", file: "block_now_ipv4.txt" },
+      { id: "domain", label: "Domains", file: "block_now_domain.txt" },
+      { id: "url", label: "URLs", file: "block_now_url.txt" },
+      { id: "sha256", label: "SHA256", file: "block_now_sha256.txt" },
+      { id: "sha1", label: "SHA1", file: "block_now_sha1.txt" },
+      { id: "other", label: "Other", file: null }
+    ].filter(function (tab) { return tab.id === "all" || counts[tab.id] > 0; });
+    var files = {};
+    ((DATA && DATA.combined_files) || []).forEach(function (f) { files[f.name] = f; });
+
+    var state = { tab: "all", format: "plain", range: "all", q: "", page: 1 };
+
+    function tabMatch(x) {
+      var ty = x.ind.type, id = state.tab;
+      if (id === "all") return true;
+      if (id === "ip") return ty === "ipv4" || ty === "ipv6";
+      if (id === "other") return ty !== "ipv4" && ty !== "ipv6" && ty !== "domain" && ty !== "url" && ty !== "sha256" && ty !== "sha1";
+      return ty === id;
     }
-    q.addEventListener("input", fill);
-    ts.addEventListener("change", fill);
-    fill();
+    function inRange(x) {
+      if (state.range === "all") return true;
+      if (!x.ms) return false;
+      var age = Date.now() - x.ms;
+      if (state.range === "24h") return age <= 86400000;
+      if (state.range === "7d") return age <= 86400000 * 7;
+      return true;
+    }
+    function matchesQ(x) {
+      var needle = refang(state.q).toLowerCase().trim();
+      if (!needle) return true;
+      var t = x.threat;
+      var hay = (x.ind.value || "") + " " + stitle(t) + " " + (t.name || "") + " " + (t.news_headline || "") + " " + (t.short_title || "");
+      return hay.toLowerCase().indexOf(needle) !== -1;
+    }
+    function visible() { return items.filter(function (x) { return tabMatch(x) && inRange(x) && matchesQ(x); }); }
+
+    function shortVal(ind) {
+      var s = defang(ind.value, ind.type);
+      var typ = ind.type;
+      if (typ === "ipv4" || typ === "ipv6") return s;
+      var keep = typ === "url" ? 16 : typ === "domain" ? 14 : 10;
+      if (s.length <= keep * 2 + 1) return s;
+      return s.slice(0, keep) + "\u2026" + s.slice(-keep);
+    }
+    function combined(name) {
+      return files[name] || (name ? { name: name, label: name, url: RAW + name, download: name } : null);
+    }
+    function currentTab() {
+      for (var i = 0; i < tabs.length; i++) if (tabs[i].id === state.tab) return tabs[i];
+      return tabs[0];
+    }
+    function officialFile() {
+      var fmt = state.format, tab = currentTab();
+      if (fmt === "defender") return combined("defender_xdr_indicators.csv");
+      if (fmt === "splunk") return combined("splunk_rti_iocs.csv");
+      if (fmt === "pihole") return combined("block_now_domain.txt");
+      if (fmt === "edl" || fmt === "plain") return tab.file ? combined(tab.file) : null;
+      return tab.file ? combined(tab.file) : null;
+    }
+    function howTo() {
+      var fmt = state.format;
+      if (fmt === "defender") return "Import this CSV in Microsoft Defender XDR, under Settings, Indicators.";
+      if (fmt === "splunk") return "Upload this CSV as a Splunk lookup named splunk_rti_iocs.csv, then run the live-feed hunt.";
+      if (fmt === "edl") return "Paste this URL as an External Dynamic List in Palo Alto or a Fortinet threat feed. It always serves the latest list.";
+      if (fmt === "pihole") return "Add the domain list URL as a Pi-hole adlist, or paste the domains into Gravity.";
+      return "Copy the list and paste it into your firewall, EDR or DNS blocklist. Copy all uses the filters above.";
+    }
+
+    function copyValues(list, btn) {
+      var lines = list.map(function (x) { return x.ind.value; });
+      if (!lines.length) { toast("Nothing to copy"); return; }
+      copyText(lines.join("\n"), btn);
+      trackClick("copy");
+    }
+    function downloadOfficial(f) {
+      if (!f) return;
+      var a = h("a", { href: f.url, download: f.download || f.name, rel: "noopener noreferrer", target: "_blank" });
+      saveOnClick(a, f);
+      a.click();
+    }
+    function downloadGenerated(list, name) {
+      var text = list.map(function (x) { return x.ind.value; }).join("\n");
+      if (!text) { toast("Nothing to download"); return; }
+      var blob = new Blob([text + "\n"], { type: "text/plain" });
+      var u = URL.createObjectURL(blob);
+      var a = h("a", { href: u, download: name || "block_now.txt" });
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(u); }, 4000);
+      trackDownload();
+      toast("Downloaded " + (name || "block_now.txt"));
+    }
+
+    var tabBar = h("div", { class: "blk-tabs", role: "tablist", "aria-label": "Indicator type" });
+    var acts = h("div", { class: "blk-acts" });
+    var howEl = h("p", { class: "blk-how" });
+    var urlEl = h("div", { class: "blk-url" });
+    var q = h("input", { type: "search", id: "block-q", placeholder: "Search values or threats", spellcheck: "false", "aria-label": "Search values or threats" });
+    var rangeBar = h("div", { class: "blk-range", role: "group", "aria-label": "Added date" });
+    var tableBody = h("tbody");
+    var cards = h("div", { class: "blk-cards" });
+    var pageEl = h("div", { class: "blk-page" });
+    var shownEl = h("span");
+
+    function setTab(id) {
+      state.tab = id;
+      state.page = 1;
+      Array.prototype.forEach.call(tabBar.querySelectorAll(".blk-tab"), function (b) {
+        b.setAttribute("aria-selected", b.getAttribute("data-tab") === id ? "true" : "false");
+      });
+      draw();
+    }
+    function setRange(id) {
+      state.range = id;
+      state.page = 1;
+      Array.prototype.forEach.call(rangeBar.querySelectorAll("button"), function (b) {
+        b.setAttribute("aria-pressed", b.getAttribute("data-range") === id ? "true" : "false");
+      });
+      draw();
+    }
+
+    tabs.forEach(function (tab) {
+      var b = h("button", { type: "button", class: "blk-tab", role: "tab", "data-tab": tab.id, "aria-selected": tab.id === state.tab ? "true" : "false" },
+        tab.label, h("b", { text: String(counts[tab.id]) }));
+      b.addEventListener("click", function () { setTab(tab.id); });
+      tabBar.appendChild(b);
+    });
+    [["24h", "Last 24h"], ["7d", "Last 7d"], ["all", "All"]].forEach(function (pair) {
+      var b = h("button", { type: "button", "data-range": pair[0], "aria-pressed": pair[0] === state.range ? "true" : "false", text: pair[1] });
+      b.addEventListener("click", function () { setRange(pair[0]); });
+      rangeBar.appendChild(b);
+    });
+
+    var fmt = h("select", { id: "block-fmt", "aria-label": "Format" },
+      h("option", { value: "plain" }, "Plain list"),
+      h("option", { value: "defender" }, "Defender XDR CSV"),
+      h("option", { value: "splunk" }, "Splunk lookup"),
+      h("option", { value: "edl" }, "Palo Alto / Fortinet EDL"),
+      h("option", { value: "pihole" }, "Pi-hole / DNS")
+    );
+    fmt.addEventListener("change", function () { state.format = fmt.value; draw(); });
+
+    function valCell(x) {
+      var ind = x.ind;
+      var shown = shortVal(ind);
+      var full = defang(ind.value, ind.type);
+      var code = h("code", { class: "blk-val", title: full, text: shown });
+      var btn = h("button", { type: "button", class: "copy", title: "Copy the real (not defanged) value", "aria-label": "Copy " + full }, "Copy");
+      function doCopy() { copyText(ind.value, btn); trackClick("copy"); }
+      btn.addEventListener("click", doCopy);
+      code.addEventListener("click", doCopy);
+      code.style.cursor = "pointer";
+      return h("div", { class: "blk-valcell" }, code, btn);
+    }
+    function confEl(c) {
+      var key = (c || "high").toLowerCase();
+      var label = key.charAt(0).toUpperCase() + key.slice(1);
+      return h("span", { class: "blk-conf " + key, text: label });
+    }
+    function threatLink(t) {
+      var name = stitle(t);
+      return h("a", { class: "blk-threat", href: "/t/" + encodeURIComponent(t.id) + "/", title: t.name || name, text: name });
+    }
+
+    function drawActions(list) {
+      clear(acts);
+      clear(urlEl);
+      var f = officialFile();
+      var fmtId = state.format;
+      var copyBtn = h("button", { type: "button", class: "btn btn-ghost" });
+      var dlBtn = h("button", { type: "button", class: "btn btn-ghost" }, "Download " + (fmtId === "defender" || fmtId === "splunk" ? ".csv" : ".txt"));
+      if (fmtId === "plain") {
+        copyBtn.textContent = "Copy all";
+        copyBtn.addEventListener("click", function () { copyValues(list, copyBtn); });
+        dlBtn.addEventListener("click", function () {
+          var filtered = !!(state.q || state.range !== "all" || (state.tab === "ip" && counts.ip && !f));
+          var tab = currentTab();
+          if (!filtered && f && state.tab !== "other" && state.tab !== "ip") downloadOfficial(f);
+          else downloadGenerated(list, "block_now_" + (tab.id === "all" ? "all" : tab.id) + ".txt");
+        });
+        add(acts, [copyBtn, dlBtn]);
+        urlEl.hidden = true;
+      } else {
+        copyBtn.textContent = "Copy URL";
+        var url = f && f.url;
+        copyBtn.addEventListener("click", function () {
+          if (!url) { toast("No URL for this format"); return; }
+          copyText(url, copyBtn);
+          trackClick("copy");
+        });
+        dlBtn.addEventListener("click", function () { if (f) downloadOfficial(f); });
+        if (url) add(urlEl, h("code", { title: url, text: url }));
+        urlEl.hidden = !url;
+        add(acts, [copyBtn, dlBtn]);
+      }
+      howEl.textContent = howTo();
+    }
+
+    function draw() {
+      var list = visible();
+      var pages = Math.max(1, Math.ceil(list.length / PAGE));
+      if (state.page > pages) state.page = pages;
+      var start = (state.page - 1) * PAGE;
+      var slice = list.slice(start, start + PAGE);
+      clear(tableBody);
+      clear(cards);
+      if (!list.length) {
+        tableBody.appendChild(h("tr", null, h("td", { colspan: "5", class: "blk-empty" }, "No indicators match this filter.")));
+        cards.appendChild(h("p", { class: "blk-empty", text: "No indicators match this filter." }));
+      } else {
+        slice.forEach(function (x) {
+          tableBody.appendChild(h("tr", null,
+            h("td", null, valCell(x)),
+            h("td", { class: "blk-type", text: typeLabel(x.ind.type) }),
+            h("td", null, threatLink(x.threat)),
+            h("td", { class: "blk-date", text: fmtDay(x.added) }),
+            h("td", null, confEl(x.ind.confidence))
+          ));
+          cards.appendChild(h("article", { class: "blk-card" },
+            valCell(x),
+            h("div", { class: "blk-card-meta" },
+              h("span", { class: "blk-type", text: typeLabel(x.ind.type) }),
+              confEl(x.ind.confidence),
+              h("span", { class: "blk-date", text: fmtDay(x.added) })
+            ),
+            threatLink(x.threat)
+          ));
+        });
+      }
+      var from = list.length ? start + 1 : 0;
+      var to = start + slice.length;
+      shownEl.textContent = list.length === items.length && state.tab === "all" && !state.q && state.range === "all"
+        ? (from + "\u2013" + to + " of " + list.length)
+        : (from + "\u2013" + to + " of " + list.length + " matching");
+      clear(pageEl);
+      var prev = h("button", { type: "button", text: "Previous" });
+      var next = h("button", { type: "button", text: "Next" });
+      prev.disabled = state.page <= 1;
+      next.disabled = state.page >= pages;
+      prev.addEventListener("click", function () { if (state.page > 1) { state.page--; draw(); } });
+      next.addEventListener("click", function () { if (state.page < pages) { state.page++; draw(); } });
+      add(pageEl, [shownEl, h("div", { class: "blk-page-nav" }, prev, next)]);
+      pageEl.hidden = list.length <= PAGE && state.page === 1;
+      drawActions(list);
+    }
+
+    q.addEventListener("input", function () { state.q = q.value; state.page = 1; draw(); });
+
+    var total = DATA.block_now_count || items.length;
+    var updated = DATA.last_updated ? fmtAdded(DATA.last_updated) : "";
     clear(el);
     add(el, [
-      h("div", { class: "catalog-head" }, h("h1", null, "Block list"), countEl),
-      h("p", { class: "catalog-meta" }, "High-confidence indicators to block now, across every threat. Values are shown defanged. Copy gives the real value."),
-      h("section", { class: "blk-files", "aria-labelledby": "all-h" }, h("h2", { id: "all-h", class: "sub-h", text: "Download" }), fileList(DATA.combined_files)),
-      h("div", { class: "catalog-tools" }, q, ts),
-      h("div", { class: "tbl-wrap" }, h("table", null,
-        h("thead", null, h("tr", null, ["Indicator", "Type", "Confidence", "Threat", "Description"].map(function (x) { return h("th", { scope: "col", text: x }); }))),
-        body))
+      h("div", { class: "blk-head" },
+        h("h1", null, "Block list"),
+        h("p", { class: "blk-sum" },
+          h("span", { class: "blk-n", text: String(total) }),
+          " to block",
+          updated ? h("span", { class: "blk-upd" }, " \u00b7 Updated " + updated) : null
+        )
+      ),
+      h("p", { class: "blk-note", text: "Never block private, documentation or shared legitimate services." }),
+      tabBar,
+      h("div", { class: "blk-actions" }, acts, h("div", { class: "blk-fmt" }, h("label", { "for": "block-fmt" }, "Format"), fmt), howEl, urlEl),
+      h("div", { class: "blk-tools" }, q, rangeBar),
+      h("div", { class: "blk-table-wrap" },
+        h("table", { class: "blk-table" },
+          h("thead", null, h("tr", null,
+            ["Value", "Type", "Threat", "Added", "Confidence"].map(function (x) { return h("th", { scope: "col", text: x }); })
+          )),
+          tableBody
+        )
+      ),
+      cards,
+      pageEl
     ]);
+    draw();
   }
+
   function renderHunts() {
     var el = $("view-hunts");
     if (!el || !DATA) return;
