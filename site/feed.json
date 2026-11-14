@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-14 09:20",
- "threat_count": 58,
- "indicator_count": 1596,
- "block_now_count": 719,
+ "last_updated": "2026-11-14 10:17",
+ "threat_count": 59,
+ "indicator_count": 1604,
+ "block_now_count": 725,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -102,6 +102,431 @@
   }
  ],
  "threats": [
+  {
+   "id": "Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor",
+   "folder": "threats/2026-11_November-2026/2026-11-14/Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor",
+   "name": "Trojanized Claude Code IDE Extension Plants Persistent Reverse SSH Backdoor on Developer Machines",
+   "short": "Claude Code extension SSH backdoor",
+   "category": "Supply chain / developer tools",
+   "published": "2026-10-30",
+   "entry_date": "2026-11-14 10:17",
+   "last_updated": "2026-11-14",
+   "seq": 59,
+   "headline": "Tampered Claude Code editor extension served for 11 hours adds an attacker SSH key and a persistent reverse SSH tunnel on developer machines",
+   "summary": "On 29 October 2026 an attacker used a credential stolen in a vendor-side key exposure to place tampered copies of the anthropic.claude-code extension (versions 2.1.312 and 2.1.313, macOS arm64 and Windows x64) on the cache that serves the Cursor editor's extension marketplace. The builds were live for about 11 hours (09:27-20:35 UTC) and up to 5,000 users may have received them; Anthropic did not publish them and the VS Code Marketplace, npm and Open VSX copies were clean. A loader prepended to extension.js runs when the editor starts, collects the hostname, user, OS, git email, public IP and the names of secret-looking environment variables, adds an attacker SSH key marked svc-telemetry to authorized_keys, tries to enable SSH, opens a persistent reverse SSH tunnel to 134.209.82.225 as user tunnel, installs persistence (SysMon scheduled task or Startup sysmon.cmd on Windows, com.apple.sysmond LaunchAgent on macOS, @reboot cron on Linux) and posts host details to port 8099. The six file hashes are on the block list; the C2 address is alert and hunt.",
+   "caveat": "134.209.82.225 is DigitalOcean cloud hosting and was reported taken down, so it is alert and hunt rather than block; use it to find past victims in 30-90 days of network logs. Removing or updating the extension does not remove the SSH key, scripts or startup entries. ifconfig.me and api.ipify.org lookups are legitimate services the loader also calls and are not indicators on their own.",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Worldwide"
+    ],
+    "sectors": [
+     "Software development"
+    ],
+    "note": "Developers who installed the tampered extension builds from the editor marketplace on 29 October 2026; no countries or sectors are named.",
+    "source": {
+     "url": "https://cursor.com/blog/claude-code-extension-security-notice",
+     "label": "Cursor – Security notice: malicious Anthropic.claude-code 2.1.312 and 2.1.313 in the extension marketplace",
+     "name": "Cursor"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1195.002",
+     "name": "Supply Chain Compromise: Compromise Software Supply Chain",
+     "url": "https://attack.mitre.org/techniques/T1195/002/"
+    },
+    {
+     "id": "T1098.004",
+     "name": "Account Manipulation: SSH Authorized Keys",
+     "url": "https://attack.mitre.org/techniques/T1098/004/"
+    },
+    {
+     "id": "T1572",
+     "name": "Protocol Tunneling",
+     "url": "https://attack.mitre.org/techniques/T1572/"
+    },
+    {
+     "id": "T1021.004",
+     "name": "Remote Services: SSH",
+     "url": "https://attack.mitre.org/techniques/T1021/004/"
+    },
+    {
+     "id": "T1053.005",
+     "name": "Scheduled Task/Job: Scheduled Task",
+     "url": "https://attack.mitre.org/techniques/T1053/005/"
+    },
+    {
+     "id": "T1547.001",
+     "name": "Boot or Logon Autostart: Startup Folder",
+     "url": "https://attack.mitre.org/techniques/T1547/001/"
+    },
+    {
+     "id": "T1543.001",
+     "name": "Create or Modify System Process: Launch Agent",
+     "url": "https://attack.mitre.org/techniques/T1543/001/"
+    },
+    {
+     "id": "T1053.003",
+     "name": "Scheduled Task/Job: Cron",
+     "url": "https://attack.mitre.org/techniques/T1053/003/"
+    },
+    {
+     "id": "T1082",
+     "name": "System Information Discovery",
+     "url": "https://attack.mitre.org/techniques/T1082/"
+    },
+    {
+     "id": "T1071.001",
+     "name": "Application Layer Protocol: Web Protocols",
+     "url": "https://attack.mitre.org/techniques/T1071/001/"
+    }
+   ],
+   "recommended_actions": [
+    "Find every machine that installed or auto-updated anthropic.claude-code 2.1.312 or 2.1.313 from the Cursor marketplace between 09:27 and 20:35 UTC on 29 October 2026, and search 90 days of firewall, proxy and EDR network logs for 134.209.82.225 (TCP 22 and 8099).",
+    "On those machines check ~/.ssh/authorized_keys (Windows: %USERPROFILE%\\.ssh\\authorized_keys and C:\\ProgramData\\ssh\\administrators_authorized_keys) for a key with the comment svc-telemetry and fingerprint SHA256:0Z6R+DF64Do2nwQic8a7kkfDLNNk4IiK+2U2Rci4htk, and remove only that entry after collecting evidence.",
+    "Remove the persistence: ~/.config/.smt, ~/.config/.smtk and ~/Library/LaunchAgents/com.apple.sysmond.plist on macOS, the @reboot crontab line on Linux, and the SysMon scheduled task, Startup\\sysmon.cmd, %USERPROFILE%\\.config\\smt.cmd and smtk on Windows; kill ssh or autossh processes running -N -R *:0:localhost:22 and delete $TMPDIR/.stk_* files.",
+    "Rotate every credential reachable from an affected machine (git, SSH, cloud, API keys and tokens held in environment variables) from a clean device, and review SSH logons to the machine since 29 October.",
+    "Restrict editor extensions to approved publishers and set an installation cooldown for newly published versions."
+   ],
+   "sources": [
+    {
+     "url": "https://cursor.com/blog/claude-code-extension-security-notice",
+     "label": "Cursor – Security notice: malicious Anthropic.claude-code 2.1.312 and 2.1.313 in the extension marketplace",
+     "name": "Cursor"
+    },
+    {
+     "url": "https://cursor.com/blog/security-incident-update",
+     "label": "Cursor – An update on our recent security incident (13 November 2026)",
+     "name": "Cursor (2)"
+    },
+    {
+     "url": "https://www.microsoft.com/en-us/security/blog/2026/10/30/inside-malicious-claude-code-branded-cursor-extension-persistent-ssh-backdoor/",
+     "label": "Microsoft Threat Intelligence – Inside a malicious Claude Code-branded extension and its persistent SSH backdoor",
+     "name": "Microsoft"
+    },
+    {
+     "url": "https://threatlabs.netskope.com/blog/2026/10/trojanized-claude-code-extension",
+     "label": "Netskope Threat Labs – Trojanized Claude Code extension",
+     "name": "Netskope Threat Labs"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2004556/",
+     "label": "ThreatFox – 134.209.82.225:8099/beacon (IOC 2004556)",
+     "name": "ThreatFox"
+    },
+    {
+     "url": "https://bazaar.abuse.ch/sample/ecb58cb29078d9646ad1dcdbe51526f2d9cfea06be5fb2ab183e8ecc3ab6bf15/",
+     "label": "MalwareBazaar – extension.js loader sample",
+     "name": "MalwareBazaar"
+    }
+   ],
+   "indicator_count": 8,
+   "block_now_count": 6,
+   "hunt_count": 2,
+   "hunt_counts": {
+    "alert": 2
+   },
+   "indicator_counts": {
+    "sha256": 6,
+    "ipv4": 1,
+    "url": 1
+   },
+   "ioas": [
+    {
+     "artefact": "ssh or autossh opening a reverse forward from a server-assigned remote port to the local SSH port (-R *:0:localhost:22)",
+     "log_source": "Defender XDR DeviceProcessEvents (Windows and macOS); EDR process events; Linux auditd",
+     "why": "Microsoft and Netskope show the loader launching ssh (autossh -M 0 on macOS and Linux, a hidden PowerShell retry loop on Windows) with -N -R '*:0:localhost:22', host-key checks disabled and a key file from $TMPDIR/.stk_* or ~/.config/.smtk, so the attacker can reach the workstation's own SSH service through their server. Asking the remote server to allocate any port (0) and forward it back to local port 22 is not how developers or remote-support tools normally use SSH. Expected false positives are rare admin-built reverse tunnels for remote access, which usually use a fixed remote port; review the destination and parent process.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/10/30/inside-malicious-claude-code-branded-cursor-extension-persistent-ssh-backdoor/",
+     "source_name": "Microsoft",
+     "title": "ssh reverse tunnel to local port 22",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "Loader persistence files .smt, .smtk, smt.cmd, smtk, $TMPDIR/.stk_*, com.apple.sysmond.plist or Startup\\sysmon.cmd, or a SysMon scheduled task that runs smt",
+     "log_source": "Defender XDR DeviceFileEvents and DeviceEvents (ScheduledTaskCreated); EDR file events",
+     "why": "Microsoft and Netskope list these exact names: ~/.config/.smt and .smtk (macOS, Linux), %USERPROFILE%\\.config\\smt.cmd and smtk plus a SysMon scheduled task or a Startup-folder sysmon.cmd (Windows), ~/Library/LaunchAgents/com.apple.sysmond.plist (macOS) and a temporary .stk_ followed by ten hex characters key file. The names imitate monitoring tools but none belongs to Sysinternals Sysmon (which installs as a service, not a Startup batch file or a user LaunchAgent) or to Apple. Matching sysmon.cmd only in the Startup folder and the task only when it references smt keeps false positives close to none.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://threatlabs.netskope.com/blog/2026/10/trojanized-claude-code-extension",
+     "source_name": "Netskope Threat Labs",
+     "title": "SysMon, sysmond or .smt persistence files",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    },
+    {
+     "artefact": "authorized_keys or administrators_authorized_keys written by the code editor or its Node.js extension host",
+     "log_source": "Defender XDR DeviceFileEvents; file integrity monitoring on SSH key files",
+     "why": "The loader runs inside the editor's extension host and appends an Ed25519 key with the comment svc-telemetry to the user's authorized_keys (and administrators_authorized_keys on Windows where present), per Microsoft. Editors do not normally write SSH authorisation files on the local machine; remote-development extensions do this on the remote host, not the workstation. Expected false positives are developers deliberately editing authorized_keys in the editor, so confirm the svc-telemetry comment or fingerprint SHA256:0Z6R+DF64Do2nwQic8a7kkfDLNNk4IiK+2U2Rci4htk.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/10/30/inside-malicious-claude-code-branded-cursor-extension-persistent-ssh-backdoor/",
+     "source_name": "Microsoft",
+     "title": "Editor process writing authorized_keys",
+     "queries": [
+      "KQL"
+     ]
+    }
+   ],
+   "ioa_count": 3,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor/block_now.txt",
+     "download": "Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor/defender_xdr_indicators.csv",
+     "download": "Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor/hunt.kql",
+     "download": "Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor/hunt.spl",
+     "download": "Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor/hunt_raw.spl",
+     "download": "Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor/hunt.yaral",
+     "download": "Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor/iocs.csv",
+     "download": "Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-14/Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor",
+   "share_url": "https://iocwatch.com/t/Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor/",
+   "indicators": [
+    {
+     "value": "134.209.82.225",
+     "type": "ipv4",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Attacker server the tampered extension opens a reverse SSH tunnel to as user tunnel on TCP 22 and posts host details to on TCP 8099.",
+     "source_url": "https://cursor.com/blog/claude-code-extension-security-notice",
+     "source_label": "Cursor – Security notice: malicious Anthropic.claude-code 2.1.312 and 2.1.313 in the extension marketplace",
+     "source_name": "Cursor",
+     "sources": [
+      {
+       "url": "https://cursor.com/blog/claude-code-extension-security-notice",
+       "name": "Cursor"
+      },
+      {
+       "url": "https://www.microsoft.com/en-us/security/blog/2026/10/30/inside-malicious-claude-code-branded-cursor-extension-persistent-ssh-backdoor/",
+       "name": "Microsoft"
+      },
+      {
+       "url": "https://threatlabs.netskope.com/blog/2026/10/trojanized-claude-code-extension",
+       "name": "Netskope Threat Labs"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2004556/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "http://134.209.82.225:8099/beacon",
+     "type": "url",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Beacon endpoint that receives the hostname, user, OS, git email, public IP and secret-looking environment variable names via HTTP POST.",
+     "source_url": "https://cursor.com/blog/claude-code-extension-security-notice",
+     "source_label": "Cursor – Security notice: malicious Anthropic.claude-code 2.1.312 and 2.1.313 in the extension marketplace",
+     "source_name": "Cursor",
+     "sources": [
+      {
+       "url": "https://cursor.com/blog/claude-code-extension-security-notice",
+       "name": "Cursor"
+      },
+      {
+       "url": "https://www.microsoft.com/en-us/security/blog/2026/10/30/inside-malicious-claude-code-branded-cursor-extension-persistent-ssh-backdoor/",
+       "name": "Microsoft"
+      },
+      {
+       "url": "https://threatlabs.netskope.com/blog/2026/10/trojanized-claude-code-extension",
+       "name": "Netskope Threat Labs"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2004556/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "ecb58cb29078d9646ad1dcdbe51526f2d9cfea06be5fb2ab183e8ecc3ab6bf15",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Tampered extension.js in anthropic.claude-code 2.1.312 and 2.1.313 that carries the SSH backdoor loader.",
+     "source_url": "https://cursor.com/blog/claude-code-extension-security-notice",
+     "source_label": "Cursor – Security notice: malicious Anthropic.claude-code 2.1.312 and 2.1.313 in the extension marketplace",
+     "source_name": "Cursor",
+     "sources": [
+      {
+       "url": "https://cursor.com/blog/claude-code-extension-security-notice",
+       "name": "Cursor"
+      },
+      {
+       "url": "https://www.microsoft.com/en-us/security/blog/2026/10/30/inside-malicious-claude-code-branded-cursor-extension-persistent-ssh-backdoor/",
+       "name": "Microsoft"
+      },
+      {
+       "url": "https://threatlabs.netskope.com/blog/2026/10/trojanized-claude-code-extension",
+       "name": "Netskope Threat Labs"
+      },
+      {
+       "url": "https://bazaar.abuse.ch/sample/ecb58cb29078d9646ad1dcdbe51526f2d9cfea06be5fb2ab183e8ecc3ab6bf15/",
+       "name": "MalwareBazaar"
+      }
+     ]
+    },
+    {
+     "value": "7e0a52885fadee05544a9e99eb18c792bec05900a5e1a66d68f8383decb0e278",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Decoded tunnel private-key file the loader writes and passes to ssh -i to authenticate to the attacker server.",
+     "source_url": "https://www.microsoft.com/en-us/security/blog/2026/10/30/inside-malicious-claude-code-branded-cursor-extension-persistent-ssh-backdoor/",
+     "source_label": "Microsoft Threat Intelligence – Inside a malicious Claude Code-branded extension and its persistent SSH backdoor",
+     "source_name": "Microsoft",
+     "sources": [
+      {
+       "url": "https://www.microsoft.com/en-us/security/blog/2026/10/30/inside-malicious-claude-code-branded-cursor-extension-persistent-ssh-backdoor/",
+       "name": "Microsoft"
+      },
+      {
+       "url": "https://threatlabs.netskope.com/blog/2026/10/trojanized-claude-code-extension",
+       "name": "Netskope Threat Labs"
+      }
+     ]
+    },
+    {
+     "value": "fcbb327e38e61c4fec795e0d0591f52cd1014b813d20a5912104953c3a17c364",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Tampered anthropic.claude-code 2.1.312 VSIX package for macOS arm64.",
+     "source_url": "https://cursor.com/blog/claude-code-extension-security-notice",
+     "source_label": "Cursor – Security notice: malicious Anthropic.claude-code 2.1.312 and 2.1.313 in the extension marketplace",
+     "source_name": "Cursor",
+     "sources": [
+      {
+       "url": "https://cursor.com/blog/claude-code-extension-security-notice",
+       "name": "Cursor"
+      }
+     ]
+    },
+    {
+     "value": "3de1722901165769893bef57c72594e9a54459faa23f3091b136b79966edd081",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Tampered anthropic.claude-code 2.1.312 VSIX package for Windows x64.",
+     "source_url": "https://cursor.com/blog/claude-code-extension-security-notice",
+     "source_label": "Cursor – Security notice: malicious Anthropic.claude-code 2.1.312 and 2.1.313 in the extension marketplace",
+     "source_name": "Cursor",
+     "sources": [
+      {
+       "url": "https://cursor.com/blog/claude-code-extension-security-notice",
+       "name": "Cursor"
+      }
+     ]
+    },
+    {
+     "value": "80402fdcad8799285fd93044976973ca000da7995fb93363f819bb8e4f84ee6c",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Tampered anthropic.claude-code 2.1.313 VSIX package for macOS arm64.",
+     "source_url": "https://cursor.com/blog/claude-code-extension-security-notice",
+     "source_label": "Cursor – Security notice: malicious Anthropic.claude-code 2.1.312 and 2.1.313 in the extension marketplace",
+     "source_name": "Cursor",
+     "sources": [
+      {
+       "url": "https://cursor.com/blog/claude-code-extension-security-notice",
+       "name": "Cursor"
+      }
+     ]
+    },
+    {
+     "value": "6786ec90cbd45949695bd7805c9fbb26cfc91bc5fc897de0183d9bcb9cb21731",
+     "type": "sha256",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Tampered anthropic.claude-code 2.1.313 VSIX package for Windows x64.",
+     "source_url": "https://cursor.com/blog/claude-code-extension-security-notice",
+     "source_label": "Cursor – Security notice: malicious Anthropic.claude-code 2.1.312 and 2.1.313 in the extension marketplace",
+     "source_name": "Cursor",
+     "sources": [
+      {
+       "url": "https://cursor.com/blog/claude-code-extension-security-notice",
+       "name": "Cursor"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor/hunt.kql",
+     "download": "Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor/hunt.spl",
+     "download": "Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor/hunt_raw.spl",
+      "download": "Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor/hunt.yaral",
+     "download": "Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor_hunt.yaral"
+    }
+   ],
+   "short_title": "Claude Code extension backdoor"
+  },
   {
    "id": "Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure",
    "folder": "threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure",

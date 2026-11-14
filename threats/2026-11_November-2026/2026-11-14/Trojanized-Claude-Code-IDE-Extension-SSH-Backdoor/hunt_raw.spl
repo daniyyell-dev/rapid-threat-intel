@@ -1,0 +1,48 @@
+``` Threat: Trojanized Claude Code IDE Extension Plants Persistent Reverse SSH Backdoor on Developer Machines
+    Author: Daniel Jeremiah | Date: 2026-11-14
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-14/Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor ```
+| multisearch
+  [ search `rti_network(134.209.82.225)`
+    | search dest_ip IN ("134.209.82.225")
+    | eval data_model="network", ioc_type="ipv4", ioc=dest_ip, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_network(134.209.82.225)`
+    | search src_ip IN ("134.209.82.225")
+    | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_web(134.209.82.225)`
+    | search url IN ("*134.209.82.225:8099/beacon*") OR dest IN ("-")
+    | rex field=url "(?i)(?<ioc>134\.209\.82\.225:8099/beacon)"
+    | eval ioc=coalesce(ioc, dest), data_model="web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+  ]
+  [ search `rti_endpoint(ecb58cb29078d9646ad1dcdbe51526f2d9cfea06be5fb2ab183e8ecc3ab6bf15 OR 7e0a52885fadee05544a9e99eb18c792bec05900a5e1a66d68f8383decb0e278 OR fcbb327e38e61c4fec795e0d0591f52cd1014b813d20a5912104953c3a17c364 OR 3de1722901165769893bef57c72594e9a54459faa23f3091b136b79966edd081 OR 80402fdcad8799285fd93044976973ca000da7995fb93363f819bb8e4f84ee6c OR 6786ec90cbd45949695bd7805c9fbb26cfc91bc5fc897de0183d9bcb9cb21731)`
+    | search file_hash IN ("*ecb58cb29078d9646ad1dcdbe51526f2d9cfea06be5fb2ab183e8ecc3ab6bf15*", "*7e0a52885fadee05544a9e99eb18c792bec05900a5e1a66d68f8383decb0e278*", "*fcbb327e38e61c4fec795e0d0591f52cd1014b813d20a5912104953c3a17c364*", "*3de1722901165769893bef57c72594e9a54459faa23f3091b136b79966edd081*", "*80402fdcad8799285fd93044976973ca000da7995fb93363f819bb8e4f84ee6c*", "*6786ec90cbd45949695bd7805c9fbb26cfc91bc5fc897de0183d9bcb9cb21731*") OR process_hash IN ("*ecb58cb29078d9646ad1dcdbe51526f2d9cfea06be5fb2ab183e8ecc3ab6bf15*", "*7e0a52885fadee05544a9e99eb18c792bec05900a5e1a66d68f8383decb0e278*", "*fcbb327e38e61c4fec795e0d0591f52cd1014b813d20a5912104953c3a17c364*", "*3de1722901165769893bef57c72594e9a54459faa23f3091b136b79966edd081*", "*80402fdcad8799285fd93044976973ca000da7995fb93363f819bb8e4f84ee6c*", "*6786ec90cbd45949695bd7805c9fbb26cfc91bc5fc897de0183d9bcb9cb21731*") OR parent_process_hash IN ("*ecb58cb29078d9646ad1dcdbe51526f2d9cfea06be5fb2ab183e8ecc3ab6bf15*", "*7e0a52885fadee05544a9e99eb18c792bec05900a5e1a66d68f8383decb0e278*", "*fcbb327e38e61c4fec795e0d0591f52cd1014b813d20a5912104953c3a17c364*", "*3de1722901165769893bef57c72594e9a54459faa23f3091b136b79966edd081*", "*80402fdcad8799285fd93044976973ca000da7995fb93363f819bb8e4f84ee6c*", "*6786ec90cbd45949695bd7805c9fbb26cfc91bc5fc897de0183d9bcb9cb21731*")
+    | eval matched=file_hash." ".process_hash." ".parent_process_hash
+    | rex field=matched "(?i)(?<ioc>ecb58cb29078d9646ad1dcdbe51526f2d9cfea06be5fb2ab183e8ecc3ab6bf15|7e0a52885fadee05544a9e99eb18c792bec05900a5e1a66d68f8383decb0e278|fcbb327e38e61c4fec795e0d0591f52cd1014b813d20a5912104953c3a17c364|3de1722901165769893bef57c72594e9a54459faa23f3091b136b79966edd081|80402fdcad8799285fd93044976973ca000da7995fb93363f819bb8e4f84ee6c|6786ec90cbd45949695bd7805c9fbb26cfc91bc5fc897de0183d9bcb9cb21731)"
+    | eval data_model="endpoint", ioc_type=case(len(ioc)==64, "sha256", len(ioc)==40, "sha1", 1==1, "md5"), host=dest, detail=coalesce(process, file_path)
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search `rti_endpoint(localhost:22)`
+    | where match(coalesce(process_name, ""), "(?i)^(ssh|ssh\.exe|autossh)$") AND match(coalesce(process, ""), "(^|\s)-[A-Za-z]*R\s") AND match(coalesce(process, ""), "0:localhost:22")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="ssh reverse tunnel to local port 22", ioc_type="behaviour (alert)"
+]
+
+| append [
+    search `rti_endpoint((smt.cmd OR smtk OR .smt OR .smtk OR com.apple.sysmond.plist OR .stk_* OR sysmon.cmd))`
+    | where match(coalesce(file_path, file_name, ""), "(?i)([\\/]\.config[\\/](\.smt|\.smtk|smt\.cmd|smtk)$|com\.apple\.sysmond\.plist$|[\\/]\.stk_[0-9a-f]{10}$|\\Startup\\sysmon\.cmd$)")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="SysMon, sysmond or .smt persistence files", ioc_type="behaviour (alert)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count
