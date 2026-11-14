@@ -1,6 +1,6 @@
 # Barracuda Managed XDR Integration Credential Store Breach
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/Barracuda-Managed-XDR-Integration-Credential-Store-Breach/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
+[Live entry](https://iocwatch.com/t/Barracuda-Managed-XDR-Integration-Credential-Store-Breach/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

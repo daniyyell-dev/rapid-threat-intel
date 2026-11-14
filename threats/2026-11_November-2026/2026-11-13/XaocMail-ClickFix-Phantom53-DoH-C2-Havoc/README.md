@@ -1,6 +1,6 @@
 # XaocMail ClickFix Campaign Dropping Phantom53 DoH C2 and Havoc
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
+[Live entry](https://iocwatch.com/t/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

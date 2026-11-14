@@ -1,6 +1,6 @@
 # GSocket Linux Web-Server C2
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/GSocket-Linux-Web-Server-C2/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
+[Live entry](https://iocwatch.com/t/GSocket-Linux-Web-Server-C2/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

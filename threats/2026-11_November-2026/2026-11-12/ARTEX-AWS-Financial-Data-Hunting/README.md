@@ -1,6 +1,6 @@
 # ARTEX AWS Financial-Data Hunting
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/ARTEX-AWS-Financial-Data-Hunting/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
+[Live entry](https://iocwatch.com/t/ARTEX-AWS-Financial-Data-Hunting/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

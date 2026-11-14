@@ -1,6 +1,6 @@
 # Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-10](../README.md)
+[Live entry](https://iocwatch.com/t/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-10](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

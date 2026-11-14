@@ -1,6 +1,6 @@
 # BITTER PapRAT and WmRAT: ftp.exe, VHDX and WebDAV MSI Espionage Chains
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/BITTER-PapRAT-WmRAT-South-Asia-Espionage/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
+[Live entry](https://iocwatch.com/t/BITTER-PapRAT-WmRAT-South-Asia-Espionage/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

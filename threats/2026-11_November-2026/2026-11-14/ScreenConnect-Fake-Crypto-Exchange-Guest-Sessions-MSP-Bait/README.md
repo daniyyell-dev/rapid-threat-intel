@@ -1,6 +1,6 @@
 # Fake Crypto-Exchange Guest Sessions Planted on 100+ MSP ScreenConnect Servers
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/ScreenConnect-Fake-Crypto-Exchange-Guest-Sessions-MSP-Bait/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-14](../README.md)
+[Live entry](https://iocwatch.com/t/ScreenConnect-Fake-Crypto-Exchange-Guest-Sessions-MSP-Bait/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-14](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

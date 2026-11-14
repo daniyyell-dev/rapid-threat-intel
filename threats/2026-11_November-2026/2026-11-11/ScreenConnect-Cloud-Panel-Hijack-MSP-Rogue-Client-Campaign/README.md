@@ -1,6 +1,6 @@
 # ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-11](../README.md)
+[Live entry](https://iocwatch.com/t/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-11](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

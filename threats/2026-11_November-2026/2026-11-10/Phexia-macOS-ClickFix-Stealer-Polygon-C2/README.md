@@ -1,6 +1,6 @@
 # Phexia: macOS ClickFix Stealer with Polygon C2
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/Phexia-macOS-ClickFix-Stealer-Polygon-C2/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-10](../README.md)
+[Live entry](https://iocwatch.com/t/Phexia-macOS-ClickFix-Stealer-Polygon-C2/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-10](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

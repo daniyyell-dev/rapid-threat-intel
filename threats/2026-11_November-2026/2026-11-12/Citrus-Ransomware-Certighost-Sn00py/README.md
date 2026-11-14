@@ -1,6 +1,6 @@
 # Citrus Ransomware: Certighost AD CS Exploitation, Xray VLESS Tunnels and Sn00py
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/Citrus-Ransomware-Certighost-Sn00py/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
+[Live entry](https://iocwatch.com/t/Citrus-Ransomware-Certighost-Sn00py/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

@@ -1,6 +1,6 @@
 # Lazarus Operation FlashHole: CrossWeb EX Abuse, GitHub-Issue C2 and Post-Quantum LPEClient
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/Lazarus-Operation-FlashHole-CrossWeb-EX/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
+[Live entry](https://iocwatch.com/t/Lazarus-Operation-FlashHole-CrossWeb-EX/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

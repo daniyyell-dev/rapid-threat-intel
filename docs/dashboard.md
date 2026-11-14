@@ -6,7 +6,7 @@ This is a dark, responsive GitHub Pages site for this repository. It is for SOC 
 
 The page is built from the same curated data as the repository. Threats appear newest first. JavaScript is required; if it is turned off, a notice points you to the [repository](https://github.com/daniyyell-dev/rapid-threat-intel).
 
-> **Live URL:** https://daniyyell.com/rapid-threat-intel/
+> **Live URL:** https://iocwatch.com/
 
 ## Handling live indicators safely
 
@@ -285,7 +285,7 @@ The repository, the dashboard and `feed.json` are updated about every 2 hours, a
 
 The dashboard is the `site/` folder on `main`: `index.html`, `style.css`, `app.js`, `feed.json`, the `fonts/` folder (self-hosted Roboto and Roboto Mono, SIL Open Font License, licences in `fonts/OFL-Roboto.txt` and `fonts/OFL-RobotoMono.txt`), the `img/` folder (the project logo and banner, cut and resized from `assets/banner-dark.png` and `assets/banner-dark.webp`) and `.nojekyll`. Publish that folder as the GitHub Pages site root (for example with GitHub Actions, or by using the branch and folder your Pages settings serve). The page loads `feed.json` from the same folder, so keep those files together.
 
-> **Live URL:** https://daniyyell.com/rapid-threat-intel/
+> **Live URL:** https://iocwatch.com/
 
 A threat can be opened as `<site-url>/#threat/<id>` and a search as `<site-url>/#search/<value>`. The JSON feed is at `<site-url>/feed.json`.
 

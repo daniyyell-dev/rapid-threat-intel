@@ -1,6 +1,6 @@
 # NotC2: AWS-Native AI C2 Proof of Concept
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/NotC2-AWS-Native-AI-C2-Proof-of-Concept/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-10](../README.md)
+[Live entry](https://iocwatch.com/t/NotC2-AWS-Native-AI-C2-Proof-of-Concept/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-10](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

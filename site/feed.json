@@ -335,7 +335,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/",
+   "share_url": "https://iocwatch.com/t/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/",
    "indicators": [
     {
      "value": "accurasofthire.com",
@@ -744,7 +744,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-14/ScreenConnect-Fake-Crypto-Exchange-Guest-Sessions-MSP-Bait",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/ScreenConnect-Fake-Crypto-Exchange-Guest-Sessions-MSP-Bait/",
+   "share_url": "https://iocwatch.com/t/ScreenConnect-Fake-Crypto-Exchange-Guest-Sessions-MSP-Bait/",
    "indicators": [
     {
      "value": "74.208.158.106",
@@ -1023,7 +1023,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam/",
+   "share_url": "https://iocwatch.com/t/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam/",
    "indicators": [
     {
      "value": "45.115.26.23",
@@ -1385,7 +1385,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Qubole-Cross-Account-AWS-Role-Abuse/",
+   "share_url": "https://iocwatch.com/t/Qubole-Cross-Account-AWS-Role-Abuse/",
    "indicators": [
     {
      "value": "57.129.54.120",
@@ -1778,7 +1778,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/",
+   "share_url": "https://iocwatch.com/t/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/",
    "indicators": [
     {
      "value": "CVE-2026-76466",
@@ -1999,7 +1999,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass/",
+   "share_url": "https://iocwatch.com/t/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass/",
    "indicators": [
     {
      "value": "104.28.225.223",
@@ -2373,7 +2373,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure/",
+   "share_url": "https://iocwatch.com/t/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure/",
    "indicators": [
     {
      "value": "38.244.50.120",
@@ -2883,7 +2883,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse/",
+   "share_url": "https://iocwatch.com/t/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse/",
    "indicators": [
     {
      "value": "45.149.154.135",
@@ -3218,7 +3218,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation/",
+   "share_url": "https://iocwatch.com/t/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation/",
    "indicators": [
     {
      "value": "C:\\Program Files\\Common Files\\microsoft shared\\ink\\hid.dll",
@@ -3517,7 +3517,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/GeoVision-Camera-Software-XMRig-Cryptominer/",
+   "share_url": "https://iocwatch.com/t/GeoVision-Camera-Software-XMRig-Cryptominer/",
    "indicators": [
     {
      "value": "45.32.117.34",
@@ -4195,7 +4195,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc/",
+   "share_url": "https://iocwatch.com/t/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc/",
    "indicators": [
     {
      "value": "185.224.132.148",
@@ -5330,7 +5330,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Barracuda-Managed-XDR-Integration-Credential-Store-Breach/",
+   "share_url": "https://iocwatch.com/t/Barracuda-Managed-XDR-Integration-Credential-Store-Breach/",
    "indicators": [
     {
      "value": "180.178.56.10",
@@ -5687,7 +5687,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/",
+   "share_url": "https://iocwatch.com/t/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/",
    "indicators": [
     {
      "value": "46.8.236.121",
@@ -6521,7 +6521,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/LIMINAL-PANDA-GTPDoor-v3-SilentAir",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/LIMINAL-PANDA-GTPDoor-v3-SilentAir/",
+   "share_url": "https://iocwatch.com/t/LIMINAL-PANDA-GTPDoor-v3-SilentAir/",
    "indicators": [
     {
      "value": "35f0d4d0c5519a2957338e448fce53bc",
@@ -6928,7 +6928,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/",
+   "share_url": "https://iocwatch.com/t/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/",
    "indicators": [
     {
      "value": "204.194.49.129",
@@ -8222,7 +8222,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Fake-Zillow-ClickFix-NetSupport-RAT",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Fake-Zillow-ClickFix-NetSupport-RAT/",
+   "share_url": "https://iocwatch.com/t/Fake-Zillow-ClickFix-NetSupport-RAT/",
    "indicators": [
     {
      "value": "apartments-review8509831.sbs",
@@ -9001,7 +9001,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/SANSAR-Linux-GPU-Cryptomining-Toolkit/",
+   "share_url": "https://iocwatch.com/t/SANSAR-Linux-GPU-Cryptomining-Toolkit/",
    "indicators": [
     {
      "value": "00c9ac44291f83c72d54302e99d155a3e26d02225a3e516764d5833a99657c9e",
@@ -9465,7 +9465,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/FaceStealer-BlueNoroff-Fake-Meeting-Lures",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/FaceStealer-BlueNoroff-Fake-Meeting-Lures/",
+   "share_url": "https://iocwatch.com/t/FaceStealer-BlueNoroff-Fake-Meeting-Lures/",
    "indicators": [
     {
      "value": "uu01webzoom.us",
@@ -12433,7 +12433,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-13/Armorsteal-SEO-Poisoning-Python-Stealer",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Armorsteal-SEO-Poisoning-Python-Stealer/",
+   "share_url": "https://iocwatch.com/t/Armorsteal-SEO-Poisoning-Python-Stealer/",
    "indicators": [
     {
      "value": "choclatey.org",
@@ -13296,7 +13296,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT/",
+   "share_url": "https://iocwatch.com/t/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT/",
    "indicators": [
     {
      "value": "vietnam852.com",
@@ -13887,7 +13887,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/NIKKE-Launcher-k2f-agent-Credential-Theft/",
+   "share_url": "https://iocwatch.com/t/NIKKE-Launcher-k2f-agent-Credential-Theft/",
    "indicators": [
     {
      "value": "insightjs.com",
@@ -14228,7 +14228,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Teams-Booking-Flow-Device-Code-Phishing/",
+   "share_url": "https://iocwatch.com/t/Teams-Booking-Flow-Device-Code-Phishing/",
    "indicators": [
     {
      "value": "gpimmlgration.com",
@@ -14493,7 +14493,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/CL-STA-1238-Cairn-Autonomous-AI-Intrusions/",
+   "share_url": "https://iocwatch.com/t/CL-STA-1238-Cairn-Autonomous-AI-Intrusions/",
    "indicators": [
     {
      "value": "154.44.31.4",
@@ -14814,7 +14814,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/BITTER-PapRAT-WmRAT-South-Asia-Espionage/",
+   "share_url": "https://iocwatch.com/t/BITTER-PapRAT-WmRAT-South-Asia-Espionage/",
    "indicators": [
     {
      "value": "netmansrvdns.com",
@@ -15406,7 +15406,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/",
+   "share_url": "https://iocwatch.com/t/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/",
    "indicators": [
     {
      "value": "130.94.19.204",
@@ -15827,7 +15827,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/BBNet-Linux-Botnet-Multi-Arch-Scanners/",
+   "share_url": "https://iocwatch.com/t/BBNet-Linux-Botnet-Multi-Arch-Scanners/",
    "indicators": [
     {
      "value": "/tmp/.bbnet",
@@ -16207,7 +16207,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/StrikeStub-ClickFix-RAT-Stealer/",
+   "share_url": "https://iocwatch.com/t/StrikeStub-ClickFix-RAT-Stealer/",
    "indicators": [
     {
      "value": "squidscript.com",
@@ -16549,7 +16549,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Panzer-RaaS-Share-Propagation-Ransomware/",
+   "share_url": "https://iocwatch.com/t/Panzer-RaaS-Share-Propagation-Ransomware/",
    "indicators": [
     {
      "value": "panzer.exe",
@@ -16928,7 +16928,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Citrus-Ransomware-Certighost-Sn00py",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Citrus-Ransomware-Certighost-Sn00py/",
+   "share_url": "https://iocwatch.com/t/Citrus-Ransomware-Certighost-Sn00py/",
    "indicators": [
     {
      "value": "91.210.109.118",
@@ -17424,7 +17424,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Lazarus-Operation-FlashHole-CrossWeb-EX/",
+   "share_url": "https://iocwatch.com/t/Lazarus-Operation-FlashHole-CrossWeb-EX/",
    "indicators": [
     {
      "value": "pythonapischool.com",
@@ -18228,7 +18228,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan/",
+   "share_url": "https://iocwatch.com/t/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan/",
    "indicators": [
     {
      "value": "89.125.213.123",
@@ -18950,7 +18950,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Able2Shell-N-able-N-central-Zero-Days/",
+   "share_url": "https://iocwatch.com/t/Able2Shell-N-able-N-central-Zero-Days/",
    "indicators": [
     {
      "value": "5.231.45.175",
@@ -19550,7 +19550,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/GSocket-Linux-Web-Server-C2/",
+   "share_url": "https://iocwatch.com/t/GSocket-Linux-Web-Server-C2/",
    "indicators": [
     {
      "value": "d94f75a70b5cabaf786ac57177ed841732e62bdcc9a29e06e5b41d9be567bcfa",
@@ -19934,7 +19934,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/ARTEX-AWS-Financial-Data-Hunting/",
+   "share_url": "https://iocwatch.com/t/ARTEX-AWS-Financial-Data-Hunting/",
    "indicators": [
     {
      "value": "169.128.55.214",
@@ -20321,7 +20321,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527/",
+   "share_url": "https://iocwatch.com/t/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527/",
    "indicators": [
     {
      "value": "108.165.147.64",
@@ -20595,7 +20595,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Falcon-C2-XG-Antino-Browser-Implant/",
+   "share_url": "https://iocwatch.com/t/Falcon-C2-XG-Antino-Browser-Implant/",
    "indicators": [
     {
      "value": "fonts.tarotfree101.top",
@@ -21254,7 +21254,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft/",
+   "share_url": "https://iocwatch.com/t/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft/",
    "indicators": [
     {
      "value": "47.79.4.33",
@@ -21491,7 +21491,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320/",
+   "share_url": "https://iocwatch.com/t/Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320/",
    "indicators": [
     {
      "value": "api.tablacysexplorer.com",
@@ -21800,7 +21800,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/Outlook-CVE-2026-124194-NTLM-Hash-Leak",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Outlook-CVE-2026-124194-NTLM-Hash-Leak/",
+   "share_url": "https://iocwatch.com/t/Outlook-CVE-2026-124194-NTLM-Hash-Leak/",
    "indicators": [
     {
      "value": "CVE-2026-124194",
@@ -22120,7 +22120,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-12/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer/",
+   "share_url": "https://iocwatch.com/t/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer/",
    "indicators": [
     {
      "value": "194.150.166.244",
@@ -22718,7 +22718,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/",
+   "share_url": "https://iocwatch.com/t/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/",
    "indicators": [
     {
      "value": "185.99.255.28",
@@ -24322,7 +24322,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Trigram-DPRK-Dropper-Kimsuky-UNK-DeadDrop",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Trigram-DPRK-Dropper-Kimsuky-UNK-DeadDrop/",
+   "share_url": "https://iocwatch.com/t/Trigram-DPRK-Dropper-Kimsuky-UNK-DeadDrop/",
    "indicators": [
     {
      "value": "geoveral.space",
@@ -29018,7 +29018,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/SkyW4lker-Microsoft-365-Device-Code-Phishing",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/SkyW4lker-Microsoft-365-Device-Code-Phishing/",
+   "share_url": "https://iocwatch.com/t/SkyW4lker-Microsoft-365-Device-Code-Phishing/",
    "indicators": [
     {
      "value": "0ff365access.mooo.com",
@@ -30728,7 +30728,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/",
+   "share_url": "https://iocwatch.com/t/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/",
    "indicators": [
     {
      "value": "23.236.169.183",
@@ -31099,7 +31099,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/",
+   "share_url": "https://iocwatch.com/t/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/",
    "indicators": [
     {
      "value": "91.211.251.112",
@@ -31617,7 +31617,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/",
+   "share_url": "https://iocwatch.com/t/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/",
    "indicators": [
     {
      "value": "45.158.196.81",
@@ -32020,7 +32020,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/",
+   "share_url": "https://iocwatch.com/t/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/",
    "indicators": [
     {
      "value": "199.19.95.66",
@@ -32364,7 +32364,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant/",
+   "share_url": "https://iocwatch.com/t/AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant/",
    "indicators": [
     {
      "value": "8245c7e7d944923f1608592f6c3473dcc6e3a3e43df3dd1c6257e7880948787b",
@@ -33054,7 +33054,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/CopperDragon-Sparrow-Framework-China-Nexus-Espionage",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/CopperDragon-Sparrow-Framework-China-Nexus-Espionage/",
+   "share_url": "https://iocwatch.com/t/CopperDragon-Sparrow-Framework-China-Nexus-Espionage/",
    "indicators": [
     {
      "value": "715c206629f59ff5b0134a33362162ce7a40a9b25aa17f0543dc9648d51a67cf",
@@ -35935,7 +35935,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/NotC2-AWS-Native-AI-C2-Proof-of-Concept",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/NotC2-AWS-Native-AI-C2-Proof-of-Concept/",
+   "share_url": "https://iocwatch.com/t/NotC2-AWS-Native-AI-C2-Proof-of-Concept/",
    "indicators": [
     {
      "value": "NotC2",
@@ -36215,7 +36215,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Phexia-macOS-ClickFix-Stealer-Polygon-C2",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Phexia-macOS-ClickFix-Stealer-Polygon-C2/",
+   "share_url": "https://iocwatch.com/t/Phexia-macOS-ClickFix-Stealer-Polygon-C2/",
    "indicators": [
     {
      "value": "hf98x4d.site",
@@ -37226,7 +37226,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Turla-Cereal-Exchange-Espionage-Toolset/",
+   "share_url": "https://iocwatch.com/t/Turla-Cereal-Exchange-Espionage-Toolset/",
    "indicators": [
     {
      "value": "4a3c263977417fb6977b0e598c9e3bc5924f390c",
@@ -37871,7 +37871,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/MSP-Process-GDAP-Breach-Entra-Token-Abuse/",
+   "share_url": "https://iocwatch.com/t/MSP-Process-GDAP-Breach-Entra-Token-Abuse/",
    "indicators": [
     {
      "value": "172.169.63.30",
@@ -38976,7 +38976,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/",
+   "share_url": "https://iocwatch.com/t/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/",
    "indicators": [
     {
      "value": "frameworkmetrics.xyz",
@@ -40267,7 +40267,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/BYOD-Ransomware-Vanderbilt-University-Attack",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/BYOD-Ransomware-Vanderbilt-University-Attack/",
+   "share_url": "https://iocwatch.com/t/BYOD-Ransomware-Vanderbilt-University-Attack/",
    "indicators": [
     {
      "value": "README_BYOD_31.txt",
@@ -40513,7 +40513,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/SSHole-OpenSSH-CVE-2026-123158-Exploitation",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/SSHole-OpenSSH-CVE-2026-123158-Exploitation/",
+   "share_url": "https://iocwatch.com/t/SSHole-OpenSSH-CVE-2026-123158-Exploitation/",
    "indicators": [
     {
      "value": "20.255.63.133",
@@ -41393,7 +41393,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/",
+   "share_url": "https://iocwatch.com/t/FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/",
    "indicators": [
     {
      "value": "77.73.70.190",
@@ -41763,7 +41763,7 @@
     }
    ],
    "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-10/APT29-Mobile-Watering-Hole-Exploit-Chains",
-   "share_url": "https://daniyyell.com/rapid-threat-intel/t/APT29-Mobile-Watering-Hole-Exploit-Chains/",
+   "share_url": "https://iocwatch.com/t/APT29-Mobile-Watering-Hole-Exploit-Chains/",
    "indicators": [
     {
      "value": "theowo.club",

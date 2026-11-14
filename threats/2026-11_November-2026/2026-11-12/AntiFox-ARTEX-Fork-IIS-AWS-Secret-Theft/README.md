@@ -1,6 +1,6 @@
 # AntiFox: ARTEX Fork Used to Implant IIS Web Shells and Steal AWS Secrets
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
+[Live entry](https://iocwatch.com/t/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

@@ -1,6 +1,6 @@
 # FaceStealer: BlueNoroff Fake Zoom and Teams Meetings, Stolen Webcam Video and ClickFix Lures
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/FaceStealer-BlueNoroff-Fake-Meeting-Lures/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
+[Live entry](https://iocwatch.com/t/FaceStealer-BlueNoroff-Fake-Meeting-Lures/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

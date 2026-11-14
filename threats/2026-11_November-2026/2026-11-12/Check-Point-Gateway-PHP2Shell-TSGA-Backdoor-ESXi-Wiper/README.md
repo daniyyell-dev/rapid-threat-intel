@@ -1,6 +1,6 @@
 # PHP2Shell on Check Point Gateways: TSGA Backdoor, TSProxy and destroy_v6 ESXi Wiper
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
+[Live entry](https://iocwatch.com/t/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

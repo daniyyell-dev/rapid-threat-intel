@@ -1,6 +1,6 @@
 # ARTEX Agents Steal AI Gateway Keys and Try Deepfake KYC Bypass at Crypto Exchanges
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
+[Live entry](https://iocwatch.com/t/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

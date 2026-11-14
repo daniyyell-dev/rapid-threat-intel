@@ -1,6 +1,6 @@
 # Turla Cereal: Exchange Server Espionage Toolset
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/Turla-Cereal-Exchange-Espionage-Toolset/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-10](../README.md)
+[Live entry](https://iocwatch.com/t/Turla-Cereal-Exchange-Espionage-Toolset/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-10](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

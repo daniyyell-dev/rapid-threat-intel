@@ -1,6 +1,6 @@
 # BBNet: Multi-Architecture Linux Botnet with Divergent Scanners
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/BBNet-Linux-Botnet-Multi-Arch-Scanners/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
+[Live entry](https://iocwatch.com/t/BBNet-Linux-Botnet-Multi-Arch-Scanners/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-12](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

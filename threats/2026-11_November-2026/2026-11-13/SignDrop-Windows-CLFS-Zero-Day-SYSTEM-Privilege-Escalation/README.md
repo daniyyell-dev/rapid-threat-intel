@@ -1,6 +1,6 @@
 # SignDrop: Public Windows CLFS Zero-Day for SYSTEM Privilege Escalation (Hunt Only)
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
+[Live entry](https://iocwatch.com/t/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

@@ -1,6 +1,6 @@
 # BlackNevas: Ransomware Wipes ESXi and vCenter Through Legitimate Management Features
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
+[Live entry](https://iocwatch.com/t/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

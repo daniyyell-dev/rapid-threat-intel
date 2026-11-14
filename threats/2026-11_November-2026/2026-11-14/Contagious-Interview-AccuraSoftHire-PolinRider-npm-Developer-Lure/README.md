@@ -1,6 +1,6 @@
 # Contagious Interview: AccuraSoftHire Fake Employer Plants PolinRider Loader on Developer Machines
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-14](../README.md)
+[Live entry](https://iocwatch.com/t/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-14](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|

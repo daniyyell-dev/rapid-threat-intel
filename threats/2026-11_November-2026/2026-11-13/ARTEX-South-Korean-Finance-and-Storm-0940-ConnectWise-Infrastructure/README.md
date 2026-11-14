@@ -1,6 +1,6 @@
 # ARTEX Intrusions: South Korean Finance Operator and Storm-0940 ConnectWise Cloud Backup Access
 
-[Live entry](https://daniyyell.com/rapid-threat-intel/t/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
+[Live entry](https://iocwatch.com/t/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure/) · [Back to index](../../../../README.md) · [November 2026](../../README.md) · [2026-11-13](../README.md)
 
 | Published | First added | Last updated | Category | Indicators | Block now |
 |---|---|---|---|---|---|
