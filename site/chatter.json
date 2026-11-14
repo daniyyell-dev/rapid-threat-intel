@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-14T18:16:54Z",
+ "updated": "2026-11-14T19:24:39Z",
  "items": [
   {
    "threat_name": "SignDrop CLFS zero-day",
@@ -393,16 +393,6 @@
      "url": "https://bsky.app/profile/campuscodi.risky.biz/post/3n22h4dxfck2x",
      "posted_at": "2026-11-11T17:10:12.682Z",
      "summary": "Notes that the n0n group has claimed the Qubole hack."
-    },
-    {
-     "platform": "Bluesky",
-     "author": "BleepingComputer",
-     "handle": "bleepingcomputer.com",
-     "org": "BleepingComputer",
-     "type": "news",
-     "url": "https://bsky.app/profile/bleepingcomputer.com/post/3mzy6jzij272g",
-     "posted_at": "2026-11-10T14:31:28-05:00",
-     "summary": "An attacker used compromised Qubole IAM credentials to reach and copy data from several customers' AWS environments."
     },
     {
      "platform": "X",
