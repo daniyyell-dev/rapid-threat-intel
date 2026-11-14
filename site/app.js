@@ -1238,7 +1238,7 @@
     VIEW = view;
     closeNav();
     setNav(view === "threat" ? "threats" : view);
-    var pages = { home: $("home"), threats: $("view-threats"), threat: $("detail"), block: $("view-block"), hunts: $("view-hunts"), sources: $("view-sources"), about: $("view-about"), rumours: $("view-rumours"), live: $("view-live") };
+    var pages = { home: $("home"), threats: $("view-threats"), threat: $("detail"), block: $("view-block"), hunts: $("view-hunts"), sources: $("view-sources"), about: $("view-about"), rumours: $("view-rumours"), live: $("view-live"), darkweb: $("view-darkweb") };
     Object.keys(pages).forEach(function (k) { if (pages[k]) pages[k].hidden = k !== view; });
     document.body.setAttribute("data-view", view);
     if (view !== "threat") CURRENT_ID = "";
@@ -1730,7 +1730,7 @@
       setTimeout(function () { var el = $(homeSecs[top]); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" }); }, 0);
       return;
     }
-    var viewMap = { live: "live", block: "block", hunts: "hunts", sources: "sources", about: "about", threats: "threats", rumours: "rumours", "feed-sec": "threats", "feed-h": "threats", "all-h": "block" };
+    var viewMap = { darkweb: "darkweb", live: "live", block: "block", hunts: "hunts", sources: "sources", about: "about", threats: "threats", rumours: "rumours", "feed-sec": "threats", "feed-h": "threats", "all-h": "block" };
     if (top === "page") {
       var pm = /^page=(\d+)$/.exec(hash), want = pm ? Math.max(1, parseInt(pm[1], 10)) : 1;
       showView("threats");
@@ -1745,6 +1745,7 @@
       if (v === "hunts") renderHunts();
       if (v === "sources") renderSources();
       if (v === "live") renderLivePage();
+      if (v === "darkweb" && window.renderDarkweb) window.renderDarkweb();
       window.scrollTo(0, 0);
       if (hash === "threats/map") setTimeout(function () { var mp = $("tmap"); if (mp) mp.scrollIntoView({ behavior: "smooth", block: "start" }); }, 60);
       return;
