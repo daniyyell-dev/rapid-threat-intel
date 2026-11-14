@@ -7,6 +7,7 @@
   };
 
   var DATA = null;
+  var RUMOURS = { rumours: [], disclaimer: "Early reports, no IOCs yet. Not on the block list." };
   var ALL_IND = [];
   var TYPE_LABEL = {
     ipv4: "IPv4", domain: "Domain", url: "URL", sha256: "SHA256", sha1: "SHA1", md5: "MD5", filename: "File name",
@@ -108,14 +109,28 @@
     return location.origin + path + "t/" + encodeURIComponent(id) + "/";
   }
   function copyText(text, btn, msg) {
+    function mark(ok) {
+      if (!btn) return;
+      if (btn.querySelector("svg")) {
+        var prevA = btn.getAttribute("aria-label") || "";
+        btn.classList.toggle("done", ok);
+        btn.classList.toggle("fail", !ok);
+        if (ok) btn.setAttribute("aria-label", msg || "Copied");
+        setTimeout(function () {
+          btn.classList.remove("done", "fail");
+          if (prevA) btn.setAttribute("aria-label", prevA);
+        }, 1400);
+        return;
+      }
+      if (!ok) return;
+      var prev = btn.getAttribute("data-label") || btn.textContent;
+      btn.setAttribute("data-label", prev);
+      btn.textContent = "Copied"; btn.classList.add("done");
+      setTimeout(function () { btn.textContent = prev; btn.classList.remove("done"); }, 1400);
+    }
     function done(ok) {
       toast(ok ? (msg || "Copied the real value") : "Copy failed");
-      if (ok && btn) {
-        var prev = btn.getAttribute("data-label") || btn.textContent;
-        btn.setAttribute("data-label", prev);
-        btn.textContent = "Copied"; btn.classList.add("done");
-        setTimeout(function () { btn.textContent = prev; btn.classList.remove("done"); }, 1400);
-      }
+      mark(ok);
     }
     function fallback() {
       var ta = h("textarea", { readonly: "", class: "offscreen" });
@@ -677,34 +692,162 @@
     if (w.length <= n) return w.join(" ");
     return w.slice(0, n).join(" ").replace(/[.,;:]+$/, "") + "\u2026";
   }
-  function summaryBullets(t) {
+  function sentences(s) {
+    s = String(s || "").replace(/\s+/g, " ").trim();
+    if (!s) return [];
+    var out = [], re = /(.+?[.!?])(?:\s+|$)/g, m, last = 0;
+    while ((m = re.exec(s))) { out.push(m[1]); last = re.lastIndex; }
+    if (last < s.length) {
+      var rest = s.slice(last).trim();
+      if (rest) out.push(rest);
+    }
+    return out.filter(Boolean);
+  }
+  function ensurePeriod(s) {
+    s = String(s || "").replace(/\s+/g, " ").trim();
+    if (!s) return "";
+    if (!/[.!?]$/.test(s)) s += ".";
+    return s;
+  }
+  function wordCount(s) {
+    return String(s || "").trim().split(/\s+/).filter(Boolean).length;
+  }
+  function normKey(s) {
+    return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  }
+  function similarText(a, b) {
+    a = normKey(a); b = normKey(b);
+    if (!a || !b) return false;
+    if (a === b) return true;
+    var shorter = a.length < b.length ? a : b, longer = a.length < b.length ? b : a;
+    if (longer.indexOf(shorter) !== -1 && shorter.split(" ").length >= 8) return true;
+    var aw = a.split(" "), bw = {};
+    b.split(" ").forEach(function (w) { if (w.length > 3) bw[w] = 1; });
+    var hit = aw.filter(function (w) { return w.length > 3 && bw[w]; }).length;
+    return hit / Math.max(aw.filter(function (w) { return w.length > 3; }).length, 1) > 0.7;
+  }
+  function clipToWords(s, n) {
+    var parts = sentences(s), out = [], count = 0, i;
+    for (i = 0; i < parts.length; i++) {
+      var w = parts[i].split(/\s+/).filter(Boolean);
+      if (count && count + w.length > n) break;
+      if (!count && w.length > n) return clipWords(parts[i], n);
+      out.push(ensurePeriod(parts[i]));
+      count += w.length;
+      if (out.length === 2) break;
+    }
+    return out.join(" ");
+  }
+  function shortSummary(t) {
+    if (t.short_summary) return clipToWords(t.short_summary, 40);
+    var picked = [];
+    if (t.headline) picked.push(ensurePeriod(t.headline));
+    var ss = sentences(t.summary || "");
+    var i, short2 = "";
+    for (i = 0; i < ss.length; i++) {
+      if (picked.some(function (p) { return similarText(p, ss[i]); })) continue;
+      if (wordCount(ss[i]) <= 22) { short2 = ss[i]; break; }
+    }
+    if (!short2) {
+      for (i = 0; i < ss.length; i++) {
+        if (!picked.some(function (p) { return similarText(p, ss[i]); })) { short2 = ss[i]; break; }
+      }
+    }
+    if (short2) {
+      var remain = 40 - (picked[0] ? wordCount(picked[0]) : 0);
+      if (remain >= 8) picked.push(wordCount(short2) <= remain ? short2 : clipWords(short2, remain));
+    }
+    return clipToWords(picked.join(" "), 40);
+  }
+  function findCves(t) {
+    var text = [t.name, t.headline, t.summary].concat(t.recommended_actions || []).join(" ");
+    var re = /CVE-\d{4}-\d+/gi, m, seen = {}, out = [];
+    while ((m = re.exec(text))) {
+      var v = m[0].toUpperCase();
+      if (!seen[v]) { seen[v] = 1; out.push(v); }
+    }
+    return out;
+  }
+  function endDot(s) {
+    s = String(s || "").replace(/\s+/g, " ").trim().replace(/[.,;:]+$/, "");
+    return s ? s + "." : "";
+  }
+  function behaviourToken(t) {
+    var texts = (t.ioas || []).map(function (x) { return ((x && (x.title || "")) + " " + ((x && x.artefact) || "")); }).join("\n");
+    var m = texts.match(/\bcom\.[a-z0-9.]+/i) || texts.match(/\b[\w.-]+\.(?:cmd|exe|dll|js|json|ps1|sh|bin)\b/i);
+    return m ? m[0] : "";
+  }
+  function patchBullet(t) {
+    var acts = t.recommended_actions || [], i;
+    for (i = 0; i < acts.length; i++) {
+      var m = String(acts[i]).match(/^(Patch|Upgrade|Install|Update)\s+(.{3,60}?)(?:\s+for\s+CVE|\s+to\s+|\s+and\s+turn|\s*;|,)/i);
+      if (m && m[2].trim().split(/\s+/).length <= 6) {
+        return endDot(m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase() + " " + m[2].trim() + " now");
+      }
+    }
+    var cves = findCves(t);
+    if (cves.length === 1) return "Patch " + cves[0] + " now.";
+    if (cves.length === 2) return "Patch " + cves[0] + " and " + cves[1] + ".";
+    if (cves.length >= 3) return "Patch the published CVEs.";
+    return "";
+  }
+  function doNow(t) {
     var out = [];
-    if (t.headline) out.push(t.headline);
-    var g = tg(t), who = [];
-    if (g.sectors.length) who.push(g.sectors.slice(0, 3).join(", "));
-    if (g.countries.length) who.push(g.countries.slice(0, 4).map(function (c) { return c.name; }).join(", "));
-    else if (g.regions.length) who.push(g.regions.join(", "));
-    if (who.length) out.push("Targets: " + who.join(" \u00b7 "));
-    else if (t.category) out.push(t.category);
-    if (t.recommended_actions && t.recommended_actions[0]) out.push(clipWords(t.recommended_actions[0], 26));
-    else {
-      var bits = [];
-      if (t.block_now_count) bits.push(t.block_now_count + " to block now");
-      var hn = huntOf(t);
-      if (hn) bits.push(hn + " to hunt");
-      if (bits.length) out.push(bits.join(", ") + ".");
+    var n = t.block_now_count || 0;
+    if (n) out.push(n === 1 ? "Block the 1 indicator." : "Block the " + n + " indicators.");
+    var hn = huntOf(t);
+    var hasQ = (t.queries || []).some(function (q) { return q && q.url; });
+    if (hn || hasQ) out.push("Run the hunt.");
+    var patch = patchBullet(t);
+    if (patch) out.push(patch);
+    var tok = behaviourToken(t);
+    if (out.length < 3 && tok) out.push("Check for " + tok + ".");
+    if (out.length < 3 && (t.ioas || []).length) out.push("Check for the listed behaviours.");
+    if (out.length < 3 && (t.recommended_actions || [])[0] && !patch) {
+      var a = String(t.recommended_actions[0]).replace(/\s+/g, " ").trim().replace(/^(please\s+|you should\s+|teams should\s+)/i, "");
+      out.push(endDot(clipWords(a, 11)));
+    }
+    if (out.length < 3 && t.indicator_count && !n) {
+      out.push(t.indicator_count === 1 ? "Review the 1 indicator." : "Review the " + t.indicator_count + " indicators.");
     }
     return out.slice(0, 3);
   }
-  function whyLine(t) {
-    var s = firstSentence(t.summary || "");
-    var hdl = String(t.headline || "").replace(/[.\s]+$/, "");
-    if (s && hdl && s.replace(/[.\s]+$/, "") !== hdl) return clipWords(s, 24);
-    var bits = [];
-    if (t.block_now_count) bits.push(t.block_now_count + " high-confidence " + (t.block_now_count === 1 ? "indicator" : "indicators") + " to block");
-    else if (t.indicator_count) bits.push(t.indicator_count + " " + (t.indicator_count === 1 ? "indicator" : "indicators") + " to review");
-    if (t.ioa_count) bits.push(plural(t.ioa_count, "behaviour") + " to hunt");
-    return bits.length ? bits.join(", ") + "." : (t.headline || "");
+  function midEllipsis(s, max) {
+    s = String(s || "");
+    max = max || 28;
+    if (s.length <= max) return s;
+    var inner = max - 1, left = Math.ceil(inner * 0.6), right = inner - left;
+    if (right < 4) { right = 4; left = inner - right; }
+    return s.slice(0, left) + "\u2026" + s.slice(s.length - right);
+  }
+  function svgStroke(d, size, cls) {
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("width", String(size || 16));
+    svg.setAttribute("height", String(size || 16));
+    svg.setAttribute("aria-hidden", "true");
+    if (cls) svg.setAttribute("class", cls);
+    var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", d);
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke", "currentColor");
+    path.setAttribute("stroke-width", "1.8");
+    path.setAttribute("stroke-linecap", "round");
+    path.setAttribute("stroke-linejoin", "round");
+    svg.appendChild(path);
+    return svg;
+  }
+  function copyIconBtn(value) {
+    var b = h("button", { type: "button", class: "copy-ico", title: value, "aria-label": "Copy " + value });
+    b.appendChild(svgStroke("M8 8h10v10H8zM6 16H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1", 16, "i-copy"));
+    b.appendChild(svgStroke("M5 12.5 9.5 17 19 7", 16, "i-check"));
+    b.addEventListener("click", function () { copyText(value, b); trackClick("copy"); });
+    return b;
+  }
+  function actionChip(ind) {
+    var a = ind.recommended_action || "";
+    var title = a === "block" ? "High confidence" : ((ind.confidence || "") + " confidence");
+    return h("span", { class: "pill " + a, title: title, text: a });
   }
   function row(t, newest) {
     var hunt = huntOf(t);
@@ -868,7 +1011,6 @@
       h("div", { class: "r-cat" }, h("span", { text: t.category }), h("span", { class: "sev sev-" + sev, text: sevLabel(sev) }), t.entry_date.split(" ")[0] === newest ? h("span", { class: "new", text: "New today" }) : null),
       h("h1", { text: stitle(t) }),
       h("p", { class: "det-full", text: t.name }),
-      h("p", { class: "lede", text: t.headline }),
       h("dl", { class: "facts" },
         [["Published", fmtDay(t.published)], ["Added", fmtAdded(t.entry_date)], ["Last updated", fmtDay(t.last_updated)]]
           .map(function (f) { return h("div", { class: f[2] || null }, h("dt", { text: f[0] }), h("dd", { text: String(f[1]) })); })),
@@ -884,65 +1026,77 @@
     var ioa = ioaSection(t);
 
     var after = h("div", { class: "after-hunt" });
-    if (t.caveat) after.appendChild(h("div", { class: "warn", role: "note" }, h("b", null, "Note"), " ", highlightIocs(t.caveat)));
-    after.appendChild(h("section", { class: "sum-sec", id: "summary-sec", "aria-labelledby": "sum-h" },
+    var sum = shortSummary(t);
+    if (sum) after.appendChild(h("section", { class: "sum-sec", id: "summary-sec", "aria-labelledby": "sum-h" },
       h("h2", { id: "sum-h" }, "Summary"),
-      h("ul", { class: "sum-bullets" }, summaryBullets(t).map(function (b) { return h("li", null, highlightIocs(b)); }))));
-    var why = whyLine(t);
-    if (why) after.appendChild(h("section", { class: "why-sec", id: "why-sec", "aria-labelledby": "why-h" },
-      h("h2", { id: "why-h" }, "Why it matters"),
-      h("p", { class: "why-line" }, highlightIocs(why))));
+      h("p", { class: "sum-short" }, highlightIocs(sum))));
+    var steps = doNow(t);
+    if (steps.length) after.appendChild(h("section", { class: "do-sec", id: "do-sec", "aria-labelledby": "do-h" },
+      h("h2", { id: "do-h" }, "Do now"),
+      h("ol", { class: "do-now" }, steps.map(function (b) { return h("li", { text: b }); }))));
 
-    var tq = h("input", { type: "search", placeholder: "Filter by value or description", spellcheck: "false", "aria-label": "Filter indicators" });
+    var tq = h("input", { type: "search", placeholder: "Filter indicators", spellcheck: "false", "aria-label": "Filter indicators" });
     var ts = h("select", { "aria-label": "Indicator type" }, h("option", { value: "" }, "All types"),
       typesOf(t).map(function (k) { return h("option", { value: k }, typeLabel(k) + " (" + t.indicator_counts[k] + ")"); }));
     if ($("f-type") && $("f-type").value && t.indicator_counts[$("f-type").value]) ts.value = $("f-type").value;
     var body = h("tbody");
-    var multi = t.sources.length > 1;
     var countEl = h("span");
-    var shownAll = false;
-    var LIMIT = 10;
-    var moreBtn = h("button", { type: "button", class: "link-btn ind-more" });
-    moreBtn.addEventListener("click", function () { shownAll = !shownAll; fill(); });
+    var copyAll = h("button", { type: "button", class: "btn btn-ghost btn-copy-set", text: "Copy all" });
+    var copyBlock = h("button", { type: "button", class: "btn btn-ghost btn-copy-set", text: "Copy block list" });
+    copyAll.addEventListener("click", function () {
+      var vals = (t.indicators || []).map(function (ind) { return ind.value; }).filter(Boolean);
+      if (!vals.length) { toast("Nothing to copy"); return; }
+      copyText(vals.join("\n"), copyAll, "Copied all");
+      trackClick("copy");
+    });
+    copyBlock.addEventListener("click", function () {
+      var vals = (t.indicators || []).filter(function (ind) { return ind.recommended_action === "block"; }).map(function (ind) { return ind.value; });
+      if (!vals.length) { toast("Nothing to copy"); return; }
+      copyText(vals.join("\n"), copyBlock, "Copied block list");
+      trackClick("copy");
+    });
+    if (!(t.block_now_count)) copyBlock.hidden = true;
     function fill() {
       clear(body);
       var qv = refang(tq.value).toLowerCase(), ty = ts.value;
       var rows = [];
       t.indicators.forEach(function (ind) {
         if (ty && ind.type !== ty) return;
-        if (qv && (ind.value + " " + ind.description).toLowerCase().indexOf(qv) === -1) return;
+        if (qv && (ind.value + " " + (ind.description || "")).toLowerCase().indexOf(qv) === -1) return;
         rows.push(ind);
       });
       rows.sort(function (a, b) { return actionRank(a.recommended_action) - actionRank(b.recommended_action); });
       var n = rows.length;
-      var show = (shownAll || n <= LIMIT) ? n : LIMIT;
-      rows.slice(0, show).forEach(function (ind) {
-        body.appendChild(h("tr", null,
-          h("td", { class: "ind" }, iocCell(ind)),
-          h("td", null, typeTag(ind.type)),
-          h("td", null, confMeter(ind.confidence)),
-          h("td", null, actionPill(ind.recommended_action)),
-          h("td", { class: "desc" }, ind.description || "", ind.sources && ind.sources.length ? h("div", { class: "src" }, ind.sources.map(function (s, i) { return [i ? " \u00b7 " : null, extLink(s.url, s.name)]; })) : (multi && ind.source_url ? h("div", { class: "src" }, extLink(ind.source_url, ind.source_name || ind.source_label || ind.source_url)) : null))));
+      rows.forEach(function (ind) {
+        body.appendChild(h("tr", { "data-action": ind.recommended_action || "" },
+          h("td", { class: "val-td" }, h("code", { class: "val", title: ind.value, text: midEllipsis(ind.value, 28) })),
+          h("td", { class: "typ" }, typeTag(ind.type)),
+          h("td", { class: "act" }, actionChip(ind)),
+          h("td", { class: "copy-td" }, copyIconBtn(ind.value))));
       });
       countEl.textContent = n === t.indicators.length ? String(n) : n + " of " + t.indicators.length;
-      if (!n) body.appendChild(h("tr", null, h("td", { colspan: "5", class: "none" }, "No indicators match this filter.")));
-      moreBtn.hidden = n <= LIMIT;
-      moreBtn.textContent = shownAll ? "Show fewer" : "Show all " + n + " indicators";
+      if (!n) body.appendChild(h("tr", null, h("td", { colspan: "4", class: "none" }, "No indicators match this filter.")));
     }
     tq.addEventListener("input", fill);
     ts.addEventListener("change", fill);
     fill();
     after.appendChild(h("section", { class: "ind-sec", id: "ind-sec", "aria-labelledby": "ind-h" },
-      h("div", { class: "ind-head" }, h("h2", { id: "ind-h" }, h("span", { class: "idx", text: "IOC" }), "Indicators ", h("span", { class: "dim" }, countEl))),
-      h("p", { class: "ind-note" }, "Indicators are shown as plain text, defanged and never as links. Copy gives the real value."),
-      h("div", { class: "ind-tools" }, tq, ts),
-      h("div", { class: "tbl-wrap" }, h("table", null,
-        h("thead", null, h("tr", null, ["Indicator", "Type", "Confidence", "Action", multi ? "Description and source" : "Description"].map(function (x) { return h("th", { scope: "col", text: x }); }))), body)),
-      moreBtn));
+      h("div", { class: "ind-head" }, h("h2", { id: "ind-h" }, "Indicators ", h("span", { class: "dim" }, countEl))),
+      h("div", { class: "ind-toolbar" },
+        copyAll, copyBlock,
+        h("div", { class: "ind-tools" }, tq, ts)),
+      h("div", { class: "tbl-wrap" }, h("table", { class: "ind-compact" },
+        h("thead", null, h("tr", null,
+          h("th", { scope: "col", text: "Value" }),
+          h("th", { scope: "col", text: "Type" }),
+          h("th", { scope: "col", text: "Action" }),
+          h("th", { scope: "col", class: "copy-h" }, h("span", { class: "sr", text: "Copy" })))),
+        body))));
     if (t.sources && t.sources.length) {
       after.appendChild(h("section", { class: "blk-sec", id: "sources-sec" }, srcLine(t.sources, "srcline det-src")));
     }
     var extra = [];
+    if (t.caveat) extra.push(h("div", { class: "warn", role: "note" }, h("b", null, "Note"), " ", highlightIocs(t.caveat)));
     extra.push(sec("What to do", h("div", null,
       t.recommended_actions.length ? h("ol", { class: "steps" }, t.recommended_actions.map(function (a) { return h("li", null, h("span", null, highlightIocs(a))); })) : h("p", { class: "dim", text: "No extra steps beyond the block list and hunts." })), null, "todo-sec"));
     if (ioa) extra.push(ioa);
@@ -1001,11 +1155,12 @@
     VIEW = view;
     closeNav();
     setNav(view === "threat" ? "threats" : view);
-    var pages = { home: $("home"), threats: $("view-threats"), threat: $("detail"), block: $("view-block"), hunts: $("view-hunts"), sources: $("view-sources"), about: $("view-about") };
+    var pages = { home: $("home"), threats: $("view-threats"), threat: $("detail"), block: $("view-block"), hunts: $("view-hunts"), sources: $("view-sources"), about: $("view-about"), rumours: $("view-rumours") };
     Object.keys(pages).forEach(function (k) { if (pages[k]) pages[k].hidden = k !== view; });
     document.body.setAttribute("data-view", view);
     if (view !== "threat") CURRENT_ID = "";
     if (view === "threats" && DATA) renderFeed(true);
+    if (view === "rumours") renderRumours();
   }
   function renderBlock() {
     var el = $("view-block");
@@ -1098,6 +1253,72 @@
     ]);
   }
 
+
+  function rumourStatusClass(st) {
+    if (st === "Promoted") return "promoted";
+    if (/^Confirmed/.test(st || "")) return "confirmed";
+    return "unconfirmed";
+  }
+  function reportedBy(r) {
+    var srcs = r.sources || [];
+    if (!srcs.length) return null;
+    var nodes = ["Reported by "];
+    srcs.forEach(function (s, i) {
+      if (i) nodes.push(i === srcs.length - 1 ? " and " : ", ");
+      nodes.push(extLink(s.url, s.name || s.url));
+    });
+    return nodes;
+  }
+  function rumourRow(r) {
+    var st = r.status || "Unconfirmed";
+    var href = (st === "Promoted" && r.threat_id) ? ("#threat/" + encodeURIComponent(r.threat_id)) : null;
+    var title = href
+      ? h("a", { href: href, text: r.short_title, title: "Open the threat page" })
+      : h("span", { text: r.short_title });
+    return h("li", null, h("article", { class: "rum-row" },
+      h("div", { class: "rum-main" },
+        h("h3", { class: "rum-title" }, title),
+        h("p", { class: "rum-claim", text: r.claim }),
+        h("p", { class: "rum-meta" }, reportedBy(r))),
+      h("div", { class: "rum-side" },
+        h("span", { class: "rum-st " + rumourStatusClass(st), text: st }),
+        r.first_seen ? h("time", { class: "rum-when", datetime: r.first_seen, "data-d": r.first_seen, title: r.first_seen, text: ago(r.first_seen) }) : null)));
+  }
+  function sortedRumours() {
+    return (RUMOURS.rumours || []).slice().sort(function (a, b) {
+      return String(b.first_seen || "").localeCompare(String(a.first_seen || ""));
+    });
+  }
+  function renderRumourHome() {
+    var el = $("rumour-home"), nEl = $("rumour-n");
+    if (!el) return;
+    var list = sortedRumours();
+    var open = list.filter(function (r) { return r.status !== "Promoted"; });
+    var show = (open.length ? open : list).slice(0, 3);
+    clear(el);
+    show.forEach(function (r) { el.appendChild(rumourRow(r)); });
+    if (nEl) nEl.textContent = list.length ? String(list.length) : "";
+  }
+  function renderRumours() {
+    var el = $("view-rumours");
+    if (!el) return;
+    var list = sortedRumours();
+    document.title = "Rumours | IOCWatch";
+    clear(el);
+    add(el, [
+      h("div", { class: "catalog-head rum-page" }, h("h1", null, "Rumours"), h("span", { text: list.length ? String(list.length) : "" })),
+      h("p", { class: "rumour-disc" }, RUMOURS.disclaimer || "Early reports, no IOCs yet. Not on the block list."),
+      list.length ? h("ol", { class: "rum-list" }, list.map(rumourRow)) : h("p", { class: "rum-empty", text: "No rumours right now." })
+    ]);
+  }
+  function loadRumours() {
+    return fetch("rumours.json", { cache: "no-cache" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      if (d && d.rumours) RUMOURS = d;
+      renderRumourHome();
+      if (VIEW === "rumours") renderRumours();
+    }, function () { renderRumourHome(); });
+  }
+
   /* Routing: #threat/<id> opens a threat, #search/<value> runs a search, anything else shows the feed. */
   function route() {
     var hash = location.hash.replace(/^#/, "");
@@ -1123,7 +1344,7 @@
       setTimeout(function () { var el = $(homeSecs[top]); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" }); }, 0);
       return;
     }
-    var viewMap = { block: "block", hunts: "hunts", sources: "sources", about: "about", threats: "threats", "feed-sec": "threats", "feed-h": "threats", "all-h": "block" };
+    var viewMap = { block: "block", hunts: "hunts", sources: "sources", about: "about", threats: "threats", rumours: "rumours", "feed-sec": "threats", "feed-h": "threats", "all-h": "block" };
     if (top === "page") {
       var pm = /^page=(\d+)$/.exec(hash), want = pm ? Math.max(1, parseInt(pm[1], 10)) : 1;
       showView("threats");
@@ -1364,6 +1585,7 @@
     initReveal();
     fillNavCounts();
     renderFeed();
+    loadRumours();
     renderAllFiles();
     if ($("q-list")) $("q-list").addEventListener("input", function () { renderFeed(); });
     if ($("list-search")) $("list-search").addEventListener("submit", function (e) { e.preventDefault(); renderFeed(); });
@@ -1588,7 +1810,7 @@
       if (!d || d.last_updated === DATA.last_updated && d.threat_count === DATA.threat_count) return;
       DATA = d; ALL_IND = [];
       DATA.threats.forEach(function (t) { t.indicators.forEach(function (ind) { ALL_IND.push({ ind: ind, threat: t }); }); });
-      renderStats(); fillNavCounts(); if (VIEW === "threats") renderFeed(true);
+      renderStats(); fillNavCounts(); if (VIEW === "threats") renderFeed(true); loadRumours();
     }, function () {});
   }, 180000);
   fetch("feed.json", { cache: "no-cache" })

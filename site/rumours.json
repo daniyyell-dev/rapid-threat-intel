@@ -1,0 +1,98 @@
+{
+  "updated": "2026-11-14",
+  "disclaimer": "Early reports, no IOCs yet. Not on the block list.",
+  "rumours": [
+    {
+      "id": "quantum-systems-cyberattack",
+      "short_title": "Quantum Systems attack",
+      "claim": "German drone maker Quantum Systems confirmed a late-October cyberattack; reports say a malicious QBase update reached customer servers, and no public IOCs have been published.",
+      "sources": [
+        {
+          "name": "Quantum Systems",
+          "url": "https://quantum-systems.com/news/cyberattack-defeated/"
+        },
+        {
+          "name": "BleepingComputer",
+          "url": "https://www.bleepingcomputer.com/news/security/german-military-drone-operations-disrupted-by-cyberattack/"
+        },
+        {
+          "name": "The Register",
+          "url": "https://www.theregister.com/security/2026/11/13/quantum-systems-drones-back-in-the-air-after-malware-scare/5309658"
+        }
+      ],
+      "first_seen": "2026-11-12",
+      "category": "Intrusion",
+      "status": "Confirmed - IOCs pending",
+      "note": "The company says the incident was contained and there is no risk to operators. Der Spiegel and the Financial Times, cited by later reporting, describe a compromised QBase update server. Attribution is unconfirmed."
+    },
+    {
+      "id": "operation-endgame-nov-2026",
+      "short_title": "Endgame malware takedown",
+      "claim": "Europol and partners seized 235 servers and 257 domains used by Gootloader, CastleRAT and StealC, and identified 6.4 million stolen credentials; no public remaining-infrastructure block list has been published.",
+      "sources": [
+        {
+          "name": "Europol",
+          "url": "https://www.europol.europa.eu/media-press/newsroom/news/64-million-victim-datasets-secured-in-international-operation-against-malware-networks"
+        },
+        {
+          "name": "Operation Endgame",
+          "url": "https://www.operation-endgame.com/news/"
+        },
+        {
+          "name": "BleepingComputer",
+          "url": "https://www.bleepingcomputer.com/news/security/police-dismantles-gootloader-castlerat-stealc-malware-infrastructure/"
+        }
+      ],
+      "first_seen": "2026-11-12",
+      "category": "Law enforcement",
+      "status": "Confirmed - IOCs pending",
+      "note": "Victim notifications are being issued through Have I Been Pwned and partner channels. WordPress site owners are advised to rotate credentials and enable multi-factor authentication."
+    },
+    {
+      "id": "apache-cve-2026-119618",
+      "short_title": "Apache HTTP/2 RCE",
+      "claim": "Apache HTTP Server 2.4.71 patches a critical unauthenticated HTTP/2 flaw in mod_http2 (CVE-2026-119618); no public in-the-wild exploit indicators have been published.",
+      "sources": [
+        {
+          "name": "Apache HTTP Server Project",
+          "url": "https://httpd.apache.org/security/vulnerabilities_24.html"
+        },
+        {
+          "name": "Red Hat",
+          "url": "https://access.redhat.com/security/vulnerabilities/RHSB-2026-017"
+        },
+        {
+          "name": "BleepingComputer",
+          "url": "https://www.bleepingcomputer.com/news/security/apache-http-server-patches-critical-http-2-remote-code-execution-flaw/"
+        }
+      ],
+      "first_seen": "2026-11-11",
+      "category": "Vulnerability",
+      "status": "Confirmed - IOCs pending",
+      "note": "Affects Apache HTTP Server 2.4.55 through 2.4.70 when HTTP/2 is enabled. Upgrade to 2.4.71, or remove h2 and h2c from Protocols until patched. This is a vendor-confirmed flaw, not a rumour of exploitation."
+    },
+    {
+      "id": "pixelleaks-extortion-claims",
+      "short_title": "PixelLeaks leak site",
+      "claim": "A new extortion brand, PixelLeaks, appeared on a leak site in early November 2026 with claimed victims in several countries; the claims are not independently confirmed and no public IOCs have been published.",
+      "sources": [
+        {
+          "name": "Breachsense",
+          "url": "https://www.breachsense.com/ransomware-groups/pixelleaks/"
+        },
+        {
+          "name": "Orbitaley",
+          "url": "https://orbitaley.com/es/news/pixelleaks-un-nuevo-grupo-de-extorsion-reivindica-cinco-ataques-en-cinco-paises-r5p90"
+        },
+        {
+          "name": "WatchGuard",
+          "url": "https://www.watchguard.com/wgrd-security-hub/ransomware-tracker/pixelleaks"
+        }
+      ],
+      "first_seen": "2026-11-09",
+      "category": "Ransomware",
+      "status": "Unconfirmed",
+      "note": "Trackers list first activity around 9 November 2026. Victim names come from the group's own leak site and should be treated as claims until a victim or a reputable investigation confirms them. No leak-site links are published here."
+    }
+  ]
+}

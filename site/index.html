@@ -33,7 +33,7 @@
 <link rel="preload" href="/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/InterDisplay-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/feed.json" as="fetch" crossorigin>
-<link rel="stylesheet" href="/style.css?v=b2295a30">
+<link rel="stylesheet" href="/style.css?v=b6fa7f5b">
 </head>
 <body data-layout="d" class="brand-i">
 <a class="skip" href="#main">Skip to content</a>
@@ -42,6 +42,7 @@
     <a href="/" class="logo" aria-label="IOCWatch home"><svg class="logo-i" viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><defs><linearGradient id="lg-nav" x1="4" y1="6" x2="28" y2="26" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#a5f3fc"/><stop offset=".55" stop-color="#22d3ee"/><stop offset="1" stop-color="#2dd4bf"/></linearGradient></defs><rect class="lg-bg" x="1" y="1" width="30" height="30" rx="9"/><path class="lg-sweep" d="M16 16V9.6a6.4 6.4 0 0 1 5.54 3.2Z"/><path d="M4.6 16c3.1-5.4 7-8.1 11.4-8.1s8.3 2.7 11.4 8.1c-3.1 5.4-7 8.1-11.4 8.1S7.7 21.4 4.6 16Z" fill="none" stroke="url(#lg-nav)" stroke-width="2" stroke-linejoin="round"/><circle cx="16" cy="16" r="6.4" fill="none" stroke="url(#lg-nav)" stroke-width="1.5"/><circle cx="16" cy="16" r="2.2" fill="#fff"/></svg><span class="logo-w"><b>IOC</b>Watch</span></a>
     <nav class="app-nav" id="app-nav" aria-label="Main">
       <a href="#threats" data-view="threats">Threats</a>
+      <a href="#rumours" data-view="rumours">Rumours</a>
       <a href="#block" data-view="block">Block list</a>
       <a href="#hunts" data-view="hunts">Hunts</a>
       <a href="#sources" data-view="sources">Sources</a>
@@ -93,6 +94,18 @@
       </div>
       <ol class="tlist tlist-home" id="latest"></ol>
     </section>
+
+    <section class="rumours-home wrap" aria-labelledby="rum-home-h" id="rumours-home-sec">
+      <div class="sec-row">
+        <div>
+          <p class="kick">Early reports</p>
+          <h2 id="rum-home-h" class="sec-t">Rumours</h2>
+        </div>
+        <div class="sec-links"><a class="more" href="#rumours">View all <span id="rumour-n"></span> &rarr;</a></div>
+      </div>
+      <p class="rumour-disc">Early reports, no IOCs yet. Not on the block list.</p>
+      <ol class="rum-list rum-list-home" id="rumour-home"></ol>
+    </section>
   </div>
 
   <div id="view-threats" class="page-view" hidden>
@@ -130,6 +143,7 @@
     <nav class="pager" id="feed-pager" aria-label="Threat pages" hidden></nav>
   </div>
 
+  <div id="view-rumours" class="page-view" hidden></div>
   <div id="detail" class="page-view detail-page" hidden></div>
   <div id="view-block" class="page-view" hidden></div>
   <div id="view-hunts" class="page-view" hidden></div>
@@ -176,7 +190,7 @@
         <p class="foot-tag">AI threat intelligence for defenders. Verified indicators, block lists and hunts, free and open.</p>
         <p class="foot-status"><span class="live-dot" aria-hidden="true"></span><span>Feed updated <time id="foot-upd">recently</time></span></p>
       </div>
-      <nav class="foot-col" aria-label="Product"><h2>Product</h2><a href="#threats">Threats</a><a href="#threats/map">Threat map</a><a href="#block">Block list</a><a href="#hunts">Hunts</a><a href="#sources">Sources</a></nav>
+      <nav class="foot-col" aria-label="Product"><h2>Product</h2><a href="#threats">Threats</a><a href="#rumours">Rumours</a><a href="#threats/map">Threat map</a><a href="#block">Block list</a><a href="#hunts">Hunts</a><a href="#sources">Sources</a></nav>
       <nav class="foot-col" aria-label="Resources"><h2>Resources</h2><a href="https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md">Docs</a><a href="/feed.json" data-dl="feed.json">feed.json</a><a href="https://github.com/daniyyell-dev/rapid-threat-intel">Repository</a><a href="/.well-known/security.txt">security.txt</a></nav>
       <nav class="foot-col" aria-label="Company"><h2>IOCWatch</h2><a href="#about">About</a><a href="https://www.linkedin.com/in/daniel-jeremiah">LinkedIn</a><a href="https://github.com/daniyyell-dev/rapid-threat-intel/issues/new/choose">Report an issue</a><a href="https://buymeacoffee.com/daniyyell" target="_blank" rel="noopener">Buy me a coffee</a></nav>
     </div>
@@ -210,7 +224,7 @@
   </div>
 </footer>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script src="/app.js?v=88baf0d5"></script>
+<script src="/app.js?v=59caac3d"></script>
 <script data-goatcounter="https://daniyyell.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
