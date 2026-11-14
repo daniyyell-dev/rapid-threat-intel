@@ -1,16 +1,18 @@
 # ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints
 # Published 2026-11-11. High-confidence indicators to block. Updated 2026-11-13 23:30.
 
-## ipv4 (2)
+## ipv4 (3)
 185.99.255.28
 155.94.150.39
+185.241.211.197
 
-## domain (5)
+## domain (6)
 newnewnew.gotdns.org
 soxnewwork.homedns.org
 sc.payproofkit.com
 cdn007-digitaldownloads.com
 ns.mo7sen.dev
+007.from-ak.com
 
 ## url (3)
 https://ns.mo7sen.dev/EadF.php?p=4

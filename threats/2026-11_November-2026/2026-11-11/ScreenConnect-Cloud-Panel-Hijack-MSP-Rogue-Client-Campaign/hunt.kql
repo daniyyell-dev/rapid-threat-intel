@@ -2,8 +2,8 @@
 // Author: Daniel Jeremiah | Date: 2026-11-11
 // Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign
 let Lookback = 30d;
-let IPs = dynamic(["185.99.255.28", "155.94.150.39"]);
-let Domains = dynamic(["newnewnew.gotdns.org", "soxnewwork.homedns.org", "sc.payproofkit.com", "cdn007-digitaldownloads.com", "amexsafekeyupdate.com", "ns.mo7sen.dev"]);
+let IPs = dynamic(["185.99.255.28", "155.94.150.39", "185.241.211.197"]);
+let Domains = dynamic(["newnewnew.gotdns.org", "soxnewwork.homedns.org", "sc.payproofkit.com", "cdn007-digitaldownloads.com", "amexsafekeyupdate.com", "ns.mo7sen.dev", "007.from-ak.com"]);
 let Urls = dynamic(["https://ns.mo7sen.dev/EadF.php?p=4", "https://ns.mo7sen.dev/EadF.php?p=5", "https://ns.mo7sen.dev/EadF.php"]);
 let UrlKeys = dynamic(["ns.mo7sen.dev/EadF.php?p=4", "ns.mo7sen.dev/EadF.php?p=5", "ns.mo7sen.dev/EadF.php"]);
 let SHA1s = dynamic(["0be01e7bd69cfdd222645d49bb5ad9961372fef2", "3f81c9c874a896c46e4bccea2fad2eaa3d9f2054", "13ce33b19daee3963f7e15d461b191c38f6bc0d3"]);
@@ -128,6 +128,10 @@ union isfuzzy=true
   (DeviceFileEvents
     | where Timestamp > ago(Lookback)
     | where InitiatingProcessFileName in~ ("powershell.exe", "pwsh.exe", "sqlite3.exe") and (FileName in~ ("Cookies", "Login Data", "Web Data") or FolderPath has "Cookies" or FolderPath has "User Data")
-    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " ", FolderPath, "\\", FileName, " by ", InitiatingProcessFileName)))
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " ", FolderPath, "\\", FileName, " by ", InitiatingProcessFileName))),
+  (DeviceProcessEvents
+    | where Timestamp > ago(Lookback)
+    | where (FileName =~ "UpdateConnect.ClientService.exe" or FolderPath has @"\ProgramData\Windows Update Agent (" or ProcessCommandLine has "UpdateConnect.ClientSetup" or (FileName =~ "netsh.exe" and ProcessCommandLine has "portproxy" and ProcessCommandLine has "listenaddress=127.0.0.1" and ProcessCommandLine has "connectaddress=" and not(ProcessCommandLine matches regex @"connectaddress=(10\.|127\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.)")))
+    | project Timestamp, SourceTable = "DeviceProcessEvents", Entity = tostring(DeviceName), Indicator = tostring(ProcessCommandLine), Context = tostring(strcat(InitiatingProcessFileName, " > ", FileName, " ", ProcessCommandLine)))
 | summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
 | order by LastSeen desc

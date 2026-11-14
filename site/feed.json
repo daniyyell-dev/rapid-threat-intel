@@ -6,8 +6,8 @@
  "licence": "MIT",
  "last_updated": "2026-11-13 23:30",
  "threat_count": 56,
- "indicator_count": 1581,
- "block_now_count": 730,
+ "indicator_count": 1583,
+ "block_now_count": 732,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -21637,7 +21637,7 @@
    "last_updated": "2026-11-13 23:30",
    "seq": 18,
    "headline": "Hijacked cloud ScreenConnect panels push rogue clients to MSP-managed endpoints and pivot back to technicians",
-   "summary": "Huntress's SOC is responding to an active campaign that began around 17:47 UTC on 11 November 2026 against managed service providers using cloud-hosted ConnectWise ScreenConnect. At the time of its update Huntress was tracking six compromised MSPs and more than 286 endpoints, with the numbers rising; the actor numbers each victim MSP and the observed tags start partway through the sequence, so other MSPs were probably hit first. Huntress has seen no evidence of a new vulnerability and has not confirmed how the panels were accessed; the evidence points to stolen credentials or hijacked operator sessions. With panel access, the actor uses Run Command to push a second, rogue ScreenConnect client to every managed endpoint, giving an independent backdoor that no longer needs the MSP's panel. If a technician then opens an interactive ScreenConnect session to investigate, the malware rides that session back onto the technician's workstation, drops sqlite3.exe to scrape saved browser sessions and tokens, and pivots into any other ScreenConnect panels the technician can reach. Persistence is a TrapWatch scheduled task running as SYSTEM every 10 seconds, files under C:\\ProgramData\\RelayTrap\\ and %TEMP%\\sckit-*, and a RelayTrapLiteAlert Run-key value; endpoints reinfect within minutes if isolation is lifted before these are removed. ConnectWise confirmed the campaign in a Trust Center advisory at 22:45 UTC on 11 November, said the actor appears to deploy the extra remote-access software through third-party extensions, and disabled five of them (Labtech Plus, RMM Plus, RMM+, RMM Plus Password Link and RMM+ Password Link) in about 400 partner environments; on-premises partners must disable them themselves. Sophos X-Ops independently observed the same activity: in one case curl.exe downloaded ScreenConnect.ClientSetup.msi from 185.99.255.28 to C:\\Windows\\TEMP\\sc.msi, msiexec.exe installed it silently, and PowerShell with execution-policy bypass fetched the second stage from the ns.mo7sen.dev stager. Sophos saw the commands come from three ScreenConnect instance IDs that are likely compromised MSP instances (d905b2b1b165d0a9, 4b8f4089ddaac6a9 and df1f7ef0cfacd0d8) and install the same two rogue client IDs Huntress reported. Huntress's customer advisory, updated at 00:29 UTC on 12 November, adds that the toolkit installs a modified client that impersonates the MSP's own client and waits for a technician to connect. Because Huntress, Sophos and now Blackpoint saw them independently, the attacker relay 185.99.255.28, the ns.mo7sen.dev stager and its EadF.php URLs are high confidence and on the block-now list, and the two rogue client IDs are high-confidence hunting leads; the secondary C2 server, the dynamic-DNS and payproofkit hostnames and cdn007-digitaldownloads.com are also listed by Blackpoint and are on the block list at high confidence. BleepingComputer found a July 2026 SSA-themed batch file on VirusTotal that installs ScreenConnect from cdn007-digitaldownloads.com, contacts amexsafekeyupdate.com and checks for rogue client ID ed630cc2c873b091; whether that earlier activity belongs to this campaign is not confirmed, so its domain, hash and file name are alert-only. Huntress's full SCKit write-up, published on its blog late on 11 November, puts the count at 288 endpoints in 48 organisations within 90 minutes, says the current ScreenConnect releases 26.6.6.9747 and 26.7.6.9783 are affected, and breaks down the 16-file toolkit: the dropper writes C:\\Windows\\Temp\\sckit-run.bat, fetches a host-keyed kit whose decryption key comes back in the server's response headers, and a later stage pulls sqlite3.exe from EadF.php?p=5 to read browser cookie databases. Huntress found that the worm's attempt to take over technician consoles failed in every host log it recovered, but it still advises against triaging over ScreenConnect. It also published 16 toolkit hashes; because the scripts are rebuilt per host and RelayTrap.exe is compiled on each machine, these are alert-only hunting leads, and the p=5 URL and cdn007-digitaldownloads.com (now listed by Huntress as C2 and recovered again by Blackpoint) are on the block list. Blackpoint Cyber's Adversary Pursuit Group, writing on 11 November, recovered the same toolkit from the ns.mo7sen.dev staging endpoint and showed that RelayTrap.cs exploits CVE-2026-84869 (CVSS 9.9), a Guest-to-Host file transfer and execute flaw fixed in ScreenConnect 26.6.5.9742 and later. In a controlled test a current patched Host never requested or executed the payload, and Blackpoint's SOC has not seen successful Guest-to-Host propagation; the trap still tries the transfer about 2.5 seconds after a technician session starts, sending Run-Lateral-Full.bat toward the Host and then pulling a loader from EadF.php. Follow-on scripts (Panel-Lateral.ps1 and LabConfig.ps1) try to recover the technician's .ASPXAUTH cookie from browser data and memory and replay it against the panel; the patch does not stop that session hijack, and no successful technician pivot has been observed. Because Blackpoint independently recovered the same relay, staging host, Access installer sources, dynamic-DNS hostnames and rogue client IDs, those indicators stay on the block list at high confidence. The Hacker News reported the same CVE attribution on 12 November. Microsoft Threat Intelligence's analysis on 13 November confirms the same relay, panel, staging and dynamic-DNS infrastructure, the two rogue client IDs and the toolkit hashes, and adds the sc.msi installer hash and SHA1 values, which are alert-only hunting leads.",
+   "summary": "Huntress's SOC is responding to an active campaign that began around 17:47 UTC on 11 November 2026 against managed service providers using cloud-hosted ConnectWise ScreenConnect. At the time of its update Huntress was tracking six compromised MSPs and more than 286 endpoints, with the numbers rising; the actor numbers each victim MSP and the observed tags start partway through the sequence, so other MSPs were probably hit first. Huntress has seen no evidence of a new vulnerability and has not confirmed how the panels were accessed; the evidence points to stolen credentials or hijacked operator sessions. With panel access, the actor uses Run Command to push a second, rogue ScreenConnect client to every managed endpoint, giving an independent backdoor that no longer needs the MSP's panel. If a technician then opens an interactive ScreenConnect session to investigate, the malware rides that session back onto the technician's workstation, drops sqlite3.exe to scrape saved browser sessions and tokens, and pivots into any other ScreenConnect panels the technician can reach. Persistence is a TrapWatch scheduled task running as SYSTEM every 10 seconds, files under C:\\ProgramData\\RelayTrap\\ and %TEMP%\\sckit-*, and a RelayTrapLiteAlert Run-key value; endpoints reinfect within minutes if isolation is lifted before these are removed. ConnectWise confirmed the campaign in a Trust Center advisory at 22:45 UTC on 11 November, said the actor appears to deploy the extra remote-access software through third-party extensions, and disabled five of them (Labtech Plus, RMM Plus, RMM+, RMM Plus Password Link and RMM+ Password Link) in about 400 partner environments; on-premises partners must disable them themselves. Sophos X-Ops independently observed the same activity: in one case curl.exe downloaded ScreenConnect.ClientSetup.msi from 185.99.255.28 to C:\\Windows\\TEMP\\sc.msi, msiexec.exe installed it silently, and PowerShell with execution-policy bypass fetched the second stage from the ns.mo7sen.dev stager. Sophos saw the commands come from three ScreenConnect instance IDs that are likely compromised MSP instances (d905b2b1b165d0a9, 4b8f4089ddaac6a9 and df1f7ef0cfacd0d8) and install the same two rogue client IDs Huntress reported. Huntress's customer advisory, updated at 00:29 UTC on 12 November, adds that the toolkit installs a modified client that impersonates the MSP's own client and waits for a technician to connect. Because Huntress, Sophos and now Blackpoint saw them independently, the attacker relay 185.99.255.28, the ns.mo7sen.dev stager and its EadF.php URLs are high confidence and on the block-now list, and the two rogue client IDs are high-confidence hunting leads; the secondary C2 server, the dynamic-DNS and payproofkit hostnames and cdn007-digitaldownloads.com are also listed by Blackpoint and are on the block list at high confidence. BleepingComputer found a July 2026 SSA-themed batch file on VirusTotal that installs ScreenConnect from cdn007-digitaldownloads.com, contacts amexsafekeyupdate.com and checks for rogue client ID ed630cc2c873b091; whether that earlier activity belongs to this campaign is not confirmed, so its domain, hash and file name are alert-only. Huntress's full SCKit write-up, published on its blog late on 11 November, puts the count at 288 endpoints in 48 organisations within 90 minutes, says the current ScreenConnect releases 26.6.6.9747 and 26.7.6.9783 are affected, and breaks down the 16-file toolkit: the dropper writes C:\\Windows\\Temp\\sckit-run.bat, fetches a host-keyed kit whose decryption key comes back in the server's response headers, and a later stage pulls sqlite3.exe from EadF.php?p=5 to read browser cookie databases. Huntress found that the worm's attempt to take over technician consoles failed in every host log it recovered, but it still advises against triaging over ScreenConnect. It also published 16 toolkit hashes; because the scripts are rebuilt per host and RelayTrap.exe is compiled on each machine, these are alert-only hunting leads, and the p=5 URL and cdn007-digitaldownloads.com (now listed by Huntress as C2 and recovered again by Blackpoint) are on the block list. Blackpoint Cyber's Adversary Pursuit Group, writing on 11 November, recovered the same toolkit from the ns.mo7sen.dev staging endpoint and showed that RelayTrap.cs exploits CVE-2026-84869 (CVSS 9.9), a Guest-to-Host file transfer and execute flaw fixed in ScreenConnect 26.6.5.9742 and later. In a controlled test a current patched Host never requested or executed the payload, and Blackpoint's SOC has not seen successful Guest-to-Host propagation; the trap still tries the transfer about 2.5 seconds after a technician session starts, sending Run-Lateral-Full.bat toward the Host and then pulling a loader from EadF.php. Follow-on scripts (Panel-Lateral.ps1 and LabConfig.ps1) try to recover the technician's .ASPXAUTH cookie from browser data and memory and replay it against the panel; the patch does not stop that session hijack, and no successful technician pivot has been observed. Because Blackpoint independently recovered the same relay, staging host, Access installer sources, dynamic-DNS hostnames and rogue client IDs, those indicators stay on the block list at high confidence. The Hacker News reported the same CVE attribution on 12 November. Microsoft Threat Intelligence's analysis on 13 November confirms the same relay, panel, staging and dynamic-DNS infrastructure, the two rogue client IDs and the toolkit hashes, and adds the sc.msi installer hash and SHA1 values, which are alert-only hunting leads. Huntress's 13 November update reports a second wave from 16:12 UTC hitting 205 more hosts in 41 organisations, installing a rogue UpdateConnect client from 185.241.211.197 (1337 Services bulletproof hosting, inside a Spamhaus DROP range) that relays to 007.from-ak.com on port 88 behind a netsh portproxy and a Windows Update Agent service; both are on the block list at high confidence.",
    "caveat": null,
    "targets": {
     "countries": [],
@@ -21761,8 +21761,8 @@
      "name": "The Hacker News"
     }
    ],
-   "indicator_count": 55,
-   "block_now_count": 10,
+   "indicator_count": 57,
+   "block_now_count": 12,
    "hunt_count": 45,
    "hunt_counts": {
     "alert": 45
@@ -21770,11 +21770,11 @@
    "indicator_counts": {
     "sha256": 22,
     "filename": 13,
-    "domain": 6,
+    "domain": 7,
     "other": 6,
+    "ipv4": 3,
     "sha1": 3,
-    "url": 3,
-    "ipv4": 2
+    "url": 3
    },
    "ioas": [
     {
@@ -21928,9 +21928,22 @@
      "source_name": "Blackpoint Cyber",
      "title": "Unpatched ScreenConnect clients (CVE-2026-84869)",
      "queries": []
+    },
+    {
+     "artefact": "netsh interface portproxy rule that redirects 127.0.0.1:88 to a public IP, or a rogue UpdateConnect.ClientService.exe running from a C:\\ProgramData\\Windows Update Agent (...) folder",
+     "log_source": "Defender XDR DeviceProcessEvents",
+     "why": "In the 13 Nov 2026 SCKit wave Huntress saw a batch script in the ScreenConnect client folder launch msiexec to install UpdateConnect.ClientSetup.msi (c=ExploitedNOTUSA), a netsh portproxy from 127.0.0.1:88 to 185.241.211.197:80, a hosts-file change, and a LocalSystem service named Windows Update Agent running UpdateConnect.ClientService.exe. The legitimate ScreenConnect client is never named UpdateConnect and Windows has no service binary under that folder, so the file-name and folder match is sharp; the portproxy clause is limited to loopback listen addresses with a non-private connect address, and IIS/WSL or developer port forwards that point at internal hosts are excluded. Expected false positives: admin port forwards from loopback to a public jump host.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_name": "Huntress",
+     "title": "netsh interface portproxy rule that redirects 127.0.0.1:88 to a public IP",
+     "queries": [
+      "KQL"
+     ]
     }
    ],
-   "ioa_count": 11,
+   "ioa_count": 12,
    "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
    "files": [
     {
@@ -23213,6 +23226,38 @@
       {
        "url": "https://www.microsoft.com/en-us/security/blog/2026/11/13/sckit-abuses-screenconnect-deploy-remote-access-target-technician-sessions/",
        "name": "Microsoft"
+      }
+     ]
+    },
+    {
+     "value": "185.241.211.197",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Server hosting the rogue UpdateConnect ScreenConnect client in the 13 Nov 2026 SCKit wave; victims had a netsh portproxy redirecting 127.0.0.1:88 to it on port 80.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+       "name": "Huntress"
+      }
+     ]
+    },
+    {
+     "value": "007.from-ak.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Attacker relay (port 88) that the rogue UpdateConnect ScreenConnect clients connect to in the 13 Nov 2026 SCKit wave.",
+     "source_url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+     "source_label": "Huntress – SCKit worm installs rogue ScreenConnect clients and session cookie relays",
+     "source_name": "Huntress",
+     "sources": [
+      {
+       "url": "https://www.huntress.com/blog/sckit-worm-rogue-screenconnect",
+       "name": "Huntress"
       }
      ]
     }

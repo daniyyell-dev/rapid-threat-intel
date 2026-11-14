@@ -492,6 +492,8 @@ https://ns.mo7sen.dev/EadF.php?p=4
 https://ns.mo7sen.dev/EadF.php?p=5
 ns.mo7sen.dev
 https://ns.mo7sen.dev/EadF.php
+185.241.211.197
+007.from-ak.com
 
 ## 2026-11-11 Trigram: DPRK Dropper Chain Targeting AI, Blockchain and Logistics (Kimsuky / UNK_DeadDrop)
 icagllmbt.space

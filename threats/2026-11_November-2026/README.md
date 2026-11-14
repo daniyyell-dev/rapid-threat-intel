@@ -2,7 +2,7 @@
 
 [Back to index](../../README.md)
 
-56 threats, 1581 indicators, 730 to block now. Newest first.
+56 threats, 1583 indicators, 732 to block now. Newest first.
 
 ### [2026-11-13](2026-11-13/)
 
@@ -56,7 +56,7 @@
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
-| 2026-11-11 | [ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints](2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/) | Supply chain / MSP remote access | 55 | 10 | Hijacked cloud ScreenConnect panels push rogue clients to MSP-managed endpoints and pivot back to technicians |
+| 2026-11-11 | [ScreenConnect Cloud Panel Hijack: Rogue Clients Pushed to MSP-Managed Endpoints](2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/) | Supply chain / MSP remote access | 57 | 12 | Hijacked cloud ScreenConnect panels push rogue clients to MSP-managed endpoints and pivot back to technicians |
 | 2026-11-11 | [Trigram: DPRK Dropper Chain Targeting AI, Blockchain and Logistics (Kimsuky / UNK_DeadDrop)](2026-11-11/Trigram-DPRK-Dropper-Kimsuky-UNK-DeadDrop/) | APT / infostealer | 275 | 11 | DPRK ClickFix and supply-chain dropper, tied to Kimsuky and UNK_DeadDrop, that steals wallets and credentials |
 | 2026-10-27 | [SkyW4lker: Microsoft 365 Device-Code Phishing Kit Targeting Enterprises](2026-11-11/SkyW4lker-Microsoft-365-Device-Code-Phishing/) | Phishing / identity | 90 | 0 | Microsoft 365 device-code phishing kit that obtains tokens through genuine sign-in and MFA |
 | 2026-10-05 | [Gentlemen Ransomware Affiliate Azazel: CI/CD Secret Theft, LEAKNED Extortion and MCP Command Execution](2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/) | Ransomware / data theft and extortion | 9 | 3 | Gentlemen ransomware affiliate stealing CI/CD secrets and leaking victims on its own LEAKNED site |
