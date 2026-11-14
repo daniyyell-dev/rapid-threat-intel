@@ -2052,3 +2052,123 @@ a.bmc-btn:focus-visible {
     animation: none;
   }
 }
+/* Lower footer: centred stats, credits and sponsors */
+.visits {
+  text-align: center;
+}
+.visits-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px 56px;
+  margin: 0 auto;
+}
+.visits-cell {
+  text-align: center;
+  min-width: 6.5rem;
+  padding: 0;
+}
+.visits-cell dt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+.visits-cell dd {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+.visits-geo-wrap {
+  margin: 22px auto 0;
+  max-width: 460px;
+  text-align: center;
+}
+.visits-geo-wrap summary.visits-sub,
+.visits-geo-wrap summary {
+  margin-left: auto;
+  margin-right: auto;
+  width: max-content;
+  text-align: center;
+}
+.visits-geo {
+  text-align: left;
+}
+
+.foot-end {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 22px;
+  margin-top: 36px;
+  padding-top: 28px;
+}
+.foot-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+}
+.credit {
+  display: block;
+  margin: 0 0 10px;
+  text-align: center;
+  line-height: 1.55;
+}
+.privacy {
+  margin: 0 auto;
+  max-width: 560px;
+  text-align: center;
+  line-height: 1.55;
+}
+.spons {
+  flex: none;
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.spons-h {
+  margin: 0 0 12px;
+}
+.spons-list {
+  justify-content: center;
+  gap: 28px;
+}
+
+@media (max-width: 700px) {
+  .visits-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: center;
+    gap: 18px 16px;
+    max-width: 340px;
+    margin-inline: auto;
+  }
+  .visits-cell {
+    min-width: 0;
+  }
+  .visits-cell:last-child {
+    grid-column: 1 / -1;
+  }
+  .foot-end {
+    gap: 20px;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 960px) {
+  .visits-grid {
+    gap: 20px 40px;
+  }
+}
+.credit-lic, .credit-def { white-space: nowrap; }
