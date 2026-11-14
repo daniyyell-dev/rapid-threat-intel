@@ -8,7 +8,7 @@
 **Agentic AI collects it. Analysts verify it. Community acts on it.**<br>
 <sub>AI threat intel from defenders, for defenders.</sub>
 
-[![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-58-informational)](threats/) ![IOCs](https://img.shields.io/badge/IOCs-1596-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--14-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
+[![live site](https://img.shields.io/badge/live_site-iocwatch.com-crimson)](https://iocwatch.com/) [![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-58-informational)](threats/) ![IOCs](https://img.shields.io/badge/IOCs-1596-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--14-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
 </div>
 
@@ -46,7 +46,7 @@ To block everything at once, use [`all/`](all/): 719 high-confidence block indic
 
 | Tool | Guide |
 |---|---|
-| Live feed dashboard | [Browse threats, check an indicator, download files](docs/dashboard.md) |
+| Live feed dashboard | [iocwatch.com](https://iocwatch.com/): browse threats, check an indicator, download files ([guide](docs/dashboard.md)) |
 | Microsoft Defender XDR | [Import indicators, run hunts, create detection rules](docs/defender-xdr.md) |
 | Firewalls and EDR | [Use block lists as external dynamic lists](docs/firewall-and-edr.md) |
 | Splunk | [Run hunts over CIM or raw data, live-feed lookup](docs/splunk.md) |
