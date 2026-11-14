@@ -1,0 +1,47 @@
+// Threat: Contagious Interview: AccuraSoftHire Fake Employer Plants PolinRider Loader on Developer Machines
+// Author: Daniel Jeremiah | Date: 2026-11-14
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure
+rule rti_contagious_interview_accurasofthire_polinrider_npm {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-14"
+    description = "Contagious Interview: AccuraSoftHire Fake Employer Plants PolinRider Loader on Developer Machines"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure"
+
+  events:
+    (
+      $e.principal.ip = /^(?:103\.179\.142\.155|23\.27\.13\.72|91\.218\.183\.174|166\.88\.134\.75|193\.247\.144\.38|166\.88\.73\.46|23\.27\.13\.135|166\.88\.134\.62)$/ or
+      $e.target.ip = /^(?:103\.179\.142\.155|23\.27\.13\.72|91\.218\.183\.174|166\.88\.134\.75|193\.247\.144\.38|166\.88\.73\.46|23\.27\.13\.135|166\.88\.134\.62)$/ or
+      $e.network.dns.answers.data = /^(?:103\.179\.142\.155|23\.27\.13\.72|91\.218\.183\.174|166\.88\.134\.75|193\.247\.144\.38|166\.88\.73\.46|23\.27\.13\.135|166\.88\.134\.62)$/ or
+      $e.network.dns.questions.name = /(?:^|\.)(?:accurasofthire\.com)\.?$/ nocase or
+      $e.target.hostname = /(?:^|\.)(?:accurasofthire\.com)\.?$/ nocase or
+      $e.target.domain.name = /(?:^|\.)(?:accurasofthire\.com)\.?$/ nocase or
+      re.regex($e.target.url, `^(?:[a-z][a-z0-9+.-]*://)?(?:[^/?#]*@)?(?:(?:[^/?#@]*\.)?(?:accurasofthire\.com)(?::\d+)?(?:[/?#]|$))`) nocase or
+      (re.regex($e.target.registry.registry_key, `NativeMessagingHosts\\com\.accurasoft\.jobalerts`) nocase or re.regex($e.target.file.full_path, `\\\.nvm\\bootstrap\.cmd$`) nocase)
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+    $dns_query = array_distinct($e.network.dns.questions.name)
+    $target_hostname = array_distinct($e.target.hostname)
+    $target_url = array_distinct($e.target.url)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}

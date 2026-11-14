@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-14T01:21:25Z",
+ "updated": "2026-11-14T04:17:04Z",
  "last24h": 50,
  "top_countries": [
   {
@@ -10,7 +10,7 @@
   {
    "code": "IN",
    "name": "India",
-   "count": 29
+   "count": 37
   },
   {
    "code": "DE",
@@ -79,9 +79,9 @@
   }
  ],
  "other_count": 0,
- "total": 135,
+ "total": 143,
  "downloads": 24,
  "downloads24h": 17,
- "copies": 33,
- "copies24h": 18
+ "copies": 35,
+ "copies24h": 19
 }

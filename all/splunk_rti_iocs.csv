@@ -1,4 +1,13 @@
 indicator,type,threat
+accurasofthire.com,domain,Contagious Interview: AccuraSoftHire Fake Employer Plants PolinRider Loader on Developer Machines
+103.179.142.155,ipv4,Contagious Interview: AccuraSoftHire Fake Employer Plants PolinRider Loader on Developer Machines
+23.27.13.72,ipv4,Contagious Interview: AccuraSoftHire Fake Employer Plants PolinRider Loader on Developer Machines
+91.218.183.174,ipv4,Contagious Interview: AccuraSoftHire Fake Employer Plants PolinRider Loader on Developer Machines
+166.88.134.75,ipv4,Contagious Interview: AccuraSoftHire Fake Employer Plants PolinRider Loader on Developer Machines
+193.247.144.38,ipv4,Contagious Interview: AccuraSoftHire Fake Employer Plants PolinRider Loader on Developer Machines
+166.88.73.46,ipv4,Contagious Interview: AccuraSoftHire Fake Employer Plants PolinRider Loader on Developer Machines
+23.27.13.135,ipv4,Contagious Interview: AccuraSoftHire Fake Employer Plants PolinRider Loader on Developer Machines
+166.88.134.62,ipv4,Contagious Interview: AccuraSoftHire Fake Employer Plants PolinRider Loader on Developer Machines
 74.208.158.106,ipv4,Fake Crypto-Exchange Guest Sessions Planted on 100+ MSP ScreenConnect Servers
 45.115.26.23,ipv4,"ZeroQlik Returns: Qlik Sense Servers Exploited for Reverse Shells, Go Agent and ActiveMQ/Veeam Tooling"
 24ee79a519839230377585ec541863b1615286736cbeb98125afeb82d91bb768,sha256,"ZeroQlik Returns: Qlik Sense Servers Exploited for Reverse Shells, Go Agent and ActiveMQ/Veeam Tooling"

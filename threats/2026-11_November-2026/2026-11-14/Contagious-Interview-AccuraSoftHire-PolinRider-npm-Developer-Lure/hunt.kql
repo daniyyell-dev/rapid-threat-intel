@@ -1,0 +1,76 @@
+// Threat: Contagious Interview: AccuraSoftHire Fake Employer Plants PolinRider Loader on Developer Machines
+// Author: Daniel Jeremiah | Date: 2026-11-14
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure
+let Lookback = 30d;
+let IPs = dynamic(["103.179.142.155", "23.27.13.72", "91.218.183.174", "166.88.134.75", "193.247.144.38", "166.88.73.46", "23.27.13.135", "166.88.134.62"]);
+let Domains = dynamic(["accurasofthire.com"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " port ", RemotePort))),
+  (DeviceLogonEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteIP in (IPs)
+    | project Timestamp, SourceTable = "DeviceLogonEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteIP), Context = tostring(strcat(ActionType, " ", LogonType, " ", AccountName))),
+  (EntraIdSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSignInEvents", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (AADSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSignInEventsBeta", Entity = tostring(AccountUpn), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ErrorCode))),
+  (EntraIdSpnSignInEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "EntraIdSpnSignInEvents", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (AADSpnSignInEventsBeta
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "AADSpnSignInEventsBeta", Entity = tostring(ServicePrincipalName), Indicator = tostring(IPAddress), Context = tostring(strcat(ResourceDisplayName, " ", ErrorCode))),
+  (CloudAppEvents
+    | where Timestamp > ago(Lookback)
+    | where IPAddress in (IPs)
+    | project Timestamp, SourceTable = "CloudAppEvents", Entity = tostring(AccountDisplayName), Indicator = tostring(IPAddress), Context = tostring(strcat(Application, " ", ActionType))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (DeviceEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType == "DnsQueryResponse" and tostring(parse_json(AdditionalFields).DnsQueryString) has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(parse_json(AdditionalFields).DnsQueryString), Context = tostring(strcat("DNS ", InitiatingProcessFileName))),
+  (EmailUrlInfo
+    | where Timestamp > ago(Lookback)
+    | where UrlDomain has_any (Domains)
+    | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = tostring(Url), Context = tostring("URL in email")),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url has_any (Domains)
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where InitiatingProcessFileName in~ ("node.exe", "node")
+    | where RemoteUrl has "eth.blockscout.com"
+    | project EthTime = Timestamp, DeviceId, DeviceName, EthUrl = RemoteUrl
+    | join kind=inner (
+        DeviceNetworkEvents
+        | where Timestamp > ago(Lookback)
+        | where InitiatingProcessFileName in~ ("node.exe", "node")
+        | where RemotePort == 443 and RemoteIPType == "Public" and isempty(RemoteUrl)
+        | project C2Time = Timestamp, DeviceId, C2IP = RemoteIP, NodeCmd = InitiatingProcessCommandLine
+    ) on DeviceId
+    | where C2Time between (EthTime .. EthTime + 5m)
+    | summarize Timestamp = min(C2Time), C2IPs = make_set(C2IP, 10), NodeCmd = take_any(NodeCmd) by DeviceId, DeviceName, EthUrl
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = DeviceName, Indicator = strcat_array(C2IPs, ", "), Context = strcat("node read ", EthUrl, " then connected to a bare public IP on 443 within 5m | ", NodeCmd)),
+  (DeviceRegistryEvents
+    | where Timestamp > ago(Lookback)
+    | where RegistryKey has "NativeMessagingHosts" and RegistryKey has "com.accurasoft.jobalerts"
+    | project Timestamp, SourceTable = "DeviceRegistryEvents", Entity = tostring(DeviceName), Indicator = tostring(RegistryKey), Context = tostring(strcat(ActionType, " ", RegistryKey, " = ", RegistryValueData, " by ", InitiatingProcessFileName))),
+  (DeviceFileEvents
+    | where Timestamp > ago(Lookback)
+    | where FileName =~ "bootstrap.cmd" and FolderPath contains @"\.nvm\"
+    | project Timestamp, SourceTable = "DeviceFileEvents", Entity = tostring(DeviceName), Indicator = tostring(FolderPath), Context = tostring(strcat(ActionType, " ", FolderPath, " by ", InitiatingProcessFileName, " | ", InitiatingProcessCommandLine)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

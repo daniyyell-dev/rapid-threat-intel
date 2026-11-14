@@ -2,12 +2,13 @@
 
 [Back to index](../../README.md)
 
-57 threats, 1586 indicators, 710 to block now. Newest first.
+58 threats, 1596 indicators, 719 to block now. Newest first.
 
 ### [2026-11-14](2026-11-14/)
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
+| 2026-11-09 | [Contagious Interview: AccuraSoftHire Fake Employer Plants PolinRider Loader on Developer Machines](2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/) | Nation-state / social engineering | 10 | 9 | Fake employer AccuraSoftHire gives developers a poisoned Tailwind take-home that installs the PolinRider credential-stealing loader |
 | 2026-11-13 | [Fake Crypto-Exchange Guest Sessions Planted on 100+ MSP ScreenConnect Servers](2026-11-14/ScreenConnect-Fake-Crypto-Exchange-Guest-Sessions-MSP-Bait/) | Supply chain / MSP remote access | 3 | 1 | Thousands of fake crypto-exchange guest sessions planted on MSP ScreenConnect servers, likely as bait for technicians with unpatched clients |
 
 ### [2026-11-13](2026-11-13/)

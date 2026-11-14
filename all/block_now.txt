@@ -1,5 +1,16 @@
 # All high-confidence indicators to block. Updated 2026-11-14.
 
+## 2026-11-09 Contagious Interview: AccuraSoftHire Fake Employer Plants PolinRider Loader on Developer Machines
+accurasofthire.com
+103.179.142.155
+23.27.13.72
+91.218.183.174
+166.88.134.75
+193.247.144.38
+166.88.73.46
+23.27.13.135
+166.88.134.62
+
 ## 2026-11-13 Fake Crypto-Exchange Guest Sessions Planted on 100+ MSP ScreenConnect Servers
 74.208.158.106
 

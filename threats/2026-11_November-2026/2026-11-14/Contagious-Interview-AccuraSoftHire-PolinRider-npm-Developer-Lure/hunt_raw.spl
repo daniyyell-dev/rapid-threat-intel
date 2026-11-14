@@ -1,0 +1,46 @@
+``` Threat: Contagious Interview: AccuraSoftHire Fake Employer Plants PolinRider Loader on Developer Machines
+    Author: Daniel Jeremiah | Date: 2026-11-14
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure ```
+| multisearch
+  [ search `rti_network(103.179.142.155 OR 23.27.13.72 OR 91.218.183.174 OR 166.88.134.75 OR 193.247.144.38 OR 166.88.73.46 OR 23.27.13.135 OR 166.88.134.62)`
+    | search dest_ip IN ("103.179.142.155", "23.27.13.72", "91.218.183.174", "166.88.134.75", "193.247.144.38", "166.88.73.46", "23.27.13.135", "166.88.134.62")
+    | eval data_model="network", ioc_type="ipv4", ioc=dest_ip, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_network(103.179.142.155 OR 23.27.13.72 OR 91.218.183.174 OR 166.88.134.75 OR 193.247.144.38 OR 166.88.73.46 OR 23.27.13.135 OR 166.88.134.62)`
+    | search src_ip IN ("103.179.142.155", "23.27.13.72", "91.218.183.174", "166.88.134.75", "193.247.144.38", "166.88.73.46", "23.27.13.135", "166.88.134.62")
+    | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_dns(accurasofthire.com)`
+    | search query IN ("accurasofthire.com", "*.accurasofthire.com")
+    | rex field=query "(?i)(?<ioc>(?:accurasofthire\.com))\.?$"
+    | eval data_model="dns", ioc_type="domain", host=src, detail="DNS query ".query
+  ]
+  [ search `rti_web(accurasofthire.com)`
+    | search url IN ("*://accurasofthire.com*", "*.accurasofthire.com*", "accurasofthire.com*") OR dest IN ("accurasofthire.com", "*.accurasofthire.com")
+    | rex field=url "(?i)(?<ioc>accurasofthire\.com)"
+    | eval ioc=coalesce(ioc, dest), data_model="web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search `rti_endpoint("com.accurasoft.jobalerts")`
+    | where match(coalesce(registry_path, ""), "(?i)NativeMessagingHosts\\com\.accurasoft\.jobalerts")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(registry_path, "-")." = ".coalesce(registry_value_data, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="com.accurasoft.jobalerts native host or .nvm\bootstrap.cmd", ioc_type="behaviour (alert)"
+]
+| append [
+    search `rti_endpoint(bootstrap.cmd)`
+    | where match(coalesce(file_path, ""), "(?i)\\\.nvm\\") AND match(coalesce(file_name, file_path, ""), "(?i)bootstrap\.cmd$")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(file_path, file_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="com.accurasoft.jobalerts native host or .nvm\bootstrap.cmd", ioc_type="behaviour (alert)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

