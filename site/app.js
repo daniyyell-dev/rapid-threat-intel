@@ -923,13 +923,13 @@
     var title = a === "block" ? "High confidence" : ((ind.confidence || "") + " confidence");
     return h("span", { class: "pill " + a, title: title, text: a });
   }
-  function row(t, newest) {
+  function row(t, newest, withHunt) {
     var hunt = huntOf(t);
     var isNew = t.entry_date.split(" ")[0] === newest;
     var sev = severityOf(t);
     var by = reportedByText(t);
     var tags = urgencyTags(t);
-    return h("li", { class: "trow" }, h("a", { href: "#threat/" + encodeURIComponent(t.id) },
+    return h("li", { class: "trow" + (withHunt && huntQs(t).length ? " has-hunt" : "") }, h("a", { href: "#threat/" + encodeURIComponent(t.id) },
       h("span", { class: "tr-main" },
         h("span", { class: "tr-name" }, h("span", { text: headlineOf(t), title: t.name }), isNew ? h("span", { class: "new", text: "New" }) : null),
         h("span", { class: "tr-sub" },
@@ -942,7 +942,36 @@
           hunt ? h("span", { class: "chip hunt", text: hunt + " hunt" }) : null,
           t.ioa_count ? h("span", { class: "chip ioa", text: plural(t.ioa_count, "behaviour") }) : null),
         h("time", { class: "tr-when", datetime: t.entry_date.replace(" ", "T"), title: fmtAdded(t.entry_date), "data-d": t.entry_date, text: ago(t.entry_date) })),
-      h("span", { class: "tr-go", "aria-hidden": "true", text: "\u2192" })));
+      h("span", { class: "tr-go", "aria-hidden": "true", text: "\u2192" })), withHunt ? trHunt(t) : null);
+  }
+  /* Hunt actions on each threat row: copy, download and a short preview in the chosen language. */
+  var TR_ROWS = [];
+  function trHunt(t) {
+    if (!huntQs(t).length) return null;
+    var box = h("div", { class: "tr-hunt" });
+    var prev = huntPreview(t, box);
+    var more = h("button", { type: "button", class: "hn-a hn-more", "aria-expanded": "false", "aria-label": "Preview the hunt for " + stitle(t) }, h("span", { text: "Preview" }), h("i", { class: "chev", "aria-hidden": "true" }));
+    more.addEventListener("click", function () {
+      var open = box.classList.toggle("open");
+      more.setAttribute("aria-expanded", open ? "true" : "false");
+      if (open) prev._draw();
+    });
+    var copy = huntCopyBtn(t), dl = huntDlBtn(t);
+    box._relabel = function () { copy._relabel(); dl._relabel(); prev._reset(); };
+    TR_ROWS.push(box);
+    add(box, [h("div", { class: "hn-acts tr-acts" }, h("span", { class: "tr-hunt-k", text: "Hunt" }), copy, dl, more), prev]);
+    return box;
+  }
+  function drawTrPlats() {
+    var el = $("tr-plats");
+    if (!el) return;
+    clear(el);
+    el.appendChild(h("span", { class: "hn-plats-k", text: "Copy as" }));
+    HN_PLATS.forEach(function (p, i) {
+      el.appendChild(h("button", { type: "button", role: "radio", class: "hn-p" + (HN.plat === i ? " on" : ""), "aria-checked": HN.plat === i ? "true" : "false",
+        onclick: function () { HN.plat = i; drawTrPlats(); TR_ROWS.forEach(function (r) { r._relabel(); }); } },
+        h("b", { text: p.short }), h("span", { text: p.label })));
+    });
   }
     function targetLine(t) {
     var g = tg(t), shown = g.countries.slice(0, 4), more = g.countries.length - shown.length;
@@ -1018,7 +1047,9 @@
     }
     var last = Math.max(1, Math.ceil(list.length / pageSize()));
     if (PAGE > last) PAGE = last;
-    list.slice((PAGE - 1) * pageSize(), PAGE * pageSize()).forEach(function (t) { f.appendChild(row(t, newest)); });
+    TR_ROWS = [];
+    drawTrPlats();
+    list.slice((PAGE - 1) * pageSize(), PAGE * pageSize()).forEach(function (t) { f.appendChild(row(t, newest, true)); });
     pager(list.length);
   }
   function renderAllFiles() {
@@ -1218,8 +1249,6 @@
   function fillNavCounts() {
     if ($("nav-threats-n")) $("nav-threats-n").textContent = String(DATA.threat_count);
     if ($("nav-block-n")) $("nav-block-n").textContent = String(DATA.block_now_count);
-    var hunts = DATA.threats.filter(function (t) { return (t.queries || []).some(function (q) { return q && q.url; }); }).length;
-    if ($("nav-hunts-n")) $("nav-hunts-n").textContent = String(hunts);
     if ($("nav-sources-n")) $("nav-sources-n").textContent = String(uniqueSources().length);
   }
   function closeNav() {
@@ -1238,12 +1267,13 @@
     VIEW = view;
     closeNav();
     setNav(view === "threat" ? "threats" : view);
-    var pages = { home: $("home"), threats: $("view-threats"), threat: $("detail"), block: $("view-block"), hunts: $("view-hunts"), sources: $("view-sources"), about: $("view-about"), rumours: $("view-rumours"), live: $("view-live"), darkweb: $("view-darkweb") };
+    var pages = { home: $("home"), threats: $("view-threats"), threat: $("detail"), block: $("view-block"), chatter: $("view-chatter"), sources: $("view-sources"), about: $("view-about"), rumours: $("view-rumours"), live: $("view-live"), darkweb: $("view-darkweb") };
     Object.keys(pages).forEach(function (k) { if (pages[k]) pages[k].hidden = k !== view; });
     document.body.setAttribute("data-view", view);
     if (view !== "threat") CURRENT_ID = "";
     if (view === "threats" && DATA) renderFeed(true);
     if (view === "rumours") renderRumours();
+    if (view === "chatter") renderChatter();
   }
   function renderBlock() {
     var el = $("view-block");
@@ -1695,91 +1725,135 @@
     ]);
     return h("li", null, art);
   }
-  function renderHunts() {
-    var el = $("view-hunts");
-    if (!el || !DATA) return;
-    var all = DATA.threats.filter(function (t) { return huntQs(t).length; });
-    document.title = "Hunts | IOCWatch";
+  /* Chatter: what named researchers, vendors, CERTs and news outlets are posting publicly about our threats and rumours.
+     Built offline from public posts; only a one-line summary and a link to the original are shown. No third-party scripts. */
+  var CHATTER = null, CH_TYPE = "all";
+  var CH_TYPES = [["all", "All"], ["cert", "CERTs & government"], ["vendor", "Vendors"], ["researcher", "Researchers"], ["news", "News"]];
+  var CH_TLABEL = { cert: "CERT", vendor: "Vendor", researcher: "Researcher", news: "News" };
+  var CH_MARK = {
+    X: "M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z",
+    Bluesky: "M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8Z",
+    Mastodon: "M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"
+  };
+  function chMark(pl) {
+    var s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("width", "15"); s.setAttribute("height", "15"); s.setAttribute("aria-hidden", "true");
+    var p = document.createElementNS("http://www.w3.org/2000/svg", "path"); p.setAttribute("d", CH_MARK[pl] || ""); p.setAttribute("fill", "currentColor");
+    s.appendChild(p);
+    return h("span", { class: "ch-mark ch-" + String(pl).toLowerCase(), title: pl }, s);
+  }
+  function chDay(iso) {
+    var d = new Date(iso);
+    if (isNaN(d)) return "";
+    return d.toLocaleDateString("en-CA", { timeZone: "Europe/London" });
+  }
+  function chAgo(iso) {
+    var ms = Date.parse(iso);
+    if (isNaN(ms)) return "";
+    var s = Math.max(0, (Date.now() - ms) / 1000);
+    if (s < 3600) return Math.max(1, Math.floor(s / 60)) + "m ago";
+    if (s < 86400) return Math.floor(s / 3600) + "h ago";
+    if (s < 172800) return "yesterday";
+    return Math.floor(s / 86400) + "d ago";
+  }
+  function chWhen(iso) {
+    var d = new Date(iso);
+    return isNaN(d) ? "" : d.toLocaleString("en-GB", { timeZone: "Europe/London", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) + " UK";
+  }
+  function chHandle(p) {
+    if (p.platform === "X") return "@" + p.handle;
+    if (p.platform === "Bluesky") return "@" + p.handle;
+    return p.handle;
+  }
+  function chPost(p) {
+    return h("li", { class: "ch-post ty-" + p.type },
+      chMark(p.platform),
+      h("div", { class: "ch-pb" },
+        h("p", { class: "ch-who" },
+          h("b", { class: "ch-au", text: p.author }),
+          p.org && p.org.indexOf(p.author) === -1 ? h("span", { class: "ch-org", text: p.org }) : null,
+          h("span", { class: "ch-ty", text: CH_TLABEL[p.type] || "" }),
+          h("time", { class: "ch-t", datetime: p.posted_at, title: chWhen(p.posted_at), text: chAgo(p.posted_at) })),
+        h("p", { class: "ch-sum", text: p.summary }),
+        h("p", { class: "ch-foot" },
+          h("span", { class: "ch-h", text: chHandle(p) + " \u00b7 " + p.platform }),
+          extLink(p.url, ["View post", h("span", { "aria-hidden": "true", text: " \u2192" })], "ch-go"))));
+  }
+  function chItem(it, posts) {
+    var isR = !!it.rumour_id, t = null;
+    if (!isR && DATA) DATA.threats.forEach(function (x) { if (x.id === it.threat_id) t = x; });
+    var href = isR ? "#rumours" : "#threat/" + encodeURIComponent(it.threat_id);
+    var title = t ? stitle(t) : it.threat_name;
+    return h("li", null, h("article", { class: "ch-item " + (isR ? "is-rum" : "is-thr") },
+      h("p", { class: "ch-meta" },
+        h("span", { class: "ch-kind", text: isR ? "Rumour" : "Threat" }),
+        t && t.category ? h("span", { class: "ch-cat", text: t.category }) : null,
+        h("span", { class: "ch-n", text: plural(posts.length, "post") })),
+      h("h3", { class: "ch-title" }, h("a", { href: href, text: title })),
+      h("ol", { class: "ch-posts" }, posts.map(chPost)),
+      h("a", { class: "ch-open", href: href }, isR ? "Open rumours" : "Open threat", h("span", { "aria-hidden": "true", text: " \u2192" }))));
+  }
+  function renderChatter() {
+    var el = $("view-chatter");
+    if (!el) return;
+    document.title = "Chatter | IOCWatch";
+    if (!CHATTER) {
+      getJSON("chatter.json").then(function (d) { CHATTER = d && d.items ? d : { items: [] }; if (VIEW === "chatter") renderChatter(); },
+        function () { CHATTER = { items: [] }; if (VIEW === "chatter") renderChatter(); });
+      if (!el.firstChild) el.appendChild(h("p", { class: "hn-empty", text: "Loading\u2026" }));
+      return;
+    }
     clear(el);
-    el.classList.add("hn-page");
-    var nIoa = 0, nInd = 0;
-    all.forEach(function (t) { nIoa += t.ioa_count || 0; nInd += t.indicator_count || 0; });
-    var famCount = { all: all.length };
-    all.forEach(function (t) { var f = huntFam(t)[0]; famCount[f] = (famCount[f] || 0) + 1; });
-
-    var search = h("input", { type: "search", class: "hn-search", placeholder: "Search hunts, actors, CVEs\u2026", "aria-label": "Search hunts", autocomplete: "off", spellcheck: "false" });
-    search.value = HN.q;
-    var famRow = h("div", { class: "hn-fams", role: "tablist", "aria-label": "Filter by category" });
-    var platRow = h("div", { class: "hn-plats", role: "radiogroup", "aria-label": "Query language" });
-    var sortBtn = h("button", { type: "button", class: "hn-sort" });
-    var listBox = h("div", { class: "hn-list" });
-    var countEl = h("span", { class: "hn-count" });
-    var cards = [];
-
-    function drawFams() {
-      clear(famRow);
-      [["all", "All"]].concat(HN_FAMS.map(function (f) { return [f[0], f[1]]; }), [["other", "Other"]]).forEach(function (f) {
-        if (f[0] !== "all" && !famCount[f[0]]) return;
-        famRow.appendChild(h("button", { type: "button", role: "tab", class: "hn-f fam-" + f[0] + (HN.fam === f[0] ? " on" : ""), "aria-selected": HN.fam === f[0] ? "true" : "false",
-          onclick: function () { HN.fam = f[0]; drawFams(); drawList(); } }, h("span", { text: f[1] }), h("b", { text: String(famCount[f[0]] || 0) })));
+    el.classList.add("ch-page");
+    var items = CHATTER.items || [];
+    var all = [], authors = {};
+    items.forEach(function (it) { (it.posts || []).forEach(function (p) { all.push(p); authors[p.author] = 1; }); });
+    var cnt = { all: all.length };
+    all.forEach(function (p) { cnt[p.type] = (cnt[p.type] || 0) + 1; });
+    var tabs = h("div", { class: "hn-fams ch-tabs", role: "tablist", "aria-label": "Filter by source type" });
+    var list = h("div", { class: "ch-list" });
+    function drawTabs() {
+      clear(tabs);
+      CH_TYPES.forEach(function (k) {
+        if (k[0] !== "all" && !cnt[k[0]]) return;
+        tabs.appendChild(h("button", { type: "button", role: "tab", class: "hn-f ty-" + k[0] + (CH_TYPE === k[0] ? " on" : ""), "aria-selected": CH_TYPE === k[0] ? "true" : "false",
+          onclick: function () { CH_TYPE = k[0]; drawTabs(); drawList(); } }, h("span", { text: k[1] }), h("b", { text: String(cnt[k[0]] || 0) })));
       });
     }
-    function drawPlats() {
-      clear(platRow);
-      platRow.appendChild(h("span", { class: "hn-plats-k", text: "Copy as" }));
-      HN_PLATS.forEach(function (p, i) {
-        platRow.appendChild(h("button", { type: "button", role: "radio", class: "hn-p" + (HN.plat === i ? " on" : ""), "aria-checked": HN.plat === i ? "true" : "false",
-          onclick: function () { HN.plat = i; drawPlats(); cards.forEach(function (c) { c._relabel(); }); } },
-          h("b", { text: p.short }), h("span", { text: p.label })));
-      });
-    }
-    function drawSort() { sortBtn.textContent = HN.sort === "new" ? "Newest first" : "Most behaviours"; sortBtn.setAttribute("aria-label", "Sort: " + sortBtn.textContent + ". Click to change."); }
-    sortBtn.addEventListener("click", function () { HN.sort = HN.sort === "new" ? "ioa" : "new"; drawSort(); drawList(); });
     function drawList() {
-      clear(listBox); cards = [];
-      var q = HN.q.trim().toLowerCase();
-      var shown = all.filter(function (t) {
-        if (HN.fam !== "all" && huntFam(t)[0] !== HN.fam) return false;
-        if (!q) return true;
-        return [t.name, t.short, t.short_title, t.headline, t.news_headline, t.category, t.id].join(" ").toLowerCase().indexOf(q) !== -1;
-      });
-      if (HN.sort === "ioa") shown = shown.slice().sort(function (a, b) { return (b.ioa_count || 0) - (a.ioa_count || 0) || String(b.entry_date).localeCompare(String(a.entry_date)); });
-      else shown = shown.slice().sort(function (a, b) { return String(b.entry_date || "").localeCompare(String(a.entry_date || "")); });
-      countEl.textContent = shown.length === all.length ? plural(all.length, "hunt") : shown.length + " of " + all.length + " hunts";
-      if (!shown.length) { listBox.appendChild(h("p", { class: "hn-empty", text: "No hunts match. Try a different word or category." })); return; }
-      function card(t) { var li = huntCard(t); cards.push(li.firstChild); return li; }
-      if (HN.sort !== "new") { listBox.appendChild(h("ol", { class: "hn-ol" }, shown.map(card))); return; }
+      clear(list);
+      var shown = items.map(function (it) {
+        var ps = (it.posts || []).filter(function (p) { return CH_TYPE === "all" || p.type === CH_TYPE; })
+          .sort(function (a, b) { return String(b.posted_at).localeCompare(String(a.posted_at)); });
+        return { it: it, ps: ps, last: ps.length ? ps[0].posted_at : "" };
+      }).filter(function (x) { return x.ps.length; }).sort(function (a, b) { return String(b.last).localeCompare(String(a.last)); });
+      if (!shown.length) { list.appendChild(h("p", { class: "hn-empty", text: "Nothing from these sources right now." })); return; }
       var groups = [], cur = null;
-      shown.forEach(function (t) { var d = huntDay(t); if (!cur || cur.d !== d) { cur = { d: d, items: [] }; groups.push(cur); } cur.items.push(t); });
+      shown.forEach(function (x) { var d = chDay(x.last); if (!cur || cur.d !== d) { cur = { d: d, items: [] }; groups.push(cur); } cur.items.push(x); });
       groups.forEach(function (g) {
         var lab = huntDayLabel(g.d);
-        listBox.appendChild(h("section", { class: "hn-day" },
-          h("h2", { class: "hn-day-h" }, h("span", { text: lab[0] }), lab[1] ? h("small", { text: lab[1] }) : null, h("i", { text: plural(g.items.length, "hunt") })),
-          h("ol", { class: "hn-ol" }, g.items.map(card))));
+        list.appendChild(h("section", { class: "hn-day ch-day" },
+          h("h2", { class: "hn-day-h" }, h("span", { text: lab[0] }), lab[1] ? h("small", { text: lab[1] }) : null, h("i", { text: plural(g.items.length, "topic") })),
+          h("ol", { class: "ch-ol" }, g.items.map(function (x) { return chItem(x.it, x.ps); }))));
       });
     }
-    var tmr = null;
-    search.addEventListener("input", function () { clearTimeout(tmr); tmr = setTimeout(function () { HN.q = search.value; drawList(); }, 120); });
-
-    var upd = DATA.last_updated ? fmtDay(DATA.last_updated).replace(/ \d{4}$/, "") : "";
+    var upd = CHATTER.updated ? chWhen(CHATTER.updated).replace(/,.*$/, "") : "";
     add(el, [
       h("header", { class: "hn-head" },
         h("div", null,
-          h("p", { class: "kick", text: "Threat hunts" }),
-          h("h1", null, "Hunts"),
-          h("p", { class: "hn-intro", text: "One hunt, three platforms. Copy, download or open the threat." })),
+          h("p", { class: "kick", text: "Public chatter" }),
+          h("h1", null, "Chatter"),
+          h("p", { class: "hn-intro", text: "What researchers, vendors and CERTs are saying right now. Public posts only, linked to the original." })),
         h("dl", { class: "hn-stats" },
-          h("div", null, h("dt", { text: "Hunts" }), h("dd", { text: String(all.length) })),
-          h("div", { class: "n-ioa" }, h("dt", { text: "Behaviours" }), h("dd", { text: String(nIoa) })),
-          h("div", { class: "n-ind" }, h("dt", { text: "Indicators" }), h("dd", { text: String(nInd) })),
+          h("div", null, h("dt", { text: "Posts" }), h("dd", { text: String(all.length) })),
+          h("div", { class: "n-top" }, h("dt", { text: "Topics" }), h("dd", { text: String(items.length) })),
+          h("div", null, h("dt", { text: "Sources" }), h("dd", { text: String(Object.keys(authors).length) })),
           upd ? h("div", null, h("dt", { text: "Updated" }), h("dd", { class: "is-date", text: upd })) : null)),
-      h("div", { class: "hn-tools" },
-        h("div", { class: "hn-tools-a" }, h("label", { class: "hn-search-w" }, h("span", { class: "hn-search-ic", "aria-hidden": "true" }), search), platRow),
-        famRow,
-        h("div", { class: "hn-tools-b" }, countEl, sortBtn)),
-      listBox
+      h("div", { class: "hn-tools ch-tools" }, tabs),
+      list,
+      h("p", { class: "ch-note", text: "Short summaries in our words. Read the full post at the source. Only public accounts of named researchers, security vendors, CERTs and news outlets are included." })
     ]);
-    drawFams(); drawPlats(); drawSort(); drawList();
+    drawTabs(); drawList();
   }
   var SOURCE_ORGS = null;
   var SOURCE_GROUPS = [
@@ -2123,7 +2197,7 @@
       setTimeout(function () { var el = $(homeSecs[top]); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" }); }, 0);
       return;
     }
-    var viewMap = { darkweb: "darkweb", live: "live", block: "block", hunts: "hunts", sources: "sources", about: "about", threats: "threats", rumours: "rumours", "feed-sec": "threats", "feed-h": "threats", "all-h": "block" };
+    var viewMap = { darkweb: "darkweb", live: "live", block: "block", chatter: "chatter", sources: "sources", about: "about", threats: "threats", rumours: "rumours", "feed-sec": "threats", "feed-h": "threats", "all-h": "block" };
     if (top === "page") {
       var pm = /^page=(\d+)$/.exec(hash), want = pm ? Math.max(1, parseInt(pm[1], 10)) : 1;
       showView("threats");
@@ -2131,11 +2205,11 @@
       window.scrollTo(0, 0);
       return;
     }
+    if (top === "hunts") { history.replaceState(null, "", "#threats"); route(); return; }
     if (viewMap[top]) {
       var v = viewMap[top];
       showView(v);
       if (v === "block") renderBlock();
-      if (v === "hunts") renderHunts();
       if (v === "sources") renderSources();
       if (v === "live") renderLivePage();
       if (v === "darkweb" && window.renderDarkweb) window.renderDarkweb();
