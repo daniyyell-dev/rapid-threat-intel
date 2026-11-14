@@ -1547,26 +1547,239 @@
     draw();
   }
 
+  /* Hunts: one hunt per threat for Defender XDR (KQL), Splunk (SPL) and Google SecOps (YARA-L).
+     Search, category and sort filters; copy/download use the published files unchanged. */
+  var HN = { q: "", fam: "all", sort: "new", plat: 0 };
+  var HN_PLATS = [
+    { key: "Defender XDR", short: "KQL", label: "Defender XDR" },
+    { key: "Splunk", short: "SPL", label: "Splunk" },
+    { key: "Google SecOps", short: "YARA-L", label: "SecOps" }
+  ];
+  var HN_FAMS = [
+    ["nation", "Nation-state", /nation-state|apt|espionage/],
+    ["supply", "Supply chain", /supply chain/],
+    ["exploit", "Exploitation", /exploitation|post-exploitation/],
+    ["ransom", "Ransomware", /ransomware/],
+    ["malware", "Malware", /malware|crimeware/],
+    ["identity", "Identity & cloud", /phishing|identity|cloud/],
+    ["intrusion", "Intrusion", /intrusion/]
+  ];
+  function huntFam(t) {
+    var c = String(t.category || "").toLowerCase();
+    for (var i = 0; i < HN_FAMS.length; i++) if (HN_FAMS[i][2].test(c)) return HN_FAMS[i];
+    return ["other", "Other", null];
+  }
+  function huntSub(t) {
+    var p = String(t.category || "").split(/\s*\/\s*/);
+    return p.length > 1 ? p.slice(1).join(" / ") : "";
+  }
+  function huntDay(t) { return String(t.entry_date || t.published || "").split(" ")[0]; }
+  function huntDaysAgo(d) {
+    var p = String(d || "").split("-");
+    if (p.length !== 3) return null;
+    var now = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/London" }));
+    return Math.round((Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - Date.UTC(+p[0], +p[1] - 1, +p[2])) / 86400000);
+  }
+  function huntDayLabel(d) {
+    var p = String(d || "").split("-"), n = huntDaysAgo(d);
+    if (p.length !== 3) return ["Earlier", ""];
+    var wd = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])).getUTCDay()];
+    var dm = parseInt(p[2], 10) + " " + MONTHS[parseInt(p[1], 10) - 1].slice(0, 3);
+    if (n === 0) return ["Today", wd + " " + dm];
+    if (n === 1) return ["Yesterday", wd + " " + dm];
+    return [wd + " " + dm, n + " days ago"];
+  }
+  function huntQs(t) { return (t.queries || []).filter(function (q) { return q && q.url; }); }
+  function huntQ(t, i) {
+    var qs = huntQs(t), key = HN_PLATS[i].key;
+    for (var j = 0; j < qs.length; j++) if (qs[j].platform === key) return qs[j];
+    return null;
+  }
+  var HN_ICON_COPY = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>';
+  var HN_ICON_DL = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M8 2v8m0 0l-3-3m3 3l3-3M3 13h10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function hnIcon(svg) { var s = h("span", { class: "hn-ic", "aria-hidden": "true" }); s.innerHTML = svg; return s; }
+  function huntCopyBtn(t) {
+    var b = h("button", { type: "button", class: "hn-a hn-copy" });
+    function label() {
+      var q = huntQ(t, HN.plat);
+      clear(b); add(b, [hnIcon(HN_ICON_COPY), h("span", { text: "Copy " + (q ? HN_PLATS[HN.plat].short : "") })]);
+      b.setAttribute("aria-label", "Copy the " + HN_PLATS[HN.plat].label + " hunt for " + stitle(t));
+    }
+    label(); b._relabel = label;
+    b.addEventListener("click", function () {
+      var q = huntQ(t, HN.plat);
+      if (!q) return;
+      qText(q).then(function (x) {
+        copyText(x, null, "Copied " + q.name);
+        trackClick("copy");
+        b.classList.add("done"); b.lastChild.textContent = "Copied";
+        setTimeout(function () { b.classList.remove("done"); label(); }, 1500);
+      }, function () { toast("Could not load " + q.name + ". Use Download."); });
+    });
+    return b;
+  }
+  function huntDlBtn(t) {
+    var a = h("a", { class: "hn-a hn-dl", rel: "noopener noreferrer", target: "_blank" });
+    function label() {
+      var q = huntQ(t, HN.plat);
+      if (!q) return;
+      a.href = q.url; a._q = q;
+      clear(a); add(a, [hnIcon(HN_ICON_DL), h("span", { text: "." + q.name.split(".").pop() })]);
+      a.setAttribute("aria-label", "Download " + q.name + " for " + stitle(t));
+      a.title = "Download " + (q.download || q.name);
+    }
+    label(); a._relabel = label;
+    a.addEventListener("click", function (e) {
+      var q = a._q; trackDownload();
+      if (!q || !window.fetch || !window.URL || !URL.createObjectURL) return;
+      e.preventDefault();
+      fetch(q.url, { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.blob(); }).then(function (bl) {
+        var u = URL.createObjectURL(bl), x = h("a", { href: u, download: q.download || q.name });
+        document.body.appendChild(x); x.click(); document.body.removeChild(x);
+        setTimeout(function () { URL.revokeObjectURL(u); }, 4000);
+        toast("Downloaded " + (q.download || q.name));
+      }).catch(function () { window.open(q.url, "_blank", "noopener"); });
+    });
+    return a;
+  }
+  function huntPreview(t, art) {
+    var box = h("div", { class: "hn-x" }), inner = h("div"), loaded = -1;
+    box.appendChild(inner);
+    function draw() {
+      var i = HN.plat, q = huntQ(t, i);
+      if (!q || loaded === i) return;
+      loaded = i;
+      clear(inner);
+      var code = h("code", { text: "Loading " + q.name + "\u2026" });
+      add(inner, [
+        h("p", { class: "hn-x-meta" }, h("b", { text: q.language }), h("span", { text: q.name }), h("span", { class: "hn-x-plat", text: HN_PLATS[i].label })),
+        h("pre", { class: "hq-code hn-code", tabindex: "0", "aria-label": q.name + " preview" }, code),
+        h("p", { class: "hn-x-foot" }, "First lines shown. Copy and download give the full file. ",
+          h("a", { href: "#threat/" + encodeURIComponent(t.id), text: "Full hunt and notes on the threat page \u2192" }))
+      ]);
+      qText(q).then(function (x) {
+        var lines = x.replace(/\n$/, "").split("\n"), cut = lines.slice(0, 14).join("\n");
+        renderCode(code, cut + (lines.length > 14 ? "\n\u2026" : ""), q.language);
+      }, function () { code.textContent = "Preview unavailable here. Use Download to get " + q.name + "."; });
+    }
+    box._draw = draw; box._reset = function () { loaded = -1; if (art.classList.contains("open")) draw(); };
+    return box;
+  }
+  function huntCard(t) {
+    var fam = huntFam(t), sub = huntSub(t), day = huntDay(t);
+    var hunt = t.indicator_count || 0;
+    var art = h("article", { class: "hn-card fam-" + fam[0] });
+    var prev = huntPreview(t, art);
+    var more = h("button", { type: "button", class: "hn-a hn-more", "aria-expanded": "false" }, h("span", { text: "Preview" }), h("i", { class: "chev", "aria-hidden": "true" }));
+    more.addEventListener("click", function () {
+      var open = art.classList.toggle("open");
+      more.setAttribute("aria-expanded", open ? "true" : "false");
+      if (open) prev._draw();
+    });
+    var copy = huntCopyBtn(t), dl = huntDlBtn(t);
+    art._relabel = function () { copy._relabel(); dl._relabel(); prev._reset(); };
+    var a = "#threat/" + encodeURIComponent(t.id);
+    add(art, [
+      h("div", { class: "hn-main" },
+        h("p", { class: "hn-meta" },
+          h("span", { class: "hn-fam", text: fam[1] }),
+          sub ? h("span", { class: "hn-sub", text: sub }) : null,
+          day && HN.sort !== "new" ? h("time", { datetime: day, text: fmtDay(day).replace(/ \d{4}$/, "") + " \u00b7 " + ago(day) }) : null),
+        h("h3", { class: "hn-t" }, h("a", { href: a, text: stitle(t) })),
+        h("p", { class: "hn-hl", text: headlineOf(t) }),
+        h("div", { class: "hn-acts" }, copy, dl, more, h("a", { class: "hn-a hn-open", href: a, "aria-label": "Open threat: " + stitle(t) }, "Open", h("span", { class: "hn-open-x", text: " threat" }), " \u2192"))),
+      h("dl", { class: "hn-nums" },
+        h("div", { class: "n-ioa" }, h("dt", { text: t.ioa_count === 1 ? "behaviour" : "behaviours" }), h("dd", { text: String(t.ioa_count || 0) })),
+        h("div", { class: "n-ind" }, h("dt", { text: hunt === 1 ? "indicator" : "indicators" }), h("dd", { text: String(hunt) }))),
+      prev
+    ]);
+    return h("li", null, art);
+  }
   function renderHunts() {
     var el = $("view-hunts");
     if (!el || !DATA) return;
-    var list = DATA.threats.filter(function (t) { return (t.queries || []).some(function (q) { return q && q.url; }); });
+    var all = DATA.threats.filter(function (t) { return huntQs(t).length; });
+    document.title = "Hunts | IOCWatch";
     clear(el);
+    el.classList.add("hn-page");
+    var nIoa = 0, nInd = 0;
+    all.forEach(function (t) { nIoa += t.ioa_count || 0; nInd += t.indicator_count || 0; });
+    var famCount = { all: all.length };
+    all.forEach(function (t) { var f = huntFam(t)[0]; famCount[f] = (famCount[f] || 0) + 1; });
+
+    var search = h("input", { type: "search", class: "hn-search", placeholder: "Search hunts, actors, CVEs\u2026", "aria-label": "Search hunts", autocomplete: "off", spellcheck: "false" });
+    search.value = HN.q;
+    var famRow = h("div", { class: "hn-fams", role: "tablist", "aria-label": "Filter by category" });
+    var platRow = h("div", { class: "hn-plats", role: "radiogroup", "aria-label": "Query language" });
+    var sortBtn = h("button", { type: "button", class: "hn-sort" });
+    var listBox = h("div", { class: "hn-list" });
+    var countEl = h("span", { class: "hn-count" });
+    var cards = [];
+
+    function drawFams() {
+      clear(famRow);
+      [["all", "All"]].concat(HN_FAMS.map(function (f) { return [f[0], f[1]]; }), [["other", "Other"]]).forEach(function (f) {
+        if (f[0] !== "all" && !famCount[f[0]]) return;
+        famRow.appendChild(h("button", { type: "button", role: "tab", class: "hn-f fam-" + f[0] + (HN.fam === f[0] ? " on" : ""), "aria-selected": HN.fam === f[0] ? "true" : "false",
+          onclick: function () { HN.fam = f[0]; drawFams(); drawList(); } }, h("span", { text: f[1] }), h("b", { text: String(famCount[f[0]] || 0) })));
+      });
+    }
+    function drawPlats() {
+      clear(platRow);
+      platRow.appendChild(h("span", { class: "hn-plats-k", text: "Copy as" }));
+      HN_PLATS.forEach(function (p, i) {
+        platRow.appendChild(h("button", { type: "button", role: "radio", class: "hn-p" + (HN.plat === i ? " on" : ""), "aria-checked": HN.plat === i ? "true" : "false",
+          onclick: function () { HN.plat = i; drawPlats(); cards.forEach(function (c) { c._relabel(); }); } },
+          h("b", { text: p.short }), h("span", { text: p.label })));
+      });
+    }
+    function drawSort() { sortBtn.textContent = HN.sort === "new" ? "Newest first" : "Most behaviours"; sortBtn.setAttribute("aria-label", "Sort: " + sortBtn.textContent + ". Click to change."); }
+    sortBtn.addEventListener("click", function () { HN.sort = HN.sort === "new" ? "ioa" : "new"; drawSort(); drawList(); });
+    function drawList() {
+      clear(listBox); cards = [];
+      var q = HN.q.trim().toLowerCase();
+      var shown = all.filter(function (t) {
+        if (HN.fam !== "all" && huntFam(t)[0] !== HN.fam) return false;
+        if (!q) return true;
+        return [t.name, t.short, t.short_title, t.headline, t.news_headline, t.category, t.id].join(" ").toLowerCase().indexOf(q) !== -1;
+      });
+      if (HN.sort === "ioa") shown = shown.slice().sort(function (a, b) { return (b.ioa_count || 0) - (a.ioa_count || 0) || String(b.entry_date).localeCompare(String(a.entry_date)); });
+      else shown = shown.slice().sort(function (a, b) { return String(b.entry_date || "").localeCompare(String(a.entry_date || "")); });
+      countEl.textContent = shown.length === all.length ? plural(all.length, "hunt") : shown.length + " of " + all.length + " hunts";
+      if (!shown.length) { listBox.appendChild(h("p", { class: "hn-empty", text: "No hunts match. Try a different word or category." })); return; }
+      function card(t) { var li = huntCard(t); cards.push(li.firstChild); return li; }
+      if (HN.sort !== "new") { listBox.appendChild(h("ol", { class: "hn-ol" }, shown.map(card))); return; }
+      var groups = [], cur = null;
+      shown.forEach(function (t) { var d = huntDay(t); if (!cur || cur.d !== d) { cur = { d: d, items: [] }; groups.push(cur); } cur.items.push(t); });
+      groups.forEach(function (g) {
+        var lab = huntDayLabel(g.d);
+        listBox.appendChild(h("section", { class: "hn-day" },
+          h("h2", { class: "hn-day-h" }, h("span", { text: lab[0] }), lab[1] ? h("small", { text: lab[1] }) : null, h("i", { text: plural(g.items.length, "hunt") })),
+          h("ol", { class: "hn-ol" }, g.items.map(card))));
+      });
+    }
+    var tmr = null;
+    search.addEventListener("input", function () { clearTimeout(tmr); tmr = setTimeout(function () { HN.q = search.value; drawList(); }, 120); });
+
+    var upd = DATA.last_updated ? fmtDay(DATA.last_updated).replace(/ \d{4}$/, "") : "";
     add(el, [
-      h("div", { class: "catalog-head" }, h("h1", null, "Hunts"), h("span", { text: plural(list.length, "threat") })),
-      h("p", { class: "catalog-meta" }, "The same hunt for Defender XDR, Splunk and Google SecOps, ready to copy or download. Open a threat to run it."),
-      h("ol", { class: "catalog" }, list.map(function (t) {
-        var platforms = (t.queries || []).map(function (q) { return q.platform; }).filter(Boolean);
-        var hunt = t.hunt_count != null ? t.hunt_count : Math.max(0, t.indicator_count - t.block_now_count);
-        return h("li", { class: "catalog-item" },
-          h("a", { class: "tlink", href: "#threat/" + encodeURIComponent(t.id), text: stitle(t), title: t.name }),
-          h("p", { class: "catalog-meta" },
-            t.category, " · ", fmtDay(t.entry_date),
-            hunt ? " · " + plural(hunt, "indicator") + " to hunt" : "",
-            t.ioa_count ? " · " + plural(t.ioa_count, "behaviour") : "",
-            platforms.length ? " · " + platforms.join(" · ") : ""));
-      }))
+      h("header", { class: "hn-head" },
+        h("div", null,
+          h("p", { class: "kick", text: "Threat hunts" }),
+          h("h1", null, "Hunts"),
+          h("p", { class: "hn-intro", text: "One hunt, three platforms. Copy, download or open the threat." })),
+        h("dl", { class: "hn-stats" },
+          h("div", null, h("dt", { text: "Hunts" }), h("dd", { text: String(all.length) })),
+          h("div", { class: "n-ioa" }, h("dt", { text: "Behaviours" }), h("dd", { text: String(nIoa) })),
+          h("div", { class: "n-ind" }, h("dt", { text: "Indicators" }), h("dd", { text: String(nInd) })),
+          upd ? h("div", null, h("dt", { text: "Updated" }), h("dd", { class: "is-date", text: upd })) : null)),
+      h("div", { class: "hn-tools" },
+        h("div", { class: "hn-tools-a" }, h("label", { class: "hn-search-w" }, h("span", { class: "hn-search-ic", "aria-hidden": "true" }), search), platRow),
+        famRow,
+        h("div", { class: "hn-tools-b" }, countEl, sortBtn)),
+      listBox
     ]);
+    drawFams(); drawPlats(); drawSort(); drawList();
   }
   var SOURCE_ORGS = null;
   var SOURCE_GROUPS = [
