@@ -1639,63 +1639,243 @@
     });
   }
 
+  /* Rumours: early reports from named sources. A lead story, then a day-grouped timeline.
+     Status runs Reported (Unconfirmed) > Confirmed (IOCs pending) > IOCs published (Promoted, has a threat page). */
+  var RUM_STEPS = ["Reported", "Confirmed", "IOCs published"];
+  var RUM_FILTER = "all";
+  var RUM_FAVS = null;
+  function loadRumourFavs() {
+    if (RUM_FAVS) return Promise.resolve(RUM_FAVS);
+    return getJSON("img/fav/index.json").then(function (d) { RUM_FAVS = Array.isArray(d) ? d : []; return RUM_FAVS; },
+      function () { RUM_FAVS = []; return RUM_FAVS; });
+  }
   function rumourStatusClass(st) {
     if (st === "Promoted") return "promoted";
     if (/^Confirmed/.test(st || "")) return "confirmed";
     return "unconfirmed";
   }
-  function reportedBy(r) {
+  function rumourStep(st) { var c = rumourStatusClass(st); return c === "promoted" ? 2 : c === "confirmed" ? 1 : 0; }
+  function rumourDayKey(d) { return String(d || "").split(" ")[0]; }
+  function rumourDaysAgo(d) {
+    var p = rumourDayKey(d).split("-");
+    if (p.length !== 3) return null;
+    var now = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/London" }));
+    var a = Date.UTC(+p[0], +p[1] - 1, +p[2]), b = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    return Math.round((b - a) / 86400000);
+  }
+  function rumourDayShort(d) {
+    var p = rumourDayKey(d).split("-");
+    return p.length === 3 ? parseInt(p[2], 10) + " " + MONTHS[parseInt(p[1], 10) - 1].slice(0, 3) : "";
+  }
+  function rumourDayLabel(d) {
+    var n = rumourDaysAgo(d), p = rumourDayKey(d).split("-");
+    var wd = p.length === 3 ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])).getUTCDay()] : "";
+    if (n === 0) return ["Today", wd + " " + rumourDayShort(d)];
+    if (n === 1) return ["Yesterday", wd + " " + rumourDayShort(d)];
+    return [wd + " " + rumourDayShort(d), n != null ? n + " days ago" : ""];
+  }
+  function rumourHost(u) {
+    try { return new URL(u).hostname.replace(/^www\./, ""); } catch (e) { return ""; }
+  }
+  function rumourFav(host) {
+    if (!host || !RUM_FAVS) return null;
+    var parts = host.split(".");
+    for (var i = 0; i < parts.length - 1; i++) {
+      var k = parts.slice(i).join(".");
+      if (RUM_FAVS.indexOf(k) !== -1) return "img/fav/" + k + ".png";
+    }
+    return null;
+  }
+  function rumourInitials(name) {
+    var w = String(name || "?").replace(/[^A-Za-z0-9 ]/g, " ").split(/\s+/).filter(Boolean);
+    return ((w[0] || "?")[0] + (w.length > 1 ? w[1][0] : (w[0] || "")[1] || "")).toUpperCase();
+  }
+  function rumourSourceChip(s, iconOnly) {
+    var fav = rumourFav(rumourHost(s.url)), name = s.name || rumourHost(s.url);
+    var mark = fav ? h("span", { class: "rum-fav" }, h("img", { src: fav, alt: "", width: "16", height: "16", loading: "lazy" }))
+      : h("span", { class: "rum-fav is-ini", "aria-hidden": "true", text: rumourInitials(name) });
+    return extLink(s.url, [mark, iconOnly ? null : h("span", { class: "rum-src-nm", text: name })], "rum-chip" + (iconOnly ? " icon-only" : ""));
+  }
+  function rumourSources(r, iconOnly) {
     var srcs = r.sources || [];
     if (!srcs.length) return null;
-    var nodes = ["Reported by "];
-    srcs.forEach(function (s, i) {
-      if (i) nodes.push(i === srcs.length - 1 ? " and " : ", ");
-      nodes.push(extLink(s.url, s.name || s.url));
-    });
-    return nodes;
+    return h("div", { class: "rum-srcs" },
+      iconOnly ? null : h("span", { class: "rum-srcs-k", text: "Reported by" }),
+      h("span", { class: "rum-chips" }, srcs.map(function (s) {
+        var c = rumourSourceChip(s, iconOnly); if (iconOnly) c.setAttribute("title", s.name || ""); return c;
+      })));
   }
-  function rumourRow(r) {
-    var st = r.status || "Unconfirmed";
-    var href = (st === "Promoted" && r.threat_id) ? ("#threat/" + encodeURIComponent(r.threat_id)) : null;
-    var label = r.headline || r.short_title;
-    var title = href
-      ? h("a", { href: href, text: label, title: "Open the threat page" })
-      : h("span", { text: label });
-    return h("li", null, h("article", { class: "rum-row" },
-      h("div", { class: "rum-main" },
-        h("h3", { class: "rum-title" }, title),
+  function rumourStepper(st, vertical) {
+    var n = rumourStep(st), cls = rumourStatusClass(st);
+    return h("ol", { class: "rum-steps " + cls + (vertical ? " is-v" : ""), "aria-label": "Status: " + RUM_STEPS[n] },
+      RUM_STEPS.map(function (s, i) {
+        var state = i < n ? "done" : i === n ? "now" : "next";
+        return h("li", { class: state, "aria-current": i === n ? "step" : null },
+          h("i", { "aria-hidden": "true" }), h("span", { text: s }));
+      }));
+  }
+  function rumourMeta(r, withDate) {
+    var age = rumourDaysAgo(r.first_seen), fresh = age != null && age <= 1;
+    return h("p", { class: "rum-meta" },
+      fresh ? h("span", { class: "rum-live" }, h("i", { "aria-hidden": "true" }), "Developing") : null,
+      r.category ? h("span", { class: "rum-cat", text: r.category }) : null,
+      withDate && r.first_seen ? h("time", { datetime: rumourDayKey(r.first_seen), text: "First seen " + rumourDayShort(r.first_seen) + (r.first_seen ? " \u00b7 " + ago(r.first_seen) : "") }) : null);
+  }
+  function rumourTitle(r, tag, homeLink) {
+    var st = rumourStatusClass(r.status), label = r.headline || r.short_title;
+    var href = (st === "promoted" && r.threat_id) ? "#threat/" + encodeURIComponent(r.threat_id) : homeLink ? "#rumours" : null;
+    return h(tag, { class: "rum-h" }, href ? h("a", { href: href, text: label }) : label);
+  }
+  function rumourMore(art, r) {
+    var href = (rumourStatusClass(r.status) === "promoted" && r.threat_id) ? "#threat/" + encodeURIComponent(r.threat_id) : null;
+    if (!r.note && !href) return null;
+    var btn = r.note ? h("button", { type: "button", class: "rum-more", "aria-expanded": "false", onclick: function () {
+      var open = art.classList.toggle("open");
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      btn.firstChild.textContent = open ? "Show less" : "Why it matters";
+    } }, h("span", { text: "Why it matters" }), h("i", { class: "chev", "aria-hidden": "true" })) : null;
+    return [
+      h("div", { class: "rum-actions" }, btn, href ? h("a", { class: "rum-go", href: href, text: "Open threat page \u2192" }) : null),
+      r.note ? h("div", { class: "rum-x" }, h("div", null, h("p", { class: "rum-note", text: r.note }))) : null
+    ];
+  }
+  function rumourStatus(r) {
+    var st = r.status || "Unconfirmed", cls = rumourStatusClass(st), parts = st.split(/\s+-\s+/);
+    return h("p", { class: "rum-status " + cls }, h("b", { class: "rum-st", text: parts[0] }), parts[1] ? h("span", { text: parts[1] }) : null);
+  }
+  function rumourLead(r) {
+    var cls = rumourStatusClass(r.status);
+    var art = h("article", { class: "rum-lead " + cls });
+    add(art, [
+      h("div", { class: "rum-lead-main" },
+        h("p", { class: "rum-eyebrow", text: "Lead report" }),
+        rumourMeta(r, true),
+        rumourTitle(r, "h2"),
         h("p", { class: "rum-claim", text: r.claim }),
-        h("p", { class: "rum-meta" }, reportedBy(r))),
-      h("div", { class: "rum-side" },
-        h("span", { class: "rum-st " + rumourStatusClass(st), text: st }),
-        r.first_seen ? h("time", { class: "rum-when", datetime: r.first_seen, "data-d": r.first_seen, title: r.first_seen, text: ago(r.first_seen) }) : null)));
+        rumourSources(r)),
+      h("aside", { class: "rum-lead-side" },
+        h("p", { class: "rum-side-k", text: "Status" }),
+        rumourStatus(r),
+        rumourStepper(r.status, true)),
+      h("div", { class: "rum-lead-act" }, rumourMore(art, r))
+    ]);
+    return art;
+  }
+  function rumourItem(r) {
+    var cls = rumourStatusClass(r.status);
+    var art = h("article", { class: "rum-item " + cls });
+    add(art, [
+      h("span", { class: "rum-node", "aria-hidden": "true" }),
+      h("div", { class: "rum-body" },
+        h("div", { class: "rum-main" },
+          rumourMeta(r, false),
+          rumourTitle(r, "h3"),
+          h("p", { class: "rum-claim", text: r.claim }),
+          rumourSources(r)),
+        h("div", { class: "rum-side" }, rumourStatus(r), rumourStepper(r.status, true)),
+        h("div", { class: "rum-act" }, rumourMore(art, r)))
+    ]);
+    return h("li", null, art);
   }
   function sortedRumours() {
+    var rank = { promoted: 0, confirmed: 1, unconfirmed: 2 };
     return (RUMOURS.rumours || []).slice().sort(function (a, b) {
-      return String(b.first_seen || "").localeCompare(String(a.first_seen || ""));
+      return String(b.first_seen || "").localeCompare(String(a.first_seen || "")) ||
+        (rank[rumourStatusClass(a.status)] - rank[rumourStatusClass(b.status)]) ||
+        ((b.sources || []).length - (a.sources || []).length);
     });
+  }
+  function rumourCounts(list) {
+    var c = { all: list.length, unconfirmed: 0, confirmed: 0, promoted: 0 };
+    list.forEach(function (r) { c[rumourStatusClass(r.status)]++; });
+    return c;
+  }
+  function rumourFilters(list, onPick) {
+    var c = rumourCounts(list);
+    var keys = [["all", "All"], ["unconfirmed", "Unconfirmed"], ["confirmed", "Confirmed"], ["promoted", "Promoted"]];
+    return h("div", { class: "rum-filters", role: "tablist", "aria-label": "Filter by status" }, keys.map(function (k) {
+      return h("button", { type: "button", role: "tab", class: "rum-f " + k[0] + (RUM_FILTER === k[0] ? " on" : ""),
+        "aria-selected": RUM_FILTER === k[0] ? "true" : "false", onclick: function () { onPick(k[0]); } },
+        h("span", { text: k[1] }), h("b", { text: String(c[k[0]]) }));
+    }));
+  }
+  function rumourHelp() {
+    return h("details", { class: "rum-help" },
+      h("summary", null, h("span", { text: "How status works" })),
+      h("dl", null,
+        h("dt", { class: "unconfirmed", text: "Unconfirmed" }), h("dd", { text: "Reported by named sources, not yet confirmed by the victim or vendor." }),
+        h("dt", { class: "confirmed", text: "Confirmed" }), h("dd", { text: "Confirmed by the victim, vendor or police. IOCs pending." }),
+        h("dt", { class: "promoted", text: "Promoted" }), h("dd", { text: "IOCs published. Moved to a threat page." })));
   }
   function renderRumourHome() {
     var el = $("rumour-home"), nEl = $("rumour-n");
     if (!el) return;
-    var list = sortedRumours();
-    var open = list.filter(function (r) { return r.status !== "Promoted"; });
-    var show = (open.length ? open : list).slice(0, 3);
-    clear(el);
-    show.forEach(function (r) { el.appendChild(rumourRow(r)); });
-    if (nEl) nEl.textContent = list.length ? String(list.length) : "";
+    loadRumourFavs().then(function () {
+      var list = sortedRumours();
+      var open = list.filter(function (r) { return r.status !== "Promoted"; });
+      var show = (open.length ? open : list).slice(0, 3);
+      clear(el);
+      show.forEach(function (r) {
+        var cls = rumourStatusClass(r.status);
+        el.appendChild(h("li", null, h("article", { class: "rum-item is-mini " + cls },
+          h("span", { class: "rum-node", "aria-hidden": "true" }),
+          h("div", { class: "rum-body" },
+            h("p", { class: "rum-meta" },
+              h("span", { class: "rum-st " + cls, text: (r.status || "Unconfirmed").split(/\s+-\s+/)[0] }),
+              rumourDaysAgo(r.first_seen) <= 1 ? h("span", { class: "rum-live" }, h("i", { "aria-hidden": "true" }), "Developing")
+                : h("time", { datetime: rumourDayKey(r.first_seen), text: ago(r.first_seen) })),
+            rumourTitle(r, "h3", true),
+            rumourSources(r, true)))));
+      });
+      if (nEl) nEl.textContent = list.length ? String(list.length) : "";
+    });
   }
   function renderRumours() {
     var el = $("view-rumours");
     if (!el) return;
-    var list = sortedRumours();
     document.title = "Rumours | IOCWatch";
-    clear(el);
-    add(el, [
-      h("div", { class: "catalog-head rum-page" }, h("h1", null, "Rumours"), h("span", { text: list.length ? String(list.length) : "" })),
-      h("p", { class: "rumour-disc" }, RUMOURS.disclaimer || "Early reports, no IOCs yet. Not on the block list."),
-      list.length ? h("ol", { class: "rum-list" }, list.map(rumourRow)) : h("p", { class: "rum-empty", text: "No rumours right now." })
-    ]);
+    loadRumourFavs().then(function () {
+      var list = sortedRumours();
+      clear(el);
+      el.classList.add("rum-page");
+      var bar = h("div", { class: "rum-bar" }), body = h("div", { class: "rum-feed" });
+      function draw() {
+        clear(bar); clear(body);
+        add(bar, [rumourFilters(list, function (k) { RUM_FILTER = k; draw(); }), rumourHelp()]);
+        var shown = list.filter(function (r) { return RUM_FILTER === "all" || rumourStatusClass(r.status) === RUM_FILTER; });
+        if (!shown.length) { body.appendChild(h("p", { class: "rum-empty", text: "Nothing " + RUM_FILTER + " right now." })); return; }
+        body.appendChild(rumourLead(shown[0]));
+        var rest = shown.slice(1);
+        if (!rest.length) return;
+        var groups = [], cur = null;
+        rest.forEach(function (r) {
+          var k = rumourDayKey(r.first_seen);
+          if (!cur || cur.k !== k) { cur = { k: k, items: [] }; groups.push(cur); }
+          cur.items.push(r);
+        });
+        body.appendChild(h("div", { class: "rum-tl" },
+          h("h2", { class: "rum-tl-h", text: "Earlier reports" }),
+          groups.map(function (g) {
+            var lab = rumourDayLabel(g.k);
+            return h("section", { class: "rum-day" },
+              h("h3", { class: "rum-day-h" }, h("span", { text: lab[0] }), lab[1] ? h("small", { text: lab[1] }) : null),
+              h("ol", { class: "rum-tl-list" }, g.items.map(rumourItem)));
+          })));
+      }
+      draw();
+      var c = rumourCounts(list);
+      add(el, [
+        h("header", { class: "rum-head" },
+          h("div", null,
+            h("p", { class: "kick", text: "Early reports" }),
+            h("h1", null, "Rumours"),
+            h("p", { class: "rum-intro", text: "Early reports from named sources. No IOCs yet. Never on the block list." })),
+          h("p", { class: "rum-stat" },
+            h("b", { text: String(c.all) }), h("span", { text: c.all === 1 ? "open report" : "open reports" }),
+            RUMOURS.updated ? h("small", { text: "Updated " + rumourDayShort(RUMOURS.updated) }) : null)),
+        list.length ? [bar, body] : h("p", { class: "rum-empty", text: "No rumours right now." })
+      ]);
+    });
   }
   function loadRumours() {
     return fetch("rumours.json", { cache: "no-cache" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
