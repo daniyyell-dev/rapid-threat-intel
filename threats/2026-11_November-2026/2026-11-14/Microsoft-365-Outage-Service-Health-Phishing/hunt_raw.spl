@@ -1,0 +1,19 @@
+``` Threat: Fake Microsoft 365 Outage Notices Lure Users to Restore Held Messages
+    Author: Daniel Jeremiah | Date: 2026-11-14
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-14/Microsoft-365-Outage-Service-Health-Phishing ```
+| multisearch
+  [ search `rti_dns(reallifeaccounting.com OR moments-notice.com OR planetmaison.com OR newbooker.com)`
+    | search query IN ("reallifeaccounting.com", "*.reallifeaccounting.com", "moments-notice.com", "*.moments-notice.com", "planetmaison.com", "*.planetmaison.com", "newbooker.com", "*.newbooker.com")
+    | rex field=query "(?i)(?<ioc>(?:reallifeaccounting\.com|moments\-notice\.com|planetmaison\.com|newbooker\.com))\.?$"
+    | eval data_model="dns", ioc_type="domain", host=src, detail="DNS query ".query
+  ]
+  [ search `rti_web(reallifeaccounting.com OR moments-notice.com OR planetmaison.com OR newbooker.com)`
+    | search url IN ("*://reallifeaccounting.com*", "*.reallifeaccounting.com*", "reallifeaccounting.com*", "*://moments-notice.com*", "*.moments-notice.com*", "moments-notice.com*", "*://planetmaison.com*", "*.planetmaison.com*", "planetmaison.com*", "*://newbooker.com*", "*.newbooker.com*", "newbooker.com*") OR dest IN ("reallifeaccounting.com", "*.reallifeaccounting.com", "moments-notice.com", "*.moments-notice.com", "planetmaison.com", "*.planetmaison.com", "newbooker.com", "*.newbooker.com")
+    | rex field=url "(?i)(?<ioc>reallifeaccounting\.com|moments\-notice\.com|planetmaison\.com|newbooker\.com)"
+    | eval ioc=coalesce(ioc, dest), data_model="web", ioc_type=if(match(ioc, "/"), "url", "domain"), host=src, detail="HTTP ".status." ".url." UA: ".http_user_agent
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

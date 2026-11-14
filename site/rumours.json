@@ -3,6 +3,30 @@
   "disclaimer": "Early reports, no IOCs yet. Not on the block list.",
   "rumours": [
     {
+      "id": "expedia-vendor-supply-chain-breach",
+      "short_title": "Expedia vendor breach",
+      "headline": "Expedia confirms attackers reached its systems through a data vendor",
+      "claim": "Expedia Group told Skift on 12 November that attackers compromised a third-party data platform provider and used its trusted access to reach Expedia and other companies; the extortion group n0n claims to hold hundreds of millions of customer records, which is unverified, and no public IOCs have been published.",
+      "sources": [
+        {
+          "name": "Skift",
+          "url": "https://skift.com/2026/11/12/expedia-confirms-cyberattack-through-third-party-vendor/"
+        },
+        {
+          "name": "BreachNews",
+          "url": "https://breachnews.com/breaches/expedia-supply-chain-attack-n0n-claim/"
+        },
+        {
+          "name": "Forbes Middle East",
+          "url": "https://www.forbesmiddleeast.com/lifestyle/travel-hospitality/russian-cyberattackers-hit-expedia-nearly-a-billion-traveler-records-exposed"
+        }
+      ],
+      "first_seen": "2026-11-14",
+      "category": "Supply chain",
+      "status": "Confirmed - IOCs pending",
+      "note": "Expedia has not named the vendor. Skift notes Qubole is a former Expedia vendor, but neither Expedia nor the Qubole researchers have linked the two, so the Qubole cross-account AWS role hunts already on the feed are the closest guidance: review and remove trust policies for vendors you no longer use."
+    },
+    {
       "id": "fireworks-ai-supplier-breach",
       "short_title": "Fireworks AI breach",
       "headline": "AI provider Fireworks breach exposes Uber driver licences and Notion data",

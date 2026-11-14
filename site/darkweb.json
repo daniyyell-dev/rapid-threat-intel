@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-14T15:16:21Z",
+ "updated": "2026-11-14T16:12:40Z",
  "window_days": 30,
  "status_note": "Claims posted by extortion groups on their leak sites. Claimed, unverified: a listing is not proof of a breach.",
  "disclaimer": "Dark web activity from public leak-site trackers: metadata only (group, organisation, country, sector, date). IOCWatch does not access, host or link to stolen data. Claims are unverified and never feed the block list.",
@@ -16,12 +16,12 @@
  ],
  "stats": {
   "groups": 646,
-  "groups_online": 181,
+  "groups_online": 267,
   "markets": 147,
   "markets_online": 59,
-  "posts_24h": 57,
+  "posts_24h": 44,
   "posts_month": 585,
-  "posts_90d": 3288,
+  "posts_90d": 3282,
   "posts_year": 9736
  },
  "totals": {

@@ -111,6 +111,7 @@ Behaviours that map cleanly to log fields are included in [`hunt.kql`](hunt.kql)
 ## Sources
 
 - [FBI FLASH AC-111226-MS – North Korean Hackers Use Secretly Recorded Webcam Library in FaceStealer Crypto Theft Scheme](https://www.ic3.gov/CSA/2026/261112.pdf)
+- [US Department of Justice – Justice Department Announces Actions to Disrupt North Korea's Massive Theft of Cryptocurrency (FaceStealer infrastructure seizure)](https://www.justice.gov/opa/pr/justice-department-announces-actions-disrupt-north-koreas-massive-theft-cryptocurrency)
 - [Arctic Wolf Labs – Still in the Meeting: BlueNoroff Six Months On](https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/)
 - [Arctic Wolf Labs – Still in the Meeting (full report and IOC appendix)](https://arcticwolf.com/wp-content/bluenoroff_still_in_the_meeting.pdf)
 

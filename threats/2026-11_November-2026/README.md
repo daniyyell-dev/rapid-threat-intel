@@ -2,12 +2,13 @@
 
 [Back to index](../../README.md)
 
-59 threats, 1604 indicators, 722 to block now. Newest first.
+60 threats, 1609 indicators, 723 to block now. Newest first.
 
 ### [2026-11-14](2026-11-14/)
 
 | Date | Threat | Category | IOCs | Block now | Summary |
 |---|---|---|---|---|---|
+| 2026-11-14 | [Fake Microsoft 365 Outage Notices Lure Users to Restore Held Messages](2026-11-14/Microsoft-365-Outage-Service-Health-Phishing/) | Phishing / identity | 5 | 1 | Fake Microsoft 365 service health emails cite the real 12 November outage to push users onto a credential phishing page |
 | 2026-10-30 | [Trojanized Claude Code IDE Extension Plants Persistent Reverse SSH Backdoor on Developer Machines](2026-11-14/Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor/) | Supply chain / developer tools | 8 | 6 | Tampered Claude Code editor extension served for 11 hours adds an attacker SSH key and a persistent reverse SSH tunnel on developer machines |
 | 2026-11-09 | [Contagious Interview: AccuraSoftHire Fake Employer Plants PolinRider Loader on Developer Machines](2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/) | Nation-state / social engineering | 10 | 9 | Fake employer AccuraSoftHire gives developers a poisoned Tailwind take-home that installs the PolinRider credential-stealing loader |
 | 2026-11-13 | [Fake Crypto-Exchange Guest Sessions Planted on 100+ MSP ScreenConnect Servers](2026-11-14/ScreenConnect-Fake-Crypto-Exchange-Guest-Sessions-MSP-Bait/) | Supply chain / MSP remote access | 3 | 1 | Thousands of fake crypto-exchange guest sessions planted on MSP ScreenConnect servers, likely as bait for technicians with unpatched clients |

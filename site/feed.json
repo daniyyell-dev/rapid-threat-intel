@@ -4,10 +4,10 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-14 10:17",
- "threat_count": 59,
- "indicator_count": 1604,
- "block_now_count": 722,
+ "last_updated": "2026-11-14 16:16",
+ "threat_count": 60,
+ "indicator_count": 1609,
+ "block_now_count": 723,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -102,6 +102,296 @@
   }
  ],
  "threats": [
+  {
+   "id": "Microsoft-365-Outage-Service-Health-Phishing",
+   "folder": "threats/2026-11_November-2026/2026-11-14/Microsoft-365-Outage-Service-Health-Phishing",
+   "name": "Fake Microsoft 365 Outage Notices Lure Users to Restore Held Messages",
+   "short": "M365 outage phishing",
+   "category": "Phishing / identity",
+   "published": "2026-11-14",
+   "entry_date": "2026-11-14 16:16",
+   "last_updated": "2026-11-14",
+   "seq": 60,
+   "headline": "Fake Microsoft 365 service health emails cite the real 12 November outage to push users onto a credential phishing page",
+   "summary": "Microsoft Threat Intelligence warned on 14 November 2026 of an active phishing campaign that exploits the real 12 November Microsoft 365 and Exchange Online outage. The emails impersonate Microsoft 365 service health notices, cite the genuine incident EX1550543, claim four messages were held and will be deleted within 24 hours, and use a RESTORE MESSAGES button. Subjects follow the pattern 'Outage - ' plus a six-character code, and sender display names pair an organisation-specific prefix with 'Outage Notification' or 'Service Health'. Microsoft names three sender domains (moments-notice.com, planetmaison.com, newbooker.com) and recipient-specific SendGrid click-tracking links that redirect to reallifeaccounting.com/themelist0.html; it saw organisations in multiple US sectors targeted and says credential collection has not been confirmed. Field Effect caught the same lure on 13 November, describes the landing page as credential harvesting, and warns of parallel outage-themed texts and fake IT support calls. The landing path is on the block list; the long-registered sender and landing domains are alert and hunt.",
+   "caveat": "The four domains were registered between 1996 and 2015 and may be compromised or repurposed sites, so only the exact landing path is blocked; the domains are alert and hunt. Microsoft says credential collection and malware delivery have not been confirmed. Genuine Microsoft quarantine digests come from quarantine@messaging.microsoft.com.",
+   "targets": {
+    "countries": [
+     {
+      "code": "code",
+      "name": "name"
+     }
+    ],
+    "regions": [
+     "North America"
+    ],
+    "sectors": [
+     "Organisations across multiple US sectors (not named)"
+    ],
+    "note": "Microsoft saw the emails target organisations across multiple US sectors; any Microsoft 365 tenant could receive the lure.",
+    "source": {
+     "url": "https://x.com/MsftSecIntel/status/2121491564161581148",
+     "label": "Microsoft Threat Intelligence – Active phishing campaign exploiting the 12 November Microsoft 365 disruption (X)",
+     "name": "X"
+    }
+   },
+   "mitre": [
+    {
+     "id": "T1566.002",
+     "name": "Phishing: Spearphishing Link",
+     "url": "https://attack.mitre.org/techniques/T1566/002/"
+    },
+    {
+     "id": "T1656",
+     "name": "Impersonation",
+     "url": "https://attack.mitre.org/techniques/T1656/"
+    },
+    {
+     "id": "T1078.004",
+     "name": "Valid Accounts: Cloud Accounts",
+     "url": "https://attack.mitre.org/techniques/T1078/004/"
+    },
+    {
+     "id": "T1564.008",
+     "name": "Hide Artifacts: Email Hiding Rules",
+     "url": "https://attack.mitre.org/techniques/T1564/008/"
+    }
+   ],
+   "recommended_actions": [
+    "Search EmailEvents and Threat Explorer from 12 November 2026 for subjects starting 'Outage - ' with a six-character code, sender display names containing 'Outage Notification' or 'Service Health', and the sender domains moments-notice.com, planetmaison.com and newbooker.com; purge matches and block the senders in Exchange Online.",
+    "Use UrlClickEvents and proxy logs to find anyone who clicked through to reallifeaccounting.com; for each, reset the password, revoke sessions and tokens, and review new sign-in locations, MFA method registrations, OAuth consents and inbox or forwarding rules since 12 November.",
+    "Confirm Safe Links policies cover all users, and tell staff that outage updates appear only on the Microsoft 365 admin center Service health page.",
+    "Verify any password reset, MFA change or payment change requested by phone, text or Teams during or after the outage by calling back on a known number, and limit Quick Assist and other remote support tools to IT staff."
+   ],
+   "sources": [
+    {
+     "url": "https://x.com/MsftSecIntel/status/2121491564161581148",
+     "label": "Microsoft Threat Intelligence – Active phishing campaign exploiting the 12 November Microsoft 365 disruption (X)",
+     "name": "X"
+    },
+    {
+     "url": "https://fieldeffect.com/blog/microsoft-365-outage-theme",
+     "label": "Field Effect – Microsoft 365 outage theme drives credential phishing and support scams",
+     "name": "Field Effect"
+    },
+    {
+     "url": "https://news.sulat.com/2026/11/14/microsoft-365-outage-phishing/",
+     "label": "Sulat – Phishers use Microsoft 365 outage as bait, Microsoft Threat Intelligence says",
+     "name": "news.sulat.com"
+    }
+   ],
+   "indicator_count": 5,
+   "block_now_count": 1,
+   "hunt_count": 4,
+   "hunt_counts": {
+    "alert": 4
+   },
+   "indicator_counts": {
+    "domain": 4,
+    "url": 1
+   },
+   "ioas": [
+    {
+     "artefact": "Email with subject 'Outage - ' plus a six-character code and an 'Outage Notification' or 'Service Health' sender display name from a non-Microsoft domain",
+     "log_source": "Defender XDR EmailEvents; Defender for Office 365 Threat Explorer; email gateway logs",
+     "why": "Microsoft Threat Intelligence reports that the lures use subjects of the form 'Outage - [six-character code]' and sender display names that pair an organisation-specific prefix with 'Outage Notification' or 'Service Health', while citing the real Exchange Online incident EX1550543. Genuine Microsoft 365 service health and quarantine mail is sent from microsoft.com domains, so requiring the exact subject shape, the display-name wording and a non-Microsoft sender domain keeps false positives close to none. Expected false positives are internal IT teams that send their own outage notices with a similar subject; exclude your own accepted domains if they do.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://x.com/MsftSecIntel/status/2121491564161581148",
+     "source_name": "X",
+     "title": "'Outage - ' subject with a Service Health sender name",
+     "queries": [
+      "KQL"
+     ]
+    },
+    {
+     "artefact": "Mail from the three named sender domains, or clicks through to the /themelist0.html landing path",
+     "log_source": "Defender XDR EmailEvents and UrlClickEvents; email gateway and web proxy logs",
+     "why": "Microsoft names moments-notice.com, planetmaison.com and newbooker.com as the sender domains and says each email carries a recipient-specific SendGrid click-tracking link that redirects to reallifeaccounting.com/themelist0.html; Field Effect describes the landing page as credential harvesting. Matching the sender domain in message trace finds every recipient even when the domain block never fires, and a click on the landing path marks the users whose passwords may have been entered. The domains are long-registered and may be compromised sites, so confirm the subject and lure before acting; legitimate mail from those businesses is the expected false positive.",
+     "action": "alert",
+     "has_query": true,
+     "source_url": "https://x.com/MsftSecIntel/status/2121491564161581148",
+     "source_name": "X",
+     "title": "Outage lure sender domains or landing-page clicks",
+     "queries": [
+      "KQL"
+     ]
+    },
+    {
+     "artefact": "New inbox or forwarding rules, MFA method registrations or OAuth consents on accounts that received or clicked an outage lure since 12 November",
+     "log_source": "Microsoft Purview unified audit log; Entra ID audit and sign-in logs",
+     "why": "Field Effect warns that a password reset alone leaves anything the attacker created with stolen credentials: inbox rules, mailbox forwarding, OAuth app consents and newly registered MFA methods stay active until removed. Review these only for users identified by the two hunts above, which keeps the volume small; routine rule changes by those users are the expected false positives.",
+     "action": "hunt",
+     "has_query": false,
+     "source_url": "https://fieldeffect.com/blog/microsoft-365-outage-theme",
+     "source_name": "Field Effect",
+     "title": "New mailbox rules or MFA methods after a lure",
+     "queries": []
+    }
+   ],
+   "ioa_count": 3,
+   "ioa_note": "Behaviours are leads, not confirmed indicators, and can match legitimate activity. Compare any hit against your own baseline and environment before acting.",
+   "files": [
+    {
+     "name": "block_now.txt",
+     "label": "Block list",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Microsoft-365-Outage-Service-Health-Phishing/block_now.txt",
+     "download": "Microsoft-365-Outage-Service-Health-Phishing_block_now.txt"
+    },
+    {
+     "name": "defender_xdr_indicators.csv",
+     "label": "Defender XDR import",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Microsoft-365-Outage-Service-Health-Phishing/defender_xdr_indicators.csv",
+     "download": "Microsoft-365-Outage-Service-Health-Phishing_defender_xdr_indicators.csv"
+    },
+    {
+     "name": "hunt.kql",
+     "label": "Hunting query (KQL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Microsoft-365-Outage-Service-Health-Phishing/hunt.kql",
+     "download": "Microsoft-365-Outage-Service-Health-Phishing_hunt.kql"
+    },
+    {
+     "name": "hunt.spl",
+     "label": "Hunting query (SPL)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Microsoft-365-Outage-Service-Health-Phishing/hunt.spl",
+     "download": "Microsoft-365-Outage-Service-Health-Phishing_hunt.spl"
+    },
+    {
+     "name": "hunt_raw.spl",
+     "label": "Hunting query (SPL, raw events)",
+     "note": "hunt_raw.spl, for data not mapped to CIM",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Microsoft-365-Outage-Service-Health-Phishing/hunt_raw.spl",
+     "download": "Microsoft-365-Outage-Service-Health-Phishing_hunt_raw.spl"
+    },
+    {
+     "name": "hunt.yaral",
+     "label": "Hunting query (YARA-L 2.0)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Microsoft-365-Outage-Service-Health-Phishing/hunt.yaral",
+     "download": "Microsoft-365-Outage-Service-Health-Phishing_hunt.yaral"
+    },
+    {
+     "name": "iocs.csv",
+     "label": "All indicators (CSV)",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Microsoft-365-Outage-Service-Health-Phishing/iocs.csv",
+     "download": "Microsoft-365-Outage-Service-Health-Phishing_iocs.csv"
+    }
+   ],
+   "repo_url": "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-14/Microsoft-365-Outage-Service-Health-Phishing",
+   "share_url": "https://iocwatch.com/t/Microsoft-365-Outage-Service-Health-Phishing/",
+   "indicators": [
+    {
+     "value": "reallifeaccounting.com/themelist0.html",
+     "type": "url",
+     "confidence": "high",
+     "recommended_action": "block",
+     "description": "Landing path that Microsoft Threat Intelligence observed the recipient-specific SendGrid click-tracking links in the fake Microsoft 365 outage emails redirecting to.",
+     "source_url": "https://x.com/MsftSecIntel/status/2121491564161581148",
+     "source_label": "Microsoft Threat Intelligence – Active phishing campaign exploiting the 12 November Microsoft 365 disruption (X)",
+     "source_name": "X",
+     "sources": [
+      {
+       "url": "https://x.com/MsftSecIntel/status/2121491564161581148",
+       "name": "X"
+      }
+     ]
+    },
+    {
+     "value": "reallifeaccounting.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Redirect destination of the fake Microsoft 365 outage emails' tracked links, per Microsoft Threat Intelligence.",
+     "source_url": "https://x.com/MsftSecIntel/status/2121491564161581148",
+     "source_label": "Microsoft Threat Intelligence – Active phishing campaign exploiting the 12 November Microsoft 365 disruption (X)",
+     "source_name": "X",
+     "sources": [
+      {
+       "url": "https://x.com/MsftSecIntel/status/2121491564161581148",
+       "name": "X"
+      }
+     ]
+    },
+    {
+     "value": "moments-notice.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "One of three sender domains Microsoft Threat Intelligence saw sending the fake 'Outage - ' service health emails citing incident EX1550543.",
+     "source_url": "https://x.com/MsftSecIntel/status/2121491564161581148",
+     "source_label": "Microsoft Threat Intelligence – Active phishing campaign exploiting the 12 November Microsoft 365 disruption (X)",
+     "source_name": "X",
+     "sources": [
+      {
+       "url": "https://x.com/MsftSecIntel/status/2121491564161581148",
+       "name": "X"
+      }
+     ]
+    },
+    {
+     "value": "planetmaison.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "One of three sender domains Microsoft Threat Intelligence saw sending the fake 'Outage - ' service health emails citing incident EX1550543.",
+     "source_url": "https://x.com/MsftSecIntel/status/2121491564161581148",
+     "source_label": "Microsoft Threat Intelligence – Active phishing campaign exploiting the 12 November Microsoft 365 disruption (X)",
+     "source_name": "X",
+     "sources": [
+      {
+       "url": "https://x.com/MsftSecIntel/status/2121491564161581148",
+       "name": "X"
+      }
+     ]
+    },
+    {
+     "value": "newbooker.com",
+     "type": "domain",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "One of three sender domains Microsoft Threat Intelligence saw sending the fake 'Outage - ' service health emails citing incident EX1550543.",
+     "source_url": "https://x.com/MsftSecIntel/status/2121491564161581148",
+     "source_label": "Microsoft Threat Intelligence – Active phishing campaign exploiting the 12 November Microsoft 365 disruption (X)",
+     "source_name": "X",
+     "sources": [
+      {
+       "url": "https://x.com/MsftSecIntel/status/2121491564161581148",
+       "name": "X"
+      }
+     ]
+    }
+   ],
+   "queries": [
+    {
+     "platform": "Defender XDR",
+     "language": "KQL",
+     "name": "hunt.kql",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Microsoft-365-Outage-Service-Health-Phishing/hunt.kql",
+     "download": "Microsoft-365-Outage-Service-Health-Phishing_hunt.kql"
+    },
+    {
+     "platform": "Splunk",
+     "language": "SPL",
+     "name": "hunt.spl",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Microsoft-365-Outage-Service-Health-Phishing/hunt.spl",
+     "download": "Microsoft-365-Outage-Service-Health-Phishing_hunt.spl",
+     "alt": {
+      "label": "No CIM? Raw-search version",
+      "name": "hunt_raw.spl",
+      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Microsoft-365-Outage-Service-Health-Phishing/hunt_raw.spl",
+      "download": "Microsoft-365-Outage-Service-Health-Phishing_hunt_raw.spl"
+     }
+    },
+    {
+     "platform": "Google SecOps",
+     "language": "YARA-L 2.0",
+     "name": "hunt.yaral",
+     "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Microsoft-365-Outage-Service-Health-Phishing/hunt.yaral",
+     "download": "Microsoft-365-Outage-Service-Health-Phishing_hunt.yaral"
+    }
+   ],
+   "short_title": "M365 outage phishing",
+   "news_headline": "Fake Microsoft 365 outage emails target staff logins, Microsoft warns"
+  },
   {
    "id": "Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor",
    "folder": "threats/2026-11_November-2026/2026-11-14/Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor",
@@ -9770,6 +10060,11 @@
      "url": "https://www.ic3.gov/CSA/2026/261112.pdf",
      "label": "FBI FLASH AC-111226-MS – North Korean Hackers Use Secretly Recorded Webcam Library in FaceStealer Crypto Theft Scheme",
      "name": "FBI IC3"
+    },
+    {
+     "url": "https://www.justice.gov/opa/pr/justice-department-announces-actions-disrupt-north-koreas-massive-theft-cryptocurrency",
+     "label": "US Department of Justice – Justice Department Announces Actions to Disrupt North Korea's Massive Theft of Cryptocurrency (FaceStealer infrastructure seizure)",
+     "name": "justice.gov"
     },
     {
      "url": "https://arcticwolf.com/resources/blog/still-in-the-meeting-bluenoroff-six-months-on/",

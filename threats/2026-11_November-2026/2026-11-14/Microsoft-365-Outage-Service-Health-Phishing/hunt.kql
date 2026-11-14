@@ -1,0 +1,36 @@
+// Threat: Fake Microsoft 365 Outage Notices Lure Users to Restore Held Messages
+// Author: Daniel Jeremiah | Date: 2026-11-14
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-14/Microsoft-365-Outage-Service-Health-Phishing
+let Lookback = 30d;
+let Domains = dynamic(["reallifeaccounting.com", "moments-notice.com", "planetmaison.com", "newbooker.com"]);
+union isfuzzy=true
+  (DeviceNetworkEvents
+    | where Timestamp > ago(Lookback)
+    | where RemoteUrl has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceNetworkEvents", Entity = tostring(DeviceName), Indicator = tostring(RemoteUrl), Context = tostring(strcat(ActionType, " ", InitiatingProcessFileName, " ", RemoteIP))),
+  (DeviceEvents
+    | where Timestamp > ago(Lookback)
+    | where ActionType == "DnsQueryResponse" and tostring(parse_json(AdditionalFields).DnsQueryString) has_any (Domains)
+    | project Timestamp, SourceTable = "DeviceEvents", Entity = tostring(DeviceName), Indicator = tostring(parse_json(AdditionalFields).DnsQueryString), Context = tostring(strcat("DNS ", InitiatingProcessFileName))),
+  (EmailUrlInfo
+    | where Timestamp > ago(Lookback)
+    | where UrlDomain has_any (Domains)
+    | project Timestamp, SourceTable = "EmailUrlInfo", Entity = tostring(NetworkMessageId), Indicator = tostring(Url), Context = tostring("URL in email")),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url has_any (Domains)
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload))),
+  (EmailEvents
+    | where Timestamp > ago(Lookback)
+    | where Subject matches regex @"^\s*Outage\s*[-–]\s*[A-Za-z0-9]{6}\s*$" and (SenderDisplayName has "Outage Notification" or SenderDisplayName has "Service Health") and not(SenderFromDomain endswith "microsoft.com")
+    | project Timestamp, SourceTable = "EmailEvents", Entity = tostring(RecipientEmailAddress), Indicator = tostring(Subject), Context = tostring(strcat(SenderFromAddress, " | ", SenderDisplayName, " | ", DeliveryAction))),
+  (EmailEvents
+    | where Timestamp > ago(Lookback)
+    | where SenderFromDomain in~ ("moments-notice.com", "planetmaison.com", "newbooker.com") or SenderMailFromDomain in~ ("moments-notice.com", "planetmaison.com", "newbooker.com")
+    | project Timestamp, SourceTable = "EmailEvents", Entity = tostring(RecipientEmailAddress), Indicator = tostring(SenderFromAddress), Context = tostring(strcat(Subject, " | ", SenderDisplayName, " | ", DeliveryAction))),
+  (UrlClickEvents
+    | where Timestamp > ago(Lookback)
+    | where Url has "/themelist0.html"
+    | project Timestamp, SourceTable = "UrlClickEvents", Entity = tostring(AccountUpn), Indicator = tostring(Url), Context = tostring(strcat(ActionType, " ", Workload)))
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp), Hits = count(), Context = take_any(Context) by SourceTable, Entity, Indicator
+| order by LastSeen desc

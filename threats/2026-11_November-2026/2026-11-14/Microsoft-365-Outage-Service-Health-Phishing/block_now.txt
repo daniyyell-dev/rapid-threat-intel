@@ -1,0 +1,5 @@
+# Fake Microsoft 365 Outage Notices Lure Users to Restore Held Messages
+# Published 2026-11-14. High-confidence indicators to block. Updated 2026-11-14.
+
+## url (1)
+reallifeaccounting.com/themelist0.html

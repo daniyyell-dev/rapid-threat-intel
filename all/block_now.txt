@@ -1,5 +1,8 @@
 # All high-confidence indicators to block. Updated 2026-11-14 09:20.
 
+## 2026-11-14 Fake Microsoft 365 Outage Notices Lure Users to Restore Held Messages
+reallifeaccounting.com/themelist0.html
+
 ## 2026-10-30 Trojanized Claude Code IDE Extension Plants Persistent Reverse SSH Backdoor on Developer Machines
 ecb58cb29078d9646ad1dcdbe51526f2d9cfea06be5fb2ab183e8ecc3ab6bf15
 7e0a52885fadee05544a9e99eb18c792bec05900a5e1a66d68f8383decb0e278
