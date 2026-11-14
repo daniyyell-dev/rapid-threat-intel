@@ -1,9 +1,8 @@
 {
- "updated": "2026-11-14T17:20:46Z",
+ "updated": "2026-11-14T18:16:54Z",
  "items": [
   {
    "threat_name": "SignDrop CLFS zero-day",
-   "threat_id": "SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation",
    "posts": [
     {
      "platform": "X",
@@ -35,11 +34,11 @@
      "posted_at": "2026-11-12T16:04:18.000Z",
      "summary": "The new SignDrop zero-day gives attackers SYSTEM privileges on Windows."
     }
-   ]
+   ],
+   "threat_id": "SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation"
   },
   {
    "threat_name": "M365 outage phishing",
-   "threat_id": "Microsoft-365-Outage-Service-Health-Phishing",
    "posts": [
     {
      "platform": "X",
@@ -51,11 +50,11 @@
      "posted_at": "2026-11-14T06:32:58.000Z",
      "summary": "Microsoft warns that fake Microsoft 365 service health emails citing the 12 November outage are pushing users to 'restore held messages' on a phishing page."
     }
-   ]
+   ],
+   "threat_id": "Microsoft-365-Outage-Service-Health-Phishing"
   },
   {
    "threat_name": "Check Point PHP2Shell",
-   "threat_id": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper",
    "posts": [
     {
      "platform": "X",
@@ -87,11 +86,11 @@
      "posted_at": "2026-10-26T23:16:35.000Z",
      "summary": "Adds the two PHP2Shell flaws to the Known Exploited Vulnerabilities catalogue and urges mitigation."
     }
-   ]
+   ],
+   "threat_id": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper"
   },
   {
    "threat_name": "Endgame malware takedown",
-   "rumour_id": "operation-endgame-nov-2026",
    "posts": [
     {
      "platform": "X",
@@ -123,11 +122,11 @@
      "posted_at": "2026-11-12T13:40:18.129Z",
      "summary": "The Operation Endgame takedown recovered more than six million stolen logins."
     }
-   ]
+   ],
+   "rumour_id": "operation-endgame-nov-2026"
   },
   {
    "threat_name": "Falcon C2 Antino",
-   "threat_id": "Falcon-C2-XG-Antino-Browser-Implant",
    "posts": [
     {
      "platform": "X",
@@ -139,11 +138,11 @@
      "posted_at": "2026-11-13T21:48:02.000Z",
      "summary": "Analyses Falcon, a browser C2 framework that hits government portals in five countries and delivers the Antino implant."
     }
-   ]
+   ],
+   "threat_id": "Falcon-C2-XG-Antino-Browser-Implant"
   },
   {
    "threat_name": "ARTEX Korean finance",
-   "threat_id": "ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure",
    "posts": [
     {
      "platform": "Bluesky",
@@ -155,11 +154,11 @@
      "posted_at": "2026-11-13T20:14:02.504083278Z",
      "summary": "Looks at how ARTEX, released on GitHub as a pen-testing framework, is now used by both state-linked and criminal clusters."
     }
-   ]
+   ],
+   "threat_id": "ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure"
   },
   {
    "threat_name": "Storm-3358 ARTEX",
-   "threat_id": "Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector",
    "posts": [
     {
      "platform": "Bluesky",
@@ -181,11 +180,11 @@
      "posted_at": "2026-11-07T02:49:30.540Z",
      "summary": "Storm-3358 uses ARTEX to scan exposed systems, exploit upload and SSRF flaws and install open-source RATs."
     }
-   ]
+   ],
+   "threat_id": "Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector"
   },
   {
    "threat_name": "GhostFrame ESXi implant",
-   "threat_id": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware",
    "posts": [
     {
      "platform": "X",
@@ -207,11 +206,11 @@
      "posted_at": "2026-11-13T18:54:42.000Z",
      "summary": "Points out that the single GhostFrame hash in the published IOCs matches a sample they shared in September."
     }
-   ]
+   ],
+   "threat_id": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware"
   },
   {
    "threat_name": "Able2Shell N-central",
-   "threat_id": "Able2Shell-N-able-N-central-Zero-Days",
    "posts": [
     {
      "platform": "X",
@@ -243,11 +242,11 @@
      "posted_at": "2026-11-10T10:10:07.000Z",
      "summary": "Saw exploitation attempts against N-central honeypots overnight after Able2Shell went public; advises auditing and restricting access."
     }
-   ]
+   ],
+   "threat_id": "Able2Shell-N-able-N-central-Zero-Days"
   },
   {
    "threat_name": "FaceStealer fake meetings",
-   "threat_id": "FaceStealer-BlueNoroff-Fake-Meeting-Lures",
    "posts": [
     {
      "platform": "X",
@@ -259,11 +258,11 @@
      "posted_at": "2026-11-13T14:30:17.000Z",
      "summary": "FaceStealer used hijacked accounts, fake video meetings and covert webcam recordings to target crypto holders and developers."
     }
-   ]
+   ],
+   "threat_id": "FaceStealer-BlueNoroff-Fake-Meeting-Lures"
   },
   {
    "threat_name": "Apache HTTP/2 RCE",
-   "rumour_id": "apache-cve-2026-119618",
    "posts": [
     {
      "platform": "Bluesky",
@@ -295,11 +294,11 @@
      "posted_at": "2026-11-11T18:48:58.000Z",
      "summary": "Investigating the mod_http2 race condition; early view is that it only affects certain configurations."
     }
-   ]
+   ],
+   "rumour_id": "apache-cve-2026-119618"
   },
   {
    "threat_name": "Fake Zillow NetSupport",
-   "threat_id": "Fake-Zillow-ClickFix-NetSupport-RAT",
    "posts": [
     {
      "platform": "Bluesky",
@@ -311,11 +310,11 @@
      "posted_at": "2026-11-13T08:59:14.963Z",
      "summary": "Fake Zillow pages use ClickFix prompts to install NetSupport RAT on apartment hunters' machines."
     }
-   ]
+   ],
+   "threat_id": "Fake-Zillow-ClickFix-NetSupport-RAT"
   },
   {
    "threat_name": "Vanderbilt BYOD ransomware",
-   "threat_id": "BYOD-Ransomware-Vanderbilt-University-Attack",
    "posts": [
     {
      "platform": "X",
@@ -337,11 +336,11 @@
      "posted_at": "2026-11-09T23:52:27.000Z",
      "summary": "Reports a BYOD ransomware attack on Vanderbilt University, with data theft claimed."
     }
-   ]
+   ],
+   "threat_id": "BYOD-Ransomware-Vanderbilt-University-Attack"
   },
   {
    "threat_name": "Maersk legacy breach",
-   "rumour_id": "maersk-whitearmor-breach",
    "posts": [
     {
      "platform": "Mastodon",
@@ -363,11 +362,11 @@
      "posted_at": "2026-11-11T16:24:34.000Z",
      "summary": "Maersk confirms a data breach as WhiteArmor makes a ransom demand."
     }
-   ]
+   ],
+   "rumour_id": "maersk-whitearmor-breach"
   },
   {
    "threat_name": "ScreenConnect panel hijack",
-   "threat_id": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign",
    "posts": [
     {
      "platform": "Mastodon",
@@ -379,11 +378,11 @@
      "posted_at": "2026-11-11T20:25:16.000Z",
      "summary": "Warns that attackers are testing a new wormable script that abuses ScreenConnect."
     }
-   ]
+   ],
+   "threat_id": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign"
   },
   {
    "threat_name": "Qubole AWS role abuse",
-   "threat_id": "Qubole-Cross-Account-AWS-Role-Abuse",
    "posts": [
     {
      "platform": "Bluesky",
@@ -415,11 +414,11 @@
      "posted_at": "2026-11-09T16:35:18.000Z",
      "summary": "With Sentra and Mandiant, Wiz tracks an active campaign abusing Qubole's cross-account trust into customer AWS accounts."
     }
-   ]
+   ],
+   "threat_id": "Qubole-Cross-Account-AWS-Role-Abuse"
   },
   {
    "threat_name": "Operation Snowball BroadWorks",
-   "threat_id": "Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320",
    "posts": [
     {
      "platform": "X",
@@ -431,11 +430,11 @@
      "posted_at": "2026-11-11T09:03:04.000Z",
      "summary": "Reports active exploitation of Cisco BroadWorks and Openwave flaws."
     }
-   ]
+   ],
+   "threat_id": "Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320"
   },
   {
    "threat_name": "AhsayCBS webshells",
-   "threat_id": "AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant",
    "posts": [
     {
      "platform": "X",
@@ -467,11 +466,11 @@
      "posted_at": "2026-11-09T13:29:18.607Z",
      "summary": "Now sharing reports of vulnerable AhsayCBS servers, noting the flaw has been used in ransomware attacks."
     }
-   ]
+   ],
+   "threat_id": "AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant"
   },
   {
    "threat_name": "Outlook NTLM hash leak",
-   "threat_id": "Outlook-CVE-2026-124194-NTLM-Hash-Leak",
    "posts": [
     {
      "platform": "X",
@@ -493,11 +492,11 @@
      "posted_at": "2026-11-10T19:11:28.000Z",
      "summary": "November Patch Tuesday covers 1,235 flaws, including the actively exploited Outlook zero-day."
     }
-   ]
+   ],
+   "threat_id": "Outlook-CVE-2026-124194-NTLM-Hash-Leak"
   },
   {
    "threat_name": "Fireworks AI breach",
-   "rumour_id": "fireworks-ai-supplier-breach",
    "posts": [
     {
      "platform": "X",
@@ -519,11 +518,11 @@
      "posted_at": "2026-11-10T07:50:12.000Z",
      "summary": "Fireworks AI discloses a breach that followed a compromise at its cloud provider."
     }
-   ]
+   ],
+   "rumour_id": "fireworks-ai-supplier-breach"
   },
   {
    "threat_name": "Xen Orchestra auth bypass",
-   "threat_id": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover",
    "posts": [
     {
      "platform": "Bluesky",
@@ -535,11 +534,11 @@
      "posted_at": "2026-11-10T11:17:34-05:00",
      "summary": "A critical Xen Orchestra auth bypass is being exploited to take over XCP-ng hosts."
     }
-   ]
+   ],
+   "threat_id": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover"
   },
   {
    "threat_name": "Turla Cereal",
-   "threat_id": "Turla-Cereal-Exchange-Espionage-Toolset",
    "posts": [
     {
      "platform": "X",
@@ -571,11 +570,11 @@
      "posted_at": "2026-11-10T10:00:07.000Z",
      "summary": "ESET uncovers Cereal, a modular .NET toolset Turla uses to turn Exchange servers into long-term collection points."
     }
-   ]
+   ],
+   "threat_id": "Turla-Cereal-Exchange-Espionage-Toolset"
   },
   {
    "threat_name": "FreeSWITCH miner",
-   "threat_id": "FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign",
    "posts": [
     {
      "platform": "X",
@@ -587,11 +586,11 @@
      "posted_at": "2026-11-10T06:32:43.000Z",
      "summary": "Notes CISA has added the exploited FreeSWITCH flaw to its KEV list alongside OpenSSH and others."
     }
-   ]
+   ],
+   "threat_id": "FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign"
   },
   {
    "threat_name": "bee-js supply chain",
-   "threat_id": "Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack",
    "posts": [
     {
      "platform": "X",
@@ -623,11 +622,11 @@
      "posted_at": "2026-11-09T01:57:11.000Z",
      "summary": "Flags @ethersphere/bee-js 13.3.0 as compromised and says it alerted maintainers and npm."
     }
-   ]
+   ],
+   "threat_id": "Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack"
   },
   {
    "threat_name": "BITTER PapRAT",
-   "threat_id": "BITTER-PapRAT-WmRAT-South-Asia-Espionage",
    "posts": [
     {
      "platform": "X",
@@ -659,11 +658,11 @@
      "posted_at": "2026-11-02T14:09:16.000Z",
      "summary": "Bitter is using a fake diplomatic letter as a lure to deliver PapRAT to government and energy targets."
     }
-   ]
+   ],
+   "threat_id": "BITTER-PapRAT-WmRAT-South-Asia-Espionage"
   },
   {
    "threat_name": "SSHole OpenSSH exploit",
-   "threat_id": "SSHole-OpenSSH-CVE-2026-123158-Exploitation",
    "posts": [
     {
      "platform": "X",
@@ -695,11 +694,11 @@
      "posted_at": "2026-11-05T19:08:30.000Z",
      "summary": "Shares the emergency OpenSSH fix for SSHole, an authentication bypass on Alpine Linux."
     }
-   ]
+   ],
+   "threat_id": "SSHole-OpenSSH-CVE-2026-123158-Exploitation"
   },
   {
    "threat_name": "APT29 mobile watering holes",
-   "threat_id": "APT29-Mobile-Watering-Hole-Exploit-Chains",
    "posts": [
     {
      "platform": "Mastodon",
@@ -721,11 +720,11 @@
      "posted_at": "2026-11-04T09:19:56.000Z",
      "summary": "Sekoia's threat research team details an APT29 watering-hole campaign against iOS and Android users, including a week-long compromise of a Ukrainian analytics tracker."
     }
-   ]
+   ],
+   "threat_id": "APT29-Mobile-Watering-Hole-Exploit-Chains"
   },
   {
    "threat_name": "Ivanti Connect Secure UTA0576",
-   "threat_id": "Ivanti-Connect-Secure-UTA0576-CVE-2026-118527",
    "posts": [
     {
      "platform": "Bluesky",
@@ -757,11 +756,11 @@
      "posted_at": "2026-10-30T17:46:21.000Z",
      "summary": "Adds the two Ivanti Connect Secure flaws to the Known Exploited Vulnerabilities catalogue."
     }
-   ]
+   ],
+   "threat_id": "Ivanti-Connect-Secure-UTA0576-CVE-2026-118527"
   },
   {
    "threat_name": "Claude Code extension backdoor",
-   "threat_id": "Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor",
    "posts": [
     {
      "platform": "X",
@@ -793,7 +792,8 @@
      "posted_at": "2026-10-30T10:08:53.000Z",
      "summary": "Found no record of the malicious 2.1.313 version on Open VSX or npm, contrary to early reports."
     }
-   ]
+   ],
+   "threat_id": "Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor"
   }
  ]
 }
