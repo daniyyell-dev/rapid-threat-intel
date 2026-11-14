@@ -1,6 +1,6 @@
 {
- "title": "AI Rapid Threat Intel",
- "description": "High-impact threat intelligence and IOCs, researched and ready to deploy",
+ "title": "IOCWatch",
+ "description": "AI threat intelligence, live: verified indicators, block lists and ready-to-run hunts",
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
@@ -582,7 +582,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure/hunt.yaral",
      "download": "Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "AccuraSoftHire loader"
   },
   {
    "id": "ScreenConnect-Fake-Crypto-Exchange-Guest-Sessions-MSP-Bait",
@@ -827,7 +828,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-14/ScreenConnect-Fake-Crypto-Exchange-Guest-Sessions-MSP-Bait/hunt.yaral",
      "download": "ScreenConnect-Fake-Crypto-Exchange-Guest-Sessions-MSP-Bait_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "ScreenConnect crypto bait"
   },
   {
    "id": "ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam",
@@ -1178,7 +1180,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam/hunt.yaral",
      "download": "ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "ZeroQlik Qlik Sense"
   },
   {
    "id": "Qubole-Cross-Account-AWS-Role-Abuse",
@@ -1616,7 +1619,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Qubole-Cross-Account-AWS-Role-Abuse/hunt.yaral",
      "download": "Qubole-Cross-Account-AWS-Role-Abuse_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Qubole AWS role abuse"
   },
   {
    "id": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC",
@@ -1825,7 +1829,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC/hunt.yaral",
      "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Cisco Expressway root RCE"
   },
   {
    "id": "ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass",
@@ -2206,7 +2211,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass/hunt.yaral",
      "download": "ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "ARTEX AI key theft"
   },
   {
    "id": "ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure",
@@ -2692,7 +2698,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure/hunt.yaral",
      "download": "ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "ARTEX Korean finance"
   },
   {
    "id": "BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse",
@@ -3042,7 +3049,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse/hunt.yaral",
      "download": "BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "BlackNevas ESXi ransomware"
   },
   {
    "id": "SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation",
@@ -3265,7 +3273,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation/hunt.yaral",
      "download": "SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "SignDrop CLFS zero-day"
   },
   {
    "id": "GeoVision-Camera-Software-XMRig-Cryptominer",
@@ -3748,7 +3757,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/GeoVision-Camera-Software-XMRig-Cryptominer/hunt.yaral",
      "download": "GeoVision-Camera-Software-XMRig-Cryptominer_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "GeoVision XMRig miner"
   },
   {
    "id": "XaocMail-ClickFix-Phantom53-DoH-C2-Havoc",
@@ -5182,7 +5192,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/XaocMail-ClickFix-Phantom53-DoH-C2-Havoc/hunt.yaral",
      "download": "XaocMail-ClickFix-Phantom53-DoH-C2-Havoc_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "XaocMail Phantom53"
   },
   {
    "id": "Barracuda-Managed-XDR-Integration-Credential-Store-Breach",
@@ -5441,7 +5452,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Barracuda-Managed-XDR-Integration-Credential-Store-Breach/hunt.yaral",
      "download": "Barracuda-Managed-XDR-Integration-Credential-Store-Breach_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Barracuda XDR breach"
   },
   {
    "id": "DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations",
@@ -6374,7 +6386,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations/hunt.yaral",
      "download": "DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "DarkLunnen FortiGate ops"
   },
   {
    "id": "LIMINAL-PANDA-GTPDoor-v3-SilentAir",
@@ -6584,7 +6597,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/LIMINAL-PANDA-GTPDoor-v3-SilentAir/hunt.yaral",
      "download": "LIMINAL-PANDA-GTPDoor-v3-SilentAir_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "LIMINAL PANDA GTPDoor"
   },
   {
    "id": "AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie",
@@ -8003,7 +8017,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie/hunt.yaral",
      "download": "AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "AI retail intrusion"
   },
   {
    "id": "Fake-Zillow-ClickFix-NetSupport-RAT",
@@ -8773,7 +8788,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Fake-Zillow-ClickFix-NetSupport-RAT/hunt.yaral",
      "download": "Fake-Zillow-ClickFix-NetSupport-RAT_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Fake Zillow NetSupport"
   },
   {
    "id": "SANSAR-Linux-GPU-Cryptomining-Toolkit",
@@ -9208,7 +9224,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/SANSAR-Linux-GPU-Cryptomining-Toolkit/hunt.yaral",
      "download": "SANSAR-Linux-GPU-Cryptomining-Toolkit_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "SANSAR GPU miner"
   },
   {
    "id": "FaceStealer-BlueNoroff-Fake-Meeting-Lures",
@@ -12172,7 +12189,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/FaceStealer-BlueNoroff-Fake-Meeting-Lures/hunt.yaral",
      "download": "FaceStealer-BlueNoroff-Fake-Meeting-Lures_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "FaceStealer fake meetings"
   },
   {
    "id": "Armorsteal-SEO-Poisoning-Python-Stealer",
@@ -13100,7 +13118,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-13/Armorsteal-SEO-Poisoning-Python-Stealer/hunt.yaral",
      "download": "Armorsteal-SEO-Poisoning-Python-Stealer_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Armorsteal stealer"
   },
   {
    "id": "MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT",
@@ -13703,7 +13722,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT/hunt.yaral",
      "download": "MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "MSSQL miner and Gh0st"
   },
   {
    "id": "NIKKE-Launcher-k2f-agent-Credential-Theft",
@@ -14062,7 +14082,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/NIKKE-Launcher-k2f-agent-Credential-Theft/hunt.yaral",
      "download": "NIKKE-Launcher-k2f-agent-Credential-Theft_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "NIKKE launcher k2f-agent"
   },
   {
    "id": "Teams-Booking-Flow-Device-Code-Phishing",
@@ -14323,7 +14344,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Teams-Booking-Flow-Device-Code-Phishing/hunt.yaral",
      "download": "Teams-Booking-Flow-Device-Code-Phishing_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Teams device-code phishing"
   },
   {
    "id": "CL-STA-1238-Cairn-Autonomous-AI-Intrusions",
@@ -14564,7 +14586,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/CL-STA-1238-Cairn-Autonomous-AI-Intrusions/hunt.yaral",
      "download": "CL-STA-1238-Cairn-Autonomous-AI-Intrusions_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Cairn AI intrusions"
   },
   {
    "id": "BITTER-PapRAT-WmRAT-South-Asia-Espionage",
@@ -15149,7 +15172,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BITTER-PapRAT-WmRAT-South-Asia-Espionage/hunt.yaral",
      "download": "BITTER-PapRAT-WmRAT-South-Asia-Espionage_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "BITTER PapRAT"
   },
   {
    "id": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper",
@@ -15629,7 +15653,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper/hunt.yaral",
      "download": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Check Point PHP2Shell"
   },
   {
    "id": "BBNet-Linux-Botnet-Multi-Arch-Scanners",
@@ -15986,7 +16011,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/BBNet-Linux-Botnet-Multi-Arch-Scanners/hunt.yaral",
      "download": "BBNet-Linux-Botnet-Multi-Arch-Scanners_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "BBNet Linux botnet"
   },
   {
    "id": "StrikeStub-ClickFix-RAT-Stealer",
@@ -16334,7 +16360,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/StrikeStub-ClickFix-RAT-Stealer/hunt.yaral",
      "download": "StrikeStub-ClickFix-RAT-Stealer_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "StrikeStub ClickFix RAT"
   },
   {
    "id": "Panzer-RaaS-Share-Propagation-Ransomware",
@@ -16660,7 +16687,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Panzer-RaaS-Share-Propagation-Ransomware/hunt.yaral",
      "download": "Panzer-RaaS-Share-Propagation-Ransomware_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Panzer ransomware"
   },
   {
    "id": "Citrus-Ransomware-Certighost-Sn00py",
@@ -17191,7 +17219,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Citrus-Ransomware-Certighost-Sn00py/hunt.yaral",
      "download": "Citrus-Ransomware-Certighost-Sn00py_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Citrus ransomware"
   },
   {
    "id": "Lazarus-Operation-FlashHole-CrossWeb-EX",
@@ -17859,7 +17888,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Lazarus-Operation-FlashHole-CrossWeb-EX/hunt.yaral",
      "download": "Lazarus-Operation-FlashHole-CrossWeb-EX_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Lazarus FlashHole"
   },
   {
    "id": "Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan",
@@ -18623,7 +18653,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan/hunt.yaral",
      "download": "Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Silent Lynx Strix"
   },
   {
    "id": "Able2Shell-N-able-N-central-Zero-Days",
@@ -19325,7 +19356,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Able2Shell-N-able-N-central-Zero-Days/hunt.yaral",
      "download": "Able2Shell-N-able-N-central-Zero-Days_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Able2Shell N-central"
   },
   {
    "id": "GSocket-Linux-Web-Server-C2",
@@ -19733,7 +19765,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GSocket-Linux-Web-Server-C2/hunt.yaral",
      "download": "GSocket-Linux-Web-Server-C2_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "GSocket web-server C2"
   },
   {
    "id": "ARTEX-AWS-Financial-Data-Hunting",
@@ -20125,7 +20158,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/ARTEX-AWS-Financial-Data-Hunting/hunt.yaral",
      "download": "ARTEX-AWS-Financial-Data-Hunting_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "ARTEX AWS data hunt"
   },
   {
    "id": "Ivanti-Connect-Secure-UTA0576-CVE-2026-118527",
@@ -20384,7 +20418,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Ivanti-Connect-Secure-UTA0576-CVE-2026-118527/hunt.yaral",
      "download": "Ivanti-Connect-Secure-UTA0576-CVE-2026-118527_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Ivanti Connect Secure UTA0576"
   },
   {
    "id": "Falcon-C2-XG-Antino-Browser-Implant",
@@ -21062,7 +21097,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Falcon-C2-XG-Antino-Browser-Implant/hunt.yaral",
      "download": "Falcon-C2-XG-Antino-Browser-Implant_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Falcon C2 Antino"
   },
   {
    "id": "AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft",
@@ -21317,7 +21353,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft/hunt.yaral",
      "download": "AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "AntiFox AWS secret theft"
   },
   {
    "id": "Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320",
@@ -21586,7 +21623,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320/hunt.yaral",
      "download": "Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Operation Snowball BroadWorks"
   },
   {
    "id": "Outlook-CVE-2026-124194-NTLM-Hash-Leak",
@@ -21847,7 +21885,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/Outlook-CVE-2026-124194-NTLM-Hash-Leak/hunt.yaral",
      "download": "Outlook-CVE-2026-124194-NTLM-Hash-Leak_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Outlook NTLM hash leak"
   },
   {
    "id": "GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer",
@@ -22351,7 +22390,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-12/GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer/hunt.yaral",
      "download": "GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "wfx CI secret stealer"
   },
   {
    "id": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign",
@@ -24017,7 +24057,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign/hunt.yaral",
      "download": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "ScreenConnect panel hijack"
   },
   {
    "id": "Trigram-DPRK-Dropper-Kimsuky-UNK-DeadDrop",
@@ -28793,7 +28834,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Trigram-DPRK-Dropper-Kimsuky-UNK-DeadDrop/hunt.yaral",
      "download": "Trigram-DPRK-Dropper-Kimsuky-UNK-DeadDrop_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Trigram DPRK dropper"
   },
   {
    "id": "SkyW4lker-Microsoft-365-Device-Code-Phishing",
@@ -30489,7 +30531,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/SkyW4lker-Microsoft-365-Device-Code-Phishing/hunt.yaral",
      "download": "SkyW4lker-Microsoft-365-Device-Code-Phishing_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "SkyW4lker M365 phishing"
   },
   {
    "id": "Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft",
@@ -30903,7 +30946,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft/hunt.yaral",
      "download": "Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Gentlemen Azazel CI theft"
   },
   {
    "id": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover",
@@ -31406,7 +31450,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover/hunt.yaral",
      "download": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Xen Orchestra auth bypass"
   },
   {
    "id": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware",
@@ -31716,7 +31761,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware/hunt.yaral",
      "download": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "GhostFrame ESXi implant"
   },
   {
    "id": "Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector",
@@ -32215,7 +32261,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-11/Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector/hunt.yaral",
      "download": "Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Storm-3358 ARTEX"
   },
   {
    "id": "AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant",
@@ -32795,7 +32842,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant/hunt.yaral",
      "download": "AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "AhsayCBS webshells"
   },
   {
    "id": "CopperDragon-Sparrow-Framework-China-Nexus-Espionage",
@@ -35669,7 +35717,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/CopperDragon-Sparrow-Framework-China-Nexus-Espionage/hunt.yaral",
      "download": "CopperDragon-Sparrow-Framework-China-Nexus-Espionage_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "CopperDragon Sparrow"
   },
   {
    "id": "NotC2-AWS-Native-AI-C2-Proof-of-Concept",
@@ -35998,7 +36047,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/NotC2-AWS-Native-AI-C2-Proof-of-Concept/hunt.yaral",
      "download": "NotC2-AWS-Native-AI-C2-Proof-of-Concept_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "NotC2 AWS AI C2"
   },
   {
    "id": "Phexia-macOS-ClickFix-Stealer-Polygon-C2",
@@ -37074,7 +37124,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Phexia-macOS-ClickFix-Stealer-Polygon-C2/hunt.yaral",
      "download": "Phexia-macOS-ClickFix-Stealer-Polygon-C2_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Phexia macOS stealer"
   },
   {
    "id": "Turla-Cereal-Exchange-Espionage-Toolset",
@@ -37681,7 +37732,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Turla-Cereal-Exchange-Espionage-Toolset/hunt.yaral",
      "download": "Turla-Cereal-Exchange-Espionage-Toolset_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Turla Cereal"
   },
   {
    "id": "MSP-Process-GDAP-Breach-Entra-Token-Abuse",
@@ -38818,7 +38870,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/MSP-Process-GDAP-Breach-Entra-Token-Abuse/hunt.yaral",
      "download": "MSP-Process-GDAP-Breach-Entra-Token-Abuse_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "MSP Process GDAP breach"
   },
   {
    "id": "Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack",
@@ -40063,7 +40116,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack/hunt.yaral",
      "download": "Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "bee-js supply chain"
   },
   {
    "id": "BYOD-Ransomware-Vanderbilt-University-Attack",
@@ -40378,7 +40432,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/BYOD-Ransomware-Vanderbilt-University-Attack/hunt.yaral",
      "download": "BYOD-Ransomware-Vanderbilt-University-Attack_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "Vanderbilt BYOD ransomware"
   },
   {
    "id": "SSHole-OpenSSH-CVE-2026-123158-Exploitation",
@@ -41188,7 +41243,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/SSHole-OpenSSH-CVE-2026-123158-Exploitation/hunt.yaral",
      "download": "SSHole-OpenSSH-CVE-2026-123158-Exploitation_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "SSHole OpenSSH exploit"
   },
   {
    "id": "FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign",
@@ -41616,7 +41672,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign/hunt.yaral",
      "download": "FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "FreeSWITCH miner"
   },
   {
    "id": "APT29-Mobile-Watering-Hole-Exploit-Chains",
@@ -42226,7 +42283,8 @@
      "url": "https://raw.githubusercontent.com/daniyyell-dev/rapid-threat-intel/main/threats/2026-11_November-2026/2026-11-10/APT29-Mobile-Watering-Hole-Exploit-Chains/hunt.yaral",
      "download": "APT29-Mobile-Watering-Hole-Exploit-Chains_hunt.yaral"
     }
-   ]
+   ],
+   "short_title": "APT29 mobile watering holes"
   }
  ]
 }

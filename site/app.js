@@ -224,18 +224,117 @@
   }
 
   /* Home */
+  function fmtNum(n) {
+    n = Math.round(n);
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+  function countUp(el, target, duration) {
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce || !target) { el.textContent = fmtNum(target); return; }
+    var start = performance.now();
+    function frame(now) {
+      var p = Math.min(1, (now - start) / duration);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmtNum(target * eased);
+      if (p < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+  /* Times in the feed are UK wall-clock ("YYYY-MM-DD HH:MM"); turn them into real instants. */
+  var UK_PARTS = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/London", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+  function ukOffsetMin(ms) {
+    var p = {}; UK_PARTS.formatToParts(new Date(ms)).forEach(function (x) { p[x.type] = x.value; });
+    return (Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute) - Math.floor(ms / 60000) * 60000) / 60000;
+  }
+  function ukTime(d) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2}))?/.exec(d || "");
+    if (!m) return null;
+    var guess = Date.UTC(+m[1], +m[2] - 1, +m[3], m[4] ? +m[4] : 12, m[5] ? +m[5] : 0);
+    return { ms: guess - ukOffsetMin(guess) * 60000, timed: !!m[4] };
+  }
+  function ago(d) {
+    var t = ukTime(d);
+    if (!t) return "";
+    var s = Math.max(0, (Date.now() - t.ms) / 1000);
+    if (!t.timed) return s < 86400 ? "today" : s < 172800 ? "yesterday" : Math.floor(s / 86400) + "d ago";
+    if (s < 60) return "just now";
+    if (s < 3600) return Math.floor(s / 60) + "m ago";
+    if (s < 86400) return Math.floor(s / 3600) + "h ago";
+    if (s < 172800) return "yesterday";
+    return Math.floor(s / 86400) + "d ago";
+  }
+  function isFresh(d, hours) { var t = ukTime(d); return !!(t && t.timed && Date.now() - t.ms < hours * 3600000); }
+  /* Short heading (2-5 words) for lists and page titles; the full name stays as the subtitle. */
+  function stitle(t) {
+    if (t.short_title) return t.short_title;
+    var w = String(t.short || t.name).split(/[:(\u2013\u2014]\s?| - /)[0].split(/\s+/);
+    return w.slice(0, 4).join(" ");
+  }
+  function huntOf(t) { return t.hunt_count != null ? t.hunt_count : Math.max(0, t.indicator_count - t.block_now_count); }
+  /* Live activity: the most recently added threats, by their real entry time. Nothing is invented:
+     each row is a real entry, and only entries added in the last few hours pulse. */
+  var LIVE_N = 5, SEEN = null;
+  function byEntry() {
+    return DATA.threats.slice().sort(function (a, b) {
+      var x = ukTime(a.entry_date), y = ukTime(b.entry_date);
+      return ((y && y.ms) || 0) - ((x && x.ms) || 0) || b.seq - a.seq;
+    });
+  }
+  function renderLive() {
+    var el = $("live-list");
+    if (!el || !DATA) return;
+    var list = byEntry().slice(0, LIVE_N), first = SEEN === null;
+    var prev = SEEN || {};
+    SEEN = {};
+    clear(el);
+    list.forEach(function (t) {
+      SEEN[t.id] = 1;
+      var hunt = huntOf(t), fresh = isFresh(t.entry_date, 6), added = !first && !prev[t.id];
+      var parts = [];
+      if (t.block_now_count) parts.push(h("span", { class: "lv-b", text: t.block_now_count + " to block" }));
+      if (hunt) parts.push(h("span", { class: "lv-h", text: hunt + " to hunt" }));
+      if (t.ioa_count) parts.push(h("span", { text: plural(t.ioa_count, "behaviour") }));
+      el.appendChild(h("li", { class: "lv" + (fresh ? " is-fresh" : "") + (added ? " is-new" : "") },
+        h("a", { href: "#threat/" + encodeURIComponent(t.id) },
+          h("span", { class: "lv-dot", "aria-hidden": "true" }),
+          h("span", { class: "lv-kind", text: "New threat" }),
+          h("span", { class: "lv-name", text: stitle(t), title: t.name }),
+          h("span", { class: "lv-stats" }, plural(t.indicator_count, "indicator"), parts.length ? " \u00b7 " : null, parts.map(function (p, i) { return [i ? " \u00b7 " : null, p]; })),
+          h("time", { class: "lv-ago", datetime: t.entry_date.replace(" ", "T"), title: fmtAdded(t.entry_date), "data-d": t.entry_date, text: ago(t.entry_date) }))));
+    });
+  }
+  function tickAgo() {
+    Array.prototype.forEach.call(document.querySelectorAll("[data-d]"), function (x) { x.textContent = ago(x.getAttribute("data-d")); });
+    if (DATA) renderEyebrow();
+  }
+  function renderEyebrow() {
+    var el = $("eyebrow"), t = DATA && byEntry()[0];
+    if (!el || !t) return;
+    el.setAttribute("href", "#threat/" + encodeURIComponent(t.id));
+    add(clear($("eyebrow-t")), [h("b", { text: "New" }), " " + stitle(t) + " \u00b7 " + ago(t.entry_date)]);
+  }
+  function renderLatest() {
+    var el = $("latest");
+    if (!el) return;
+    clear(el);
+    var newest = DATA.threats[0].entry_date.split(" ")[0];
+    DATA.threats.slice(0, 6).forEach(function (t) { el.appendChild(row(t, newest)); });
+    if ($("latest-n")) $("latest-n").textContent = String(DATA.threat_count);
+  }
   function renderStats() {
     var s = clear($("stats"));
-    var t = timeOf(DATA.last_updated);
-    function cell(cls, label, value, small) {
-      s.appendChild(h("div", { class: "cell " + cls }, h("dt", { text: label }), h("dd", null, String(value), small ? h("small", { text: small }) : null)));
+    function stat(n, label, cls) {
+      var b = h("b", { class: cls || null, text: "0" });
+      countUp({ set textContent(v) { b.textContent = v; } }, n, 900);
+      return h("span", { class: "st" }, b, " " + label);
     }
-    cell("", "Threats", DATA.threat_count, "tracked in this feed");
-    cell("", "Indicators", DATA.indicator_count, "curated and sourced");
-    cell("hot", "Block now", DATA.block_now_count, "high confidence, block");
-    cell("date", "Last updated", fmtDay(DATA.last_updated), t ? t + " UK time" : "UK time");
-    var pt = clear($("pulse-t")), dp = fmtDay(DATA.last_updated).split(" ");
-    add(pt, [h("span", { class: "pl", text: "Updated " }), dp[0] + " " + dp[1], h("span", { class: "pl", text: " " + dp[2] }), t ? " " + t + " UK" : ""]);
+    add(s, [stat(DATA.threat_count, "threats"), stat(DATA.indicator_count, "indicators"), stat(DATA.block_now_count, "to block now", "hot"),
+      h("span", { class: "st" }, "Updated ", h("time", { "data-d": DATA.last_updated, title: fmtAdded(DATA.last_updated), text: ago(DATA.last_updated) }))]);
+    var pt = $("pulse-t");
+    if (pt) { clear(pt); add(pt, ["Last entry ", h("time", { "data-d": DATA.last_updated, text: ago(DATA.last_updated) })]); }
+    renderEyebrow();
+    renderLive();
+    renderLatest();
   }
   function fillFilters() {
     var cats = {}, types = {}, days = {}, geo = {}, geoName = {}, secs = {};
@@ -302,7 +401,7 @@
     var f = $("f-country");
     f.value = f.value === k ? "" : k;
     renderFeed();
-    $("feed-h").scrollIntoView({ block: "start" });
+    window.scrollTo(0, 0);
   }
   /* Behaviours (IOAs): shown first on the feed card when a threat has no network or hash indicators. */
   var NET_TYPES = ["ipv4", "domain", "url", "sha256", "sha1"];
@@ -520,34 +619,59 @@
         ". Run it before you block to find past activity." + (t.ioa_count ? " Behaviour hits are leads, not proof." : "")),
       tabs, panel);
   }
-  function row(t, newest) {
-    var types = typesOf(t);
-    var comp = h("div", { class: "comp", "aria-hidden": "true" });
-    types.forEach(function (k) {
-      var seg = h("i", { class: "t-" + k });
-      seg.style.flexGrow = String(t.indicator_counts[k]);
-      comp.appendChild(seg);
-    });
-    var shown = types.slice(0, 4), more = types.length - shown.length;
-    return h("li", { class: "row" }, h("div", { class: "row-in" },
-      h("div", { class: "when" }, h("b", { text: fmtDay(t.entry_date) }), timeOf(t.entry_date) ? timeOf(t.entry_date) + " UK" : null,
-        t.entry_date.split(" ")[0] === newest ? h("span", { class: "new" }, "New today") : null),
-      h("div", { class: "r-main" },
-        h("div", { class: "r-cat", text: t.category }),
-        h("h3", null, h("a", { class: "r-link", href: "#threat/" + encodeURIComponent(t.id), text: t.name })),
-        h("p", { class: "r-sum", text: t.headline }),
-        targetLine(t),
-        h("div", { class: "r-meta" }, h("span", { text: "Published " + fmtDay(t.published) + (t.last_updated && t.last_updated !== t.entry_date.split(" ")[0] ? " \u00b7 updated " + fmtDay(t.last_updated) : "") }),
-          srcLine(t.sources, "r-src"))),
-      h("div", { class: "r-side" },
-        behaviourFirst(t) ? h("div", { class: "r-num ioa-num" }, h("b", { text: String(t.ioa_count) }), h("span", { class: "hunt", text: (t.ioa_count === 1 ? "behaviour" : "behaviours") + " to hunt" }))
-          : h("div", { class: "r-num" }, h("b", { text: String(t.indicator_count) }), h("span", null, t.block_now_count ? h("span", { class: "blk", text: t.block_now_count + " block now" }) : "none to block")),
-        behaviourFirst(t) ? null : comp,
-        h("div", { class: "legend" }, behaviourFirst(t) ? h("span", { text: plural(t.indicator_count, "other indicator") }) : shown.map(function (k) { return h("span", { class: "t-" + k, text: typeLabel(k) + " " + t.indicator_counts[k] }); }),
-          !behaviourFirst(t) && more > 0 ? h("span", { text: "+" + more + " more" }) : null,
-          !behaviourFirst(t) && t.ioa_count ? h("span", { class: "ioa-leg", text: "Behaviours " + t.ioa_count }) : null))));
+
+  function catKind(cat) {
+    var c = (cat || "").toLowerCase();
+    if (/ransom|encrypt|wipe/.test(c)) return "lock";
+    if (/supply|vendor|msp|chain/.test(c)) return "link";
+    if (/exploit|cve|rce|vuln/.test(c)) return "bug";
+    if (/access|credential|phish|identity/.test(c)) return "key";
+    if (/malware|backdoor|implant|c2|agent|tool/.test(c)) return "cpu";
+    return "shield";
   }
-  function targetLine(t) {
+  function catIcon(cat) { return catKind(cat); }
+  function catSvg(cat) {
+    var k = catKind(cat);
+    var paths = {
+      lock: "M8 10.5V8a4 4 0 1 1 8 0v2.5M7 10.5h10v8.5H7Z",
+      link: "M10 13.5 8.5 15A3.2 3.2 0 1 1 4 10.5L6 8.5M14 10.5 15.5 9A3.2 3.2 0 1 1 20 13.5L18 15.5M9.5 14.5l5-5",
+      bug: "M12 7.5a4 4 0 0 1 4 4v3.5a4 4 0 0 1-8 0V11.5a4 4 0 0 1 4-4Zm0 0V5M8 9.5 5.5 8M16 9.5 18.5 8M8 15.5 5.5 17M16 15.5 18.5 17M5.5 12.5H8M16 12.5h2.5",
+      key: "M14.5 8.5a3.5 3.5 0 1 1 0 0ZM14.5 12v7l2.2-1.4 2 1.2M9 15.5H5.5L4 17",
+      cpu: "M8 8h8v8H8Zm0-3v2m8-2v2M8 17v2m8-2v2M5 8H3m2 8H3m18-8h-2m2 8h-2",
+      shield: "M12 3.5 5.5 6.2v5.2c0 4 2.7 7.5 6.5 8.6 3.8-1.1 6.5-4.6 6.5-8.6V6.2Z"
+    };
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("width", "20");
+    svg.setAttribute("height", "20");
+    svg.setAttribute("aria-hidden", "true");
+    var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", paths[k] || paths.shield);
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke", "currentColor");
+    path.setAttribute("stroke-width", "1.7");
+    path.setAttribute("stroke-linecap", "round");
+    path.setAttribute("stroke-linejoin", "round");
+    svg.appendChild(path);
+    return svg;
+  }
+
+  function row(t, newest) {
+    var hunt = huntOf(t);
+    var isNew = t.entry_date.split(" ")[0] === newest;
+    return h("li", { class: "trow" }, h("a", { href: "#threat/" + encodeURIComponent(t.id) },
+      h("span", { class: "tr-when" }, h("span", { class: "tr-day", text: fmtDay(t.entry_date).replace(/ \d{4}$/, "") }), timeOf(t.entry_date) ? h("span", { class: "tr-time", text: timeOf(t.entry_date) }) : null),
+      h("span", { class: "tr-main" },
+        h("span", { class: "tr-name" }, h("span", { text: stitle(t), title: t.name }), isNew ? h("span", { class: "new", text: "New" }) : null),
+        h("span", { class: "tr-head", text: t.headline || t.short || "" }),
+        h("span", { class: "tr-cat", text: t.category })),
+      h("span", { class: "tr-stats" },
+        t.block_now_count ? h("span", { class: "chip blk", text: t.block_now_count + " block" }) : null,
+        hunt ? h("span", { class: "chip hunt", text: hunt + " hunt" }) : null,
+        t.ioa_count ? h("span", { class: "chip ioa", text: plural(t.ioa_count, "behaviour") }) : null),
+      h("span", { class: "tr-go", "aria-hidden": "true", text: "\u2192" })));
+  }
+    function targetLine(t) {
     var g = tg(t), shown = g.countries.slice(0, 4), more = g.countries.length - shown.length;
     var geo = shown.length ? [shown.map(function (c, i) { return [i ? ", " : "", countryTag(c)]; }), more > 0 ? h("span", { class: "dim", text: " +" + more + " more" }) : null]
       : (g.regions.length ? g.regions.join(", ") : h("span", { class: "dim", text: "Not stated" }));
@@ -560,6 +684,7 @@
   }
   /* Live feed pages: 20 threats per page, kept in the URL as #page=N (page 1 has no hash). */
   var PER_PAGE = 20, PAGE = 1;
+  function pageSize() { return 15; }
   function pageItems(cur, last) {
     if (last <= 7) return Array.apply(null, Array(last)).map(function (_, i) { return i + 1; });
     var out = [1], a = Math.max(2, cur - 1), b = Math.min(last - 1, cur + 1);
@@ -571,11 +696,11 @@
     return out;
   }
   function pager(total) {
-    var el = $("feed-pager"), last = Math.ceil(total / PER_PAGE);
+    var el = $("feed-pager"), last = Math.ceil(total / pageSize());
     clear(el);
     el.hidden = last <= 1;
     if (last <= 1) return;
-    var from = (PAGE - 1) * PER_PAGE + 1, to = Math.min(total, PAGE * PER_PAGE);
+    var from = (PAGE - 1) * pageSize() + 1, to = Math.min(total, PAGE * pageSize());
     function step(label, n, cls, aria) {
       return n ? h("a", { class: "pg-btn " + cls, href: "#page=" + n, rel: cls === "pg-prev" ? "prev" : "next", "aria-label": aria }, label)
                : h("span", { class: "pg-btn " + cls, "aria-disabled": "true", "aria-label": aria }, label);
@@ -603,9 +728,11 @@
       var on = b.getAttribute("data-k") === gk;
       b.classList.toggle("on", on); b.setAttribute("aria-pressed", on ? "true" : "false");
     });
+    var nameq = ($("q-list") && $("q-list").value || "").trim().toLowerCase();
     var list = DATA.threats.filter(function (t) {
       var keys = geoKeys(t), secs = tg(t).sectors;
-      return (!c || t.category === c) && (!ty || t.indicator_counts[ty]) && (!d || t.entry_date.split(" ")[0] === d) &&
+      var nameOk = !nameq || (t.name + " " + stitle(t) + " " + (t.headline || "") + " " + (t.category || "")).toLowerCase().indexOf(nameq) !== -1;
+      return nameOk && (!c || t.category === c) && (!ty || t.indicator_counts[ty]) && (!d || t.entry_date.split(" ")[0] === d) &&
         (!gk || (gk === "none" ? !keys.length : keys.indexOf(gk) !== -1)) && (!sc || (sc === "none" ? !secs.length : secs.indexOf(sc) !== -1));
     });
     var newest = DATA.threats.length ? DATA.threats[0].entry_date.split(" ")[0] : "";
@@ -615,14 +742,14 @@
       f.appendChild(h("li", { class: "empty-state" }, h("b", null, "No threats match"), "Try another date, country or sector, or a different indicator type.",
         h("div", null, h("button", { type: "button", class: "link-btn", onclick: resetFilters }, "Reset filters"))));
     }
-    var last = Math.max(1, Math.ceil(list.length / PER_PAGE));
+    var last = Math.max(1, Math.ceil(list.length / pageSize()));
     if (PAGE > last) PAGE = last;
-    list.slice((PAGE - 1) * PER_PAGE, PAGE * PER_PAGE).forEach(function (t) { f.appendChild(row(t, newest)); });
+    list.slice((PAGE - 1) * pageSize(), PAGE * pageSize()).forEach(function (t) { f.appendChild(row(t, newest)); });
     pager(list.length);
   }
   function renderAllFiles() {
     var el = $("all-files");
-    el.parentNode.replaceChild(fileList(DATA.combined_files), el);
+    if (el) el.parentNode.replaceChild(fileList(DATA.combined_files), el);
   }
 
   /* Search */
@@ -653,13 +780,13 @@
       out.appendChild(h("div", { class: "hit" + (p[1] === "Exact match" ? " exact" : "") },
         iocCell(ind),
         h("div", { class: "why" }, h("span", { class: "pill", text: p[1] }), typeTag(ind.type), confMeter(ind.confidence), actionPill(ind.recommended_action)),
-        h("p", null, h("a", { class: "tlink", href: "#threat/" + encodeURIComponent(x.threat.id), text: x.threat.name }), " \u00b7 ", ind.description || "")));
+        h("p", null, h("a", { class: "tlink", href: "#threat/" + encodeURIComponent(x.threat.id), text: stitle(x.threat) }), " \u00b7 ", ind.description || "")));
     });
   }
 
   /* Detail */
-  function sec(title, body, aside) { return h("section", { class: "blk-sec" }, h("h2", null, title, aside ? h("span", { text: aside }) : null), body); }
-  function backLink() { return h("nav", { class: "crumb", "aria-label": "Breadcrumb" }, h("a", { href: "#" }, h("span", { "aria-hidden": "true", text: "<" }), "Live feed"), h("span", { "aria-hidden": "true", text: "/" }), h("span", { text: "Threat" })); }
+  function sec(title, body, aside, id) { return h("section", { class: "blk-sec", id: id || null }, h("h2", id && title ? { id: id + "-h" } : null, title, aside ? h("span", { text: aside }) : null), body); }
+  function backLink() { return h("nav", { class: "crumb", "aria-label": "Breadcrumb" }, h("a", { href: "#threats" }, h("span", { "aria-hidden": "true", text: "\u2190" }), "Threats"), h("span", { "aria-hidden": "true", text: "/" }), h("span", { text: "Threat" })); }
   function targetSection(t) {
     var g = tg(t), ns = h("span", { class: "dim", text: "Not stated in the sources" });
     var rows = [h("div", null, h("dt", { text: "Countries" }), h("dd", null, g.countries.length ? h("ul", { class: "ctry-list" }, g.countries.map(function (c) { return h("li", null, countryTag(c)); })) : ns))];
@@ -667,73 +794,107 @@
     rows.push(h("div", null, h("dt", { text: "Sectors" }), h("dd", null, g.sectors.length ? g.sectors.join(", ") : ns.cloneNode(true))));
     return sec("Affected countries and sectors", h("div", null, h("dl", { class: "tg-dl" }, rows),
       g.note ? h("p", { class: "tg-note", text: g.note }) : null,
-      g.source && t.sources.length > 1 ? srcLine([g.source], "tg-src", "Per ") : null));
+      g.source && t.sources.length > 1 ? srcLine([g.source], "tg-src", "Per ") : null), null, "targets-sec");
   }
   function renderDetail(id) {
     var t = null;
     DATA.threats.forEach(function (x) { if (x.id === id) t = x; });
     var el = clear($("detail"));
-    var wrap = h("article", { class: "det" });
+    var wrap = h("article", { class: "det det-tight" });
     el.appendChild(wrap);
+    CURRENT_ID = t ? t.id : "";
     if (!t) {
       wrap.appendChild(backLink());
-      wrap.appendChild(h("div", { class: "empty-state" }, h("b", null, "Threat not found"), "This threat is no longer in the feed. ", h("a", { href: "#" }, "Back to the live feed")));
+      wrap.appendChild(h("div", { class: "empty-state" }, h("b", null, "Threat not found"), "This threat is no longer in the feed. ", h("a", { href: "#threats" }, "Back to the feed")));
       return;
     }
-    document.title = t.name + " \u2013 AI Rapid Threat Intel";
+    document.title = stitle(t) + " \u2013 " + t.name + " | IOCWatch";
     wrap.appendChild(backLink());
     var newest = DATA.threats[0].entry_date.split(" ")[0];
-    wrap.appendChild(h("header", { class: "det-head" },
+    var huntN = t.hunt_count != null ? t.hunt_count : t.indicator_count - t.block_now_count;
+    var sev = t.block_now_count >= 10 ? "critical" : t.block_now_count >= 1 ? "high" : "medium";
+    wrap.appendChild(h("header", { class: "det-head sev-" + sev, id: "det-head" },
       h("div", { class: "r-cat" }, h("span", { text: t.category }), t.entry_date.split(" ")[0] === newest ? h("span", { class: "new", text: "New today" }) : null),
-      h("h1", { text: t.name }),
+      h("h1", { text: stitle(t) }),
+      h("p", { class: "det-full", text: t.name }),
       h("p", { class: "lede", text: t.headline }),
       h("dl", { class: "facts" },
         [["Published", fmtDay(t.published)], ["Added", fmtAdded(t.entry_date)], ["Last updated", fmtDay(t.last_updated)]]
           .map(function (f) { return h("div", { class: f[2] || null }, h("dt", { text: f[0] }), h("dd", { text: String(f[1]) })); })),
-      h("p", { class: "share-line" }, h("button", { type: "button", class: "link-btn", onclick: function () { copyText(shareUrl(t.id), this, "Copied link"); } }, "Copy link"))));
+      h("p", { class: "todo" },
+        t.block_now_count ? h("span", { class: "blk" }, h("b", { text: String(t.block_now_count) }), " to block now") : h("span", { class: "dim", text: "Nothing to block" }),
+        h("span", { class: "sep", "aria-hidden": "true", text: " \u00b7 " }),
+        huntN ? h("span", { class: "hunt" }, h("b", { text: String(huntN) }), " to hunt") : h("span", { class: "dim", text: "Nothing to hunt" }),
+        t.ioa_count ? [h("span", { class: "sep", "aria-hidden": "true", text: " \u00b7 " }), h("span", { class: "ioa-c" }, h("b", { text: String(t.ioa_count) }), (t.ioa_count === 1 ? " behaviour" : " behaviours") + " to hunt")] : null),
+      h("p", { class: "share-line" }, h("button", { type: "button", class: "link-btn", onclick: function () { copyText(shareUrl(t.id), this, "Copied link"); } }, "Copy link"), h("span", { class: "sep", "aria-hidden": "true", text: "\u00b7" }), h("a", { class: "link-btn", href: "/t/" + encodeURIComponent(t.id) + "/" }, "Printable page"))));
 
+    var navLinks = [];
     var hq = huntSection(t);
-    if (hq) wrap.appendChild(hq);
+    if (hq) { wrap.appendChild(hq); navLinks.push(["hunt-sec", "Hunt"]); }
+    var ioa = ioaSection(t);
+    if (ioa) navLinks.push(["ioa-sec", "Behaviours"]);
+    navLinks.push(["todo-sec", "What to do"]);
+    navLinks.push(["ind-sec", "Indicators"]);
+    navLinks.push(["downloads-sec", "Downloads"]);
+    if (t.sources && t.sources.length) navLinks.push(["sources-sec", "Sources"]);
+    if (LAYOUT === "b") {
+      var snav = h("nav", { class: "sec-nav", "aria-label": "On this page" }, navLinks.map(function (x, i) {
+        return h("a", { href: "#" + x[0], "data-sec": x[0], class: i === 0 ? "is-on" : null, text: x[1] });
+      }));
+      wrap.insertBefore(snav, hq || wrap.lastChild);
+      // Keep the hash route as #threat/<id>; section links scroll without replacing it.
+      snav.addEventListener("click", function (e) {
+        var a = e.target.closest && e.target.closest("a[data-sec]");
+        if (!a) return;
+        e.preventDefault();
+        var target = document.getElementById(a.getAttribute("data-sec"));
+        if (target) target.scrollIntoView({ block: "start" });
+        Array.prototype.forEach.call(snav.querySelectorAll("a"), function (l) { l.classList.toggle("is-on", l === a); });
+      });
+    }
 
     var main = h("div", { class: "det-main" });
     if (t.caveat) main.appendChild(h("div", { class: "warn", role: "note" }, h("b", null, "Note"), " ", highlightIocs(t.caveat)));
-    var hunt = t.hunt_count != null ? t.hunt_count : t.indicator_count - t.block_now_count;
-    var todo = h("p", { class: "todo" },
-      t.block_now_count ? h("span", { class: "blk" }, h("b", { text: String(t.block_now_count) }), " to block now") : h("span", { class: "dim", text: "Nothing to block" }),
-      h("span", { class: "sep", "aria-hidden": "true", text: " \u00b7 " }),
-      hunt ? h("span", { class: "hunt" }, h("b", { text: String(hunt) }), " to hunt") : h("span", { class: "dim", text: "Nothing to hunt" }),
-      h("span", { class: "sep", "aria-hidden": "true", text: " \u00b7 " }),
-      t.ioa_count ? [h("span", { class: "ioa-c" }, h("b", { text: String(t.ioa_count) }), (t.ioa_count === 1 ? " behaviour" : " behaviours") + " to hunt"), h("span", { class: "sep", "aria-hidden": "true", text: " \u00b7 " })] : null,
-      h("button", { type: "button", class: "link-btn", onclick: function () { $("ind-h").scrollIntoView({ block: "start" }); } }, "See " + plural(t.indicator_count, "indicator")));
-    main.appendChild(sec("What to do", h("div", null, todo,
-      t.recommended_actions.length ? h("ol", { class: "steps" }, t.recommended_actions.map(function (a) { return h("li", null, h("span", null, highlightIocs(a))); })) : null)));
-    var ioa = ioaSection(t);
+    main.appendChild(sec("What to do", h("div", null,
+      t.recommended_actions.length ? h("ol", { class: "steps" }, t.recommended_actions.map(function (a) { return h("li", null, h("span", null, highlightIocs(a))); })) : h("p", { class: "dim", text: "No extra steps beyond the block list and hunts." })), null, "todo-sec"));
     if (ioa) main.appendChild(ioa);
     main.appendChild(targetSection(t));
-    main.appendChild(srcLine(t.sources, "srcline det-src"));
-    if (t.summary) main.appendChild(sec("Background", h("div", { class: "prose" }, h("p", null, highlightIocs(t.summary)))));
+    if (t.sources && t.sources.length) {
+      main.appendChild(h("section", { class: "blk-sec", id: "sources-sec" }, srcLine(t.sources, "srcline det-src")));
+    }
+    if (t.summary) main.appendChild(sec("Background", h("div", { class: "prose" }, h("p", null, highlightIocs(t.summary))), null, "background-sec"));
 
     var side = h("aside", { class: "side", "aria-label": "Downloads and MITRE ATT&CK" });
     side.appendChild(sec("Downloads", h("div", null, fileList(t.files),
-      h("p", { class: "rail-p", "aria-hidden": "false" }, extLink(t.repo_url, ["View folder in repository", h("span", { class: "ext-ico", "aria-hidden": "true" })])))));
-    if (t.mitre.length) side.appendChild(sec("MITRE ATT&CK", h("ul", { class: "mitre" }, t.mitre.map(function (m) { return h("li", null, extLink(m.url, [h("b", { text: m.id }), h("span", { text: m.name })])); })), String(t.mitre.length)));
+      h("p", { class: "rail-p", "aria-hidden": "false" }, extLink(t.repo_url, ["View folder in repository", h("span", { class: "ext-ico", "aria-hidden": "true" })]))), null, "downloads-sec"));
+    if (t.mitre.length) side.appendChild(sec("MITRE ATT&CK", h("ul", { class: "mitre" }, t.mitre.map(function (m) { return h("li", null, extLink(m.url, [h("b", { text: m.id }), h("span", { text: m.name })])); })), String(t.mitre.length), "mitre-sec"));
 
     wrap.appendChild(h("div", { class: "det-grid" }, main, side));
 
     var tq = h("input", { type: "search", placeholder: "Filter by value or description", spellcheck: "false", "aria-label": "Filter indicators" });
     var ts = h("select", { "aria-label": "Indicator type" }, h("option", { value: "" }, "All types"),
       typesOf(t).map(function (k) { return h("option", { value: k }, typeLabel(k) + " (" + t.indicator_counts[k] + ")"); }));
-    if ($("f-type").value && t.indicator_counts[$("f-type").value]) ts.value = $("f-type").value;
+    if ($("f-type") && $("f-type").value && t.indicator_counts[$("f-type").value]) ts.value = $("f-type").value;
     var body = h("tbody");
     var multi = t.sources.length > 1;
     var countEl = h("span");
+    var shownAll = false;
+    var LIMIT = 10;
+    var moreBtn = h("button", { type: "button", class: "link-btn ind-more" });
+    moreBtn.addEventListener("click", function () { shownAll = !shownAll; fill(); });
     function fill() {
       clear(body);
-      var q = refang(tq.value).toLowerCase(), ty = ts.value, n = 0;
+      var qv = refang(tq.value).toLowerCase(), ty = ts.value;
+      var rows = [];
       t.indicators.forEach(function (ind) {
         if (ty && ind.type !== ty) return;
-        if (q && (ind.value + " " + ind.description).toLowerCase().indexOf(q) === -1) return;
-        n++;
+        if (qv && (ind.value + " " + ind.description).toLowerCase().indexOf(qv) === -1) return;
+        rows.push(ind);
+      });
+      rows.sort(function (a, b) { return actionRank(a.recommended_action) - actionRank(b.recommended_action); });
+      var n = rows.length;
+      var show = (shownAll || n <= LIMIT) ? n : LIMIT;
+      rows.slice(0, show).forEach(function (ind) {
         body.appendChild(h("tr", null,
           h("td", { class: "ind" }, iocCell(ind)),
           h("td", null, typeTag(ind.type)),
@@ -741,56 +902,232 @@
           h("td", null, actionPill(ind.recommended_action)),
           h("td", { class: "desc" }, ind.description || "", ind.sources && ind.sources.length ? h("div", { class: "src" }, ind.sources.map(function (s, i) { return [i ? " \u00b7 " : null, extLink(s.url, s.name)]; })) : (multi && ind.source_url ? h("div", { class: "src" }, extLink(ind.source_url, ind.source_name || ind.source_label || ind.source_url)) : null))));
       });
-      countEl.textContent = n === t.indicators.length ? plural(n, "indicator") : n + " of " + t.indicators.length;
+      countEl.textContent = n === t.indicators.length ? String(n) : n + " of " + t.indicators.length;
       if (!n) body.appendChild(h("tr", null, h("td", { colspan: "5", class: "none" }, "No indicators match this filter.")));
+      moreBtn.hidden = n <= LIMIT;
+      moreBtn.textContent = shownAll ? "Show fewer" : "Show all " + n + " indicators";
     }
     tq.addEventListener("input", fill);
     ts.addEventListener("change", fill);
     fill();
-    wrap.appendChild(h("section", { class: "ind-sec", "aria-labelledby": "ind-h" },
-      h("div", { class: "ind-head" }, h("h2", { id: "ind-h" }, h("span", { class: "idx", text: "IOC" }), "Indicators ", countEl)),
+    wrap.appendChild(h("section", { class: "ind-sec", id: "ind-sec", "aria-labelledby": "ind-h" },
+      h("div", { class: "ind-head" }, h("h2", { id: "ind-h" }, h("span", { class: "idx", text: "IOC" }), "Indicators ", h("span", { class: "dim" }, countEl))),
       h("p", { class: "ind-note" }, "Indicators are shown defanged and never as links. Copy gives the real value."),
       h("div", { class: "ind-tools" }, tq, ts),
       h("div", { class: "tbl-wrap" }, h("table", null,
-        h("thead", null, h("tr", null, ["Indicator", "Type", "Confidence", "Action", multi ? "Description and source" : "Description"].map(function (x) { return h("th", { scope: "col", text: x }); }))), body))));
+        h("thead", null, h("tr", null, ["Indicator", "Type", "Confidence", "Action", multi ? "Description and source" : "Description"].map(function (x) { return h("th", { scope: "col", text: x }); }))), body)),
+      moreBtn));
+    if (LAYOUT === "a") renderFeed(true);
+  }
+
+  var LAYOUT = document.body.getAttribute("data-layout") || "";
+  var CURRENT_ID = "";
+  var VIEW = "threats";
+
+  function actionRank(a) {
+    return a === "block" ? 0 : a === "alert" ? 1 : 2;
+  }
+  function uniqueSources() {
+    var map = {};
+    DATA.threats.forEach(function (t) {
+      (t.sources || []).forEach(function (s) {
+        var name = srcName(s);
+        if (!map[name]) map[name] = { name: name, url: s.url, threats: [], count: 0 };
+        if (map[name].threats.indexOf(t) === -1) { map[name].threats.push(t); map[name].count++; }
+        if (!map[name].url && s.url) map[name].url = s.url;
+      });
+    });
+    return Object.keys(map).map(function (k) { return map[k]; })
+      .sort(function (a, b) { return b.count - a.count || a.name.localeCompare(b.name); });
+  }
+  function fillNavCounts() {
+    if ($("nav-threats-n")) $("nav-threats-n").textContent = String(DATA.threat_count);
+    if ($("nav-block-n")) $("nav-block-n").textContent = String(DATA.block_now_count);
+    var hunts = DATA.threats.filter(function (t) { return (t.queries || []).some(function (q) { return q && q.url; }); }).length;
+    if ($("nav-hunts-n")) $("nav-hunts-n").textContent = String(hunts);
+    if ($("nav-sources-n")) $("nav-sources-n").textContent = String(uniqueSources().length);
+  }
+  function closeNav() {
+    document.body.classList.remove("nav-open");
+    var t = $("nav-toggle"), b = $("nav-backdrop");
+    if (t) t.setAttribute("aria-expanded", "false");
+    if (b) b.hidden = true;
+  }
+  function setNav(view) {
+    Array.prototype.forEach.call(document.querySelectorAll("#app-nav a[data-view]"), function (a) {
+      if (a.getAttribute("data-view") === view) a.setAttribute("aria-current", "page");
+      else a.removeAttribute("aria-current");
+    });
+  }
+  function showView(view) {
+    VIEW = view;
+    closeNav();
+    setNav(view === "threat" ? "threats" : view);
+    var pages = { home: $("home"), threats: $("view-threats"), threat: $("detail"), block: $("view-block"), hunts: $("view-hunts"), sources: $("view-sources"), about: $("view-about") };
+    Object.keys(pages).forEach(function (k) { if (pages[k]) pages[k].hidden = k !== view; });
+    document.body.setAttribute("data-view", view);
+    if (view !== "threat") CURRENT_ID = "";
+    if (view === "threats" && DATA) renderFeed(true);
+  }
+  function renderBlock() {
+    var el = $("view-block");
+    if (!el || !DATA) return;
+    var items = [];
+    DATA.threats.forEach(function (t) {
+      t.indicators.forEach(function (ind) {
+        if (ind.recommended_action === "block") items.push({ ind: ind, threat: t });
+      });
+    });
+    var q = h("input", { type: "search", id: "block-q", placeholder: "Filter by value or description", spellcheck: "false", "aria-label": "Filter block list" });
+    var ts = h("select", { id: "block-type", "aria-label": "Indicator type" }, h("option", { value: "" }, "All types"));
+    var types = {};
+    items.forEach(function (x) { types[x.ind.type] = (types[x.ind.type] || 0) + 1; });
+    Object.keys(types).sort(function (a, b) { return types[b] - types[a] || a.localeCompare(b); })
+      .forEach(function (t) { ts.appendChild(h("option", { value: t }, typeLabel(t) + " (" + types[t] + ")")); });
+    var body = h("tbody");
+    var countEl = h("span");
+    function fill() {
+      clear(body);
+      var needle = refang(q.value).toLowerCase(), ty = ts.value, n = 0;
+      items.forEach(function (x) {
+        var ind = x.ind;
+        if (ty && ind.type !== ty) return;
+        if (needle && (ind.value + " " + (ind.description || "")).toLowerCase().indexOf(needle) === -1) return;
+        n++;
+        body.appendChild(h("tr", null,
+          h("td", { class: "ind" }, iocCell(ind)),
+          h("td", null, typeTag(ind.type)),
+          h("td", null, confMeter(ind.confidence)),
+          h("td", null, h("a", { class: "tlink", href: "#threat/" + encodeURIComponent(x.threat.id), text: stitle(x.threat), title: x.threat.name })),
+          h("td", { class: "desc" }, ind.description || "")));
+      });
+      countEl.textContent = n === items.length ? plural(n, "indicator") : n + " of " + items.length;
+      if (!n) body.appendChild(h("tr", null, h("td", { colspan: "5", class: "none" }, "No indicators match this filter.")));
+    }
+    q.addEventListener("input", fill);
+    ts.addEventListener("change", fill);
+    fill();
+    clear(el);
+    add(el, [
+      h("div", { class: "catalog-head" }, h("h1", null, "Block list"), countEl),
+      h("p", { class: "catalog-meta" }, "High-confidence indicators to block now, across every threat. Values are shown defanged. Copy gives the real value."),
+      h("section", { class: "blk-files", "aria-labelledby": "all-h" }, h("h2", { id: "all-h", class: "sub-h", text: "Download" }), fileList(DATA.combined_files)),
+      h("div", { class: "catalog-tools" }, q, ts),
+      h("div", { class: "tbl-wrap" }, h("table", null,
+        h("thead", null, h("tr", null, ["Indicator", "Type", "Confidence", "Threat", "Description"].map(function (x) { return h("th", { scope: "col", text: x }); }))),
+        body))
+    ]);
+  }
+  function renderHunts() {
+    var el = $("view-hunts");
+    if (!el || !DATA) return;
+    var list = DATA.threats.filter(function (t) { return (t.queries || []).some(function (q) { return q && q.url; }); });
+    clear(el);
+    add(el, [
+      h("div", { class: "catalog-head" }, h("h1", null, "Hunts"), h("span", { text: plural(list.length, "threat") })),
+      h("p", { class: "catalog-meta" }, "The same hunt for Defender XDR, Splunk and Google SecOps, ready to copy or download. Open a threat to run it."),
+      h("ol", { class: "catalog" }, list.map(function (t) {
+        var platforms = (t.queries || []).map(function (q) { return q.platform; }).filter(Boolean);
+        var hunt = t.hunt_count != null ? t.hunt_count : Math.max(0, t.indicator_count - t.block_now_count);
+        return h("li", { class: "catalog-item" },
+          h("a", { class: "tlink", href: "#threat/" + encodeURIComponent(t.id), text: stitle(t), title: t.name }),
+          h("p", { class: "catalog-meta" },
+            t.category, " · ", fmtDay(t.entry_date),
+            hunt ? " · " + plural(hunt, "indicator") + " to hunt" : "",
+            t.ioa_count ? " · " + plural(t.ioa_count, "behaviour") : "",
+            platforms.length ? " · " + platforms.join(" · ") : ""));
+      }))
+    ]);
+  }
+  function renderSources() {
+    var el = $("view-sources");
+    if (!el || !DATA) return;
+    var list = uniqueSources();
+    clear(el);
+    add(el, [
+      h("div", { class: "catalog-head" }, h("h1", null, "Sources"), h("span", { class: "src-count", text: plural(list.length, "source") })),
+      h("p", { class: "catalog-meta" }, "Every cited source in this feed, with the threats it supports."),
+      h("ol", { class: "catalog" }, list.map(function (s) {
+        return h("li", { class: "catalog-item" },
+          s.url ? extLink(s.url, s.name, "tlink") : h("b", { text: s.name }),
+          h("p", { class: "catalog-meta" },
+            plural(s.count, "threat"), " · ",
+            s.threats.slice(0, 4).map(function (t, i) {
+              return [i ? ", " : null, h("a", { class: "tlink", href: "#threat/" + encodeURIComponent(t.id), text: stitle(t) })];
+            }),
+            s.threats.length > 4 ? " +" + (s.threats.length - 4) + " more" : null));
+      }))
+    ]);
   }
 
   /* Routing: #threat/<id> opens a threat, #search/<value> runs a search, anything else shows the feed. */
   function route() {
     var hash = location.hash.replace(/^#/, "");
-    var home = $("home"), detail = $("detail");
     if (hash.indexOf("threat/") === 0) {
-      home.hidden = true; detail.hidden = false;
+      showView("threat");
       renderDetail(decodeURIComponent(hash.slice(7)));
       window.scrollTo(0, 0);
       return;
     }
-    document.title = "AI Rapid Threat Intel \u2013 AI threat intel, IOCs and hunting queries";
-    detail.hidden = true; home.hidden = false;
-    var pm = /^page=(\d+)$/.exec(hash), want = pm ? Math.max(1, parseInt(pm[1], 10)) : 1;
-    if (DATA && want !== PAGE) {
-      PAGE = want; renderFeed(true);
-      /* after the browser restores its own scroll on back/forward */
-      setTimeout(function () { $("feed-h").scrollIntoView({ block: "start" }); }, 0);
-    }
+    document.title = "IOCWatch – AI threat intelligence, live";
     if (hash.indexOf("search/") === 0) {
+      showView("home");
       var q = decodeURIComponent(hash.slice(7));
-      $("q").value = q;
+      if ($("q")) $("q").value = q;
       runSearch(q);
-      $("search-h").scrollIntoView();
+      if ($("search-form")) $("search-form").scrollIntoView({ block: "center" });
+      return;
     }
+    var top = hash.split("/")[0].split("=")[0];
+    var homeSecs = { check: "search-form", "search-h": "search-form", features: "get-h", live: "live-h" };
+    if (homeSecs[top]) {
+      showView("home");
+      setTimeout(function () { var el = $(homeSecs[top]); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" }); }, 0);
+      return;
+    }
+    var viewMap = { block: "block", hunts: "hunts", sources: "sources", about: "about", threats: "threats", "feed-sec": "threats", "feed-h": "threats", "all-h": "block" };
+    if (top === "page") {
+      var pm = /^page=(\d+)$/.exec(hash), want = pm ? Math.max(1, parseInt(pm[1], 10)) : 1;
+      showView("threats");
+      if (DATA && want !== PAGE) { PAGE = want; renderFeed(true); }
+      window.scrollTo(0, 0);
+      return;
+    }
+    if (viewMap[top]) {
+      var v = viewMap[top];
+      showView(v);
+      if (v === "block") renderBlock();
+      if (v === "hunts") renderHunts();
+      if (v === "sources") renderSources();
+      window.scrollTo(0, 0);
+      return;
+    }
+    showView("home");
   }
-
   function init(data) {
     DATA = data;
     DATA.threats.forEach(function (t) { t.indicators.forEach(function (ind) { ALL_IND.push({ ind: ind, threat: t }); }); });
     if (window.matchMedia && window.matchMedia("(max-width: 720px)").matches) {
-      Array.prototype.forEach.call(document.querySelectorAll("details.rail-box"), function (x) { x.open = false; });
+      Array.prototype.forEach.call(document.querySelectorAll("details.rail-box, details.filt-box"), function (x) { x.open = false; });
     }
     renderStats();
     fillFilters();
+    fillNavCounts();
     renderFeed();
     renderAllFiles();
+    if ($("q-list")) $("q-list").addEventListener("input", function () { renderFeed(); });
+    if ($("list-search")) $("list-search").addEventListener("submit", function (e) { e.preventDefault(); renderFeed(); });
+    var tog = $("nav-toggle"), back = $("nav-backdrop");
+    if (tog) tog.addEventListener("click", function () {
+      var open = !document.body.classList.contains("nav-open");
+      document.body.classList.toggle("nav-open", open);
+      tog.setAttribute("aria-expanded", open ? "true" : "false");
+      if (back) back.hidden = !open;
+    });
+    if (back) back.addEventListener("click", closeNav);
+    var onScroll = function () { document.body.classList.toggle("is-scrolled", window.scrollY > 8); };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
     $("search-form").addEventListener("submit", function (e) {
       e.preventDefault();
       var q = $("q").value;
@@ -803,9 +1140,9 @@
     document.addEventListener("keydown", function (e) {
       var tag = (e.target.tagName || "").toLowerCase();
       if (e.key === "/" && tag !== "input" && tag !== "select" && tag !== "textarea" && !e.metaKey && !e.ctrlKey) {
-        if ($("home").hidden) location.hash = "";
+        if ($("home") && $("home").hidden) { history.pushState(null, "", location.pathname + location.search); route(); window.scrollTo(0, 0); }
         e.preventDefault();
-        $("q").focus();
+        if ($("q")) $("q").focus();
       }
     });
     // The logo goes home without a page reload; modified clicks still open a new tab as normal.
@@ -814,6 +1151,7 @@
       if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       e.preventDefault();
       if (location.hash) { history.pushState(null, "", location.pathname + location.search); route(); }
+      else { showView("home"); }
       window.scrollTo(0, 0);
       mark.blur();
     });
@@ -841,7 +1179,7 @@
     var cc = String(code || "").toLowerCase();
     var ok = /^[a-z]{2}$/.test(cc);
     var img = h("img", { class: "visits-flag", src: ok ? "img/flags/" + cc + ".svg" : "img/flags/globe.svg",
-      width: "20", height: "15", alt: name, title: name, loading: "lazy", decoding: "async" });
+      width: "20", height: "15", alt: name, title: name, decoding: "async" });
     img.addEventListener("error", function onErr() {
       img.removeEventListener("error", onErr);
       img.src = "img/flags/globe.svg";
@@ -930,15 +1268,22 @@
   }
   function renderOnline(n) {
     var cell = $("visits-online");
-    if (!cell) return;
+    var nav = $("nav-online"), navN = $("nav-online-n");
+    function setNav(txt, hide) {
+      if (!nav) return;
+      if (navN) navN.textContent = txt;
+      nav.hidden = !!hide;
+    }
     if (n == null) {
-      if (++onlineFails >= 2) cell.hidden = true; else { $("visits-online-n").textContent = "–"; cell.classList.add("is-off"); }
+      if (++onlineFails >= 2) { if (cell) cell.hidden = true; setNav("–", true); }
+      else { if ($("visits-online-n")) $("visits-online-n").textContent = "–"; if (cell) cell.classList.add("is-off"); setNav("–", true); }
       return;
     }
     onlineFails = 0;
-    $("visits-online-n").textContent = fmtVisitors(Math.max(1, n));
-    cell.classList.remove("is-off");
-    cell.hidden = false;
+    var txt = fmtVisitors(Math.max(1, n));
+    if ($("visits-online-n")) $("visits-online-n").textContent = txt;
+    if (cell) { cell.classList.remove("is-off"); cell.hidden = false; }
+    setNav(txt, false);
   }
   function onlinePing() {
     var url = onlineURL();
@@ -985,11 +1330,23 @@
   loadChecked();
   setInterval(function () { if (!document.hidden) loadChecked(); }, 120000);
 
+  setInterval(function () { if (!document.hidden) tickAgo(); }, 30000);
+  // New entries arrive with a rebuild: re-read feed.json every 3 minutes while the tab is visible.
+  setInterval(function () {
+    if (document.hidden || !DATA) return;
+    fetch("feed.json", { cache: "no-cache" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+      if (!d || d.last_updated === DATA.last_updated && d.threat_count === DATA.threat_count) return;
+      DATA = d; ALL_IND = [];
+      DATA.threats.forEach(function (t) { t.indicators.forEach(function (ind) { ALL_IND.push({ ind: ind, threat: t }); }); });
+      renderStats(); fillNavCounts(); if (VIEW === "threats") renderFeed(true);
+    }, function () {});
+  }, 180000);
   fetch("feed.json", { cache: "no-cache" })
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(init)
     .catch(function () {
-      $("pulse-t").textContent = "Feed unavailable";
+      if ($("pulse-t")) $("pulse-t").textContent = "Feed unavailable";
+      if ($("live-list")) clear($("live-list")).appendChild(h("li", { class: "empty-state" }, "The feed could not be loaded. Try again shortly."));
       clear($("feed")).appendChild(h("li", { class: "empty-state" }, h("b", null, "The feed could not be loaded"), "Try again shortly, or use the files in the repository."));
     });
 })();

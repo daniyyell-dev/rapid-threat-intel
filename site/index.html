@@ -1,215 +1,214 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-GB" data-palette="a">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; style-src 'self'; font-src 'self'; img-src 'self' data: https://daniyyell.goatcounter.com; connect-src 'self' https://raw.githubusercontent.com https://daniyyell.goatcounter.com https://rti-visitors.daniyyell90.workers.dev; object-src 'none'; base-uri 'self'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#08080a">
-<meta name="description" content="AI threat intel for defenders: a live feed of verified, deduplicated indicators of compromise with block lists, Defender XDR import files and KQL, Splunk and YARA-L hunting queries.">
-<meta name="keywords" content="AI threat intel, threat intelligence, CTI, IOC feed, indicators of compromise, threat hunting, KQL, Splunk, YARA-L, Defender XDR">
+<meta name="theme-color" content="#060b16">
+<meta name="description" content="IOCWatch is AI threat intelligence, live: verified indicators of compromise, block lists and ready-to-run hunts for Defender XDR (KQL), Splunk and Google SecOps (YARA-L).">
+<meta name="keywords" content="IOCWatch, AI threat intelligence, threat intel, CTI, IOC feed, indicators of compromise, block list, threat hunting, KQL, Splunk, YARA-L, Defender XDR">
+<link rel="canonical" href="https://iocwatch.com/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="AI Rapid Threat Intel">
-<meta property="og:title" content="AI Rapid Threat Intel – AI threat intel, IOCs and hunting queries">
-<meta property="og:description" content="AI threat intel for defenders: a live feed of verified, deduplicated indicators of compromise with block lists, Defender XDR import files and KQL, Splunk and YARA-L hunting queries.">
+<meta property="og:site_name" content="IOCWatch">
+<meta property="og:title" content="IOCWatch – AI threat intelligence, live">
+<meta property="og:description" content="IOCWatch is AI threat intelligence, live: verified indicators of compromise, block lists and ready-to-run hunts for Defender XDR (KQL), Splunk and Google SecOps (YARA-L).">
 <meta property="og:url" content="https://iocwatch.com/">
-<meta property="og:image" content="https://iocwatch.com/img/og-card.png?v=3">
-<meta property="og:image:secure_url" content="https://iocwatch.com/img/og-card.png?v=3">
+<meta property="og:image" content="https://iocwatch.com/img/og-card.png?v=5">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="AI Rapid Threat Intel, AI threat intel: a red threat burst over a dotted world map, with the line From defenders, for defenders.">
+<meta property="og:image:alt" content="IOCWatch, AI threat intelligence, live">
 <meta property="og:locale" content="en_GB">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="AI Rapid Threat Intel – AI threat intel, IOCs and hunting queries">
-<meta name="twitter:description" content="AI threat intel for defenders: a live feed of verified, deduplicated indicators of compromise with block lists, Defender XDR import files and KQL, Splunk and YARA-L hunting queries.">
-<meta name="twitter:image" content="https://iocwatch.com/img/og-card.png?v=3">
-<meta name="twitter:image:alt" content="AI Rapid Threat Intel, AI threat intel: a red threat burst over a dotted world map, with the line From defenders, for defenders.">
-<title>AI Rapid Threat Intel – AI threat intel, IOCs and hunting queries</title>
-<link rel="icon" href="img/icons/favicon.ico" sizes="16x16 32x32 48x48">
-<link rel="icon" href="img/icons/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="img/icons/favicon-32.png" type="image/png" sizes="32x32">
-<link rel="apple-touch-icon" href="img/icons/apple-touch-icon.png" sizes="180x180">
-<link rel="manifest" href="img/icons/site.webmanifest">
-<link rel="preload" href="img/logo-wordmark.webp" as="image" type="image/webp">
-<link rel="preload" href="fonts/roboto-700-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="style.css?v=8a002bf5">
+<meta name="twitter:title" content="IOCWatch – AI threat intelligence, live">
+<meta name="twitter:description" content="IOCWatch is AI threat intelligence, live: verified indicators of compromise, block lists and ready-to-run hunts for Defender XDR (KQL), Splunk and Google SecOps (YARA-L).">
+<meta name="twitter:image" content="https://iocwatch.com/img/og-card.png?v=5">
+<title>IOCWatch – AI threat intelligence, live</title>
+<link rel="icon" href="/img/icons/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="/img/icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/img/icons/apple-touch-icon.png" sizes="180x180">
+<link rel="manifest" href="/img/icons/site.webmanifest">
+<link rel="preload" href="/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/InterDisplay-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/feed.json" as="fetch" crossorigin>
+<link rel="stylesheet" href="/style.css?v=136140d0">
 </head>
-<body>
+<body data-layout="d">
 <a class="skip" href="#main">Skip to content</a>
-
-<header class="bar">
-  <div class="bar-in">
-    <a href="./" class="mark" aria-label="AI Rapid Threat Intel, live feed home">
-      <img class="mark-i" src="img/logo-mark.webp" width="48" height="48" alt="">
-      <img class="mark-w" src="img/logo-wordmark.webp" width="557" height="56" alt="AI Rapid Threat Intel">
+<header class="top">
+  <div class="top-in">
+    <a href="/" class="mark" aria-label="IOCWatch home">
+      <svg class="mark-i" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true"><rect class="mk-bg" x="1" y="1" width="30" height="30" rx="9"/><circle class="mk-ring" cx="16" cy="16" r="9" stroke-width="2"/><circle class="mk-core" cx="16" cy="16" r="3.6"/><path class="mk-tick" d="M16 4v4M16 24v4M4 16h4M24 16h4" stroke-width="2" stroke-linecap="round"/></svg>
+      <span class="mark-w">IOC<b>Watch</b></span>
     </a>
-    <span class="live"><span class="dot" aria-hidden="true"></span><span class="live-t">Live feed</span></span>
-    <p class="pulse" id="pulse" aria-live="polite"><span class="pulse-in"><span id="pulse-t">Loading feed</span><span class="pulse-ck" id="pulse-ck" hidden></span></span></p>
-    <nav class="bar-nav" aria-label="Project">
-      <a href="https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md">Docs</a>
-      <a href="https://github.com/daniyyell-dev/rapid-threat-intel">Repository</a>
-      <a href="feed.json" class="mono" data-dl="feed.json">feed.json</a>
+    <nav class="app-nav" id="app-nav" aria-label="Main">
+      <a href="#threats" data-view="threats">Threats</a>
+      <a href="#block" data-view="block">Block list</a>
+      <a href="#hunts" data-view="hunts">Hunts</a>
+      <a href="#sources" data-view="sources">Sources</a>
+      <a href="#about" data-view="about">About</a>
     </nav>
+    <div class="top-end">
+      <span class="nav-live" id="nav-online" hidden title="Visitors on the site right now"><span class="live-dot" aria-hidden="true"></span><span id="nav-online-n">–</span><span class="nav-live-l">online</span></span>
+      <a class="gh" href="https://github.com/daniyyell-dev/rapid-threat-intel" aria-label="Repository on GitHub"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg></a>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="app-nav"><span class="sr">Menu</span><span class="nav-toggle-bars" aria-hidden="true"></span></button>
+    </div>
   </div>
 </header>
-
+<div class="nav-backdrop" id="nav-backdrop" hidden></div>
 <main id="main">
-  <noscript><p class="notice">This dashboard needs JavaScript. The same data is in the <a href="https://github.com/daniyyell-dev/rapid-threat-intel">repository</a>.</p></noscript>
-
+  <noscript><p class="notice">This dashboard needs JavaScript. The same data is in the repository and in feed.json.</p></noscript>
   <div id="home">
-    <section class="brief" aria-labelledby="title">
-      <div class="brief-l">
-        <p class="meta"><span class="tlp" title="Traffic Light Protocol: may be shared freely">TLP:CLEAR</span><span class="ai-tag">AI threat intel</span></p>
-        <h1 id="title" class="tagline"><span>Agentic AI collects it</span> <span>Analysts verify it</span> <span>Community acts on&nbsp;it.</span></h1>
-        <p class="tagline-sub">From defenders, for defenders.</p>
-        <aside class="caution" aria-labelledby="caution-h">
-          <p class="caution-h" id="caution-h"><svg class="caution-ico" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="currentColor" d="M10.3 3.2a2 2 0 0 1 3.4 0l8.6 14.9A2 2 0 0 1 20.6 21H3.4a2 2 0 0 1-1.7-2.9Z"/><path fill="#1d0b0c" d="M12 8.2a1.1 1.1 0 0 1 1.1 1.1v4.6a1.1 1.1 0 0 1-2.2 0V9.3A1.1 1.1 0 0 1 12 8.2Zm0 10.1a1.35 1.35 0 1 1 0-2.7 1.35 1.35 0 0 1 0 2.7Z"/></svg><span class="sr">Danger: </span>Handle every indicator as live and malicious</p>
-          <ul class="caution-l">
-            <li>Never visit, open, download or resolve them from a work or personal device.</li>
-            <li>Analyse them only in an isolated sandbox, hosted like <a href="https://any.run/">ANY.RUN</a> or self-hosted like <a href="https://github.com/opensandbox-group/OpenSandbox">OpenSandbox</a>.</li>
-            <li>Follow your organisation&rsquo;s security policies. For defensive use only.</li>
-          </ul>
-          <details class="caution-more">
-            <summary>Read full notice</summary>
-            <p>These indicators are provided for defensive use only, and the maintainers accept no responsibility for any damage, data loss or policy breach caused by their misuse or careless handling.</p>
-          </details>
-        </aside>
-      </div>
-      <div class="brief-r">
-      <figure class="banner">
-        <img src="img/banner.webp" width="400" height="352" alt="" decoding="async">
-        <figcaption class="banner-cap">Move fast with threat intel from different sources</figcaption>
-      </figure>
+    <section class="hero" aria-labelledby="hero-h">
+      <div class="hero-bg" aria-hidden="true"><div class="hero-grid"></div><div class="hero-glow"></div></div>
+      <div class="hero-in">
+        <a class="eyebrow" href="#threats" id="eyebrow"><span class="live-dot" aria-hidden="true"></span><span id="eyebrow-t">AI-powered threat intel</span><span class="eyebrow-go" aria-hidden="true">&rarr;</span></a>
+        <h1 id="hero-h">AI threat intelligence,<br><span class="hot">live.</span></h1>
+        <p class="hero-sub">Verified indicators, block lists and ready-to-run hunts, published as new threats break. Researched with AI, checked by an analyst.</p>
+        <form id="search-form" class="search" role="search" autocomplete="off">
+          <label for="q" class="sr">Check an indicator</label>
+          <svg class="search-ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input id="q" type="search" spellcheck="false" placeholder="IP, domain, URL or hash" aria-describedby="q-hint">
+          <kbd class="q-kbd" aria-hidden="true">/</kbd>
+          <button type="submit">Check</button>
+        </form>
+        <p class="q-hint" id="q-hint">Treat every indicator as live and malicious. Defensive use only. <a href="#about">Safety notice</a></p>
+        <div id="search-results" aria-live="polite"></div>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#threats">Browse threats</a>
+          <a class="btn btn-ghost" href="#block">Get the blocklist</a>
+        </div>
+        <p class="stat-line" id="stats" aria-live="polite">&nbsp;</p>
       </div>
     </section>
 
-    <div class="strip">
-      <dl class="ledger" id="stats" aria-live="polite">
-        <div class="cell sk"><dt>Threats</dt><dd>&nbsp;</dd></div>
-        <div class="cell sk"><dt>Indicators</dt><dd>&nbsp;</dd></div>
-        <div class="cell sk"><dt>Block now</dt><dd>&nbsp;</dd></div>
-        <div class="cell sk"><dt>Last updated</dt><dd>&nbsp;</dd></div>
-      </dl>
-    </div>
-
-    <section class="check" aria-labelledby="search-h">
-      <div class="sec-h"><h2 id="search-h"><span class="idx">01</span>Check an indicator</h2><p class="hint">Defanged input is fine. Press <kbd>/</kbd> to focus.</p></div>
-      <form id="search-form" class="search" role="search" autocomplete="off">
-        <label for="q" class="sr">IP address, domain, URL or hash</label>
-        <span class="prompt" aria-hidden="true">&gt;_</span>
-        <input id="q" type="search" spellcheck="false" autocapitalize="off" autocorrect="off">
-        <button type="submit">Check</button>
-      </form>
-      <div id="search-results" aria-live="polite"></div>
+    <section class="live wrap" aria-labelledby="live-h">
+      <div class="live-card">
+        <div class="live-head">
+          <h2 id="live-h"><span class="live-dot" aria-hidden="true"></span>Live activity</h2>
+          <p class="live-meta"><span id="pulse-t"></span><span id="pulse-ck" hidden></span></p>
+        </div>
+        <ol class="live-list" id="live-list"><li class="live-sk"></li><li class="live-sk"></li><li class="live-sk"></li><li class="live-sk"></li><li class="live-sk"></li></ol>
+      </div>
     </section>
 
-    <div class="console">
-      <aside class="rail" aria-label="Filters and combined files">
-        <details class="rail-box filt" open>
-          <summary class="rail-h"><h2 id="filter-h">Filter</h2><span class="f-on" id="f-on"></span></summary>
-          <div class="filt-in">
-          <label class="field"><span>Category</span><select id="f-cat"><option value="">All categories</option></select></label>
-          <label class="field"><span>Indicator type</span><select id="f-type"><option value="">All types</option></select></label>
-          <label class="field"><span>Country or region</span><select id="f-country"><option value="">All countries</option></select></label>
-          <label class="field"><span>Sector</span><select id="f-sector"><option value="">All sectors</option></select></label>
-          <label class="field"><span>Date added</span><select id="f-date"><option value="">All dates</option></select></label>
-          <button type="button" id="f-reset" class="link-btn">Reset filters</button>
-          </div>
-        </details>
-        <details class="rail-box geo" open>
-          <summary class="rail-h"><h2 id="geo-h">Countries affected</h2></summary>
-          <p class="rail-p">Threats per country, as named in the sources. Select one to filter the feed.</p>
-          <ol id="geo-list" class="geo-list"></ol>
-          <p id="geo-regions" class="geo-regions"></p>
-        </details>
-        <section class="rail-box files" aria-labelledby="all-h">
-          <h2 id="all-h" class="rail-h">Combined files</h2>
-          <p class="rail-p">Every threat in one place. These URLs always serve the latest data, so you can point a firewall, proxy, EDR or SIEM at them.</p>
-          <ul id="all-files" class="dl-list"></ul>
-        </section>
-      </aside>
+    <section class="get wrap" aria-labelledby="get-h">
+      <h2 id="get-h" class="sec-h">What you get</h2>
+      <ul class="get-grid">
+        <li class="get-i"><span class="get-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 3.5 5 6.2v5.3c0 4.1 2.9 7.6 7 8.9 4.1-1.3 7-4.8 7-8.9V6.2Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h3>Block lists</h3><p>High-confidence IPs, domains, URLs and hashes, plus a Defender XDR import file. <a href="#block">Download</a></p></li>
+        <li class="get-i"><span class="get-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><h3>Hunt queries</h3><p>The same hunt for Defender XDR (KQL), Splunk (SPL) and Google SecOps (YARA-L). <a href="#hunts">See hunts</a></p></li>
+        <li class="get-i"><span class="get-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M7 3.5h7l4 4v13H7Z M14 3.5v4h4M10 12h5M10 15.5h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/></svg></span><h3>A page per threat</h3><p>Hunt first, then a short summary, every indicator with its sources, and a shareable link. <a href="#threats">Browse</a></p></li>
+      </ul>
+    </section>
 
-      <section class="feed" aria-labelledby="feed-h">
-        <div class="sec-h"><h2 id="feed-h"><span class="idx">02</span>Live feed</h2><p class="hint" id="feed-count">Newest first</p></div>
-        <div class="feed-cols" aria-hidden="true"><span>Added</span><span>Threat</span><span>Indicators</span></div>
-        <ol id="feed" class="rows">
-          <li class="row skel"></li><li class="row skel"></li><li class="row skel"></li><li class="row skel"></li>
-        </ol>
-        <nav class="pager" id="feed-pager" aria-label="Live feed pages" hidden></nav>
-      </section>
-    </div>
+    <section class="latest wrap" aria-labelledby="latest-h">
+      <div class="sec-row"><h2 id="latest-h" class="sec-h">Latest threats</h2><a class="more" href="#threats">View all <span id="latest-n"></span> &rarr;</a></div>
+      <ol class="tlist" id="latest"></ol>
+    </section>
   </div>
 
-  <div id="detail" hidden></div>
+  <div id="view-threats" class="page-view" hidden>
+    <div class="catalog-head"><h1 id="feed-h">Threats</h1><p class="hint" id="feed-count"></p></div>
+    <p class="catalog-meta">Every threat in the feed, newest first. Open one for its hunt, indicators and downloads.</p>
+    <div class="list-tools">
+      <form id="list-search" class="mini-search" role="search"><label for="q-list" class="sr">Filter threats by name</label><input id="q-list" type="search" placeholder="Filter by name, actor or category" spellcheck="false"></form>
+      <details class="filt-box" id="filt-box">
+        <summary>Filters <span class="f-on" id="f-on"></span></summary>
+        <div class="filt-in">
+          <label class="field">Category<select id="f-cat"><option value="">All categories</option></select></label>
+          <label class="field">Indicator type<select id="f-type"><option value="">All types</option></select></label>
+          <label class="field">Country<select id="f-country"><option value="">All countries</option></select></label>
+          <label class="field">Sector<select id="f-sector"><option value="">All sectors</option></select></label>
+          <label class="field">Date added<select id="f-date"><option value="">Any date</option></select></label>
+          <button type="button" id="f-reset" class="link-btn">Reset</button>
+        </div>
+      </details>
+    </div>
+    <div class="geo-mini" hidden><ol id="geo-list" class="geo-list"></ol><p id="geo-regions" class="geo-regions"></p></div>
+    <ol id="feed" class="tlist"></ol>
+    <nav class="pager" id="feed-pager" aria-label="Threat pages" hidden></nav>
+  </div>
+
+  <div id="detail" class="page-view detail-page" hidden></div>
+  <div id="view-block" class="page-view" hidden></div>
+  <div id="view-hunts" class="page-view" hidden></div>
+  <div id="view-sources" class="page-view" hidden></div>
+  <div id="view-about" class="page-view about-page" hidden>
+    <p class="kicker">About</p>
+    <h1>About IOCWatch</h1>
+    <p class="about-lede">AI-powered threat intelligence, verified by an analyst. Not a full feed: only confirmed, high-impact threats with published indicators, researched and ready to deploy.</p>
+    <aside class="caution" aria-labelledby="about-caution-h">
+      <p class="caution-h" id="about-caution-h"><svg class="caution-ico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" d="M10.3 3.2a2 2 0 0 1 3.4 0l8.6 14.9A2 2 0 0 1 20.6 21H3.4a2 2 0 0 1-1.7-2.9Z"/><path fill="#1d0b0c" d="M12 8.2a1.1 1.1 0 0 1 1.1 1.1v4.6a1.1 1.1 0 0 1-2.2 0V9.3A1.1 1.1 0 0 1 12 8.2Zm0 10.1a1.35 1.35 0 1 1 0-2.7 1.35 1.35 0 0 1 0 2.7Z"/></svg><span class="sr">Danger: </span>Handle every indicator as live and malicious</p>
+      <ul class="caution-l">
+        <li>Never visit, open, download or resolve them from a work or personal device.</li>
+        <li>Analyse them only in an isolated sandbox, hosted like <a href="https://any.run/">ANY.RUN</a> or self-hosted like <a href="https://github.com/opensandbox-group/OpenSandbox">OpenSandbox</a>.</li>
+        <li>Follow your organisation&rsquo;s security policies. For defensive use only.</li>
+      </ul>
+      <details class="caution-more">
+        <summary>Read full notice</summary>
+        <p>These indicators are provided for defensive use only, and the maintainers accept no responsibility for any damage, data loss or policy breach caused by their misuse or careless handling.</p>
+      </details>
+    </aside>
+    <section class="about-copy" aria-labelledby="scope-h">
+      <h2 id="scope-h">Scope</h2>
+      <p>Missed something? <a href="https://github.com/daniyyell-dev/rapid-threat-intel/issues/new/choose">Open an issue</a>.</p>
+    </section>
+    <nav class="about-links" aria-labelledby="links-h">
+      <h2 id="links-h">Project</h2>
+      <ul>
+        <li><a href="https://github.com/daniyyell-dev/rapid-threat-intel">Repository</a></li>
+        <li><a href="https://github.com/daniyyell-dev/rapid-threat-intel/issues/new/choose">Open an issue</a></li>
+        <li><a href="https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md">Dashboard documentation</a></li>
+        <li><a href="feed.json" class="mono" data-dl="feed.json">feed.json</a></li>
+        <li><a href="https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/CONTRIBUTING.md">Contributing guide</a></li>
+        <li><a href="https://buymeacoffee.com/daniyyell" target="_blank" rel="noopener">Buy me a coffee</a></li>
+      </ul>
+    </nav>
+  </div>
 </main>
 
 <footer class="foot">
   <div class="foot-in">
-    <section class="foot-scope" aria-labelledby="scope-h">
-      <h2 class="foot-h" id="scope-h">Scope</h2>
-      <p>Not a full feed: only confirmed, <span class="nw">high-impact</span> threats with published indicators. Missed something? <a href="https://github.com/daniyyell-dev/rapid-threat-intel/issues/new/choose">Open an issue</a>.</p>
-    </section>
-    <nav class="foot-links" aria-labelledby="links-h">
-      <h2 class="foot-h" id="links-h">Project</h2>
-      <ul>
-        <li><a href="https://github.com/daniyyell-dev/rapid-threat-intel"><svg class="ico" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><g fill="currentColor"><path d="M6.766 11.328c-2.063-.25-3.516-1.734-3.516-3.656 0-.781.281-1.625.75-2.188-.203-.515-.172-1.609.063-2.062.625-.078 1.468.25 1.968.703.594-.187 1.219-.281 1.985-.281.765 0 1.39.094 1.953.265.484-.437 1.344-.765 1.969-.687.218.422.25 1.515.046 2.047.5.593.766 1.39.766 2.203 0 1.922-1.453 3.375-3.547 3.64.531.344.89 1.094.89 1.954v1.625c0 .468.391.734.86.547C13.781 14.359 16 11.53 16 8.03 16 3.61 12.406 0 7.984 0 3.563 0 0 3.61 0 8.031a7.88 7.88 0 0 0 5.172 7.422c.422.156.828-.125.828-.547v-1.25c-.219.094-.5.156-.75.156-1.031 0-1.64-.562-2.078-1.609-.172-.422-.36-.672-.719-.719-.187-.015-.25-.093-.25-.187 0-.188.313-.328.625-.328.453 0 .844.281 1.25.86.313.452.64.655 1.031.655s.641-.14 1-.5c.266-.265.47-.5.657-.656"/></g></svg><span>Repository</span></a></li>
-        <li><a href="https://github.com/daniyyell-dev/rapid-threat-intel/issues/new/choose"><svg class="ico" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><g fill="currentColor"><path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z"/></g></svg><span>Open an issue</span></a></li>
-        <li><a href="https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md"><svg class="ico" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><g fill="currentColor"><path d="M0 1.75A.75.75 0 0 1 .75 1h4.253c1.227 0 2.317.59 3 1.501A3.743 3.743 0 0 1 11.006 1h4.245a.75.75 0 0 1 .75.75v10.5a.75.75 0 0 1-.75.75h-4.507a2.25 2.25 0 0 0-1.591.659l-.622.621a.75.75 0 0 1-1.06 0l-.622-.621A2.25 2.25 0 0 0 5.258 13H.75a.75.75 0 0 1-.75-.75Zm7.251 10.324.004-5.073-.002-2.253A2.25 2.25 0 0 0 5.003 2.5H1.5v9h3.757a3.75 3.75 0 0 1 1.994.574ZM8.755 4.75l-.004 7.322a3.752 3.752 0 0 1 1.992-.572H14.5v-9h-3.495a2.25 2.25 0 0 0-2.25 2.25Z"/></g></svg><span>Dashboard documentation</span></a></li>
-        <li><a href="feed.json" class="mono" data-dl="feed.json"><svg class="ico" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><g fill="currentColor"><path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0Zm1.72 4.97a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.47-1.47-1.47-1.47a.75.75 0 0 1 0-1.06ZM3.28 7.78 1.81 9.25l1.47 1.47a.751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042Zm8.22-6.218V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914-.013-.011Z"/></g></svg><span>feed.json</span></a></li>
-        <li><a href="https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/CONTRIBUTING.md"><svg class="ico" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><g fill="currentColor"><path d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.251 2.251 0 1 1-1.5 0V5.372A2.25 2.25 0 0 1 1.5 3.25Zm5.677-.177L9.573.677A.25.25 0 0 1 10 .854V2.5h1A2.5 2.5 0 0 1 13.5 5v5.628a2.251 2.251 0 1 1-1.5 0V5a1 1 0 0 0-1-1h-1v1.646a.25.25 0 0 1-.427.177L7.177 3.427a.25.25 0 0 1 0-.354ZM3.75 2.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm0 9.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm8.25.75a.75.75 0 1 0 1.5 0 .75.75 0 0 0-1.5 0Z"/></g></svg><span>Contributing guide</span></a></li>
-        <li><a href="https://buymeacoffee.com/daniyyell" target="_blank" rel="noopener"><img class="ico ico-bmc" src="img/bmc-logo.png" width="16" height="16" alt="" decoding="async"><span>Buy me a coffee</span></a></li>
-      </ul>
-    </nav>
-    <section class="visits" id="visits" hidden aria-labelledby="visits-h" data-live="https://rti-visitors.daniyyell90.workers.dev/">
-      <div class="visits-in">
-        <h2 class="foot-h visits-h" id="visits-h">Visitors</h2>
-        <dl class="visits-nums">
-          <div class="visits-cell" id="visits-total" hidden>
-            <dt>All time</dt>
-            <dd id="visits-total-n"></dd>
-          </div>
-          <div class="visits-cell" id="visits-24h" hidden>
-            <dt>Last 24 hours</dt>
-            <dd id="visits-24h-n"></dd>
-          </div>
-          <div class="visits-cell visits-live" id="visits-online" hidden>
-            <dt><span class="live-dot" aria-hidden="true"></span>Online now</dt>
-            <dd id="visits-online-n" aria-live="polite">–</dd>
-          </div>
-          <div class="visits-cell" id="visits-dl" hidden>
-            <dt>Downloads<span class="visits-dl-24" id="visits-dl-24"></span></dt>
-            <dd id="visits-dl-n"></dd>
-          </div>
-          <div class="visits-cell" id="visits-cp" hidden>
-            <dt>Queries and IOCs copied<span class="visits-dl-24" id="visits-cp-24"></span></dt>
-            <dd id="visits-cp-n"></dd>
-          </div>
-        </dl>
-        <div class="visits-geo-wrap" id="visits-geo-wrap" hidden>
-          <h3 class="visits-sub" id="visits-geo-h">Top countries</h3>
-          <ol class="visits-geo" id="visits-geo" aria-labelledby="visits-geo-h"></ol>
-        </div>
-      </div>
-    </section>
-  </div>
-  <div class="foot-end">
-    <div class="foot-meta">
-      <p class="credit"><span>Maintained by <a href="https://www.linkedin.com/in/daniel-jeremiah">Daniel Jeremiah</a></span><span>Released under the <a href="https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/LICENSE">MIT Licence</a></span><span>For defensive use only</span></p>
-      <p class="privacy">Anonymous visit counts via <a href="https://www.goatcounter.com/">GoatCounter</a>, plus anonymous counts of open pages, downloads and copies: no cookies, no personal data.</p>
+    <div class="foot-top">
+      <a href="/" class="mark foot-mark" aria-label="IOCWatch home"><svg class="mark-i" viewBox="0 0 32 32" width="22" height="22" aria-hidden="true"><rect class="mk-bg" x="1" y="1" width="30" height="30" rx="9"/><circle class="mk-ring" cx="16" cy="16" r="9" stroke-width="2"/><circle class="mk-core" cx="16" cy="16" r="3.6"/><path class="mk-tick" d="M16 4v4M16 24v4M4 16h4M24 16h4" stroke-width="2" stroke-linecap="round"/></svg><span class="mark-w">IOC<b>Watch</b></span></a>
+      <nav class="foot-nav" aria-label="Footer">
+        <a href="#threats">Threats</a><a href="#block">Block list</a><a href="#hunts">Hunts</a><a href="#sources">Sources</a><a href="#about">About</a>
+        <a href="https://github.com/daniyyell-dev/rapid-threat-intel">Repository</a><a href="https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md">Docs</a><a href="/feed.json" data-dl="feed.json">feed.json</a>
+      </nav>
     </div>
-    <div class="spons">
-      <p class="spons-h" id="spons-h">Sponsored by</p>
-      <ul class="spons-list" aria-labelledby="spons-h">
-        <li><a href="https://prynoid.com/" target="_blank" rel="noopener"><img class="spons-prynoid" src="img/sponsors/prynoid.webp" alt="Prynoid" width="1196" height="292" loading="lazy" decoding="async"></a></li>
-        <li><a href="https://phishcore.io/" target="_blank" rel="noopener"><img class="spons-phishcore" src="img/sponsors/phishcore.png" alt="PhishCore" width="909" height="172" loading="lazy" decoding="async"></a></li>
-      </ul>
+    <section class="visits" id="visits" hidden aria-labelledby="visits-h" data-live="https://rti-visitors.daniyyell90.workers.dev/">
+      <h2 class="sr" id="visits-h">Visitors</h2>
+      <dl class="visits-grid">
+        <div class="visits-cell visits-live" id="visits-online" hidden><dt><span class="live-dot" aria-hidden="true"></span>Online now</dt><dd id="visits-online-n" aria-live="polite">–</dd></div>
+        <div class="visits-cell" id="visits-total"><dt>All-time visits</dt><dd id="visits-total-n"></dd></div>
+        <div class="visits-cell" id="visits-24h" hidden><dt>Last 24 hours</dt><dd id="visits-24h-n"></dd></div>
+        <div class="visits-cell" id="visits-dl" hidden><dt>Downloads<span class="visits-dl-24" id="visits-dl-24"></span></dt><dd id="visits-dl-n"></dd></div>
+        <div class="visits-cell" id="visits-cp" hidden><dt>Copies<span class="visits-dl-24" id="visits-cp-24"></span></dt><dd id="visits-cp-n"></dd></div>
+      </dl>
+      <details class="visits-geo-wrap" id="visits-geo-wrap" hidden>
+        <summary class="visits-sub" id="visits-geo-h">Top visitor countries</summary>
+        <ol class="visits-geo" id="visits-geo" aria-labelledby="visits-geo-h"></ol>
+      </details>
+    </section>
+    <div class="foot-end">
+      <div class="foot-meta">
+        <p class="credit"><span>&copy; IOCWatch. Maintained by <a href="https://www.linkedin.com/in/daniel-jeremiah">Daniel Jeremiah</a></span><span><a href="https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/LICENSE">MIT Licence</a></span><span>For defensive use only</span><span><a href="https://buymeacoffee.com/daniyyell" target="_blank" rel="noopener">Buy me a coffee</a></span></p>
+        <p class="privacy">Anonymous visit counts via <a href="https://www.goatcounter.com/">GoatCounter</a>, plus anonymous counts of open pages, downloads and copies: no cookies, no personal data.</p>
+      </div>
+      <div class="spons">
+        <p class="spons-h" id="spons-h">Sponsored by</p>
+        <ul class="spons-list" aria-labelledby="spons-h">
+          <li><a href="https://prynoid.com/" target="_blank" rel="noopener"><img class="spons-prynoid" src="/img/sponsors/prynoid.webp" alt="Prynoid" width="1196" height="292" decoding="async" loading="lazy"></a></li>
+          <li><a href="https://phishcore.io/" target="_blank" rel="noopener"><img class="spons-phishcore" src="/img/sponsors/phishcore.png" alt="PhishCore" width="909" height="172" decoding="async" loading="lazy"></a></li>
+        </ul>
+      </div>
     </div>
   </div>
 </footer>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script src="app.js?v=e76e6f0d"></script>
+<script src="/app.js?v=06eedf75"></script>
 <script data-goatcounter="https://daniyyell.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
