@@ -1,6 +1,6 @@
 {
  "title": "IOCWatch",
- "description": "AI threat intelligence, live: verified indicators, block lists and ready-to-run hunts",
+ "description": "AI threat intelligence: verified indicators, block lists and ready-to-run hunts",
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",

@@ -759,3 +759,8 @@ html, body { background: var(--bg); }
 .warn { border-color: rgba(234,179,8,.35); background: rgba(234,179,8,.07); }
 .warn b { color: #facc15; }
 .stat-line .st b.hot { color: var(--block); }
+
+/* Hero headline on one line ("AI threat intelligence"), slightly larger with balanced spacing. */
+.hero h1 { margin-top: 30px; font-size: clamp(40px, 7vw, 84px); line-height: 1.04; }
+@media (min-width: 760px) { .hero h1 { white-space: nowrap; } }
+.hero-sub, .hero .sub { margin-top: 22px; }

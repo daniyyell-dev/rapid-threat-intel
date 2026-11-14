@@ -1069,7 +1069,7 @@
       window.scrollTo(0, 0);
       return;
     }
-    document.title = "IOCWatch – AI threat intelligence, live";
+    document.title = "IOCWatch – AI threat intelligence";
     if (hash.indexOf("search/") === 0) {
       showView("home");
       var q = decodeURIComponent(hash.slice(7));
