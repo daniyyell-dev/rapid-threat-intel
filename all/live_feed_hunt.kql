@@ -1,5 +1,5 @@
 // Threat: AI Rapid Threat Intel live feed
-// Author: Daniel Jeremiah | Date: 2026-11-13
+// Author: Daniel Jeremiah | Date: 2026-11-14
 // Ref: https://github.com/daniyyell-dev/rapid-threat-intel
 let Lookback = 30d;
 let FeedIPs = toscalar(externaldata(Indicator: string)

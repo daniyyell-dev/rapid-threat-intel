@@ -1,4 +1,5 @@
 indicator,type,threat
+74.208.158.106,ipv4,Fake Crypto-Exchange Guest Sessions Planted on 100+ MSP ScreenConnect Servers
 45.115.26.23,ipv4,"ZeroQlik Returns: Qlik Sense Servers Exploited for Reverse Shells, Go Agent and ActiveMQ/Veeam Tooling"
 24ee79a519839230377585ec541863b1615286736cbeb98125afeb82d91bb768,sha256,"ZeroQlik Returns: Qlik Sense Servers Exploited for Reverse Shells, Go Agent and ActiveMQ/Veeam Tooling"
 1ff457d643e5246efb04861169153402345d50b0bb296443b93a87790909efd5,sha256,"ZeroQlik Returns: Qlik Sense Servers Exploited for Reverse Shells, Go Agent and ActiveMQ/Veeam Tooling"

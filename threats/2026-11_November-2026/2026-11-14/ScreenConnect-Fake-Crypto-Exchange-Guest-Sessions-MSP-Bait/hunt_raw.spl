@@ -1,0 +1,27 @@
+``` Threat: Fake Crypto-Exchange Guest Sessions Planted on 100+ MSP ScreenConnect Servers
+    Author: Daniel Jeremiah | Date: 2026-11-14
+    Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-14/ScreenConnect-Fake-Crypto-Exchange-Guest-Sessions-MSP-Bait ```
+| multisearch
+  [ search `rti_network(74.208.158.106 OR 197.47.160.252 OR 87.106.111.220)`
+    | search dest_ip IN ("74.208.158.106", "197.47.160.252", "87.106.111.220")
+    | eval data_model="network", ioc_type="ipv4", ioc=dest_ip, src=src_ip, dest=dest_ip, detail="connection to IOC, port ".dest_port.", ".action
+  ]
+  [ search `rti_network(74.208.158.106 OR 197.47.160.252 OR 87.106.111.220)`
+    | search src_ip IN ("74.208.158.106", "197.47.160.252", "87.106.111.220")
+    | eval data_model="network", ioc_type="ipv4", ioc=src_ip, src=src_ip, dest=dest_ip, detail="connection from IOC, port ".dest_port.", ".action
+  ]
+| fillnull value="-" host user src dest detail
+| stats count min(_time) AS first_seen max(_time) AS last_seen BY ioc ioc_type data_model host user src dest detail
+
+| append [
+    search `rti_endpoint("ScreenConnect.WindowsClient.exe" Temp)`
+    | where match(coalesce(parent_process_name, ""), "(?i)^screenconnect\.windowsclient\.exe$") AND match(coalesce(process_name, ""), "(?i)^(cmd|powershell|pwsh|wscript|cscript|msiexec)\.exe$") AND match(coalesce(process, ""), "(?i)\\Documents\\[^\\]+\\Temp\\")
+    | eval host=dest, user=user, src="-", dest=dest, detail=coalesce(parent_process_name, "-")." > ".coalesce(process, process_name, "-")
+    | fillnull value="-" host user src dest detail
+    | stats count min(_time) AS first_seen max(_time) AS last_seen BY host user src dest detail
+    | eval data_model="endpoint"
+    | eval ioc="ScreenConnect technician client running a file from its Temp folder", ioc_type="behaviour (alert)"
+]
+| sort 0 - last_seen
+| eval first_seen=strftime(first_seen, "%Y-%m-%d %H:%M:%S"), last_seen=strftime(last_seen, "%Y-%m-%d %H:%M:%S")
+| table first_seen last_seen ioc ioc_type data_model host user src dest detail count

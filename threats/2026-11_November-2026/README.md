@@ -2,7 +2,13 @@
 
 [Back to index](../../README.md)
 
-56 threats, 1583 indicators, 732 to block now. Newest first.
+57 threats, 1586 indicators, 733 to block now. Newest first.
+
+### [2026-11-14](2026-11-14/)
+
+| Date | Threat | Category | IOCs | Block now | Summary |
+|---|---|---|---|---|---|
+| 2026-11-13 | [Fake Crypto-Exchange Guest Sessions Planted on 100+ MSP ScreenConnect Servers](2026-11-14/ScreenConnect-Fake-Crypto-Exchange-Guest-Sessions-MSP-Bait/) | Supply chain / MSP remote access | 3 | 1 | Thousands of fake crypto-exchange guest sessions planted on MSP ScreenConnect servers, likely as bait for technicians with unpatched clients |
 
 ### [2026-11-13](2026-11-13/)
 

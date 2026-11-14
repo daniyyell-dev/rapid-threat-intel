@@ -1,0 +1,40 @@
+// Threat: Fake Crypto-Exchange Guest Sessions Planted on 100+ MSP ScreenConnect Servers
+// Author: Daniel Jeremiah | Date: 2026-11-14
+// Ref: https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-14/ScreenConnect-Fake-Crypto-Exchange-Guest-Sessions-MSP-Bait
+rule rti_screenconnect_fake_crypto_exchange_guest_sessions_msp_bait {
+  meta:
+    author = "Daniel Jeremiah"
+    date = "2026-11-14"
+    description = "Fake Crypto-Exchange Guest Sessions Planted on 100+ MSP ScreenConnect Servers"
+    reference = "https://github.com/daniyyell-dev/rapid-threat-intel/tree/main/threats/2026-11_November-2026/2026-11-14/ScreenConnect-Fake-Crypto-Exchange-Guest-Sessions-MSP-Bait"
+
+  events:
+    (
+      $e.principal.ip = /^(?:74\.208\.158\.106|197\.47\.160\.252|87\.106\.111\.220)$/ or
+      $e.target.ip = /^(?:74\.208\.158\.106|197\.47\.160\.252|87\.106\.111\.220)$/ or
+      $e.network.dns.answers.data = /^(?:74\.208\.158\.106|197\.47\.160\.252|87\.106\.111\.220)$/ or
+      ($e.metadata.event_type = "PROCESS_LAUNCH" and re.regex($e.principal.process.file.full_path, `screenconnect\.windowsclient\.exe$`) nocase and re.regex($e.target.process.file.full_path, `(cmd|powershell|pwsh|wscript|cscript|msiexec)\.exe$`) nocase and re.regex($e.target.process.command_line, `\\Documents\\[^\\]+\\Temp\\`) nocase)
+    )
+    $host = $e.principal.hostname
+
+  match:
+    $host over 1h
+
+  outcome:
+    $risk_score = max(80)
+    $event_count = count($e.metadata.id)
+    $event_types = array_distinct($e.metadata.event_type)
+    $log_types = array_distinct($e.metadata.log_type)
+    $principal_user = array_distinct($e.principal.user.userid)
+    $principal_ip = array_distinct($e.principal.ip)
+    $target_ip = array_distinct($e.target.ip)
+    $product_event_type = array_distinct($e.metadata.product_event_type)
+    $process_command_line = array_distinct($e.target.process.command_line)
+    $target_file_path = array_distinct($e.target.file.full_path)
+
+  condition:
+    $e
+
+  options:
+    allow_zero_values = true
+}

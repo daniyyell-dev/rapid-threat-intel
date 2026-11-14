@@ -1,4 +1,7 @@
-# All high-confidence indicators to block. Updated 2026-11-13 23:30.
+# All high-confidence indicators to block. Updated 2026-11-14.
+
+## 2026-11-13 Fake Crypto-Exchange Guest Sessions Planted on 100+ MSP ScreenConnect Servers
+74.208.158.106
 
 ## 2026-11-11 ZeroQlik Returns: Qlik Sense Servers Exploited for Reverse Shells, Go Agent and ActiveMQ/Veeam Tooling
 45.115.26.23

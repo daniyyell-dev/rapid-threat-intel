@@ -8,7 +8,7 @@
 **Agentic AI collects it. Analysts verify it. Community acts on it.**<br>
 <sub>AI threat intel from defenders, for defenders.</sub>
 
-[![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-56-informational)](threats/) ![IOCs](https://img.shields.io/badge/IOCs-1583-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--13_23:30-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
+[![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-57-informational)](threats/) ![IOCs](https://img.shields.io/badge/IOCs-1586-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--14-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
 </div>
 
@@ -39,7 +39,7 @@ Threats move fast. Defenders have to as well.
 3. **Hunt in Splunk:** Load [`splunk_rti_iocs.csv`](all/splunk_rti_iocs.csv) as a lookup and run [`live_feed_hunt.spl`](all/live_feed_hunt.spl) ([guide](docs/splunk.md)).
 4. **Detect in Google SecOps:** Load the feeds into data tables and run [`live_feed.yaral`](all/live_feed.yaral) ([guide](docs/google-secops.md)).
 
-To block everything at once, use [`all/`](all/): 732 high-confidence block indicators across all threats.
+To block everything at once, use [`all/`](all/): 733 high-confidence block indicators across all threats.
 
 <a id="how-to-use"></a>
 ## Use the data

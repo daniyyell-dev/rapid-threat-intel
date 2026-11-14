@@ -1,0 +1,5 @@
+# Fake Crypto-Exchange Guest Sessions Planted on 100+ MSP ScreenConnect Servers
+# Published 2026-11-13. High-confidence indicators to block. Updated 2026-11-14.
+
+## ipv4 (1)
+74.208.158.106
