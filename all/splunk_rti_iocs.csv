@@ -634,7 +634,6 @@ eb9ba1da5363f5d04e2f98673595fce93f39a78e,sha1,Turla Cereal: Exchange Server Espi
 a4e477ce257f2c635401ef554e05506c080967c0,sha1,Turla Cereal: Exchange Server Espionage Toolset
 a5be8706032a0798fd63214a9f22efa6309355f5,sha1,Turla Cereal: Exchange Server Espionage Toolset
 172.169.63.30,ipv4,MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants
-143.198.68.206,ipv4,MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants
 frameworkmetrics.xyz,domain,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 api.frameworkmetrics.xyz,domain,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 https://api.frameworkmetrics.xyz/v1/analytics,url,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
@@ -642,18 +641,10 @@ https://api.frameworkmetrics.xyz/v1/electron,url,Ethersphere bee-js and Swarm De
 https://api.frameworkmetrics.xyz/v1/assets/,url,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 https://api.frameworkmetrics.xyz/v1/swarm/report,url,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 193.57.9.155,ipv4,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
-193.57.9.17,ipv4,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
-178.16.54.222,ipv4,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
-107.189.27.223,ipv4,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
-107.189.27.46,ipv4,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
-91.108.240.156,ipv4,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
-107.189.16.215,ipv4,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
-http://107.189.27.46:3000/app.js,url,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 185.232.84.169,ipv4,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 https://webhook.site/fdc222d5-2e6c-4122-801d-93099f3fe827,url,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 https://webhook.site/46358b99-9cff-4f14-97bc-4a436086e826,url,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 https://webhook.site/c05b53d9-c3b6-4a90-94dc-b86a0a4e905f,url,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
-https://pastebin.com/raw/q1p9qH2w,url,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 d01fdf241aa9e0a1ba6ebc19f8f667af1bf652745021c5050126cb7036f7ce58,sha256,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 ee2f762e9ed3fd89f106e0b80c2e923bf1aed9a280277d3d998a5902c4d9ec0f,sha256,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 f81315968e679b48f6bdff1c9b928bb223230d07f44d7948412c2250c2a14deb,sha256,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
@@ -689,19 +680,8 @@ byodxn5s7sua6oyyjj74rycgn6afncfckprt5ezskt3cni6lg3wdrgad.onion,domain,BYOD Ranso
 152.175.65.88,ipv4,SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant
 79.116.138.30,ipv4,SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant
 183.220.91.15,ipv4,SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant
-43.224.227.158,ipv4,SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant
-89.116.89.18,ipv4,SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant
-31.59.220.26,ipv4,SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant
-213.86.169.133,ipv4,SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant
 tac.vpnla.org,domain,SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant
 55e6384f6d1648be9b48fb899e46623e9c05eb0df2cbf95f6701680d4e7cbc2a,sha256,SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant
-7cf69bd6573a90d7bd287810b5c3746841cee6a7f77cadd016f34a97fc7b2361,sha256,SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant
-77.73.70.190,ipv4,FreeSWITCH CVE-2026-116779 SIP Command Injection Cryptominer Campaign
-87.229.64.49,ipv4,FreeSWITCH CVE-2026-116779 SIP Command Injection Cryptominer Campaign
-217.151.99.216,ipv4,FreeSWITCH CVE-2026-116779 SIP Command Injection Cryptominer Campaign
-chatgpt.logltech.store,domain,FreeSWITCH CVE-2026-116779 SIP Command Injection Cryptominer Campaign
-ai.apachenginx.ru,domain,FreeSWITCH CVE-2026-116779 SIP Command Injection Cryptominer Campaign
-shdesasdd.logltech.workers.dev,domain,FreeSWITCH CVE-2026-116779 SIP Command Injection Cryptominer Campaign
 theowo.club,domain,APT29 Watering Holes Targeting iOS and Android with N-Day Exploits
 america250.holiday,domain,APT29 Watering Holes Targeting iOS and Android with N-Day Exploits
 adsprism-stat.com,domain,APT29 Watering Holes Targeting iOS and Android with N-Day Exploits
@@ -715,9 +695,6 @@ assets-int.com,domain,APT29 Watering Holes Targeting iOS and Android with N-Day 
 https://ad.starx-net.com:8881/telemetry/v12,url,APT29 Watering Holes Targeting iOS and Android with N-Day Exploits
 https://static.flux-telemetry.com/module/5b4c8fea5cbcee273e8d830f52-temfp.js,url,APT29 Watering Holes Targeting iOS and Android with N-Day Exploits
 https://edge-ord.clouds-stacks.com/module/5b4c8fea5cbcee273e8d830f52-temfp.js,url,APT29 Watering Holes Targeting iOS and Android with N-Day Exploits
-109.104.106.107,ipv4,APT29 Watering Holes Targeting iOS and Android with N-Day Exploits
-95.133.231.28,ipv4,APT29 Watering Holes Targeting iOS and Android with N-Day Exploits
-195.58.140.105,ipv4,APT29 Watering Holes Targeting iOS and Android with N-Day Exploits
 a7d2493df00565c21587b0cad2a9fe7ca1e5590acf796da6e499be0ffde44cc3,sha256,APT29 Watering Holes Targeting iOS and Android with N-Day Exploits
 bee3e014e3df87ddce0250b0985b87f6868a427a7b650a74b7ffedb9d57f3088,sha256,APT29 Watering Holes Targeting iOS and Android with N-Day Exploits
 c170fda024183645c0aa681149304e50506509c3498bb6b9a5f5ced6aa73e5fa,sha256,APT29 Watering Holes Targeting iOS and Android with N-Day Exploits

@@ -39,7 +39,7 @@ Threats move fast. Defenders have to as well.
 3. **Hunt in Splunk:** Load [`splunk_rti_iocs.csv`](all/splunk_rti_iocs.csv) as a lookup and run [`live_feed_hunt.spl`](all/live_feed_hunt.spl) ([guide](docs/splunk.md)).
 4. **Detect in Google SecOps:** Load the feeds into data tables and run [`live_feed.yaral`](all/live_feed.yaral) ([guide](docs/google-secops.md)).
 
-To block everything at once, use [`all/`](all/): 733 high-confidence block indicators across all threats.
+To block everything at once, use [`all/`](all/): 710 high-confidence block indicators across all threats.
 
 <a id="how-to-use"></a>
 ## Use the data

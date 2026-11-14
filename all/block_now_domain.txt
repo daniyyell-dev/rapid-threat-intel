@@ -230,9 +230,6 @@ frameworkmetrics.xyz
 api.frameworkmetrics.xyz
 byodxn5s7sua6oyyjj74rycgn6afncfckprt5ezskt3cni6lg3wdrgad.onion
 tac.vpnla.org
-chatgpt.logltech.store
-ai.apachenginx.ru
-shdesasdd.logltech.workers.dev
 theowo.club
 america250.holiday
 adsprism-stat.com

@@ -1,30 +1,22 @@
 # Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 # Published 2026-11-09. High-confidence indicators to block. Updated 2026-11-10.
 
-## ipv4 (8)
+## ipv4 (2)
 193.57.9.155
-193.57.9.17
-178.16.54.222
-107.189.27.223
-107.189.27.46
-91.108.240.156
-107.189.16.215
 185.232.84.169
 
 ## domain (2)
 frameworkmetrics.xyz
 api.frameworkmetrics.xyz
 
-## url (9)
+## url (7)
 https://api.frameworkmetrics.xyz/v1/analytics
 https://api.frameworkmetrics.xyz/v1/electron
 https://api.frameworkmetrics.xyz/v1/assets/
 https://api.frameworkmetrics.xyz/v1/swarm/report
-http://107.189.27.46:3000/app.js
 https://webhook.site/fdc222d5-2e6c-4122-801d-93099f3fe827
 https://webhook.site/46358b99-9cff-4f14-97bc-4a436086e826
 https://webhook.site/c05b53d9-c3b6-4a90-94dc-b86a0a4e905f
-https://pastebin.com/raw/q1p9qH2w
 
 ## sha256 (25)
 d01fdf241aa9e0a1ba6ebc19f8f667af1bf652745021c5050126cb7036f7ce58
