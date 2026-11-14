@@ -1779,12 +1779,67 @@
           h("span", { class: "ch-h", text: chHandle(p) + " \u00b7 " + p.platform }),
           extLink(p.url, ["View post", h("span", { "aria-hidden": "true", text: " \u2192" })], "ch-go"))));
   }
+  function chKey(it) { return "ch-" + String(it.rumour_id ? "r-" + it.rumour_id : it.threat_id).replace(/[^A-Za-z0-9_-]/g, "-"); }
+  /* Trending: topics ranked by posts in the last 72h, then by posts in the last 24h, then by newest. */
+  function chTrending(items) {
+    var now = Date.now(), out = [];
+    items.forEach(function (it) {
+      var d1 = 0, d3 = 0, newest = 0;
+      (it.posts || []).forEach(function (p) {
+        var ms = Date.parse(p.posted_at), age = (now - ms) / 3600000;
+        if (isNaN(ms)) return;
+        if (ms > newest) newest = ms;
+        if (age <= 72) d3++;
+        if (age <= 24) d1++;
+      });
+      if (!d3) return;
+      var t = null;
+      if (!it.rumour_id && DATA) DATA.threats.forEach(function (x) { if (x.id === it.threat_id) t = x; });
+      var tag = d1 >= 2 ? "hot" : (now - newest) / 3600000 <= 12 ? "rising" : "";
+      out.push({ it: it, n: d3, score: d1 * 2 + d3, newest: newest, tag: tag, title: t ? stitle(t) : it.threat_name });
+    });
+    out.sort(function (a, b) { return b.n - a.n || b.score - a.score || b.newest - a.newest; });
+    return out.slice(0, 10);
+  }
+  function chJump(it) {
+    if (CH_TYPE !== "all") { CH_TYPE = "all"; renderChatter(); }
+    var li = $(chKey(it));
+    if (!li) return;
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    li.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    var art = li.firstChild;
+    art.classList.remove("flash"); void art.offsetWidth; art.classList.add("flash");
+    var a = li.querySelector(".ch-title a"); if (a) a.focus({ preventScroll: true });
+  }
+  function chTrend(items) {
+    var list = chTrending(items);
+    if (list.length < 2) return null;
+    function entry(x, i, dup) {
+      return h("li", { class: "tk-i", "aria-hidden": dup ? "true" : null },
+        h("a", { href: "#chatter", tabindex: dup ? "-1" : null, onclick: function (e) { e.preventDefault(); chJump(x.it); } },
+          h("span", { class: "tk-r", text: String(i + 1).padStart(2, "0") }),
+          h("span", { class: "tk-t", text: x.title }),
+          h("span", { class: "tk-n", text: plural(x.n, "post") }),
+          x.tag ? h("span", { class: "tk-tag tk-" + x.tag, text: x.tag === "hot" ? "Hot" : "Rising" }) : null));
+    }
+    var track = h("ol", { class: "tk-track" }, list.map(function (x, i) { return entry(x, i, false); }), list.map(function (x, i) { return entry(x, i, true); }));
+    var vp = h("div", { class: "tk-vp" }, track);
+    var box = h("section", { class: "ch-trend", "aria-label": "Trending in the last 72 hours" },
+      h("p", { class: "tk-k" }, h("i", { class: "tk-dot", "aria-hidden": "true" }), h("b", { text: "Trending" }), h("span", { text: "72h" })),
+      vp);
+    // Speed: ~45px per second whatever the length; pause on hover, focus or touch.
+    setTimeout(function () { var w = track.scrollWidth / 2; if (w) track.style.animationDuration = Math.max(20, Math.round(w / 45)) + "s"; }, 0);
+    var tm = null;
+    vp.addEventListener("touchstart", function () { box.classList.add("paused"); clearTimeout(tm); }, { passive: true });
+    vp.addEventListener("touchend", function () { clearTimeout(tm); tm = setTimeout(function () { box.classList.remove("paused"); }, 2500); }, { passive: true });
+    return box;
+  }
   function chItem(it, posts) {
     var isR = !!it.rumour_id, t = null;
     if (!isR && DATA) DATA.threats.forEach(function (x) { if (x.id === it.threat_id) t = x; });
     var href = isR ? "#rumours" : "#threat/" + encodeURIComponent(it.threat_id);
     var title = t ? stitle(t) : it.threat_name;
-    return h("li", null, h("article", { class: "ch-item " + (isR ? "is-rum" : "is-thr") },
+    return h("li", { id: chKey(it) }, h("article", { class: "ch-item " + (isR ? "is-rum" : "is-thr") },
       h("p", { class: "ch-meta" },
         h("span", { class: "ch-kind", text: isR ? "Rumour" : "Threat" }),
         t && t.category ? h("span", { class: "ch-cat", text: t.category }) : null,
@@ -1849,6 +1904,7 @@
           h("div", { class: "n-top" }, h("dt", { text: "Topics" }), h("dd", { text: String(items.length) })),
           h("div", null, h("dt", { text: "Sources" }), h("dd", { text: String(Object.keys(authors).length) })),
           upd ? h("div", null, h("dt", { text: "Updated" }), h("dd", { class: "is-date", text: upd })) : null)),
+      chTrend(items),
       h("div", { class: "hn-tools ch-tools" }, tabs),
       list,
       h("p", { class: "ch-note", text: "Short summaries in our words. Read the full post at the source. Only public accounts of named researchers, security vendors, CERTs and news outlets are included." })
