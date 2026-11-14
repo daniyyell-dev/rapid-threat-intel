@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-14T16:19:07Z",
+ "updated": "2026-11-14T17:20:46Z",
  "items": [
   {
    "threat_name": "SignDrop CLFS zero-day",
@@ -34,6 +34,22 @@
      "url": "https://x.com/BleepinComputer/status/2120910565698650391",
      "posted_at": "2026-11-12T16:04:18.000Z",
      "summary": "The new SignDrop zero-day gives attackers SYSTEM privileges on Windows."
+    }
+   ]
+  },
+  {
+   "threat_name": "M365 outage phishing",
+   "threat_id": "Microsoft-365-Outage-Service-Health-Phishing",
+   "posts": [
+    {
+     "platform": "X",
+     "author": "Microsoft Threat Intelligence",
+     "handle": "MsftSecIntel",
+     "org": "Microsoft",
+     "type": "vendor",
+     "url": "https://x.com/MsftSecIntel/status/2121491564161581148",
+     "posted_at": "2026-11-14T06:32:58.000Z",
+     "summary": "Microsoft warns that fake Microsoft 365 service health emails citing the 12 November outage are pushing users to 'restore held messages' on a phishing page."
     }
    ]
   },

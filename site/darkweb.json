@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-14T16:12:40Z",
+ "updated": "2026-11-14T17:15:22Z",
  "window_days": 30,
  "status_note": "Claims posted by extortion groups on their leak sites. Claimed, unverified: a listing is not proof of a breach.",
  "disclaimer": "Dark web activity from public leak-site trackers: metadata only (group, organisation, country, sector, date). IOCWatch does not access, host or link to stolen data. Claims are unverified and never feed the block list.",
@@ -16,18 +16,18 @@
  ],
  "stats": {
   "groups": 646,
-  "groups_online": 267,
+  "groups_online": 264,
   "markets": 147,
-  "markets_online": 59,
-  "posts_24h": 44,
-  "posts_month": 585,
+  "markets_online": 72,
+  "posts_24h": 42,
+  "posts_month": 586,
   "posts_90d": 3282,
-  "posts_year": 9736
+  "posts_year": 9737
  },
  "totals": {
-  "claims": 98,
-  "groups": 24,
-  "countries": 31
+  "claims": 99,
+  "groups": 25,
+  "countries": 32
  },
  "by_group": [
   {
@@ -198,7 +198,7 @@
  "by_sector": [
   {
    "name": "Manufacturing",
-   "count": 15
+   "count": 16
   },
   {
    "name": "Business services",
@@ -324,6 +324,15 @@
    "group": "BYOD",
    "victim": "Toyota",
    "country": "JP",
+   "sector": "Manufacturing",
+   "date": "2026-11-14",
+   "source": "RansomLook",
+   "status": "claimed, unverified"
+  },
+  {
+   "group": "SafePay",
+   "victim": "toyokiki-thailand.com",
+   "country": "TH",
    "sector": "Manufacturing",
    "date": "2026-11-14",
    "source": "RansomLook",
@@ -1323,7 +1332,7 @@
  ],
  "markets": {
   "tracked": 147,
-  "online": 59,
+  "online": 72,
   "names": [
    "#leaktheanalyst",
    "00code",
