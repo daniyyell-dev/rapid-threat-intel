@@ -1066,3 +1066,235 @@ body.brand-i { background:
 .brand-i .hero { padding-top: clamp(44px, 6vw, 84px); }
 .brand-i .hero h1 { margin-top: 22px; }
 .shot { margin-top: clamp(44px, 5vw, 60px); }
+/* ===== Hunt.io-inspired landing and concise threat pages (preview) ===== */
+/* Overrides the identity marketing layout. Palette A and the logo stay. */
+
+/* Tighter home: hero, then the list. No large marketing gaps. */
+.brand-i #home > section + section { margin-top: 0; }
+.brand-i .foot { margin-top: 72px; }
+
+/* Full-bleed dotted field behind the hero */
+.brand-i .hero {
+  position: relative;
+  padding: clamp(56px, 9vh, 108px) 0 clamp(64px, 9vh, 112px);
+  overflow: hidden;
+  isolation: isolate;
+}
+.brand-i .hero-bg { inset: 0; overflow: hidden; }
+.brand-i .hero-field {
+  position: absolute; inset: -20% -10% 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 30%, rgba(12, 32, 64, .9), transparent 70%),
+    #07101f;
+}
+.brand-i .hero-grid {
+  position: absolute; inset: -8% 0 -20%;
+  background-color: transparent;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18'><rect x='1.5' y='1.5' width='11' height='11' rx='1.5' fill='%230c1d38'/></svg>");
+  background-size: 18px 18px;
+  background-position: 0 0;
+  opacity: .9;
+  mask-image: radial-gradient(ellipse 78% 70% at 50% 28%, #000 10%, transparent 72%);
+  -webkit-mask-image: radial-gradient(ellipse 78% 70% at 50% 28%, #000 10%, transparent 72%);
+  animation: grid-drift 64s linear infinite;
+}
+.brand-i .hero-glow {
+  background:
+    radial-gradient(ellipse 42% 36% at 50% 44%, rgba(var(--acc-rgb), .22), rgba(var(--acc-rgb), .05) 42%, transparent 70%),
+    linear-gradient(180deg, transparent 55%, var(--bg) 96%);
+}
+@keyframes grid-drift {
+  from { background-position: 0 0; }
+  to { background-position: 0 180px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brand-i .hero-grid { animation: none; }
+}
+
+/* Huge type, one short line, one CTA */
+.brand-i .hero-in { position: relative; max-width: min(1100px, calc(100% - 2 * var(--gut))); }
+.brand-i .hero h1 {
+  margin: 28px 0 0;
+  font: 600 clamp(44px, 8.4vw, 104px)/1.02 var(--display);
+  letter-spacing: -.045em;
+  background: linear-gradient(180deg, #fff 28%, #c5d3e8 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  /* Gradient text + tight tracking clips the last glyph unless the box is wider than the ink. */
+  padding: 0 .25em .08em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  overflow: visible;
+  text-wrap: balance;
+}
+@media (min-width: 760px) {
+  .brand-i .hero h1 { white-space: nowrap; }
+}
+.brand-i .hero-sub {
+  margin: 18px auto 0;
+  max-width: 34em;
+  font: 400 clamp(16px, 1.7vw, 19px)/1.5 var(--sans);
+  color: var(--ink-2);
+}
+.brand-i .search {
+  margin-top: 32px;
+  max-width: 560px;
+  border-radius: 14px;
+  background: rgba(8, 14, 26, .72);
+}
+.brand-i .hero-cta { margin-top: 28px; }
+/* Hunt.io-style solid light CTA */
+.brand-i .hero .btn-primary,
+.brand-i .sp-cta .btn-primary {
+  background: #fff;
+  color: #0a1018;
+  box-shadow: 0 10px 30px -16px rgba(255,255,255,.5), inset 0 1px 0 rgba(255,255,255,.8);
+  border-radius: 10px;
+  height: 48px;
+  padding: 0 22px;
+  font-weight: 600;
+}
+.brand-i .hero .btn-primary:hover,
+.brand-i .sp-cta .btn-primary:hover {
+  background: #f3f7fb;
+  color: #0a1018;
+  transform: translateY(-1px);
+}
+
+/* Slim live ticker, like Hunt.io "New research" */
+.ticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(100%, 640px);
+  min-height: 36px;
+  padding: 4px 8px 4px 4px;
+  border-radius: 999px;
+  border: 1px solid rgba(148,170,210,.16);
+  background: rgba(6, 12, 24, .65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--ink-2);
+  font: 500 13.5px/1.2 var(--sans);
+  letter-spacing: -.01em;
+  text-align: left;
+  transition: border-color .2s, background .2s, color .2s;
+}
+.ticker:hover { color: var(--ink); border-color: rgba(var(--acc2-rgb), .4); background: rgba(8, 16, 32, .8); }
+.ticker-badge {
+  flex: none;
+  display: inline-flex; align-items: center;
+  height: 26px; padding: 0 10px;
+  border-radius: 999px;
+  font: 600 11px/1 var(--sans);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  background: rgba(var(--acc-rgb), .12);
+  border: 1px solid rgba(var(--acc2-rgb), .22);
+  white-space: nowrap;
+}
+.ticker-t {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ticker-t b { font-weight: 600; color: var(--ink); }
+.ticker-go { flex: none; color: var(--ink-3); margin-right: 4px; }
+
+/* Latest threats: the main content */
+.latest { padding: 8px 0 40px; }
+.latest .sec-row {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 16px; margin-bottom: 18px;
+}
+.latest .kick { margin-bottom: 8px; }
+.latest .sec-t { font-size: clamp(24px, 3vw, 32px); letter-spacing: -.03em; }
+.tlist-home { border-top-color: var(--line); }
+
+/* Clean rows: title, severity, time, counts */
+.brand-i .trow > a {
+  grid-template-columns: minmax(0, 1fr) 104px 88px 250px 16px;
+  gap: 16px;
+  padding: 16px 4px;
+  align-items: center;
+}
+.brand-i .tr-main { display: flex; align-items: center; min-width: 0; gap: 10px; }
+.brand-i .tr-name { font: 600 16px/1.3 var(--display); letter-spacing: -.02em; }
+.brand-i .tr-head, .brand-i .tlist-home .tr-cat { display: none; }
+.brand-i .tr-when {
+  display: block;
+  padding-top: 0;
+  font: 500 13px/1.2 var(--sans);
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+.brand-i .tr-stats { max-width: none; justify-content: flex-end; }
+.sev {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 22px; padding: 0 8px; border-radius: 999px;
+  font: 600 11px/1 var(--sans); letter-spacing: .04em; text-transform: uppercase;
+  border: 1px solid var(--line); color: var(--ink-2); background: rgba(255,255,255,.03);
+  white-space: nowrap;
+}
+.sev-critical { color: #fecaca; border-color: rgba(239,68,68,.4); background: rgba(239,68,68,.12); }
+.sev-high { color: #fdba74; border-color: rgba(249,115,22,.3); background: rgba(249,115,22,.08); }
+.sev-medium { color: var(--ink-2); border-color: var(--line-2); background: rgba(255,255,255,.03); }
+.brand-i .trow > a:hover .tr-go { color: var(--accent-text); }
+
+@media (max-width: 760px) {
+  .brand-i .hero { padding: 36px 0 48px; }
+  .brand-i .hero h1 { font-size: clamp(36px, 12vw, 52px); white-space: normal; }
+  .ticker { max-width: 100%; }
+  .brand-i .trow > a {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px 12px;
+    padding: 14px 0;
+  }
+  .brand-i .tr-main { grid-column: 1; grid-row: 1; }
+  .brand-i .tr-sev { grid-column: 2; grid-row: 1; justify-self: end; }
+  .brand-i .tr-when { grid-column: 2; grid-row: 2; text-align: right; font-size: 12px; }
+  .brand-i .tr-stats { grid-column: 1; grid-row: 2; justify-content: flex-start; }
+  .brand-i .tr-go { display: none; }
+  .latest .sec-t { font-size: 24px; }
+  .latest .sec-row { align-items: baseline; }
+}
+
+/* Concise threat pages */
+.det-tight .det-head { margin-bottom: 24px; padding-bottom: 20px; }
+.det-tight .lede { font-size: 16px; max-width: 62ch; }
+.after-hunt { display: grid; gap: 28px; margin-top: 8px; max-width: 920px; }
+.sum-sec h2, .why-sec h2, .after-hunt .ind-sec h2 { font: 600 18px/1.2 var(--display); letter-spacing: -.02em; margin: 0 0 10px; }
+.sum-bullets { margin: 0; padding: 0 0 0 1.15em; display: grid; gap: 8px; color: var(--ink-2); font: 400 15px/1.5 var(--sans); max-width: 68ch; }
+.sum-bullets li { padding-left: .1em; }
+.why-line { margin: 0; font: 400 15px/1.55 var(--sans); color: var(--ink-2); max-width: 68ch; }
+.more-det {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255,255,255,.02);
+  padding: 0 16px;
+}
+.more-det > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 14px 4px;
+  font: 550 14.5px/1.3 var(--sans);
+  color: var(--ink);
+}
+.more-det > summary::-webkit-details-marker { display: none; }
+.more-det > summary::after { content: "Show"; float: right; color: var(--ink-3); font-weight: 500; font-size: 13px; }
+.more-det[open] > summary::after { content: "Hide"; }
+.more-det > summary:hover { color: var(--accent-text); }
+.more-in { display: grid; gap: 28px; padding: 4px 4px 20px; border-top: 1px solid var(--line); }
+.more-in .side { display: grid; gap: 28px; }
+.after-hunt .ind-sec { margin-top: 0; }
+.after-hunt .srcline { margin: 0; }
+@media (max-width: 760px) {
+  .after-hunt { gap: 22px; }
+}
+
+/* Calmer header on the landing, Hunt.io-like */
+body[data-view="home"] .top { background: rgba(var(--bg-rgb), .35); border-bottom-color: transparent; }
+body.is-scrolled .top { background: rgba(var(--bg-rgb), .72); border-bottom-color: var(--line); }

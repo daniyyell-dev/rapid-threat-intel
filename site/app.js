@@ -311,25 +311,28 @@
     var el = $("eyebrow"), t = DATA && byEntry()[0];
     if (!el || !t) return;
     el.setAttribute("href", "#threat/" + encodeURIComponent(t.id));
-    add(clear($("eyebrow-t")), [h("b", { text: "New" }), " " + stitle(t) + " \u00b7 " + ago(t.entry_date)]);
+    $("eyebrow-t").textContent = stitle(t) + " \u00b7 " + ago(t.entry_date);
   }
   function renderLatest() {
     var el = $("latest");
     if (!el) return;
     clear(el);
     var newest = DATA.threats[0].entry_date.split(" ")[0];
-    DATA.threats.slice(0, 6).forEach(function (t) { el.appendChild(row(t, newest)); });
+    DATA.threats.slice(0, 8).forEach(function (t) { el.appendChild(row(t, newest)); });
     if ($("latest-n")) $("latest-n").textContent = String(DATA.threat_count);
   }
   function renderStats() {
-    var s = clear($("stats"));
-    function stat(n, label, cls) {
-      var b = h("b", { class: cls || null, text: "0" });
-      countUp({ set textContent(v) { b.textContent = v; } }, n, 900);
-      return h("span", { class: "st" }, b, " " + label);
+    var s = $("stats");
+    if (s) {
+      clear(s);
+      function stat(n, label, cls) {
+        var b = h("b", { class: cls || null, text: "0" });
+        countUp({ set textContent(v) { b.textContent = v; } }, n, 900);
+        return h("span", { class: "st" }, b, " " + label);
+      }
+      add(s, [stat(DATA.threat_count, "threats"), stat(DATA.indicator_count, "indicators"), stat(DATA.block_now_count, "to block now", "hot"),
+        h("span", { class: "st" }, "Updated ", h("time", { "data-d": DATA.last_updated, title: fmtAdded(DATA.last_updated), text: ago(DATA.last_updated) }))]);
     }
-    add(s, [stat(DATA.threat_count, "threats"), stat(DATA.indicator_count, "indicators"), stat(DATA.block_now_count, "to block now", "hot"),
-      h("span", { class: "st" }, "Updated ", h("time", { "data-d": DATA.last_updated, title: fmtAdded(DATA.last_updated), text: ago(DATA.last_updated) }))]);
     var pt = $("pulse-t");
     if (pt) { clear(pt); add(pt, ["Last entry ", h("time", { "data-d": DATA.last_updated, text: ago(DATA.last_updated) })]); }
     renderEyebrow();
@@ -616,7 +619,7 @@
     show(0);
     return h("section", { class: "blk-sec hunt-sec", id: "hunt-sec", "aria-labelledby": "hq-h" },
       h("h2", { id: "hq-h" }, "Hunt", h("span", { text: plural(qs.length, "platform") })),
-      h("p", { class: "hq-intro" }, "The same hunt for each platform: " + (behaviourFirst(t) ? "the behaviours that map cleanly to log fields (the rest are under Behaviours below)" : "the indicators" + (t.ioa_count ? " and the behaviours that map cleanly to log fields" : "")) +
+      h("p", { class: "hq-intro" }, "The same hunt for each platform: " + (behaviourFirst(t) ? "the behaviours that map cleanly to log fields (the rest are under More detail)" : "the indicators" + (t.ioa_count ? " and the behaviours that map cleanly to log fields" : "")) +
         ". Run it before you block to find past activity." + (t.ioa_count ? " Behaviour hits are leads, not proof." : "")),
       tabs, panel);
   }
@@ -657,15 +660,61 @@
     return svg;
   }
 
+  function severityOf(t) {
+    return t.block_now_count >= 10 ? "critical" : t.block_now_count >= 1 ? "high" : "medium";
+  }
+  function sevLabel(s) {
+    return s === "critical" ? "Critical" : s === "high" ? "High" : "Medium";
+  }
+  function firstSentence(s) {
+    s = String(s || "").replace(/\s+/g, " ").trim();
+    if (!s) return "";
+    var m = s.match(/^(.+?[.!?])(?:\s|$)/);
+    return m ? m[1] : s;
+  }
+  function clipWords(s, n) {
+    var w = String(s || "").trim().split(/\s+/).filter(Boolean);
+    if (w.length <= n) return w.join(" ");
+    return w.slice(0, n).join(" ").replace(/[.,;:]+$/, "") + "\u2026";
+  }
+  function summaryBullets(t) {
+    var out = [];
+    if (t.headline) out.push(t.headline);
+    var g = tg(t), who = [];
+    if (g.sectors.length) who.push(g.sectors.slice(0, 3).join(", "));
+    if (g.countries.length) who.push(g.countries.slice(0, 4).map(function (c) { return c.name; }).join(", "));
+    else if (g.regions.length) who.push(g.regions.join(", "));
+    if (who.length) out.push("Targets: " + who.join(" \u00b7 "));
+    else if (t.category) out.push(t.category);
+    if (t.recommended_actions && t.recommended_actions[0]) out.push(clipWords(t.recommended_actions[0], 26));
+    else {
+      var bits = [];
+      if (t.block_now_count) bits.push(t.block_now_count + " to block now");
+      var hn = huntOf(t);
+      if (hn) bits.push(hn + " to hunt");
+      if (bits.length) out.push(bits.join(", ") + ".");
+    }
+    return out.slice(0, 3);
+  }
+  function whyLine(t) {
+    var s = firstSentence(t.summary || "");
+    var hdl = String(t.headline || "").replace(/[.\s]+$/, "");
+    if (s && hdl && s.replace(/[.\s]+$/, "") !== hdl) return clipWords(s, 24);
+    var bits = [];
+    if (t.block_now_count) bits.push(t.block_now_count + " high-confidence " + (t.block_now_count === 1 ? "indicator" : "indicators") + " to block");
+    else if (t.indicator_count) bits.push(t.indicator_count + " " + (t.indicator_count === 1 ? "indicator" : "indicators") + " to review");
+    if (t.ioa_count) bits.push(plural(t.ioa_count, "behaviour") + " to hunt");
+    return bits.length ? bits.join(", ") + "." : (t.headline || "");
+  }
   function row(t, newest) {
     var hunt = huntOf(t);
     var isNew = t.entry_date.split(" ")[0] === newest;
+    var sev = severityOf(t);
     return h("li", { class: "trow" }, h("a", { href: "#threat/" + encodeURIComponent(t.id) },
-      h("span", { class: "tr-when" }, h("span", { class: "tr-day", text: fmtDay(t.entry_date).replace(/ \d{4}$/, "") }), timeOf(t.entry_date) ? h("span", { class: "tr-time", text: timeOf(t.entry_date) }) : null),
       h("span", { class: "tr-main" },
-        h("span", { class: "tr-name" }, h("span", { text: stitle(t), title: t.name }), isNew ? h("span", { class: "new", text: "New" }) : null),
-        h("span", { class: "tr-head", text: t.headline || t.short || "" }),
-        h("span", { class: "tr-cat", text: t.category })),
+        h("span", { class: "tr-name" }, h("span", { text: stitle(t), title: t.name }), isNew ? h("span", { class: "new", text: "New" }) : null)),
+      h("span", { class: "tr-sev sev sev-" + sev, text: sevLabel(sev) }),
+      h("time", { class: "tr-when", datetime: t.entry_date.replace(" ", "T"), title: fmtAdded(t.entry_date), "data-d": t.entry_date, text: ago(t.entry_date) }),
       h("span", { class: "tr-stats" },
         t.block_now_count ? h("span", { class: "chip blk", text: t.block_now_count + " block" }) : null,
         hunt ? h("span", { class: "chip hunt", text: hunt + " hunt" }) : null,
@@ -816,7 +865,7 @@
     var huntN = t.hunt_count != null ? t.hunt_count : t.indicator_count - t.block_now_count;
     var sev = t.block_now_count >= 10 ? "critical" : t.block_now_count >= 1 ? "high" : "medium";
     wrap.appendChild(h("header", { class: "det-head sev-" + sev, id: "det-head" },
-      h("div", { class: "r-cat" }, h("span", { text: t.category }), t.entry_date.split(" ")[0] === newest ? h("span", { class: "new", text: "New today" }) : null),
+      h("div", { class: "r-cat" }, h("span", { text: t.category }), h("span", { class: "sev sev-" + sev, text: sevLabel(sev) }), t.entry_date.split(" ")[0] === newest ? h("span", { class: "new", text: "New today" }) : null),
       h("h1", { text: stitle(t) }),
       h("p", { class: "det-full", text: t.name }),
       h("p", { class: "lede", text: t.headline }),
@@ -830,48 +879,19 @@
         t.ioa_count ? [h("span", { class: "sep", "aria-hidden": "true", text: " \u00b7 " }), h("span", { class: "ioa-c" }, h("b", { text: String(t.ioa_count) }), (t.ioa_count === 1 ? " behaviour" : " behaviours") + " to hunt")] : null),
       h("p", { class: "share-line" }, h("button", { type: "button", class: "link-btn", onclick: function () { copyText(shareUrl(t.id), this, "Copied link"); } }, "Copy link"), h("span", { class: "sep", "aria-hidden": "true", text: "\u00b7" }), h("a", { class: "link-btn", href: "/t/" + encodeURIComponent(t.id) + "/" }, "Printable page"))));
 
-    var navLinks = [];
     var hq = huntSection(t);
-    if (hq) { wrap.appendChild(hq); navLinks.push(["hunt-sec", "Hunt"]); }
+    if (hq) wrap.appendChild(hq);
     var ioa = ioaSection(t);
-    if (ioa) navLinks.push(["ioa-sec", "Behaviours"]);
-    navLinks.push(["todo-sec", "What to do"]);
-    navLinks.push(["ind-sec", "Indicators"]);
-    navLinks.push(["downloads-sec", "Downloads"]);
-    if (t.sources && t.sources.length) navLinks.push(["sources-sec", "Sources"]);
-    if (LAYOUT === "b") {
-      var snav = h("nav", { class: "sec-nav", "aria-label": "On this page" }, navLinks.map(function (x, i) {
-        return h("a", { href: "#" + x[0], "data-sec": x[0], class: i === 0 ? "is-on" : null, text: x[1] });
-      }));
-      wrap.insertBefore(snav, hq || wrap.lastChild);
-      // Keep the hash route as #threat/<id>; section links scroll without replacing it.
-      snav.addEventListener("click", function (e) {
-        var a = e.target.closest && e.target.closest("a[data-sec]");
-        if (!a) return;
-        e.preventDefault();
-        var target = document.getElementById(a.getAttribute("data-sec"));
-        if (target) target.scrollIntoView({ block: "start" });
-        Array.prototype.forEach.call(snav.querySelectorAll("a"), function (l) { l.classList.toggle("is-on", l === a); });
-      });
-    }
 
-    var main = h("div", { class: "det-main" });
-    if (t.caveat) main.appendChild(h("div", { class: "warn", role: "note" }, h("b", null, "Note"), " ", highlightIocs(t.caveat)));
-    main.appendChild(sec("What to do", h("div", null,
-      t.recommended_actions.length ? h("ol", { class: "steps" }, t.recommended_actions.map(function (a) { return h("li", null, h("span", null, highlightIocs(a))); })) : h("p", { class: "dim", text: "No extra steps beyond the block list and hunts." })), null, "todo-sec"));
-    if (ioa) main.appendChild(ioa);
-    main.appendChild(targetSection(t));
-    if (t.sources && t.sources.length) {
-      main.appendChild(h("section", { class: "blk-sec", id: "sources-sec" }, srcLine(t.sources, "srcline det-src")));
-    }
-    if (t.summary) main.appendChild(sec("Background", h("div", { class: "prose" }, h("p", null, highlightIocs(t.summary))), null, "background-sec"));
-
-    var side = h("aside", { class: "side", "aria-label": "Downloads and MITRE ATT&CK" });
-    side.appendChild(sec("Downloads", h("div", null, fileList(t.files),
-      h("p", { class: "rail-p", "aria-hidden": "false" }, extLink(t.repo_url, ["View folder in repository", h("span", { class: "ext-ico", "aria-hidden": "true" })]))), null, "downloads-sec"));
-    if (t.mitre.length) side.appendChild(sec("MITRE ATT&CK", h("ul", { class: "mitre" }, t.mitre.map(function (m) { return h("li", null, extLink(m.url, [h("b", { text: m.id }), h("span", { text: m.name })])); })), String(t.mitre.length), "mitre-sec"));
-
-    wrap.appendChild(h("div", { class: "det-grid" }, main, side));
+    var after = h("div", { class: "after-hunt" });
+    if (t.caveat) after.appendChild(h("div", { class: "warn", role: "note" }, h("b", null, "Note"), " ", highlightIocs(t.caveat)));
+    after.appendChild(h("section", { class: "sum-sec", id: "summary-sec", "aria-labelledby": "sum-h" },
+      h("h2", { id: "sum-h" }, "Summary"),
+      h("ul", { class: "sum-bullets" }, summaryBullets(t).map(function (b) { return h("li", null, highlightIocs(b)); }))));
+    var why = whyLine(t);
+    if (why) after.appendChild(h("section", { class: "why-sec", id: "why-sec", "aria-labelledby": "why-h" },
+      h("h2", { id: "why-h" }, "Why it matters"),
+      h("p", { class: "why-line" }, highlightIocs(why))));
 
     var tq = h("input", { type: "search", placeholder: "Filter by value or description", spellcheck: "false", "aria-label": "Filter indicators" });
     var ts = h("select", { "aria-label": "Indicator type" }, h("option", { value: "" }, "All types"),
@@ -912,13 +932,29 @@
     tq.addEventListener("input", fill);
     ts.addEventListener("change", fill);
     fill();
-    wrap.appendChild(h("section", { class: "ind-sec", id: "ind-sec", "aria-labelledby": "ind-h" },
+    after.appendChild(h("section", { class: "ind-sec", id: "ind-sec", "aria-labelledby": "ind-h" },
       h("div", { class: "ind-head" }, h("h2", { id: "ind-h" }, h("span", { class: "idx", text: "IOC" }), "Indicators ", h("span", { class: "dim" }, countEl))),
-      h("p", { class: "ind-note" }, "Indicators are shown defanged and never as links. Copy gives the real value."),
+      h("p", { class: "ind-note" }, "Indicators are shown as plain text, defanged and never as links. Copy gives the real value."),
       h("div", { class: "ind-tools" }, tq, ts),
       h("div", { class: "tbl-wrap" }, h("table", null,
         h("thead", null, h("tr", null, ["Indicator", "Type", "Confidence", "Action", multi ? "Description and source" : "Description"].map(function (x) { return h("th", { scope: "col", text: x }); }))), body)),
       moreBtn));
+    if (t.sources && t.sources.length) {
+      after.appendChild(h("section", { class: "blk-sec", id: "sources-sec" }, srcLine(t.sources, "srcline det-src")));
+    }
+    var extra = [];
+    extra.push(sec("What to do", h("div", null,
+      t.recommended_actions.length ? h("ol", { class: "steps" }, t.recommended_actions.map(function (a) { return h("li", null, h("span", null, highlightIocs(a))); })) : h("p", { class: "dim", text: "No extra steps beyond the block list and hunts." })), null, "todo-sec"));
+    if (ioa) extra.push(ioa);
+    extra.push(targetSection(t));
+    if (t.summary) extra.push(sec("Background", h("div", { class: "prose" }, h("p", null, highlightIocs(t.summary))), null, "background-sec"));
+    extra.push(sec("Downloads", h("div", null, fileList(t.files),
+      h("p", { class: "rail-p" }, extLink(t.repo_url, ["View folder in repository", h("span", { class: "ext-ico", "aria-hidden": "true" })]))), null, "downloads-sec"));
+    if (t.mitre.length) extra.push(sec("MITRE ATT&CK", h("ul", { class: "mitre" }, t.mitre.map(function (m) { return h("li", null, extLink(m.url, [h("b", { text: m.id }), h("span", { text: m.name })])); })), String(t.mitre.length), "mitre-sec"));
+    after.appendChild(h("details", { class: "more-det", id: "more-det" },
+      h("summary", { text: "More detail" }),
+      h("div", { class: "more-in" }, extra)));
+    wrap.appendChild(after);
     if (LAYOUT === "a") renderFeed(true);
   }
 
