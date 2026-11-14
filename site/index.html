@@ -33,7 +33,7 @@
 <link rel="preload" href="/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/InterDisplay-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/feed.json" as="fetch" crossorigin>
-<link rel="stylesheet" href="/style.css?v=94afde7e">
+<link rel="stylesheet" href="/style.css?v=e86628de">
 </head>
 <body data-layout="d" class="brand-i">
 <a class="skip" href="#main">Skip to content</a>
@@ -127,11 +127,29 @@
     </div>
     <section class="tmap" id="tmap" aria-labelledby="tmap-h">
       <div class="tmap-head">
-        <div><h2 id="tmap-h">Targeted countries</h2><p class="tmap-sub">Countries named by the sources. Click one to filter the list.</p></div>
-        <div class="tmap-legend" aria-hidden="true"><span>Fewer</span><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><span>More</span></div>
+        <div><h2 id="tmap-h">Threat map</h2><p class="tmap-sub" id="tmap-sub">Attack sources seen in the last hour by public sensor networks.</p></div>
+        <div class="tmap-tabs" role="tablist" aria-label="Map view">
+          <button type="button" role="tab" id="tab-live" aria-selected="true" aria-controls="tmap-live"><span class="live-dot" aria-hidden="true"></span>Live attacks</button>
+          <button type="button" role="tab" id="tab-ours" aria-selected="false" aria-controls="tmap-ours">Our threats</button>
+        </div>
       </div>
-      <div class="tmap-body">
-        <div class="tmap-map" id="tmap-map"><div class="tmap-tip" id="tmap-tip" hidden></div></div>
+      <div class="tmap-body" id="tmap-live" role="tabpanel" aria-labelledby="tab-live">
+        <div class="tmap-mapcol">
+          <div class="tmap-map lmap" id="lmap-map"><div class="tmap-tip" id="lmap-tip" hidden></div></div>
+          <div class="lmap-ticker" id="lmap-ticker" aria-live="off"></div>
+          <div class="lmap-kev" id="lmap-kev"></div>
+        </div>
+        <aside class="tmap-side">
+          <p class="lmap-stat" id="lmap-stat"></p>
+          <ol class="tmap-top" id="lmap-top"></ol>
+          <p class="lmap-src" id="lmap-src"></p>
+        </aside>
+      </div>
+      <div class="tmap-body" id="tmap-ours" role="tabpanel" aria-labelledby="tab-ours" hidden>
+        <div class="tmap-mapcol">
+          <div class="tmap-map" id="tmap-map"><div class="tmap-tip" id="tmap-tip" hidden></div></div>
+          <div class="tmap-legend" aria-hidden="true"><span>Fewer</span><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><span>More</span></div>
+        </div>
         <aside class="tmap-side">
           <ol class="tmap-top" id="tmap-top"></ol>
           <div class="tmap-ns" id="tmap-ns"></div>
@@ -224,7 +242,7 @@
   </div>
 </footer>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script src="/app.js?v=14ada172"></script>
+<script src="/app.js?v=de0720a0"></script>
 <script data-goatcounter="https://daniyyell.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

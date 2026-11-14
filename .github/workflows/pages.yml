@@ -1,4 +1,5 @@
-# Deploy the static live feed in site/ to GitHub Pages on every push to main.
+# Deploy the static live feed in site/ to GitHub Pages on every push to main,
+# and every 30 minutes to refresh the live attack map (site/live_map.json).
 name: Deploy live feed
 
 on:
@@ -6,6 +7,8 @@ on:
     branches:
       - main
   workflow_dispatch:
+  schedule:
+    - cron: "7,37 * * * *"
 
 permissions:
   contents: read
@@ -27,6 +30,17 @@ jobs:
         uses: actions/checkout@v7
         with:
           fetch-depth: 2
+      - name: Month
+        id: month
+        run: echo "m=$(date -u +%Y-%m)" >> "$GITHUB_OUTPUT"
+      - name: Cache IP to country database
+        uses: actions/cache@v6
+        with:
+          path: ${{ runner.temp }}/dbip-country-lite.csv.gz
+          key: dbip-${{ steps.month.outputs.m }}
+      - name: Build live attack map
+        continue-on-error: true
+        run: python3 .github/scripts/live_map.py site/live_map.json
       - name: Setup Pages
         uses: actions/configure-pages@v6
       - name: Upload site
@@ -38,7 +52,7 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v5
       - name: Ping IndexNow
-        if: success()
+        if: success() && github.event_name == 'push'
         continue-on-error: true
         env:
           KEY: 58cd380068e92e34466fb559e7dd9e5f
