@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-14T19:19:55Z",
+ "updated": "2026-11-14T20:14:08Z",
  "window_days": 30,
  "status_note": "Claims posted by extortion groups on their leak sites. Claimed, unverified: a listing is not proof of a breach.",
  "disclaimer": "Dark web activity from public leak-site trackers: metadata only (group, organisation, country, sector, date). IOCWatch does not access, host or link to stolen data. Claims are unverified and never feed the block list.",
@@ -16,16 +16,16 @@
  ],
  "stats": {
   "groups": 646,
-  "groups_online": 140,
+  "groups_online": 212,
   "markets": 147,
-  "markets_online": 74,
-  "posts_24h": 28,
-  "posts_month": 586,
-  "posts_90d": 3282,
-  "posts_year": 9737
+  "markets_online": 60,
+  "posts_24h": 26,
+  "posts_month": 587,
+  "posts_90d": 3281,
+  "posts_year": 9738
  },
  "totals": {
-  "claims": 99,
+  "claims": 100,
   "groups": 25,
   "countries": 32
  },
@@ -67,15 +67,15 @@
    "count": 3
   },
   {
+   "name": "Anubis",
+   "count": 2
+  },
+  {
    "name": "Bravox",
    "count": 2
   },
   {
    "name": "Dark Project",
-   "count": 2
-  },
-  {
-   "name": "Interlock",
    "count": 2
   }
  ],
@@ -334,6 +334,15 @@
    "victim": "toyokiki-thailand.com",
    "country": "TH",
    "sector": "Manufacturing",
+   "date": "2026-11-14",
+   "source": "RansomLook",
+   "status": "claimed, unverified"
+  },
+  {
+   "group": "Anubis",
+   "victim": "Home Instead",
+   "country": "",
+   "sector": "",
    "date": "2026-11-14",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -1332,7 +1341,7 @@
  ],
  "markets": {
   "tracked": 147,
-  "online": 74,
+  "online": 60,
   "names": [
    "#leaktheanalyst",
    "00code",
