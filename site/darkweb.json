@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-14T12:00:13Z",
+ "updated": "2026-11-14T13:10:30Z",
  "window_days": 30,
  "status_note": "Claims posted by extortion groups on their leak sites. Claimed, unverified: a listing is not proof of a breach.",
  "disclaimer": "Dark web activity from public leak-site trackers: metadata only (group, organisation, country, sector, date). IOCWatch does not access, host or link to stolen data. Claims are unverified and never feed the block list.",
@@ -8,11 +8,15 @@
   {
    "name": "RansomLook",
    "kind": "leak-site tracker (public API)"
+  },
+  {
+   "name": "ransomware.live",
+   "kind": "country and sector enrichment"
   }
  ],
  "stats": {
   "groups": 646,
-  "groups_online": 84,
+  "groups_online": 75,
   "markets": 147,
   "markets_online": 59,
   "posts_24h": 57,
@@ -23,7 +27,7 @@
  "totals": {
   "claims": 98,
   "groups": 24,
-  "countries": 19
+  "countries": 31
  },
  "by_group": [
   {
@@ -75,17 +79,107 @@
    "count": 2
   }
  ],
+ "group_activity": {
+  "window_days": 30,
+  "total": 1212,
+  "top": [
+   {
+    "name": "N0N",
+    "count": 152
+   },
+   {
+    "name": "The Gentlemen",
+    "count": 138
+   },
+   {
+    "name": "Qilin",
+    "count": 118
+   },
+   {
+    "name": "INC Ransom",
+    "count": 72
+   },
+   {
+    "name": "Akira",
+    "count": 40
+   },
+   {
+    "name": "Silent Ransom Group",
+    "count": 36
+   },
+   {
+    "name": "Booba Project",
+    "count": 33
+   },
+   {
+    "name": "Settra",
+    "count": 25
+   },
+   {
+    "name": "Play",
+    "count": 22
+   },
+   {
+    "name": "WhiteArmor",
+    "count": 22
+   },
+   {
+    "name": "BrainCipher",
+    "count": 20
+   },
+   {
+    "name": "Emperador",
+    "count": 20
+   },
+   {
+    "name": "LockBit 5.0",
+    "count": 20
+   },
+   {
+    "name": "MedusaLocker",
+    "count": 20
+   },
+   {
+    "name": "SafePay",
+    "count": 20
+   }
+  ]
+ },
  "by_country": [
   {
    "name": "US",
-   "count": 26
+   "count": 39
   },
   {
    "name": "CA",
-   "count": 5
+   "count": 9
+  },
+  {
+   "name": "AU",
+   "count": 3
+  },
+  {
+   "name": "DE",
+   "count": 3
+  },
+  {
+   "name": "GB",
+   "count": 3
+  },
+  {
+   "name": "SA",
+   "count": 3
   },
   {
    "name": "CN",
+   "count": 2
+  },
+  {
+   "name": "FR",
+   "count": 2
+  },
+  {
+   "name": "JP",
    "count": 2
   },
   {
@@ -93,49 +187,33 @@
    "count": 2
   },
   {
+   "name": "TR",
+   "count": 2
+  },
+  {
    "name": "AE",
-   "count": 1
-  },
-  {
-   "name": "AR",
-   "count": 1
-  },
-  {
-   "name": "AU",
-   "count": 1
-  },
-  {
-   "name": "BR",
-   "count": 1
-  },
-  {
-   "name": "DE",
-   "count": 1
-  },
-  {
-   "name": "DK",
-   "count": 1
-  },
-  {
-   "name": "ES",
-   "count": 1
-  },
-  {
-   "name": "FR",
    "count": 1
   }
  ],
  "by_sector": [
   {
-   "name": "Healthcare",
-   "count": 12
+   "name": "Manufacturing",
+   "count": 15
   },
   {
-   "name": "Education",
+   "name": "Business services",
+   "count": 11
+  },
+  {
+   "name": "Healthcare",
+   "count": 10
+  },
+  {
+   "name": "Technology",
    "count": 9
   },
   {
-   "name": "Construction",
+   "name": "Education",
    "count": 7
   },
   {
@@ -143,28 +221,20 @@
    "count": 7
   },
   {
-   "name": "Energy & utilities",
-   "count": 6
-  },
-  {
-   "name": "Manufacturing",
-   "count": 6
-  },
-  {
-   "name": "Technology",
-   "count": 5
+   "name": "Retail & consumer",
+   "count": 7
   },
   {
    "name": "Transport & logistics",
-   "count": 5
+   "count": 7
   }
  ],
  "claims": [
   {
    "group": "Akira",
    "victim": "Galorath",
-   "country": "",
-   "sector": "",
+   "country": "US",
+   "sector": "Business services",
    "date": "2026-11-14",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -173,7 +243,7 @@
    "group": "Everest",
    "victim": "Grundbaulabor Trier GmbH",
    "country": "DE",
-   "sector": "Construction",
+   "sector": "Manufacturing",
    "date": "2026-11-14",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -190,7 +260,7 @@
   {
    "group": "Qilin",
    "victim": "Leonard's Express",
-   "country": "",
+   "country": "AU",
    "sector": "Transport & logistics",
    "date": "2026-11-14",
    "source": "RansomLook",
@@ -199,7 +269,7 @@
   {
    "group": "Qilin",
    "victim": "Oral Roberts University",
-   "country": "",
+   "country": "US",
    "sector": "Education",
    "date": "2026-11-14",
    "source": "RansomLook",
@@ -217,7 +287,7 @@
   {
    "group": "Qilin",
    "victim": "York University",
-   "country": "",
+   "country": "CA",
    "sector": "Education",
    "date": "2026-11-14",
    "source": "RansomLook",
@@ -253,8 +323,8 @@
   {
    "group": "BYOD",
    "victim": "Toyota",
-   "country": "",
-   "sector": "",
+   "country": "JP",
+   "sector": "Manufacturing",
    "date": "2026-11-14",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -262,8 +332,8 @@
   {
    "group": "Play",
    "victim": "NY Snacks",
-   "country": "",
-   "sector": "",
+   "country": "US",
+   "sector": "Retail & consumer",
    "date": "2026-11-13",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -280,7 +350,7 @@
   {
    "group": "Play",
    "victim": "Signworx",
-   "country": "",
+   "country": "GB",
    "sector": "",
    "date": "2026-11-13",
    "source": "RansomLook",
@@ -289,7 +359,7 @@
   {
    "group": "Play",
    "victim": "Minor League Baseball",
-   "country": "",
+   "country": "US",
    "sector": "Hospitality & leisure",
    "date": "2026-11-13",
    "source": "RansomLook",
@@ -299,7 +369,7 @@
    "group": "Play",
    "victim": "Frey Properties of Highland LLC",
    "country": "US",
-   "sector": "Real estate",
+   "sector": "Retail & consumer",
    "date": "2026-11-13",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -307,8 +377,8 @@
   {
    "group": "Play",
    "victim": "ARRB Group",
-   "country": "",
-   "sector": "",
+   "country": "AU",
+   "sector": "Government",
    "date": "2026-11-13",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -316,8 +386,8 @@
   {
    "group": "Doommageddon",
    "victim": "Koray Topaç Hukuk Bürosu",
-   "country": "",
-   "sector": "",
+   "country": "TR",
+   "sector": "Business services",
    "date": "2026-11-13",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -326,7 +396,7 @@
    "group": "Wallstreet",
    "victim": "Walgreen Co.",
    "country": "US",
-   "sector": "",
+   "sector": "Retail & consumer",
    "date": "2026-11-13",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -344,7 +414,7 @@
    "group": "Aoqin Leaks",
    "victim": "Tyfone",
    "country": "US",
-   "sector": "",
+   "sector": "Technology",
    "date": "2026-11-13",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -353,7 +423,7 @@
    "group": "Aoqin Leaks",
    "victim": "The Tidewater Inn",
    "country": "US",
-   "sector": "Energy & utilities",
+   "sector": "Hospitality & leisure",
    "date": "2026-11-13",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -361,7 +431,7 @@
   {
    "group": "Aoqin Leaks",
    "victim": "Airblue",
-   "country": "AE",
+   "country": "PK",
    "sector": "Transport & logistics",
    "date": "2026-11-13",
    "source": "RansomLook",
@@ -370,8 +440,8 @@
   {
    "group": "INC Ransom",
    "victim": "Advantage Archives",
-   "country": "",
-   "sector": "",
+   "country": "US",
+   "sector": "Business services",
    "date": "2026-11-13",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -380,7 +450,7 @@
    "group": "Akira",
    "victim": "Replogle Globes",
    "country": "US",
-   "sector": "",
+   "sector": "Manufacturing",
    "date": "2026-11-13",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -389,7 +459,7 @@
    "group": "Akira",
    "victim": "Paragon Mechanical",
    "country": "",
-   "sector": "Construction",
+   "sector": "Manufacturing",
    "date": "2026-11-13",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -397,7 +467,7 @@
   {
    "group": "N0N",
    "victim": "Company #216",
-   "country": "",
+   "country": "BW",
    "sector": "",
    "date": "2026-11-13",
    "source": "RansomLook",
@@ -406,7 +476,7 @@
   {
    "group": "N0N",
    "victim": "Company #213",
-   "country": "",
+   "country": "QA",
    "sector": "Energy & utilities",
    "date": "2026-11-13",
    "source": "RansomLook",
@@ -415,7 +485,7 @@
   {
    "group": "N0N",
    "victim": "Company #212",
-   "country": "",
+   "country": "ET",
    "sector": "Education",
    "date": "2026-11-13",
    "source": "RansomLook",
@@ -425,7 +495,7 @@
    "group": "N0N",
    "victim": "Texas Truck Center",
    "country": "US",
-   "sector": "",
+   "sector": "Transport & logistics",
    "date": "2026-11-13",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -452,7 +522,7 @@
    "group": "N0N",
    "victim": "Female Daily Network",
    "country": "ID",
-   "sector": "",
+   "sector": "Retail & consumer",
    "date": "2026-11-13",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -461,7 +531,7 @@
    "group": "N0N",
    "victim": "LiveRamp",
    "country": "US",
-   "sector": "",
+   "sector": "Technology",
    "date": "2026-11-13",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -470,7 +540,7 @@
    "group": "N0N",
    "victim": "DraftKings",
    "country": "US",
-   "sector": "Hospitality & leisure",
+   "sector": "Retail & consumer",
    "date": "2026-11-13",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -478,7 +548,7 @@
   {
    "group": "Interlock",
    "victim": "K&A Industries",
-   "country": "",
+   "country": "US",
    "sector": "Manufacturing",
    "date": "2026-11-13",
    "source": "RansomLook",
@@ -496,8 +566,8 @@
   {
    "group": "INC Ransom",
    "victim": "sportsmansguide.com",
-   "country": "",
-   "sector": "Hospitality & leisure",
+   "country": "US",
+   "sector": "Retail & consumer",
    "date": "2026-11-13",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -505,7 +575,7 @@
   {
    "group": "Bravox",
    "victim": "World Wide Fittings 🇺🇸",
-   "country": "",
+   "country": "US",
    "sector": "Manufacturing",
    "date": "2026-11-13",
    "source": "RansomLook",
@@ -514,7 +584,7 @@
   {
    "group": "Bravox",
    "victim": "AWO Bundesverband 🇩🇪",
-   "country": "",
+   "country": "DE",
    "sector": "",
    "date": "2026-11-13",
    "source": "RansomLook",
@@ -532,8 +602,8 @@
   {
    "group": "Leakeddata",
    "victim": "A&O Shearman",
-   "country": "",
-   "sector": "",
+   "country": "GB",
+   "sector": "Business services",
    "date": "2026-11-13",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -541,7 +611,7 @@
   {
    "group": "Interlock",
    "victim": "Garden Valley School Division",
-   "country": "",
+   "country": "CA",
    "sector": "Education",
    "date": "2026-11-13",
    "source": "RansomLook",
@@ -667,7 +737,7 @@
   {
    "group": "Krybit",
    "victim": "cey-tech.com",
-   "country": "",
+   "country": "CY",
    "sector": "Technology",
    "date": "2026-11-13",
    "source": "RansomLook",
@@ -676,7 +746,7 @@
   {
    "group": "Emperador",
    "victim": "Carsem",
-   "country": "",
+   "country": "MY",
    "sector": "Manufacturing",
    "date": "2026-11-13",
    "source": "RansomLook",
@@ -686,7 +756,7 @@
    "group": "Akira",
    "victim": "Leware Construction Company ofFlorida",
    "country": "US",
-   "sector": "Construction",
+   "sector": "Manufacturing",
    "date": "2026-11-11",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -704,7 +774,7 @@
    "group": "Akira",
    "victim": "Quality Air",
    "country": "",
-   "sector": "",
+   "sector": "Transport & logistics",
    "date": "2026-11-11",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -712,7 +782,7 @@
   {
    "group": "Deadlock",
    "victim": "Kadick",
-   "country": "",
+   "country": "US",
    "sector": "Finance",
    "date": "2026-11-11",
    "source": "RansomLook",
@@ -721,7 +791,7 @@
   {
    "group": "The Gentlemen",
    "victim": "EiCOh",
-   "country": "",
+   "country": "JP",
    "sector": "",
    "date": "2026-11-11",
    "source": "RansomLook",
@@ -731,7 +801,7 @@
    "group": "The Gentlemen",
    "victim": "Vinson",
    "country": "US",
-   "sector": "",
+   "sector": "Business services",
    "date": "2026-11-11",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -740,7 +810,7 @@
    "group": "Curious Worm",
    "victim": "atlashp.com",
    "country": "",
-   "sector": "Healthcare",
+   "sector": "Technology",
    "date": "2026-11-11",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -748,8 +818,8 @@
   {
    "group": "Curious Worm",
    "victim": "marquiscompanies.com",
-   "country": "",
-   "sector": "Healthcare",
+   "country": "US",
+   "sector": "Business services",
    "date": "2026-11-11",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -757,7 +827,7 @@
   {
    "group": "Curious Worm",
    "victim": "safcodental.com",
-   "country": "",
+   "country": "SA",
    "sector": "Healthcare",
    "date": "2026-11-11",
    "source": "RansomLook",
@@ -766,33 +836,6 @@
   {
    "group": "Curious Worm",
    "victim": "lifelinescreening.com",
-   "country": "",
-   "sector": "Healthcare",
-   "date": "2026-11-11",
-   "source": "RansomLook",
-   "status": "claimed, unverified"
-  },
-  {
-   "group": "Curious Worm",
-   "victim": "raleighortho.com",
-   "country": "",
-   "sector": "Healthcare",
-   "date": "2026-11-11",
-   "source": "RansomLook",
-   "status": "claimed, unverified"
-  },
-  {
-   "group": "Curious Worm",
-   "victim": "baronandbudd.com",
-   "country": "",
-   "sector": "",
-   "date": "2026-11-11",
-   "source": "RansomLook",
-   "status": "claimed, unverified"
-  },
-  {
-   "group": "Curious Worm",
-   "victim": "shannonhealth.com",
    "country": "US",
    "sector": "Healthcare",
    "date": "2026-11-11",
@@ -801,8 +844,35 @@
   },
   {
    "group": "Curious Worm",
+   "victim": "raleighortho.com",
+   "country": "US",
+   "sector": "Healthcare",
+   "date": "2026-11-11",
+   "source": "RansomLook",
+   "status": "claimed, unverified"
+  },
+  {
+   "group": "Curious Worm",
+   "victim": "baronandbudd.com",
+   "country": "GB",
+   "sector": "Business services",
+   "date": "2026-11-11",
+   "source": "RansomLook",
+   "status": "claimed, unverified"
+  },
+  {
+   "group": "Curious Worm",
+   "victim": "shannonhealth.com",
+   "country": "IE",
+   "sector": "Healthcare",
+   "date": "2026-11-11",
+   "source": "RansomLook",
+   "status": "claimed, unverified"
+  },
+  {
+   "group": "Curious Worm",
    "victim": "sbhny.org",
-   "country": "",
+   "country": "US",
    "sector": "Healthcare",
    "date": "2026-11-11",
    "source": "RansomLook",
@@ -811,7 +881,7 @@
   {
    "group": "Curious Worm",
    "victim": "sacheminc.com",
-   "country": "",
+   "country": "CA",
    "sector": "Manufacturing",
    "date": "2026-11-11",
    "source": "RansomLook",
@@ -830,7 +900,7 @@
    "group": "The Gentlemen",
    "victim": "Solarium",
    "country": "BR",
-   "sector": "Energy & utilities",
+   "sector": "Technology",
    "date": "2026-11-11",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -838,8 +908,8 @@
   {
    "group": "The Gentlemen",
    "victim": "National Agency Programmes and Mobility",
-   "country": "",
-   "sector": "Education",
+   "country": "MK",
+   "sector": "Government",
    "date": "2026-11-11",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -848,7 +918,7 @@
    "group": "The Gentlemen",
    "victim": "Burgess Lowman CPAs",
    "country": "US",
-   "sector": "",
+   "sector": "Business services",
    "date": "2026-11-11",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -856,8 +926,8 @@
   {
    "group": "The Gentlemen",
    "victim": "Alan Mok Engineering",
-   "country": "SG",
-   "sector": "Construction",
+   "country": "HK",
+   "sector": "Manufacturing",
    "date": "2026-11-11",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -866,7 +936,7 @@
    "group": "The Gentlemen",
    "victim": "Triad Architects",
    "country": "KE",
-   "sector": "Construction",
+   "sector": "Business services",
    "date": "2026-11-11",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -874,7 +944,7 @@
   {
    "group": "The Gentlemen",
    "victim": "National Investments Company",
-   "country": "",
+   "country": "SA",
    "sector": "Finance",
    "date": "2026-11-11",
    "source": "RansomLook",
@@ -901,8 +971,8 @@
   {
    "group": "The Gentlemen",
    "victim": "Groupe Alternance",
-   "country": "",
-   "sector": "Education",
+   "country": "FR",
+   "sector": "Business services",
    "date": "2026-11-11",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -910,7 +980,7 @@
   {
    "group": "The Gentlemen",
    "victim": "Sielke",
-   "country": "",
+   "country": "DE",
    "sector": "",
    "date": "2026-11-11",
    "source": "RansomLook",
@@ -937,7 +1007,7 @@
   {
    "group": "The Gentlemen",
    "victim": "Reso Tech Laurentides",
-   "country": "",
+   "country": "CA",
    "sector": "Technology",
    "date": "2026-11-11",
    "source": "RansomLook",
@@ -947,7 +1017,7 @@
    "group": "The Gentlemen",
    "victim": "Darr Equipment",
    "country": "US",
-   "sector": "Energy & utilities",
+   "sector": "Manufacturing",
    "date": "2026-11-11",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -974,7 +1044,7 @@
    "group": "The Gentlemen",
    "victim": "Clancy Systems International",
    "country": "US",
-   "sector": "Technology",
+   "sector": "Government",
    "date": "2026-11-11",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -982,7 +1052,7 @@
   {
    "group": "The Gentlemen",
    "victim": "Orennia",
-   "country": "",
+   "country": "SE",
    "sector": "Energy & utilities",
    "date": "2026-11-11",
    "source": "RansomLook",
@@ -992,7 +1062,7 @@
    "group": "The Gentlemen",
    "victim": "Esri South Africa",
    "country": "ZA",
-   "sector": "",
+   "sector": "Technology",
    "date": "2026-11-11",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -1000,8 +1070,8 @@
   {
    "group": "Dark Project",
    "victim": "MTM&O Gold Refinery DMCC",
-   "country": "",
-   "sector": "",
+   "country": "AE",
+   "sector": "Manufacturing",
    "date": "2026-11-11",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -1009,7 +1079,7 @@
   {
    "group": "Dark Project",
    "victim": "Bear Valley Community Hospital",
-   "country": "",
+   "country": "US",
    "sector": "Healthcare",
    "date": "2026-11-11",
    "source": "RansomLook",
@@ -1028,7 +1098,7 @@
    "group": "INC Ransom",
    "victim": "Kolin",
    "country": "TR",
-   "sector": "Construction",
+   "sector": "Manufacturing",
    "date": "2026-11-10",
    "source": "RansomLook",
    "status": "claimed, unverified"
@@ -1036,7 +1106,7 @@
   {
    "group": "INC Ransom",
    "victim": "Nota Groep",
-   "country": "",
+   "country": "NL",
    "sector": "",
    "date": "2026-11-10",
    "source": "RansomLook",

@@ -3,6 +3,30 @@
   "disclaimer": "Early reports, no IOCs yet. Not on the block list.",
   "rumours": [
     {
+      "id": "fireworks-ai-supplier-breach",
+      "short_title": "Fireworks AI breach",
+      "headline": "AI provider Fireworks breach exposes Uber driver licences and Notion data",
+      "claim": "Uber says attackers used credentials stolen from AI model provider Fireworks AI on 7 October to take drivers' licence data, Notion confirmed its data was also taken, and Cursor says the same breach exposed an access key it had issued; no public IOCs have been published.",
+      "sources": [
+        {
+          "name": "TechCrunch",
+          "url": "https://techcrunch.com/2026/11/13/uber-confirms-hackers-stole-thousands-of-drivers-license-information-in-data-breach/"
+        },
+        {
+          "name": "Uber notice to Iowa Attorney General",
+          "url": "https://www.iowaattorneygeneral.gov/media/cms/11102026_Uber_Technologies_Inc_089721E61CBAB.pdf"
+        },
+        {
+          "name": "Cursor",
+          "url": "https://cursor.com/blog/security-incident-update"
+        }
+      ],
+      "first_seen": "2026-11-14",
+      "category": "Supply chain",
+      "status": "Confirmed - IOCs pending",
+      "note": "Fireworks attributes the breach to a financially motivated group that sells stolen access to AI models. Customers that shared data, keys or storage access with Fireworks AI should rotate those credentials and review access to any storage shared with it. The tampered Claude Code extension that followed the Cursor exposure is already on the feed."
+    },
+    {
       "id": "quantum-systems-cyberattack",
       "short_title": "Quantum Systems attack",
       "claim": "German drone maker Quantum Systems confirmed a late-October cyberattack; reports say a malicious QBase update reached customer servers, and no public IOCs have been published.",
