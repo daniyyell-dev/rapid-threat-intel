@@ -335,6 +335,7 @@
     renderEyebrow();
     renderLive();
     renderLatest();
+    renderShowcase();
   }
   function fillFilters() {
     var cats = {}, types = {}, days = {}, geo = {}, geoName = {}, secs = {};
@@ -728,6 +729,7 @@
       var on = b.getAttribute("data-k") === gk;
       b.classList.toggle("on", on); b.setAttribute("aria-pressed", on ? "true" : "false");
     });
+    markMap(gk);
     var nameq = ($("q-list") && $("q-list").value || "").trim().toLowerCase();
     var list = DATA.threats.filter(function (t) {
       var keys = geoKeys(t), secs = tg(t).sectors;
@@ -1100,9 +1102,219 @@
       if (v === "hunts") renderHunts();
       if (v === "sources") renderSources();
       window.scrollTo(0, 0);
+      if (hash === "threats/map") setTimeout(function () { var mp = $("tmap"); if (mp) mp.scrollIntoView({ behavior: "smooth", block: "start" }); }, 60);
       return;
     }
     showView("home");
+  }
+  /* ---- Identity build: product showcase, trusted sources, feature visuals, threat map, scroll reveal ---- */
+  var NEWSY = /^(BleepingComputer|The Hacker News|X|Security Online|The Register|The Stack|Mint|SecurityWeek|GBHackers|Dark Reading|The Record|Help Net Security|Infosecurity|CyberScoop|Hackread|Cybernews|SC Media|TechCrunch|Threadlinqs|ransomware\.live|SOCRadar)/i;
+  function svgIcon(d, size) {
+    var s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("width", size || 16); s.setAttribute("height", size || 16); s.setAttribute("aria-hidden", "true");
+    s.setAttribute("class", "ico");
+    d.split("|").forEach(function (pd) { var p = document.createElementNS("http://www.w3.org/2000/svg", "path"); p.setAttribute("d", pd); s.appendChild(p); });
+    return s;
+  }
+  var ICO = {
+    file: "M7 3.5h7l4 4v13H7Z|M14 3.5v4h4", shield: "M12 3.5 5 6.2v5.3c0 4.1 2.9 7.6 7 8.9 4.1-1.3 7-4.8 7-8.9V6.2Z|m9 12 2 2 4-4",
+    dl: "M12 4v11|m7 10 5 5 5-5|M5 20h14", code: "m8 8-4 4 4 4|m16 8 4 4-4 4|m13.5 5-3 14", pulse: "M3 12h4l2.5-6 5 12L17 12h4",
+    globe: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z|M3 12h18|M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3Z",
+    target: "M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16Z|M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"
+  };
+  var HUNT_CACHE = {};
+  function codeLines(txt, n) {
+    return String(txt || "").split(/\r?\n/).filter(function (l) { return l.trim() && !/^\s*(\/\/|#|``)/.test(l); }).slice(0, n || 9);
+  }
+  function hl(line) {
+    var out = h("span", { class: "cl" }), re = /("(?:[^"\\]|\\.)*")|\b(let|where|union|project|extend|summarize|join|kind|on|in|has_any|dynamic|ago|and|or|not|by|count|distinct|order|take|isnotempty|tostring|search|stats|eval|table|rename|tstats|from|datamodel|values|as|rule|meta|events|match|condition|over)\b|(\|)/g, last = 0, m;
+    while ((m = re.exec(line))) {
+      if (m.index > last) out.appendChild(document.createTextNode(line.slice(last, m.index)));
+      out.appendChild(h("span", { class: m[1] ? "c-s" : m[2] ? "c-k" : "c-p", text: m[0] }));
+      last = re.lastIndex;
+    }
+    if (last < line.length) out.appendChild(document.createTextNode(line.slice(last)));
+    return out;
+  }
+  function chips(t) {
+    var hunt = huntOf(t), c = [];
+    if (t.block_now_count) c.push(h("span", { class: "chip c-blk" }, h("b", { text: String(t.block_now_count) }), " to block"));
+    if (hunt) c.push(h("span", { class: "chip c-hunt" }, h("b", { text: String(hunt) }), " to hunt"));
+    if (t.ioa_count) c.push(h("span", { class: "chip c-ioa" }, h("b", { text: String(t.ioa_count) }), " " + (t.ioa_count === 1 ? "behaviour" : "behaviours")));
+    return h("div", { class: "chips" }, c);
+  }
+  function renderShowcase() {
+    var main = $("win-main");
+    if (!main || !DATA) return;
+    var t = byEntry()[0];
+    if ($("win-url")) $("win-url").textContent = "iocwatch.com/#threat/" + t.id.slice(0, 28) + (t.id.length > 28 ? "\u2026" : "");
+    var qs = (t.queries || []).filter(function (q) { return q && q.url; });
+    var code = h("pre", { class: "win-code" }, h("code", null, h("span", { class: "cl dim" }, "Loading hunt\u2026")));
+    var tabs = h("div", { class: "win-tabs", role: "presentation" }, qs.map(function (q, i) {
+      return h("span", { class: "win-tab" + (i ? "" : " on") }, q.platform, h("i", { text: q.language }));
+    }));
+    var inds = t.indicators.filter(function (x) { return x.recommended_action === "block"; }).slice(0, 3);
+    if (!inds.length) inds = t.indicators.slice(0, 3);
+    var tbl = h("div", { class: "win-inds" }, inds.map(function (x) {
+      return h("div", { class: "wi" }, h("span", { class: "wi-v", text: defang(x.value, x.type) }), h("span", { class: "wi-t", text: typeLabel(x.type) }),
+        h("span", { class: "wi-a a-" + x.recommended_action, text: x.recommended_action === "block" ? "Block" : x.recommended_action === "hunt" ? "Hunt" : "Monitor" }));
+    }));
+    add(clear(main), h("a", { class: "win-card", href: "#threat/" + encodeURIComponent(t.id), "aria-label": "Open " + stitle(t) },
+      h("div", { class: "wc-top" }, h("span", { class: "wc-cat", text: t.category }), isFresh(t.entry_date, 24) ? h("span", { class: "new", text: "New" }) : null,
+        h("time", { class: "wc-ago", "data-d": t.entry_date, text: ago(t.entry_date) })),
+      h("h3", { class: "wc-t", text: stitle(t) }), h("p", { class: "wc-full", text: t.name }), chips(t),
+      h("div", { class: "wc-sec" }, h("span", { class: "wc-h hunt-h", text: "Hunt" }), tabs, code),
+      h("div", { class: "wc-sec" }, h("span", { class: "wc-h", text: "Indicators" }), tbl)));
+    var q0 = qs[0];
+    function put(txt) {
+      var lines = codeLines(txt, 8);
+      if (!lines.length) lines = ["// Open the threat for the full hunt"];
+      add(clear(code.firstChild), lines.map(hl));
+    }
+    if (q0) {
+      if (HUNT_CACHE[q0.url]) put(HUNT_CACHE[q0.url]);
+      else fetch(q0.url).then(function (r) { return r.ok ? r.text() : ""; }).then(function (x) { HUNT_CACHE[q0.url] = x; put(x); }, function () { put(""); });
+    } else put("");
+    renderTrust(); renderVisuals();
+    var fu = $("foot-upd");
+    if (fu) { fu.setAttribute("data-d", DATA.last_updated); fu.textContent = ago(DATA.last_updated); }
+  }
+  function renderTrust() {
+    var el = $("trust-list");
+    if (!el || el.firstChild) return;
+    var n = {};
+    DATA.threats.forEach(function (t) {
+      var seen = {};
+      (t.sources || []).forEach(function (s) {
+        var nm = String(s.name || "").replace(/\s*\(\d+\)$/, "").replace(/ Security Research$| Threat Intelligence$| Labs$/, "");
+        if (!nm || NEWSY.test(nm) || /\./.test(nm) || seen[nm]) return;
+        seen[nm] = 1; n[nm] = (n[nm] || 0) + 1;
+      });
+    });
+    Object.keys(n).sort(function (a, b) { return n[b] - n[a] || a.localeCompare(b); }).slice(0, 10)
+      .forEach(function (nm) { el.appendChild(h("li", { title: plural(n[nm], "threat") + " cite " + nm, text: nm })); });
+  }
+  function renderVisuals() {
+    var vb = $("vis-block"), vh = $("vis-hunt"), vp = $("vis-page");
+    if (vb) {
+      var by = {}, tot = 0;
+      ALL_IND.forEach(function (x) { if (x.ind.recommended_action === "block") { by[x.ind.type] = (by[x.ind.type] || 0) + 1; tot++; } });
+      var days = [], now = Date.now(), per = {};
+      DATA.threats.forEach(function (t) { var d = t.entry_date.slice(0, 10); per[d] = (per[d] || 0) + t.block_now_count; });
+      for (var i = 13; i >= 0; i--) { var d = new Date(now - i * 86400000).toISOString().slice(0, 10); days.push(per[d] || 0); }
+      var mx = Math.max.apply(null, days.concat([1]));
+      var files = [["block_now_ipv4.txt", "ipv4", "IPv4"], ["block_now_domain.txt", "domain", "Domains"], ["block_now_url.txt", "url", "URLs"], ["block_now_sha256.txt", "sha256", "SHA256"]];
+      add(clear(vb), [h("div", { class: "vc-head" }, h("span", { class: "vc-ico" }, svgIcon(ICO.shield)), h("div", null, h("b", { class: "vc-big", text: tot.toLocaleString("en-GB") }), h("span", { class: "vc-l", text: "indicators ready to block" }))),
+        h("div", { class: "spark", "aria-label": "Block-list additions over the last 14 days" }, days.map(function (v) { var b = h("i"); b.style.height = Math.max(6, Math.round(v / mx * 100)) + "%"; if (!v) b.className = "z"; return b; })),
+        h("ul", { class: "vc-files" }, files.map(function (f) {
+          return h("li", null, svgIcon(ICO.file), h("span", { class: "vf-n", text: f[0] }), h("span", { class: "vf-c", text: (by[f[1]] || 0).toLocaleString("en-GB") }), h("span", { class: "vf-dl" }, svgIcon(ICO.dl, 14)));
+        })),
+        h("p", { class: "vc-foot" }, "Plus a Defender XDR import file and a CSV of every indicator.")]);
+    }
+    if (vh) {
+      var pc = {}, ioa = 0;
+      DATA.threats.forEach(function (t) { (t.queries || []).forEach(function (q) { if (q && q.url) pc[q.platform] = (pc[q.platform] || 0) + 1; }); ioa += t.ioa_count || 0; });
+      var plats = [["Defender XDR", "KQL", "Advanced hunting"], ["Splunk", "SPL", "CIM data models"], ["Google SecOps", "YARA-L 2.0", "Rules and Retrohunt"]];
+      add(clear(vh), [h("div", { class: "vc-head" }, h("span", { class: "vc-ico" }, svgIcon(ICO.code)), h("div", null, h("b", { class: "vc-big", text: String(DATA.threat_count) }), h("span", { class: "vc-l", text: "threats with ready-to-run hunts" }))),
+        h("ul", { class: "vc-plats" }, plats.map(function (p, i) {
+          return h("li", { class: i ? "" : "on" }, h("span", { class: "vp-n", text: p[0] }), h("span", { class: "vp-l", text: p[1] }), h("span", { class: "vp-d", text: p[2] }), h("span", { class: "vp-c", text: (pc[p[0]] || 0) + " hunts" }));
+        })),
+        h("div", { class: "vc-ioa" }, svgIcon(ICO.pulse), h("span", null, h("b", { text: String(ioa) }), " behaviours mapped to log fields, for what indicators miss"))]);
+    }
+    if (vp) {
+      var t = DATA.threats.filter(function (x) { return tg(x).countries.length && (x.mitre || []).length; })[0] || DATA.threats[1] || DATA.threats[0];
+      var g = tg(t);
+      add(clear(vp), [h("div", { class: "vpg-crumb" }, "Threats / ", h("span", { text: stitle(t) })),
+        h("h3", { class: "vpg-t", text: stitle(t) }), h("p", { class: "vpg-full", text: t.name }), chips(t),
+        h("div", { class: "vpg-hunt" }, h("span", { class: "vpg-h", text: "Look for" }), h("span", { class: "vpg-bar w1" }), h("span", { class: "vpg-bar w2" }), h("span", { class: "vpg-h", text: "Why it matters" }), h("span", { class: "vpg-bar w3" })),
+        h("div", { class: "vpg-tags" }, g.countries.slice(0, 3).map(function (c) { return h("span", { class: "tag", text: c.name }); }).concat((t.mitre || []).slice(0, 3).map(function (m) { return h("span", { class: "tag mono", text: m.id }); })))]);
+    }
+  }
+  /* Threat map: countries named by sources (targets), Equal Earth outline from /img/world.svg. */
+  var MAP_DONE = false, MAP_GEO = null;
+  function mapCounts() {
+    var c = {}, names = {}, none = 0, regs = {};
+    DATA.threats.forEach(function (t) {
+      var g = tg(t);
+      if (!geoKeys(t).length) none++;
+      g.countries.forEach(function (x) { c[x.code] = (c[x.code] || 0) + 1; names[x.code] = x.name; });
+      g.regions.forEach(function (r) { regs[r] = (regs[r] || 0) + 1; });
+    });
+    return { c: c, names: names, none: none, regs: regs };
+  }
+  function pickMap(k) {
+    var f = $("f-country");
+    f.value = f.value === k ? "" : k;
+    renderFeed();
+    var fl = $("feed"); if (fl) fl.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  function markMap(gk) {
+    var host = $("tmap");
+    if (!host) return;
+    Array.prototype.forEach.call(host.querySelectorAll("[data-k]"), function (el) {
+      var on = el.getAttribute("data-k") === gk;
+      el.classList.toggle("sel", on);
+      if (el.tagName === "BUTTON") el.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+  function renderMap() {
+    if (MAP_DONE || !DATA || !$("tmap-map")) return;
+    MAP_DONE = true;
+    var m = MAP_GEO = mapCounts(), codes = Object.keys(m.c).sort(function (a, b) { return m.c[b] - m.c[a] || m.names[a].localeCompare(m.names[b]); });
+    var mx = codes.length ? m.c[codes[0]] : 1;
+    function lvl(n) { return n >= mx * 0.75 ? 4 : n >= mx * 0.45 ? 3 : n >= 2 ? 2 : 1; }
+    var top = clear($("tmap-top"));
+    codes.slice(0, 8).forEach(function (cd) {
+      var bar = h("i"); bar.style.width = Math.max(6, Math.round(m.c[cd] / mx * 100)) + "%";
+      top.appendChild(h("li", null, h("button", { type: "button", "data-k": "c:" + cd, "aria-pressed": "false", onclick: function () { pickMap("c:" + cd); } },
+        h("span", { class: "tt-n", text: m.names[cd] }), h("span", { class: "tt-v", text: String(m.c[cd]) }), h("span", { class: "tt-bar" }, bar))));
+    });
+    var ns = clear($("tmap-ns"));
+    add(ns, [h("button", { type: "button", class: "tmap-nsb", "data-k": "none", "aria-pressed": "false", onclick: function () { pickMap("none"); } },
+      h("span", { class: "ns-l", text: "Not stated" }), h("b", { text: String(m.none) }), h("span", { class: "ns-d", text: "no country or region named" })),
+      h("p", { class: "tmap-regs" }, "Regions: ", Object.keys(m.regs).sort(function (a, b) { return m.regs[b] - m.regs[a]; }).slice(0, 4).map(function (r, i) {
+        return [i ? ", " : null, h("button", { type: "button", class: "link-btn", "data-k": "r:" + r, onclick: function () { pickMap("r:" + r); } }, r + " " + m.regs[r])];
+      }))]);
+    var box = $("tmap-map"), tip = $("tmap-tip");
+    fetch("/img/world.svg").then(function (r) { return r.ok ? r.text() : ""; }).then(function (txt) {
+      if (!txt) return;
+      var doc = new DOMParser().parseFromString(txt, "image/svg+xml"), svg = document.importNode(doc.documentElement, true);
+      box.insertBefore(svg, tip);
+      var done = {};
+      Array.prototype.forEach.call(svg.querySelectorAll(".wm-land path"), function (p) {
+        var cd = p.getAttribute("data-c"), n = m.c[cd];
+        if (!n) return;
+        p.setAttribute("class", "hit l" + lvl(n)); p.setAttribute("data-k", "c:" + cd); done[cd] = 1;
+      });
+      Array.prototype.forEach.call(svg.querySelectorAll(".wm-lp circle"), function (c) {
+        var cd = c.getAttribute("data-c"), n = m.c[cd];
+        if (!n || done[cd] || c.getAttribute("data-used")) return;
+        if (svg.querySelector('.wm-lp circle[data-used="' + cd + '"]')) return;
+        c.setAttribute("data-used", cd);
+        c.setAttribute("r", String(2.2 + Math.sqrt(n) * 1.6)); c.setAttribute("class", "dot l" + lvl(n)); c.setAttribute("data-k", "c:" + cd);
+      });
+      function show(e) {
+        var el = e.target.closest ? e.target.closest("[data-k]") : null;
+        if (!el || !box.contains(el)) { tip.hidden = true; return; }
+        var cd = el.getAttribute("data-k").slice(2), r = box.getBoundingClientRect();
+        add(clear(tip), [h("b", { text: m.names[cd] || cd }), h("span", { text: plural(m.c[cd], "threat") + " \u00b7 click to filter" })]);
+        tip.hidden = false;
+        tip.style.left = Math.min(r.width - 170, Math.max(8, e.clientX - r.left + 12)) + "px";
+        tip.style.top = Math.max(8, e.clientY - r.top - 44) + "px";
+      }
+      svg.addEventListener("mousemove", show);
+      svg.addEventListener("mouseleave", function () { tip.hidden = true; });
+      svg.addEventListener("click", function (e) { var el = e.target.closest && e.target.closest("[data-k]"); if (el) pickMap(el.getAttribute("data-k")); });
+      markMap($("f-country").value);
+    }, function () {});
+  }
+  function initReveal() {
+    var els = document.querySelectorAll(".reveal");
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce || !("IntersectionObserver" in window)) { Array.prototype.forEach.call(els, function (e) { e.classList.add("in"); }); return; }
+    document.documentElement.classList.add("rv");
+    var io = new IntersectionObserver(function (es) { es.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); } }); }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+    Array.prototype.forEach.call(els, function (e) { io.observe(e); });
   }
   function init(data) {
     DATA = data;
@@ -1112,6 +1324,8 @@
     }
     renderStats();
     fillFilters();
+    renderMap();
+    initReveal();
     fillNavCounts();
     renderFeed();
     renderAllFiles();
