@@ -1,4 +1,4 @@
-``` Threat: AI Rapid Threat Intel live feed
+``` Threat: IOCWatch live feed
     Author: Daniel Jeremiah | Date: 2026-11-14
     Ref: https://github.com/daniyyell-dev/rapid-threat-intel ```
 | tstats summariesonly=false fillnull_value="-" count min(_time) AS first_seen max(_time) AS last_seen
