@@ -147,6 +147,30 @@
       "headline": "Apache patches critical HTTP/2 flaw, no public exploit indicators yet"
     },
     {
+      "id": "ptc-windchill-cve-2026-126325",
+      "short_title": "Windchill RCE CVE-2026-126325",
+      "headline": "Critical PTC Windchill and FlexPLM flaw allows remote code execution",
+      "claim": "PTC has patched a critical deserialization flaw in self-hosted Windchill and FlexPLM (CVE-2026-126325, CVSS v4 9.2) that can allow remote code execution; no exploitation or public indicators have been reported yet.",
+      "sources": [
+        {
+          "name": "PTC",
+          "url": "https://www.ptc.com/en/about/trust-center/advisory-center/active-advisories/windchill-flexplm-rce-vulnerability"
+        },
+        {
+          "name": "NVD",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-126325"
+        },
+        {
+          "name": "The Hacker News",
+          "url": "https://thehackernews.com/2026/11/ptc-patches-critical-windchill-and.html"
+        }
+      ],
+      "first_seen": "2026-11-11",
+      "category": "Vulnerability",
+      "status": "Confirmed - IOCs pending",
+      "note": "Affects Windchill 11.0 M030 to 13.1.4.0 and FlexPLM 11.0 M030 to 13.1.3.0; apply PTC patch CS483249 (PTC-hosted instances are already patched). An earlier Windchill RCE (CVE-2026-12569) was exploited by Cl0p-linked actors in 2026, so restrict exposure until patched."
+    },
+    {
       "id": "pixelleaks-extortion-claims",
       "short_title": "PixelLeaks leak site",
       "claim": "A new extortion brand, PixelLeaks, appeared on a leak site in early November 2026 with claimed victims in several countries; the claims are not independently confirmed and no public IOCs have been published.",

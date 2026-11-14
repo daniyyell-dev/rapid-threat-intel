@@ -1,11 +1,11 @@
 {
- "updated": "2026-11-14T16:22:37Z",
- "last24h": 63,
+ "updated": "2026-11-14T22:26:13Z",
+ "last24h": 64,
  "top_countries": [
   {
    "code": "GB",
    "name": "United Kingdom",
-   "count": 119
+   "count": 120
   },
   {
    "code": "IN",
@@ -20,7 +20,7 @@
   {
    "code": "US",
    "name": "United States",
-   "count": 9
+   "count": 10
   },
   {
    "code": "CA",
@@ -89,7 +89,7 @@
   }
  ],
  "other_count": 0,
- "total": 195,
+ "total": 197,
  "downloads": 26,
  "downloads24h": 2,
  "copies": 46,

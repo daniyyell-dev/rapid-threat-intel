@@ -10,7 +10,7 @@
 <p><strong>Agentic AI collects it. Analysts verify it. Community acts on it.</strong><br>
 <sub>From defenders, for defenders.</sub></p>
 
-[![live site](https://img.shields.io/badge/live_site-iocwatch.com-22d3ee)](https://iocwatch.com/) [![threats](https://img.shields.io/badge/threats-60-0e7490)](https://iocwatch.com/#threats) [![rumours](https://img.shields.io/badge/rumours-7-64748b)](https://iocwatch.com/#rumours) [![block list](https://img.shields.io/badge/block_list-723-0891b2)](all/block_now.txt) [![feed.json](https://img.shields.io/badge/feed.json-live-0ea5e9)](https://iocwatch.com/feed.json)
+[![live site](https://img.shields.io/badge/live_site-iocwatch.com-22d3ee)](https://iocwatch.com/) [![threats](https://img.shields.io/badge/threats-60-0e7490)](https://iocwatch.com/#threats) [![rumours](https://img.shields.io/badge/rumours-8-64748b)](https://iocwatch.com/#rumours) [![block list](https://img.shields.io/badge/block_list-723-0891b2)](all/block_now.txt) [![feed.json](https://img.shields.io/badge/feed.json-live-0ea5e9)](https://iocwatch.com/feed.json)
 
 </div>
 

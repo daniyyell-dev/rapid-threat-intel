@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-14T21:10:49Z",
+ "updated": "2026-11-14T22:19:10Z",
  "window_days": 30,
  "status_note": "Claims posted by extortion groups on their leak sites. Claimed, unverified: a listing is not proof of a breach.",
  "disclaimer": "Dark web activity from public leak-site trackers: metadata only (group, organisation, country, sector, date). IOCWatch does not access, host or link to stolen data. Claims are unverified and never feed the block list.",
@@ -16,10 +16,10 @@
  ],
  "stats": {
   "groups": 646,
-  "groups_online": 233,
+  "groups_online": 235,
   "markets": 147,
   "markets_online": 59,
-  "posts_24h": 23,
+  "posts_24h": 16,
   "posts_month": 589,
   "posts_90d": 3279,
   "posts_year": 9740
@@ -81,11 +81,11 @@
  ],
  "group_activity": {
   "window_days": 30,
-  "total": 1215,
+  "total": 1219,
   "top": [
    {
     "name": "N0N",
-    "count": 152
+    "count": 155
    },
    {
     "name": "The Gentlemen",
@@ -93,7 +93,7 @@
    },
    {
     "name": "Qilin",
-    "count": 118
+    "count": 119
    },
    {
     "name": "INC Ransom",
