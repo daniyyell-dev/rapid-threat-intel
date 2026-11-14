@@ -525,7 +525,8 @@
      "download": "Trojanized-Claude-Code-IDE-Extension-SSH-Backdoor_hunt.yaral"
     }
    ],
-   "short_title": "Claude Code extension backdoor"
+   "short_title": "Claude Code extension backdoor",
+   "news_headline": "Tampered Claude Code extension plants SSH backdoor on developers"
   },
   {
    "id": "Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure",
@@ -1008,7 +1009,8 @@
      "download": "Contagious-Interview-AccuraSoftHire-PolinRider-npm-Developer-Lure_hunt.yaral"
     }
    ],
-   "short_title": "AccuraSoftHire loader"
+   "short_title": "AccuraSoftHire loader",
+   "news_headline": "Fake job site plants crypto stealer on developers"
   },
   {
    "id": "ScreenConnect-Fake-Crypto-Exchange-Guest-Sessions-MSP-Bait",
@@ -1254,7 +1256,8 @@
      "download": "ScreenConnect-Fake-Crypto-Exchange-Guest-Sessions-MSP-Bait_hunt.yaral"
     }
    ],
-   "short_title": "ScreenConnect crypto bait"
+   "short_title": "ScreenConnect crypto bait",
+   "news_headline": "Fake crypto-exchange sessions planted on MSP ScreenConnect servers"
   },
   {
    "id": "ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam",
@@ -1606,7 +1609,8 @@
      "download": "ZeroQlik-Qlik-Sense-Exploitation-Go-Agent-ActiveMQ-Veeam_hunt.yaral"
     }
    ],
-   "short_title": "ZeroQlik Qlik Sense"
+   "short_title": "ZeroQlik Qlik Sense",
+   "news_headline": "Old Qlik Sense flaws exploited at European firms"
   },
   {
    "id": "Qubole-Cross-Account-AWS-Role-Abuse",
@@ -2045,7 +2049,8 @@
      "download": "Qubole-Cross-Account-AWS-Role-Abuse_hunt.yaral"
     }
    ],
-   "short_title": "Qubole AWS role abuse"
+   "short_title": "Qubole AWS role abuse",
+   "news_headline": "Stolen Qubole credentials used to access customer AWS accounts"
   },
   {
    "id": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC",
@@ -2255,7 +2260,8 @@
      "download": "Cisco-Expressway-CVE-2026-76466-Public-Root-RCE-PoC_hunt.yaral"
     }
    ],
-   "short_title": "Cisco Expressway root RCE"
+   "short_title": "Cisco Expressway root RCE",
+   "news_headline": "Critical Cisco Expressway flaw gives attackers root"
   },
   {
    "id": "ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass",
@@ -2637,7 +2643,8 @@
      "download": "ARTEX-AI-Gateway-Credential-Theft-and-Crypto-KYC-Deepfake-Bypass_hunt.yaral"
     }
    ],
-   "short_title": "ARTEX AI key theft"
+   "short_title": "ARTEX AI key theft",
+   "news_headline": "ARTEX agents steal AI gateway keys and target crypto exchanges"
   },
   {
    "id": "ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure",
@@ -3124,7 +3131,8 @@
      "download": "ARTEX-South-Korean-Finance-and-Storm-0940-ConnectWise-Infrastructure_hunt.yaral"
     }
    ],
-   "short_title": "ARTEX Korean finance"
+   "short_title": "ARTEX Korean finance",
+   "news_headline": "FBI warns ARTEX attacks hit Korean finance and other sectors"
   },
   {
    "id": "BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse",
@@ -3475,7 +3483,8 @@
      "download": "BlackNevas-Ransomware-ESXi-vCenter-Host-Profile-Abuse_hunt.yaral"
     }
    ],
-   "short_title": "BlackNevas ESXi ransomware"
+   "short_title": "BlackNevas ESXi ransomware",
+   "news_headline": "BlackNevas ransomware wipes ESXi hosts and their backups"
   },
   {
    "id": "SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation",
@@ -3699,7 +3708,8 @@
      "download": "SignDrop-Windows-CLFS-Zero-Day-SYSTEM-Privilege-Escalation_hunt.yaral"
     }
    ],
-   "short_title": "SignDrop CLFS zero-day"
+   "short_title": "SignDrop CLFS zero-day",
+   "news_headline": "Public Windows zero-day raises standard users to SYSTEM"
   },
   {
    "id": "GeoVision-Camera-Software-XMRig-Cryptominer",
@@ -4183,7 +4193,8 @@
      "download": "GeoVision-Camera-Software-XMRig-Cryptominer_hunt.yaral"
     }
    ],
-   "short_title": "GeoVision XMRig miner"
+   "short_title": "GeoVision XMRig miner",
+   "news_headline": "Exposed GeoVision cameras used to install XMRig miners"
   },
   {
    "id": "XaocMail-ClickFix-Phantom53-DoH-C2-Havoc",
@@ -5618,7 +5629,8 @@
      "download": "XaocMail-ClickFix-Phantom53-DoH-C2-Havoc_hunt.yaral"
     }
    ],
-   "short_title": "XaocMail Phantom53"
+   "short_title": "XaocMail Phantom53",
+   "news_headline": "ClickFix emails install Phantom53 backdoor on finance and IT staff"
   },
   {
    "id": "Barracuda-Managed-XDR-Integration-Credential-Store-Breach",
@@ -5878,7 +5890,8 @@
      "download": "Barracuda-Managed-XDR-Integration-Credential-Store-Breach_hunt.yaral"
     }
    ],
-   "short_title": "Barracuda XDR breach"
+   "short_title": "Barracuda XDR breach",
+   "news_headline": "Barracuda XDR breach may have exposed customer integration credentials"
   },
   {
    "id": "DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations",
@@ -6812,7 +6825,8 @@
      "download": "DarkLunnen-FortiGate-CVE-2024-55591-Europe-Operations_hunt.yaral"
     }
    ],
-   "short_title": "DarkLunnen FortiGate ops"
+   "short_title": "DarkLunnen FortiGate ops",
+   "news_headline": "FortiGate flaw used in 14-month campaign against European orgs"
   },
   {
    "id": "LIMINAL-PANDA-GTPDoor-v3-SilentAir",
@@ -7023,7 +7037,8 @@
      "download": "LIMINAL-PANDA-GTPDoor-v3-SilentAir_hunt.yaral"
     }
    ],
-   "short_title": "LIMINAL PANDA GTPDoor"
+   "short_title": "LIMINAL PANDA GTPDoor",
+   "news_headline": "China-nexus actors hide C2 inside mobile operator networks"
   },
   {
    "id": "AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie",
@@ -8443,7 +8458,8 @@
      "download": "AI-Assisted-Retail-Intrusion-SolarWinds-Orion-Erlang-Cookie_hunt.yaral"
     }
    ],
-   "short_title": "AI retail intrusion"
+   "short_title": "AI retail intrusion",
+   "news_headline": "Attackers abuse SolarWinds Orion to move through a US retailer"
   },
   {
    "id": "Fake-Zillow-ClickFix-NetSupport-RAT",
@@ -9214,7 +9230,8 @@
      "download": "Fake-Zillow-ClickFix-NetSupport-RAT_hunt.yaral"
     }
    ],
-   "short_title": "Fake Zillow NetSupport"
+   "short_title": "Fake Zillow NetSupport",
+   "news_headline": "Fake Zillow rental pages install NetSupport RAT via ClickFix"
   },
   {
    "id": "SANSAR-Linux-GPU-Cryptomining-Toolkit",
@@ -9650,7 +9667,8 @@
      "download": "SANSAR-Linux-GPU-Cryptomining-Toolkit_hunt.yaral"
     }
    ],
-   "short_title": "SANSAR GPU miner"
+   "short_title": "SANSAR GPU miner",
+   "news_headline": "Exposed Ray servers used to mine crypto on GPU hosts"
   },
   {
    "id": "FaceStealer-BlueNoroff-Fake-Meeting-Lures",
@@ -12615,7 +12633,8 @@
      "download": "FaceStealer-BlueNoroff-Fake-Meeting-Lures_hunt.yaral"
     }
    ],
-   "short_title": "FaceStealer fake meetings"
+   "short_title": "FaceStealer fake meetings",
+   "news_headline": "North Korean fake Zoom calls trick targets into running malware"
   },
   {
    "id": "Armorsteal-SEO-Poisoning-Python-Stealer",
@@ -13544,7 +13563,8 @@
      "download": "Armorsteal-SEO-Poisoning-Python-Stealer_hunt.yaral"
     }
    ],
-   "short_title": "Armorsteal stealer"
+   "short_title": "Armorsteal stealer",
+   "news_headline": "Poisoned Chocolatey search results drop a Python stealer"
   },
   {
    "id": "MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT",
@@ -14148,7 +14168,8 @@
      "download": "MSSQL-T-SQL-Brute-Force-Miner-Gh0st-RAT_hunt.yaral"
     }
    ],
-   "short_title": "MSSQL miner and Gh0st"
+   "short_title": "MSSQL miner and Gh0st",
+   "news_headline": "Exposed SQL Servers brute-forced to drop miners and Gh0st RAT"
   },
   {
    "id": "NIKKE-Launcher-k2f-agent-Credential-Theft",
@@ -14508,7 +14529,8 @@
      "download": "NIKKE-Launcher-k2f-agent-Credential-Theft_hunt.yaral"
     }
    ],
-   "short_title": "NIKKE launcher k2f-agent"
+   "short_title": "NIKKE launcher k2f-agent",
+   "news_headline": "Hijacked NIKKE game launcher steals browser and wallet secrets"
   },
   {
    "id": "Teams-Booking-Flow-Device-Code-Phishing",
@@ -14770,7 +14792,8 @@
      "download": "Teams-Booking-Flow-Device-Code-Phishing_hunt.yaral"
     }
    ],
-   "short_title": "Teams device-code phishing"
+   "short_title": "Teams device-code phishing",
+   "news_headline": "Fake Teams booking page tricks staff into handing over sign-in"
   },
   {
    "id": "CL-STA-1238-Cairn-Autonomous-AI-Intrusions",
@@ -15012,7 +15035,8 @@
      "download": "CL-STA-1238-Cairn-Autonomous-AI-Intrusions_hunt.yaral"
     }
    ],
-   "short_title": "Cairn AI intrusions"
+   "short_title": "Cairn AI intrusions",
+   "news_headline": "China-nexus AI agents run autonomous attacks on US and Canadian orgs"
   },
   {
    "id": "BITTER-PapRAT-WmRAT-South-Asia-Espionage",
@@ -15598,7 +15622,8 @@
      "download": "BITTER-PapRAT-WmRAT-South-Asia-Espionage_hunt.yaral"
     }
    ],
-   "short_title": "BITTER PapRAT"
+   "short_title": "BITTER PapRAT",
+   "news_headline": "BITTER spies on South Asian orgs with PapRAT and WmRAT"
   },
   {
    "id": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper",
@@ -16079,7 +16104,8 @@
      "download": "Check-Point-Gateway-PHP2Shell-TSGA-Backdoor-ESXi-Wiper_hunt.yaral"
     }
    ],
-   "short_title": "Check Point PHP2Shell"
+   "short_title": "Check Point PHP2Shell",
+   "news_headline": "Unpatched Check Point gateways exploited, some hit with ESXi wiper"
   },
   {
    "id": "BBNet-Linux-Botnet-Multi-Arch-Scanners",
@@ -16437,7 +16463,8 @@
      "download": "BBNet-Linux-Botnet-Multi-Arch-Scanners_hunt.yaral"
     }
    ],
-   "short_title": "BBNet Linux botnet"
+   "short_title": "BBNet Linux botnet",
+   "news_headline": "New Linux botnet scans routers, cameras and web servers"
   },
   {
    "id": "StrikeStub-ClickFix-RAT-Stealer",
@@ -16786,7 +16813,8 @@
      "download": "StrikeStub-ClickFix-RAT-Stealer_hunt.yaral"
     }
    ],
-   "short_title": "StrikeStub ClickFix RAT"
+   "short_title": "StrikeStub ClickFix RAT",
+   "news_headline": "ClickFix lure on a compromised site drops StrikeStub RAT"
   },
   {
    "id": "Panzer-RaaS-Share-Propagation-Ransomware",
@@ -17113,7 +17141,8 @@
      "download": "Panzer-RaaS-Share-Propagation-Ransomware_hunt.yaral"
     }
    ],
-   "short_title": "Panzer ransomware"
+   "short_title": "Panzer ransomware",
+   "news_headline": "Panzer ransomware spreads itself across every network share"
   },
   {
    "id": "Citrus-Ransomware-Certighost-Sn00py",
@@ -17645,7 +17674,8 @@
      "download": "Citrus-Ransomware-Certighost-Sn00py_hunt.yaral"
     }
    ],
-   "short_title": "Citrus ransomware"
+   "short_title": "Citrus ransomware",
+   "news_headline": "Citrus ransomware hits Russian finance using stolen contractor logins"
   },
   {
    "id": "Lazarus-Operation-FlashHole-CrossWeb-EX",
@@ -18314,7 +18344,8 @@
      "download": "Lazarus-Operation-FlashHole-CrossWeb-EX_hunt.yaral"
     }
    ],
-   "short_title": "Lazarus FlashHole"
+   "short_title": "Lazarus FlashHole",
+   "news_headline": "Lazarus phishes South Korean firms through fake résumé sites"
   },
   {
    "id": "Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan",
@@ -19079,7 +19110,8 @@
      "download": "Silent-Lynx-Strix-AI-Agent-Espionage-Tajikistan_hunt.yaral"
     }
    ],
-   "short_title": "Silent Lynx Strix"
+   "short_title": "Silent Lynx Strix",
+   "news_headline": "Spies use an AI agent after breaching Tajikistan's national railway"
   },
   {
    "id": "Able2Shell-N-able-N-central-Zero-Days",
@@ -19819,7 +19851,8 @@
      "download": "Able2Shell-N-able-N-central-Zero-Days_hunt.yaral"
     }
    ],
-   "short_title": "Able2Shell N-central"
+   "short_title": "Able2Shell N-central",
+   "news_headline": "Live N-central servers exploited to install XMRig miners"
   },
   {
    "id": "GSocket-Linux-Web-Server-C2",
@@ -20228,7 +20261,8 @@
      "download": "GSocket-Linux-Web-Server-C2_hunt.yaral"
     }
    ],
-   "short_title": "GSocket web-server C2"
+   "short_title": "GSocket web-server C2",
+   "news_headline": "Attackers hide Linux web-server control through public GSocket relays"
   },
   {
    "id": "ARTEX-AWS-Financial-Data-Hunting",
@@ -20621,7 +20655,8 @@
      "download": "ARTEX-AWS-Financial-Data-Hunting_hunt.yaral"
     }
    ],
-   "short_title": "ARTEX AWS data hunt"
+   "short_title": "ARTEX AWS data hunt",
+   "news_headline": "ARTEX operators hunt payment logs and Cognito data in AWS"
   },
   {
    "id": "Ivanti-Connect-Secure-UTA0576-CVE-2026-118527",
@@ -20881,7 +20916,8 @@
      "download": "Ivanti-Connect-Secure-UTA0576-CVE-2026-118527_hunt.yaral"
     }
    ],
-   "short_title": "Ivanti Connect Secure UTA0576"
+   "short_title": "Ivanti Connect Secure UTA0576",
+   "news_headline": "Ivanti Connect Secure zero-days exploited to steal admin credentials"
   },
   {
    "id": "Falcon-C2-XG-Antino-Browser-Implant",
@@ -21560,7 +21596,8 @@
      "download": "Falcon-C2-XG-Antino-Browser-Implant_hunt.yaral"
     }
    ],
-   "short_title": "Falcon C2 Antino"
+   "short_title": "Falcon C2 Antino",
+   "news_headline": "Browser implant used against government webmail in two regions"
   },
   {
    "id": "AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft",
@@ -21816,7 +21853,8 @@
      "download": "AntiFox-ARTEX-Fork-IIS-AWS-Secret-Theft_hunt.yaral"
     }
    ],
-   "short_title": "AntiFox AWS secret theft"
+   "short_title": "AntiFox AWS secret theft",
+   "news_headline": "ARTEX fork plants IIS webshells and steals AWS production secrets"
   },
   {
    "id": "Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320",
@@ -22086,7 +22124,8 @@
      "download": "Operation-Snowball-Cisco-BroadWorks-CVE-2026-20320_hunt.yaral"
     }
    ],
-   "short_title": "Operation Snowball BroadWorks"
+   "short_title": "Operation Snowball BroadWorks",
+   "news_headline": "AI agent exploits Cisco BroadWorks at a European telecom"
   },
   {
    "id": "Outlook-CVE-2026-124194-NTLM-Hash-Leak",
@@ -22348,7 +22387,8 @@
      "download": "Outlook-CVE-2026-124194-NTLM-Hash-Leak_hunt.yaral"
     }
    ],
-   "short_title": "Outlook NTLM hash leak"
+   "short_title": "Outlook NTLM hash leak",
+   "news_headline": "Exploited Outlook flaw leaks NTLM sign-in hashes"
   },
   {
    "id": "GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer",
@@ -22853,7 +22893,8 @@
      "download": "GitHub-Hijacked-Accounts-wfx-CI-Secret-Stealer_hunt.yaral"
     }
    ],
-   "short_title": "wfx CI secret stealer"
+   "short_title": "wfx CI secret stealer",
+   "news_headline": "Stolen GitHub accounts plant a CI stealer in thousands of repos"
   },
   {
    "id": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign",
@@ -24520,7 +24561,8 @@
      "download": "ScreenConnect-Cloud-Panel-Hijack-MSP-Rogue-Client-Campaign_hunt.yaral"
     }
    ],
-   "short_title": "ScreenConnect panel hijack"
+   "short_title": "ScreenConnect panel hijack",
+   "news_headline": "Hijacked cloud ScreenConnect panels push rogue clients to MSP endpoints"
   },
   {
    "id": "Trigram-DPRK-Dropper-Kimsuky-UNK-DeadDrop",
@@ -29297,7 +29339,8 @@
      "download": "Trigram-DPRK-Dropper-Kimsuky-UNK-DeadDrop_hunt.yaral"
     }
    ],
-   "short_title": "Trigram DPRK dropper"
+   "short_title": "Trigram DPRK dropper",
+   "news_headline": "North Korean fake job and parcel lures steal wallets and credentials"
   },
   {
    "id": "SkyW4lker-Microsoft-365-Device-Code-Phishing",
@@ -30994,7 +31037,8 @@
      "download": "SkyW4lker-Microsoft-365-Device-Code-Phishing_hunt.yaral"
     }
    ],
-   "short_title": "SkyW4lker M365 phishing"
+   "short_title": "SkyW4lker M365 phishing",
+   "news_headline": "SkyW4lker phishing kit steals Microsoft 365 access after MFA"
   },
   {
    "id": "Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft",
@@ -31409,7 +31453,8 @@
      "download": "Gentlemen-Affiliate-Azazel-LEAKNED-CICD-Secret-Theft_hunt.yaral"
     }
    ],
-   "short_title": "Gentlemen Azazel CI theft"
+   "short_title": "Gentlemen Azazel CI theft",
+   "news_headline": "Gentlemen affiliate steals CI/CD secrets and extorts dozens of orgs"
   },
   {
    "id": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover",
@@ -31913,7 +31958,8 @@
      "download": "Xen-Orchestra-VSA-2026-062-Auth-Bypass-XCP-ng-Takeover_hunt.yaral"
     }
    ],
-   "short_title": "Xen Orchestra auth bypass"
+   "short_title": "Xen Orchestra auth bypass",
+   "news_headline": "Critical Xen Orchestra flaw exploited to take over hosts as root"
   },
   {
    "id": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware",
@@ -32224,7 +32270,8 @@
      "download": "GhostFrame-ESXi-Hypervisor-Implant-Settra-Ransomware_hunt.yaral"
     }
    ],
-   "short_title": "GhostFrame ESXi implant"
+   "short_title": "GhostFrame ESXi implant",
+   "news_headline": "Settra-linked group implants ESXi hosts after VPN appliance breaches"
   },
   {
    "id": "Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector",
@@ -32724,7 +32771,8 @@
      "download": "Storm-3358-ARTEX-Agentic-Intrusions-Financial-Sector_hunt.yaral"
     }
    ],
-   "short_title": "Storm-3358 ARTEX"
+   "short_title": "Storm-3358 ARTEX",
+   "news_headline": "ARTEX agents attack financial firms and drop remote-access tools"
   },
   {
    "id": "AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant",
@@ -33305,7 +33353,8 @@
      "download": "AhsayCBS-Backup-Server-Exploitation-Webshells-Python-Implant_hunt.yaral"
     }
    ],
-   "short_title": "AhsayCBS webshells"
+   "short_title": "AhsayCBS webshells",
+   "news_headline": "Backup servers exploited to plant webshells, miners and implants"
   },
   {
    "id": "CopperDragon-Sparrow-Framework-China-Nexus-Espionage",
@@ -36180,7 +36229,8 @@
      "download": "CopperDragon-Sparrow-Framework-China-Nexus-Espionage_hunt.yaral"
     }
    ],
-   "short_title": "CopperDragon Sparrow"
+   "short_title": "CopperDragon Sparrow",
+   "news_headline": "China-nexus malware used against government and telecoms in 21 countries"
   },
   {
    "id": "NotC2-AWS-Native-AI-C2-Proof-of-Concept",
@@ -36510,7 +36560,8 @@
      "download": "NotC2-AWS-Native-AI-C2-Proof-of-Concept_hunt.yaral"
     }
    ],
-   "short_title": "NotC2 AWS AI C2"
+   "short_title": "NotC2 AWS AI C2",
+   "news_headline": "Researchers publish AWS-native C2 that leaves no network indicators"
   },
   {
    "id": "Phexia-macOS-ClickFix-Stealer-Polygon-C2",
@@ -37587,7 +37638,8 @@
      "download": "Phexia-macOS-ClickFix-Stealer-Polygon-C2_hunt.yaral"
     }
    ],
-   "short_title": "Phexia macOS stealer"
+   "short_title": "Phexia macOS stealer",
+   "news_headline": "macOS ClickFix stealer hides its command server on Polygon"
   },
   {
    "id": "Turla-Cereal-Exchange-Espionage-Toolset",
@@ -38195,7 +38247,8 @@
      "download": "Turla-Cereal-Exchange-Espionage-Toolset_hunt.yaral"
     }
    ],
-   "short_title": "Turla Cereal"
+   "short_title": "Turla Cereal",
+   "news_headline": "Russian spies turn government Exchange servers into silent backdoors"
   },
   {
    "id": "MSP-Process-GDAP-Breach-Entra-Token-Abuse",
@@ -39333,7 +39386,8 @@
      "download": "MSP-Process-GDAP-Breach-Entra-Token-Abuse_hunt.yaral"
     }
    ],
-   "short_title": "MSP Process GDAP breach"
+   "short_title": "MSP Process GDAP breach",
+   "news_headline": "MSP Process breach lets attackers enter customer Microsoft 365 tenants"
   },
   {
    "id": "Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack",
@@ -40579,7 +40633,8 @@
      "download": "Ethersphere-bee-js-Swarm-Desktop-Supply-Chain-Attack_hunt.yaral"
     }
    ],
-   "short_title": "bee-js supply chain"
+   "short_title": "bee-js supply chain",
+   "news_headline": "Malicious Swarm npm and desktop releases drop an Ethereum-backed backdoor"
   },
   {
    "id": "BYOD-Ransomware-Vanderbilt-University-Attack",
@@ -40895,7 +40950,8 @@
      "download": "BYOD-Ransomware-Vanderbilt-University-Attack_hunt.yaral"
     }
    ],
-   "short_title": "Vanderbilt BYOD ransomware"
+   "short_title": "Vanderbilt BYOD ransomware",
+   "news_headline": "New BYOD ransomware group claims attack on Vanderbilt University"
   },
   {
    "id": "SSHole-OpenSSH-CVE-2026-123158-Exploitation",
@@ -41706,7 +41762,8 @@
      "download": "SSHole-OpenSSH-CVE-2026-123158-Exploitation_hunt.yaral"
     }
    ],
-   "short_title": "SSHole OpenSSH exploit"
+   "short_title": "SSHole OpenSSH exploit",
+   "news_headline": "OpenSSH password bypass exploited on Alpine and other musl systems"
   },
   {
    "id": "FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign",
@@ -42135,7 +42192,8 @@
      "download": "FreeSWITCH-CVE-2026-116779-Cryptominer-Campaign_hunt.yaral"
     }
    ],
-   "short_title": "FreeSWITCH miner"
+   "short_title": "FreeSWITCH miner",
+   "news_headline": "FreeSWITCH chat flaw used to install cryptominers on phone servers"
   },
   {
    "id": "APT29-Mobile-Watering-Hole-Exploit-Chains",
@@ -42746,7 +42804,8 @@
      "download": "APT29-Mobile-Watering-Hole-Exploit-Chains_hunt.yaral"
     }
    ],
-   "short_title": "APT29 mobile watering holes"
+   "short_title": "APT29 mobile watering holes",
+   "news_headline": "APT29 watering holes serve exploit chains to iPhone and Android users"
   }
  ]
 }

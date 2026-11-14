@@ -279,12 +279,86 @@
     return Math.floor(s / 86400) + "d ago";
   }
   function isFresh(d, hours) { var t = ukTime(d); return !!(t && t.timed && Date.now() - t.ms < hours * 3600000); }
-  /* Short heading (2-5 words) for lists and page titles; the full name stays as the subtitle. */
+  /* Short heading (2-5 words) for tight spots: ticker, product window, compact catalogues. */
   function stitle(t) {
     if (t.short_title) return t.short_title;
     var w = String(t.short || t.name).split(/[:(\u2013\u2014]\s?| - /)[0].split(/\s+/);
     return w.slice(0, 4).join(" ");
   }
+  /* Newsy 6-12 word headline for lists and the threat page title. */
+  function headlineOf(t) {
+    return t.news_headline || t.headline || stitle(t);
+  }
+  var SRC_SKIP = /^(threatfox|malwarebazaar|urlhaus|loldrivers\.io|ransomware\.live|github\.com|spamhaus|reddit r\/msp)$/i;
+  function cleanOrg(s) {
+    return String(srcName(s) || "").replace(/\s+\(\d+\)\s*$/, "").trim();
+  }
+  function sourceOrgList(t, limit) {
+    var primary = [], skipped = [], seen = {};
+    function take(arr, n, url) {
+      var k = n.toLowerCase();
+      if (!n || seen[k]) return;
+      seen[k] = 1;
+      arr.push({ name: n, url: url || "" });
+    }
+    (t.sources || []).forEach(function (src) {
+      var n = cleanOrg(src);
+      if (!n) return;
+      if (SRC_SKIP.test(n)) take(skipped, n, src.url);
+      else take(primary, n, src.url);
+    });
+    return (primary.length ? primary : skipped).slice(0, limit || 3);
+  }
+  function joinNames(names) {
+    if (!names.length) return "";
+    if (names.length === 1) return names[0];
+    if (names.length === 2) return names[0] + " and " + names[1];
+    return names.slice(0, -1).join(", ") + " and " + names[names.length - 1];
+  }
+  function reportedByText(t) {
+    var orgs = sourceOrgList(t, 3).map(function (o) { return o.name; });
+    return orgs.length ? "Reported by " + joinNames(orgs) : "";
+  }
+  function reportedByLine(t, cls) {
+    var orgs = sourceOrgList(t, 3);
+    if (!orgs.length) return null;
+    var nodes = ["Reported by "];
+    orgs.forEach(function (o, i) {
+      if (i) nodes.push(i === orgs.length - 1 ? " and " : ", ");
+      nodes.push(o.url ? extLink(o.url, o.name) : o.name);
+    });
+    return h("p", { class: cls || "det-by" }, nodes);
+  }
+  function urgClass(tag) {
+    return "tr-urg urg-" + String(tag || "").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  }
+  function urgencyTags(t) {
+    var cat = String(t.category || "").toLowerCase();
+    var name = String(t.name || "").toLowerCase();
+    var body = [t.name, t.headline, t.news_headline, t.summary, t.caveat, JSON.stringify(t.targets || {})].join(" ").toLowerCase();
+    var sectors = (((t.targets || {}).sectors) || []).join(" ").toLowerCase();
+    var countries = (((t.targets || {}).countries) || []).map(function (c) {
+      return String((c && (c.code || c.name)) || c).toUpperCase();
+    });
+    var out = [];
+    function add(tag) { if (out.indexOf(tag) === -1) out.push(tag); }
+    var active = /\b(known exploited vulnerabilities|exploitation detected|in the wild|actively exploited|active exploitation|being exploited|was exploited|were exploited|exploited to |exploited at |exploited against|\bexploited\b|exploitation of|reported exploitation|exploitation that|widespread malicious activity|active campaign)\b/.test(body)
+      || /\bused\b[\s\S]{0,60}\bexploit(s|ed|ing)?\b/.test(body)
+      || (/\bkev\b/.test(body) && /cisa/.test(body))
+      || (/\bexploitation\b/.test(cat) && /\b(compromised servers|xmrig|gain(?:ed)? root|full chain)\b/.test(body));
+    if (active) add("Actively exploited");
+    if (/\bnation-state\b/.test(cat) || /(^|[\s/])apt([\s/]|$)/.test(cat) || /\bespionage\b/.test(cat)) add("Nation-state");
+    if (/\bransomware\b/.test(cat) || /\bransomware\b/.test(name)) add("Ransomware");
+    if (/\bsupply chain\b/.test(cat)) add("Supply chain");
+    if (/cvss 9(\.\d)?/.test(body) || /\bcritical (unauthenticated |authentication |auth )?(flaw|vulnerability|rce|bypass|zero-day|0-day)\b/.test(body)) add("Critical flaw");
+    if (/\b(financial services|finance|banking|banks|securities and financial)\b/.test(sectors) || /\bfinancial sector\b/.test(cat)) add("Hits finance");
+    if (countries.indexOf("GB") !== -1 || countries.indexOf("UNITED KINGDOM") !== -1) add("Hits UK");
+    return out.slice(0, 2);
+  }
+  function urgNodes(tags) {
+    return (tags || []).map(function (tag) { return h("span", { class: urgClass(tag), text: tag }); });
+  }
+
   function huntOf(t) { return t.hunt_count != null ? t.hunt_count : Math.max(0, t.indicator_count - t.block_now_count); }
   /* Live activity: the most recently added threats, by their real entry time. Nothing is invented:
      each row is a real entry, and only entries added in the last few hours pulse. */
@@ -853,15 +927,21 @@
     var hunt = huntOf(t);
     var isNew = t.entry_date.split(" ")[0] === newest;
     var sev = severityOf(t);
+    var by = reportedByText(t);
+    var tags = urgencyTags(t);
     return h("li", { class: "trow" }, h("a", { href: "#threat/" + encodeURIComponent(t.id) },
       h("span", { class: "tr-main" },
-        h("span", { class: "tr-name" }, h("span", { text: stitle(t), title: t.name }), isNew ? h("span", { class: "new", text: "New" }) : null)),
-      h("span", { class: "tr-sev sev sev-" + sev, text: sevLabel(sev) }),
-      h("time", { class: "tr-when", datetime: t.entry_date.replace(" ", "T"), title: fmtAdded(t.entry_date), "data-d": t.entry_date, text: ago(t.entry_date) }),
-      h("span", { class: "tr-stats" },
-        t.block_now_count ? h("span", { class: "chip blk", text: t.block_now_count + " block" }) : null,
-        hunt ? h("span", { class: "chip hunt", text: hunt + " hunt" }) : null,
-        t.ioa_count ? h("span", { class: "chip ioa", text: plural(t.ioa_count, "behaviour") }) : null),
+        h("span", { class: "tr-name" }, h("span", { text: headlineOf(t), title: t.name }), isNew ? h("span", { class: "new", text: "New" }) : null),
+        h("span", { class: "tr-sub" },
+          by ? h("span", { class: "tr-by", text: by }) : null,
+          urgNodes(tags))),
+      h("span", { class: "tr-meta" },
+        h("span", { class: "tr-sev sev sev-" + sev, text: sevLabel(sev) }),
+        h("span", { class: "tr-stats" },
+          t.block_now_count ? h("span", { class: "chip blk", text: t.block_now_count + " block" }) : null,
+          hunt ? h("span", { class: "chip hunt", text: hunt + " hunt" }) : null,
+          t.ioa_count ? h("span", { class: "chip ioa", text: plural(t.ioa_count, "behaviour") }) : null),
+        h("time", { class: "tr-when", datetime: t.entry_date.replace(" ", "T"), title: fmtAdded(t.entry_date), "data-d": t.entry_date, text: ago(t.entry_date) })),
       h("span", { class: "tr-go", "aria-hidden": "true", text: "\u2192" })));
   }
     function targetLine(t) {
@@ -925,7 +1005,7 @@
     var nameq = ($("q-list") && $("q-list").value || "").trim().toLowerCase();
     var list = DATA.threats.filter(function (t) {
       var keys = geoKeys(t), secs = tg(t).sectors;
-      var nameOk = !nameq || (t.name + " " + stitle(t) + " " + (t.headline || "") + " " + (t.category || "")).toLowerCase().indexOf(nameq) !== -1;
+      var nameOk = !nameq || (t.name + " " + stitle(t) + " " + headlineOf(t) + " " + (t.headline || "") + " " + (t.category || "")).toLowerCase().indexOf(nameq) !== -1;
       return nameOk && (!c || t.category === c) && (!ty || t.indicator_counts[ty]) && (!d || t.entry_date.split(" ")[0] === d) &&
         (!gk || (gk === "none" ? !keys.length : keys.indexOf(gk) !== -1)) && (!sc || (sc === "none" ? !secs.length : secs.indexOf(sc) !== -1));
     });
@@ -1002,14 +1082,17 @@
       wrap.appendChild(h("div", { class: "empty-state" }, h("b", null, "Threat not found"), "This threat is no longer in the feed. ", h("a", { href: "#threats" }, "Back to the feed")));
       return;
     }
-    document.title = stitle(t) + " \u2013 " + t.name + " | IOCWatch";
+    document.title = headlineOf(t) + " | IOCWatch";
     wrap.appendChild(backLink());
     var newest = DATA.threats[0].entry_date.split(" ")[0];
     var huntN = t.hunt_count != null ? t.hunt_count : t.indicator_count - t.block_now_count;
     var sev = t.block_now_count >= 10 ? "critical" : t.block_now_count >= 1 ? "high" : "medium";
+    var tags = urgencyTags(t);
     wrap.appendChild(h("header", { class: "det-head sev-" + sev, id: "det-head" },
       h("div", { class: "r-cat" }, h("span", { text: t.category }), h("span", { class: "sev sev-" + sev, text: sevLabel(sev) }), t.entry_date.split(" ")[0] === newest ? h("span", { class: "new", text: "New today" }) : null),
-      h("h1", { text: stitle(t) }),
+      h("h1", { text: headlineOf(t) }),
+      reportedByLine(t, "det-by"),
+      tags.length ? h("p", { class: "det-urg" }, urgNodes(tags)) : null,
       h("p", { class: "det-full", text: t.name }),
       h("dl", { class: "facts" },
         [["Published", fmtDay(t.published)], ["Added", fmtAdded(t.entry_date)], ["Last updated", fmtDay(t.last_updated)]]
@@ -1272,9 +1355,10 @@
   function rumourRow(r) {
     var st = r.status || "Unconfirmed";
     var href = (st === "Promoted" && r.threat_id) ? ("#threat/" + encodeURIComponent(r.threat_id)) : null;
+    var label = r.headline || r.short_title;
     var title = href
-      ? h("a", { href: href, text: r.short_title, title: "Open the threat page" })
-      : h("span", { text: r.short_title });
+      ? h("a", { href: href, text: label, title: "Open the threat page" })
+      : h("span", { text: label });
     return h("li", null, h("article", { class: "rum-row" },
       h("div", { class: "rum-main" },
         h("h3", { class: "rum-title" }, title),

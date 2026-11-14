@@ -23,7 +23,8 @@
       "first_seen": "2026-11-12",
       "category": "Intrusion",
       "status": "Confirmed - IOCs pending",
-      "note": "The company says the incident was contained and there is no risk to operators. Der Spiegel and the Financial Times, cited by later reporting, describe a compromised QBase update server. Attribution is unconfirmed."
+      "note": "The company says the incident was contained and there is no risk to operators. Der Spiegel and the Financial Times, cited by later reporting, describe a compromised QBase update server. Attribution is unconfirmed.",
+      "headline": "German military drone maker hit by malicious software update"
     },
     {
       "id": "operation-endgame-nov-2026",
@@ -46,7 +47,8 @@
       "first_seen": "2026-11-12",
       "category": "Law enforcement",
       "status": "Confirmed - IOCs pending",
-      "note": "Victim notifications are being issued through Have I Been Pwned and partner channels. WordPress site owners are advised to rotate credentials and enable multi-factor authentication."
+      "note": "Victim notifications are being issued through Have I Been Pwned and partner channels. WordPress site owners are advised to rotate credentials and enable multi-factor authentication.",
+      "headline": "Police seize Gootloader and StealC servers, recover 6.4 million credentials"
     },
     {
       "id": "apache-cve-2026-119618",
@@ -69,7 +71,8 @@
       "first_seen": "2026-11-11",
       "category": "Vulnerability",
       "status": "Confirmed - IOCs pending",
-      "note": "Affects Apache HTTP Server 2.4.55 through 2.4.70 when HTTP/2 is enabled. Upgrade to 2.4.71, or remove h2 and h2c from Protocols until patched. This is a vendor-confirmed flaw, not a rumour of exploitation."
+      "note": "Affects Apache HTTP Server 2.4.55 through 2.4.70 when HTTP/2 is enabled. Upgrade to 2.4.71, or remove h2 and h2c from Protocols until patched. This is a vendor-confirmed flaw, not a rumour of exploitation.",
+      "headline": "Apache patches critical HTTP/2 flaw, no public exploit indicators yet"
     },
     {
       "id": "pixelleaks-extortion-claims",
@@ -92,7 +95,8 @@
       "first_seen": "2026-11-09",
       "category": "Ransomware",
       "status": "Unconfirmed",
-      "note": "Trackers list first activity around 9 November 2026. Victim names come from the group's own leak site and should be treated as claims until a victim or a reputable investigation confirms them. No leak-site links are published here."
+      "note": "Trackers list first activity around 9 November 2026. Victim names come from the group's own leak site and should be treated as claims until a victim or a reputable investigation confirms them. No leak-site links are published here.",
+      "headline": "New PixelLeaks extortion brand claims victims in several countries"
     }
   ]
 }
