@@ -738,9 +738,6 @@ eb9ba1da5363f5d04e2f98673595fce93f39a78e
 a4e477ce257f2c635401ef554e05506c080967c0
 a5be8706032a0798fd63214a9f22efa6309355f5
 
-## 2026-11-09 MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants
-172.169.63.30
-
 ## 2026-11-09 Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 frameworkmetrics.xyz
 api.frameworkmetrics.xyz
@@ -784,8 +781,6 @@ a205c8a5fed81e9a787645b2801f00be3db3348d
 byodxn5s7sua6oyyjj74rycgn6afncfckprt5ezskt3cni6lg3wdrgad.onion
 
 ## 2026-11-08 SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant
-20.255.63.133
-20.2.81.241
 209.248.50.17
 47.80.65.43
 202.155.94.33

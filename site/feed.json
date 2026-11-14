@@ -7,7 +7,7 @@
  "last_updated": "2026-11-14 10:17",
  "threat_count": 59,
  "indicator_count": 1604,
- "block_now_count": 725,
+ "block_now_count": 722,
  "combined_files": [
   {
    "name": "block_now.txt",
@@ -38303,7 +38303,7 @@
     "Rotate the client secret of every Entra app connected to MSP Process and revoke the admin refresh token used to connect it.",
     "Review Entra service-principal and non-interactive sign-ins for MSP Process app IDs from any IP other than 64.236.54.139.",
     "Audit app role assignments, new app secrets and GDAP security-group membership changes since 6 November 2026.",
-    "Block 172.169.63.30 with a Conditional Access named location; 143.198.68.206 (DigitalOcean) and most other IPs are shared or proxy space, so alert rather than block."
+    "Alert on 172.169.63.30 in Entra sign-ins; it is a shared Microsoft Azure IP, as are 143.198.68.206 (DigitalOcean) and most other addresses, so do not blanket-block."
    ],
    "sources": [
     {
@@ -38318,10 +38318,10 @@
     }
    ],
    "indicator_count": 57,
-   "block_now_count": 1,
-   "hunt_count": 56,
+   "block_now_count": 0,
+   "hunt_count": 57,
    "hunt_counts": {
-    "alert": 55,
+    "alert": 56,
     "monitor": 1
    },
    "indicator_counts": {
@@ -38443,9 +38443,9 @@
     {
      "value": "172.169.63.30",
      "type": "ipv4",
-     "confidence": "high",
-     "recommended_action": "block",
-     "description": "Azure IP that used several partners' stolen MSP Process app secrets to get Microsoft Graph tokens within seconds on 7 Nov 2026 (11:30–11:31 UTC), reported by Inforcer and Huntress.",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "Azure IP that used several partners' stolen MSP Process app secrets to get Microsoft Graph tokens within seconds on 7 Nov 2026 (11:30–11:31 UTC), reported by Inforcer and Huntress. Shared Microsoft Azure IP, alert only.",
      "source_url": "https://www.inforcer.com/insights/when-a-gdap-vendor-is-breached-check-your-own-tenant",
      "source_label": "Inforcer – When a GDAP vendor is breached, check your own tenant",
      "source_name": "Inforcer",
@@ -41009,7 +41009,7 @@
    "recommended_actions": [
     "Upgrade OpenSSH to 10.6p2 or later and restart sshd; installing the package alone leaves the old daemon running.",
     "Until patched, disable SSH password authentication on musl-based hosts such as Alpine.",
-    "Block the confirmed exploitation IPs inbound at the perimeter and the tac.vpnla.org domain outbound.",
+    "Block the confirmed exploitation IPs marked block inbound at the perimeter and the tac.vpnla.org domain outbound; treat the shared Microsoft Azure IPs as alert only.",
     "Check authorized_keys for the two attacker keys and look for /opt/py3/tac_agent.py and /etc/init.d/tac-agent."
    ],
    "sources": [
@@ -41025,10 +41025,10 @@
     }
    ],
    "indicator_count": 40,
-   "block_now_count": 10,
-   "hunt_count": 30,
+   "block_now_count": 8,
+   "hunt_count": 32,
    "hunt_counts": {
-    "alert": 30
+    "alert": 32
    },
    "indicator_counts": {
     "ipv4": 29,
@@ -41091,9 +41091,9 @@
     {
      "value": "20.255.63.133",
      "type": "ipv4",
-     "confidence": "high",
-     "recommended_action": "block",
-     "description": "GreyNoise-confirmed SSHole exploitation source and GT10 cluster seed that ran the exploit and uploaded TAC Agent (Microsoft Azure AS8075, Hong Kong); ephemeral cloud IP, also block inbound SSH at the perimeter.",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "GreyNoise-confirmed SSHole exploitation source and GT10 cluster seed that ran the exploit and uploaded TAC Agent (Microsoft Azure AS8075, Hong Kong); shared Microsoft Azure IP, alert only.",
      "source_url": "https://sshole.events.greynoise.io/",
      "source_label": "GreyNoise – SSHole live activity report",
      "source_name": "GreyNoise",
@@ -41107,9 +41107,9 @@
     {
      "value": "20.2.81.241",
      "type": "ipv4",
-     "confidence": "high",
-     "recommended_action": "block",
-     "description": "GreyNoise-confirmed SSHole exploitation source in the GT10 cluster, high confidence (Microsoft Azure AS8075, Hong Kong); ephemeral cloud IP, also block inbound SSH at the perimeter.",
+     "confidence": "med",
+     "recommended_action": "alert",
+     "description": "GreyNoise-confirmed SSHole exploitation source in the GT10 cluster (Microsoft Azure AS8075, Hong Kong); shared Microsoft Azure IP, alert only.",
      "source_url": "https://sshole.events.greynoise.io/",
      "source_label": "GreyNoise – SSHole live activity report",
      "source_name": "GreyNoise",

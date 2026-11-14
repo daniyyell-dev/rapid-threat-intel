@@ -648,7 +648,6 @@ eb9ba1da5363f5d04e2f98673595fce93f39a78e,sha1,Turla Cereal: Exchange Server Espi
 0b4e4a1ce7fee91bfc62b2a2ec572c325642bb60,sha1,Turla Cereal: Exchange Server Espionage Toolset
 a4e477ce257f2c635401ef554e05506c080967c0,sha1,Turla Cereal: Exchange Server Espionage Toolset
 a5be8706032a0798fd63214a9f22efa6309355f5,sha1,Turla Cereal: Exchange Server Espionage Toolset
-172.169.63.30,ipv4,MSP Process GDAP Breach: Entra Token Abuse in Partner Tenants
 frameworkmetrics.xyz,domain,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 api.frameworkmetrics.xyz,domain,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 https://api.frameworkmetrics.xyz/v1/analytics,url,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
@@ -687,8 +686,6 @@ fae61f31f00988fdc5cc9e7272b51e08af2e245d81003237875415930fd27358,sha256,Ethersph
 7527e86d70e7c9493db4356f1c3775380431b310000f2602c1e993cf435d01da,sha256,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 a205c8a5fed81e9a787645b2801f00be3db3348d,sha1,Ethersphere bee-js and Swarm Desktop Supply-Chain Attack (SleepyDuck / evjawbreaker)
 byodxn5s7sua6oyyjj74rycgn6afncfckprt5ezskt3cni6lg3wdrgad.onion,domain,BYOD Ransomware and Extortion: Vanderbilt University Attack
-20.255.63.133,ipv4,SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant
-20.2.81.241,ipv4,SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant
 209.248.50.17,ipv4,SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant
 47.80.65.43,ipv4,SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant
 202.155.94.33,ipv4,SSHole: OpenSSH CVE-2026-123158 Exploitation and TAC Agent Implant
