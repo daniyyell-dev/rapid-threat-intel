@@ -1,5 +1,5 @@
 # Deploy the static live feed in site/ to GitHub Pages on every push to main,
-# and every 30 minutes to refresh the live attack map (site/live_map.json).
+# and every 15 minutes to refresh the Live map data (site/live_map.json).
 name: Deploy live feed
 
 on:
@@ -8,7 +8,7 @@ on:
       - main
   workflow_dispatch:
   schedule:
-    - cron: "7,37 * * * *"
+    - cron: "4,19,34,49 * * * *"
 
 permissions:
   contents: read
@@ -38,8 +38,15 @@ jobs:
         with:
           path: ${{ runner.temp }}/dbip-country-lite.csv.gz
           key: dbip-${{ steps.month.outputs.m }}
-      - name: Build live attack map
+      - name: Cache slow live feeds
+        uses: actions/cache@v6
+        with:
+          path: ${{ runner.temp }}/livecache
+          key: livecache-${{ github.run_id }}
+          restore-keys: livecache-
+      - name: Build live map data
         continue-on-error: true
+        timeout-minutes: 8
         run: python3 .github/scripts/live_map.py site/live_map.json
       - name: Setup Pages
         uses: actions/configure-pages@v6

@@ -1238,7 +1238,7 @@
     VIEW = view;
     closeNav();
     setNav(view === "threat" ? "threats" : view);
-    var pages = { home: $("home"), threats: $("view-threats"), threat: $("detail"), block: $("view-block"), hunts: $("view-hunts"), sources: $("view-sources"), about: $("view-about"), rumours: $("view-rumours") };
+    var pages = { home: $("home"), threats: $("view-threats"), threat: $("detail"), block: $("view-block"), hunts: $("view-hunts"), sources: $("view-sources"), about: $("view-about"), rumours: $("view-rumours"), live: $("view-live") };
     Object.keys(pages).forEach(function (k) { if (pages[k]) pages[k].hidden = k !== view; });
     document.body.setAttribute("data-view", view);
     if (view !== "threat") CURRENT_ID = "";
@@ -1724,13 +1724,13 @@
       return;
     }
     var top = hash.split("/")[0].split("=")[0];
-    var homeSecs = { check: "search-form", "search-h": "search-form", features: "get-h", live: "live-h" };
+    var homeSecs = { check: "search-form", "search-h": "search-form", features: "get-h" };
     if (homeSecs[top]) {
       showView("home");
       setTimeout(function () { var el = $(homeSecs[top]); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" }); }, 0);
       return;
     }
-    var viewMap = { block: "block", hunts: "hunts", sources: "sources", about: "about", threats: "threats", rumours: "rumours", "feed-sec": "threats", "feed-h": "threats", "all-h": "block" };
+    var viewMap = { live: "live", block: "block", hunts: "hunts", sources: "sources", about: "about", threats: "threats", rumours: "rumours", "feed-sec": "threats", "feed-h": "threats", "all-h": "block" };
     if (top === "page") {
       var pm = /^page=(\d+)$/.exec(hash), want = pm ? Math.max(1, parseInt(pm[1], 10)) : 1;
       showView("threats");
@@ -1744,6 +1744,7 @@
       if (v === "block") renderBlock();
       if (v === "hunts") renderHunts();
       if (v === "sources") renderSources();
+      if (v === "live") renderLivePage();
       window.scrollTo(0, 0);
       if (hash === "threats/map") setTimeout(function () { var mp = $("tmap"); if (mp) mp.scrollIntoView({ behavior: "smooth", block: "start" }); }, 60);
       return;
@@ -1957,128 +1958,217 @@
     if (!WORLD_P) WORLD_P = fetch("/img/world.svg").then(function (r) { return r.ok ? r.text() : ""; }, function () { return ""; });
     return WORLD_P;
   }
-  function mapTabs() {
-    var tl = $("tab-live"), to = $("tab-ours");
-    if (!tl || tl.dataset.ok) return;
-    tl.dataset.ok = "1";
-    function pick(live) {
-      tl.setAttribute("aria-selected", live ? "true" : "false"); to.setAttribute("aria-selected", live ? "false" : "true");
-      $("tmap-live").hidden = !live; $("tmap-ours").hidden = live;
-      $("tmap-sub").textContent = live ? "Attack sources seen in the last hour by public sensor networks." : "Countries named by our sources. Click one to filter the list.";
+  /* Live map page (#live): public sensor networks and feeds, from /live_map.json (rebuilt by the scheduled deploy). */
+  var LM = { data: null, timer: null, tick: null, pool: [], idx: 0, svg: null, layer: null, pos: null, dots: {}, off: {}, refresh: null };
+  var LM_CATS = [
+    { k: "scan", name: "Scanning and brute force", short: "Scanning" },
+    { k: "phish", name: "Phishing", short: "Phishing" },
+    { k: "c2", name: "Malware C2", short: "Malware C2" },
+    { k: "ransom", name: "Ransomware claims", short: "Ransomware" },
+    { k: "cve", name: "Exploited and critical CVEs", short: "CVEs" }
+  ];
+  var LM_OFF = { scan: [0, 0], phish: [3.2, -2.2], c2: [-3.2, 2.2], ransom: [2.4, 3] };
+  function lmAgo(iso) {
+    var t = Date.parse(iso); if (isNaN(t)) return "";
+    var m = Math.max(0, Math.round((Date.now() - t) / 60000));
+    return m < 1 ? "just now" : m < 60 ? m + "m ago" : m < 1440 ? Math.floor(m / 60) + "h ago" : Math.floor(m / 1440) + "d ago";
+  }
+  function lmWhen(e) {
+    if (e.within != null) return "< " + Math.max(5, e.within) + "m ago";
+    if (e.label_when) return e.label_when;
+    if (e.day) { var d = Date.parse(e.ts); return isNaN(d) ? "" : (Date.now() - d < 86400000 ? "today" : lmAgo(e.ts)); }
+    return lmAgo(e.ts);
+  }
+  function lmDay(d) { var t = Date.parse(d); return isNaN(t) ? (d || "") : new Date(t).toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" }); }
+  function lmNum(n) { return n == null ? "\u2013" : n >= 100000 ? (Math.round(n / 1000) + "k") : fmtNum(n); }
+  function lmLoad() {
+    return fetch("/live_map.json", { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+  }
+  function renderLivePage() {
+    var root = $("view-live");
+    if (!root) return;
+    document.title = "Live map | IOCWatch";
+    if (!LM.refresh) {
+      LM.refresh = setInterval(function () { if (VIEW === "live" && !document.hidden) lmLoad().then(lmApply, function () {}); }, 300000);
+      document.addEventListener("visibilitychange", function () {
+        if (!document.hidden && VIEW === "live" && LM.data && Date.now() - Date.parse(LM.data.updated) > 300000) lmLoad().then(lmApply, function () {});
+      });
     }
-    tl.addEventListener("click", function () { pick(true); });
-    to.addEventListener("click", function () { pick(false); });
-    var gk = $("f-country") && $("f-country").value;
-    if (gk) pick(false);
+    if (LM.data) { lmUpd(); return; }
+    Promise.all([worldSvg(), lmLoad()]).then(function (res) { lmMap(res[0]); lmApply(res[1]); }, function () {
+      var u = $("lv-upd"); if (u) u.textContent = "Live data is unavailable right now. Try again in a few minutes.";
+    });
   }
-  /* Live attacks: country-level aggregates from /live_map.json (rebuilt by the site's scheduled deploy). */
-  var LIVE_DONE = false;
-  function ago(iso) {
-    var m = Math.max(0, Math.round((Date.now() - Date.parse(iso)) / 60000));
-    return m < 1 ? "just now" : m < 60 ? m + " min ago" : m < 1440 ? Math.round(m / 60) + " h ago" : Math.round(m / 1440) + " d ago";
+  function lmUpd() {
+    var d = LM.data, u = $("lv-upd"); if (!u || !d) return;
+    clear(u); add(u, [h("span", { class: "live-dot", "aria-hidden": "true" }), "Updated " + lmAgo(d.updated) + " \u00b7 refreshes every 15 min"]);
   }
-  function renderLive() {
-    if (LIVE_DONE || !$("lmap-map")) return;
-    LIVE_DONE = true;
+  function lmMap(txt) {
+    var box = $("lv-map"); if (!txt || !box || LM.svg) return;
+    var doc = new DOMParser().parseFromString(txt, "image/svg+xml"), svg = document.importNode(doc.documentElement, true);
+    svg.setAttribute("aria-label", "Live map of attack activity by country");
+    box.insertBefore(svg, $("lv-tip"));
+    var NS = "http://www.w3.org/2000/svg", layer = document.createElementNS(NS, "g"), pos = {};
+    layer.setAttribute("class", "lm-layer");
+    Array.prototype.forEach.call(svg.querySelectorAll(".wm-lp circle"), function (c) {
+      var cd = c.getAttribute("data-c"); if (cd && !pos[cd]) pos[cd] = [+c.getAttribute("cx"), +c.getAttribute("cy")];
+    });
+    svg.appendChild(layer);
+    LM.svg = svg; LM.layer = layer; LM.pos = pos;
+    var tip = $("lv-tip");
+    function show(e) {
+      var el = e.target.closest ? e.target.closest("[data-cc]") : null, cd = el ? el.getAttribute("data-cc") : null;
+      if (!cd) { var p = e.target.closest && e.target.closest(".wm-land path.lm-src"); if (p) cd = p.getAttribute("data-c"); }
+      var c = cd && LM.byCc && LM.byCc[cd];
+      if (!c) { tip.hidden = true; return; }
+      var r = box.getBoundingClientRect(), nm = countryName(cd), bits = [];
+      if (c.scan) bits.push(h("span", { class: "c-scan" }, h("b", { text: fmtNum(c.scan) }), " scanning IPs (1h)"));
+      if (c.dshield) bits.push(h("span", { class: "c-scan" }, h("b", { text: lmNum(c.dshield) }), " DShield reports today"));
+      if (c.phish) bits.push(h("span", { class: "c-phish" }, h("b", { text: fmtNum(c.phish) }), " phishing hosts"));
+      if (c.c2) bits.push(h("span", { class: "c-c2" }, h("b", { text: fmtNum(c.c2) }), " malware C2"));
+      if (c.ransom) bits.push(h("span", { class: "c-ransom" }, h("b", { text: fmtNum(c.ransom) }), " ransomware claims (24h)"));
+      if (c.tor) bits.push(h("span", { class: "dim", text: fmtNum(c.tor) + " Tor exits (context)" }));
+      add(clear(tip), [h("b", null, flagImg(cd, nm), " " + nm), bits, c.top ? h("span", { class: "lm-tk", text: "Mostly: " + c.top }) : null]);
+      tip.hidden = false;
+      tip.style.left = Math.min(r.width - 250, Math.max(8, e.clientX - r.left + 12)) + "px";
+      tip.style.top = Math.max(8, e.clientY - r.top - 90) + "px";
+    }
+    svg.addEventListener("mousemove", show);
+    svg.addEventListener("click", show);
+    svg.addEventListener("mouseleave", function () { tip.hidden = true; });
+  }
+  function lmApply(d) {
+    if (!d || !d.countries) return;
+    LM.data = d; LM.byCc = {};
+    d.countries.forEach(function (c) { LM.byCc[c.cc] = c; });
     var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    Promise.all([worldSvg(), fetch("/live_map.json", { cache: "no-store" }).then(function (r) { if (!r.ok) throw 0; return r.json(); })]).then(function (res) {
-      var txt = res[0], d = res[1], box = $("lmap-map"), tip = $("lmap-tip");
-      if (!txt || !d || !d.countries) throw 0;
-      var byCc = {}; d.countries.forEach(function (c) { byCc[c.cc] = c; });
-      function score(c) { return c.ips + c.dshield / 2000 + c.c2 * 5; }
-      var mx = d.countries.length ? score(d.countries[0]) : 1;
-      d.countries.forEach(function (c) { mx = Math.max(mx, score(c)); });
-      var doc = new DOMParser().parseFromString(txt, "image/svg+xml"), svg = document.importNode(doc.documentElement, true);
-      svg.setAttribute("aria-label", "Live map of attack sources in the last hour");
-      box.insertBefore(svg, tip);
-      var NS = "http://www.w3.org/2000/svg", layer = document.createElementNS(NS, "g"), pos = {};
-      layer.setAttribute("class", "lm-layer");
-      Array.prototype.forEach.call(svg.querySelectorAll(".wm-lp circle"), function (c) {
-        var cd = c.getAttribute("data-c"); if (cd && !pos[cd]) pos[cd] = [+c.getAttribute("cx"), +c.getAttribute("cy")];
-      });
-      Array.prototype.forEach.call(svg.querySelectorAll(".wm-land path"), function (p) {
-        var c = byCc[p.getAttribute("data-c")]; if (c) p.setAttribute("class", "lm-src");
-      });
-      var dots = {};
-      d.countries.slice().reverse().forEach(function (c, i) {
-        var p = pos[c.cc]; if (!p) return;
-        var k = Math.sqrt(score(c) / mx), r = 1.6 + k * 5.5, g = document.createElementNS(NS, "g");
-        g.setAttribute("class", "lm-pt" + (k > 0.45 ? " hot" : ""));
-        g.setAttribute("transform", "translate(" + p[0] + " " + p[1] + ")");
-        g.setAttribute("data-cc", c.cc);
-        if (!reduce && k > 0.12) {
+    lmUpd();
+    // Infocon
+    var ic = $("lv-infocon"), lvl = String(d.infocon || "").toLowerCase();
+    if (ic) { clear(ic); if (lvl) add(ic, ["DShield Infocon ", h("b", { class: "ic-" + lvl, text: lvl.charAt(0).toUpperCase() + lvl.slice(1) })]); }
+    // Category counters (also map layer toggles)
+    var cs = clear($("lv-cats")), cats = d.cats || {};
+    LM_CATS.forEach(function (c) {
+      var v = cats[c.k] || {}, main, sub;
+      if (c.k === "scan") { main = lmNum(v.h1); sub = "IPs in the last hour \u00b7 " + lmNum(v.d1) + " sources today"; }
+      else if (c.k === "phish") { main = lmNum(v.d1); sub = "phishing URLs, last 12h"; }
+      else if (c.k === "c2") { main = lmNum(v.d1); sub = v.h1 != null ? "C2 servers \u00b7 " + lmNum(v.h1) + " new IOCs (1h)" : "botnet C2 servers online (30d)"; }
+      else if (c.k === "ransom") { main = lmNum(v.d1); sub = "claims in 24h \u00b7 " + lmNum(v.h1) + " in the last hour"; }
+      else { main = lmNum(v.d1); sub = "critical CVEs (24h) \u00b7 " + lmNum(v.kev7) + " added to KEV (7d)"; }
+      var btn = h("button", { type: "button", class: "lv-cat k-" + c.k + (LM.off[c.k] ? " off" : ""), "aria-pressed": LM.off[c.k] ? "false" : "true", title: c.k === "cve" ? c.name : "Show or hide on the map",
+        onclick: c.k === "cve" ? null : function () { LM.off[c.k] = !LM.off[c.k]; btn.classList.toggle("off", !!LM.off[c.k]); btn.setAttribute("aria-pressed", LM.off[c.k] ? "false" : "true"); lmDots(reduce); } },
+        h("span", { class: "lv-cat-n" }, h("i", { "aria-hidden": "true" }), c.name), h("b", { class: "lv-cat-v", text: main }), h("span", { class: "lv-cat-s", text: sub }));
+      cs.appendChild(btn);
+    });
+    lmDots(reduce);
+    // Top countries
+    var top = clear($("lv-top")), tops = d.countries.slice(0, 6), mx = tops.length ? tops[0].s : 1;
+    tops.forEach(function (c) {
+      var nm = countryName(c.cc), bar = h("i"), bits = [];
+      bar.style.width = Math.max(6, Math.round(c.s / mx * 100)) + "%";
+      if (c.scan) bits.push(h("span", { class: "c-scan", text: fmtNum(c.scan) + " scanning" }));
+      if (c.phish) bits.push(h("span", { class: "c-phish", text: fmtNum(c.phish) + " phishing" }));
+      if (c.c2) bits.push(h("span", { class: "c-c2", text: fmtNum(c.c2) + " C2" }));
+      if (c.ransom) bits.push(h("span", { class: "c-ransom", text: fmtNum(c.ransom) + " ransomware" }));
+      top.appendChild(h("li", null, h("div", { class: "lv-tc", onmouseenter: function () { lmFlash(c.cc); } },
+        h("span", { class: "tt-n" }, flagImg(c.cc, nm), h("span", { text: nm })),
+        h("span", { class: "lv-tc-b" }, bits.map(function (b, i) { return [i ? " \u00b7 " : null, b]; })), h("span", { class: "tt-bar" }, bar))));
+    });
+    // Ports
+    var pl = clear($("lv-ports")), ports = d.ports || [], pm = ports.length ? ports[0].records : 1;
+    ports.slice(0, 6).forEach(function (p) {
+      var bar = h("i"); bar.style.width = Math.max(6, Math.round(p.records / pm * 100)) + "%";
+      pl.appendChild(h("li", null, h("span", { class: "lv-port" }, h("b", { text: String(p.port) }), " " + (p.name || "")),
+        h("span", { class: "lv-port-v", text: lmNum(p.records) + " reports \u00b7 " + lmNum(p.sources) + " IPs" }), h("span", { class: "tt-bar" }, bar)));
+    });
+    // Ransomware claims (group, country, time only)
+    var rl = clear($("lv-ransom"));
+    (d.ransom || []).slice(0, 7).forEach(function (x) {
+      var nm = x.cc ? countryName(x.cc) : "Country not stated";
+      rl.appendChild(h("li", null, x.cc ? flagImg(x.cc, nm) : h("span", { class: "visits-flag lv-noflag", "aria-hidden": "true" }),
+        h("span", { class: "lv-rw" }, h("b", { class: "c-ransom", text: x.group }), " \u00b7 " + nm), h("time", { datetime: x.ts, text: lmAgo(x.ts) })));
+    });
+    if (!rl.firstChild) rl.appendChild(h("li", { class: "dim", text: "No new claims in the last 24 hours." }));
+    // CVEs
+    var cl = clear($("lv-cves"));
+    (d.cves || []).slice(0, 4).forEach(function (x) {
+      cl.appendChild(h("li", null, h("a", { href: "https://nvd.nist.gov/vuln/detail/" + x.id, target: "_blank", rel: "noopener" },
+        h("span", { class: "lv-cve" }, h("b", { class: "c-crit", text: x.id }), x.score ? h("span", { class: "c-crit", text: " CVSS " + x.score }) : null, x.kev ? h("span", { class: "c-cve", text: " \u00b7 in KEV" }) : null, h("time", { datetime: x.ts, text: lmAgo(x.ts) })),
+        h("span", { class: "lv-cve-d", text: x.what }))));
+    });
+    (d.kev || []).slice(0, 3).forEach(function (x) {
+      cl.appendChild(h("li", null, h("a", { href: "https://nvd.nist.gov/vuln/detail/" + x.id, target: "_blank", rel: "noopener" },
+        h("span", { class: "lv-cve" }, h("b", { class: "c-cve", text: x.id }), h("span", { class: "c-cve", text: " \u00b7 added to CISA KEV" }), x.ransomware ? h("span", { class: "c-ransom", text: " \u00b7 used by ransomware" }) : null, h("time", { text: lmDay(x.day) })),
+        h("span", { class: "lv-cve-d", text: x.what }))));
+    });
+    // Sources
+    var sr = clear($("lv-src"));
+    add(sr, ["Sources: ", (d.sources || []).map(function (s, i) { return [i ? ", " : null, h("a", { href: s.url, target: "_blank", rel: "noopener", title: s.what + (s.licence ? " (" + s.licence + ")" : ""), text: s.name })]; }),
+      ". Countries show where attacking infrastructure is hosted (or where a ransomware victim is based), not who is behind it."]);
+    // Ticker
+    LM.pool = (d.ticker || []).slice(); LM.idx = 0;
+    lmTicker(reduce);
+  }
+  function lmDots(reduce) {
+    var d = LM.data, layer = LM.layer, pos = LM.pos; if (!d || !layer) return;
+    while (layer.firstChild) layer.removeChild(layer.firstChild);
+    LM.dots = {};
+    Array.prototype.forEach.call(LM.svg.querySelectorAll(".wm-land path"), function (p) {
+      p.setAttribute("class", LM.byCc[p.getAttribute("data-c")] ? "lm-src" : "");
+    });
+    var NS = "http://www.w3.org/2000/svg", mx = {};
+    ["scan", "phish", "c2", "ransom"].forEach(function (k) { mx[k] = 1; d.countries.forEach(function (c) { mx[k] = Math.max(mx[k], lmVal(c, k)); }); });
+    ["scan", "phish", "c2", "ransom"].forEach(function (k) {
+      if (LM.off[k]) return;
+      var rows = d.countries.filter(function (c) { return lmVal(c, k) > 0 && pos[c.cc]; }).sort(function (a, b) { return lmVal(a, k) - lmVal(b, k); });
+      rows.forEach(function (c, i) {
+        var p = pos[c.cc], o = LM_OFF[k], q = Math.sqrt(lmVal(c, k) / mx[k]), r = (k === "scan" ? 1.4 : 1.8) + q * (k === "scan" ? 5.5 : 4.2);
+        var g = document.createElementNS(NS, "g");
+        g.setAttribute("class", "lm-pt k-" + k); g.setAttribute("data-cc", c.cc);
+        g.setAttribute("transform", "translate(" + (p[0] + o[0]) + " " + (p[1] + o[1]) + ")");
+        if (!reduce && (q > 0.18 || k === "ransom" || k === "c2")) {
           var rp = document.createElementNS(NS, "circle"); rp.setAttribute("class", "lm-ring"); rp.setAttribute("r", String(r));
-          rp.style.animationDelay = (-(i * 0.37) % 3.2).toFixed(2) + "s"; g.appendChild(rp);
+          rp.style.animationDelay = (-((i * 0.53) % 3.2)).toFixed(2) + "s"; g.appendChild(rp);
         }
         var dot = document.createElementNS(NS, "circle"); dot.setAttribute("class", "lm-dot"); dot.setAttribute("r", String(r)); g.appendChild(dot);
-        layer.appendChild(g); dots[c.cc] = g;
+        layer.appendChild(g);
+        (LM.dots[c.cc] = LM.dots[c.cc] || {})[k] = g;
       });
-      svg.appendChild(layer);
-      function show(e) {
-        var el = e.target.closest ? e.target.closest("[data-cc]") : null;
-        if (!el) { var pth = e.target.closest && e.target.closest("path.lm-src"); if (pth) el = { getAttribute: function () { return pth.getAttribute("data-c"); } }; }
-        if (!el) { tip.hidden = true; return; }
-        var cd = el.getAttribute("data-cc") || el.getAttribute(), c = byCc[cd]; if (!c) { tip.hidden = true; return; }
-        var r = box.getBoundingClientRect(), nm = countryName(cd), bits = [];
-        if (c.ips) bits.push(plural(c.ips, "attacking IP") + " last hour");
-        if (c.dshield) bits.push(fmtNum(c.dshield) + " DShield reports today");
-        if (c.c2) bits.push(plural(c.c2, "botnet C2 server"));
-        add(clear(tip), [h("b", null, flagImg(cd, nm), " " + nm), h("span", { text: bits.join(" \u00b7 ") }), c.top ? h("span", { class: "lm-tk", text: "Mostly: " + c.top }) : null]);
-        tip.hidden = false;
-        tip.style.left = Math.min(r.width - 230, Math.max(8, e.clientX - r.left + 12)) + "px";
-        tip.style.top = Math.max(8, e.clientY - r.top - 60) + "px";
-      }
-      svg.addEventListener("mousemove", show);
-      svg.addEventListener("mouseleave", function () { tip.hidden = true; });
-      // Side panel
-      var t = d.totals || {};
-      var st = clear($("lmap-stat"));
-      add(st, [h("b", { class: "lm-num", text: fmtNum(t.attacker_ips_hour || 0) }), " attacking IPs from ", h("b", { class: "lm-num", text: String(t.countries || 0) }), " countries in the last hour",
-        h("span", { class: "lm-upd", title: d.updated }, h("span", { class: "live-dot", "aria-hidden": "true" }), "Updated " + ago(d.updated))]);
-      var top = clear($("lmap-top")), tmx = 1;
-      var tops = d.countries.slice().sort(function (a, b) { return b.ips - a.ips; }).slice(0, 8);
-      tops.forEach(function (c) { tmx = Math.max(tmx, c.ips); });
-      tops.forEach(function (c) {
-        var nm = countryName(c.cc), bar = h("i"); bar.style.width = Math.max(6, Math.round(c.ips / tmx * 100)) + "%";
-        top.appendChild(h("li", null, h("button", { type: "button", title: c.top || "", onmouseenter: function () { if (dots[c.cc]) dots[c.cc].classList.add("on"); }, onmouseleave: function () { if (dots[c.cc]) dots[c.cc].classList.remove("on"); } },
-          h("span", { class: "tt-n" }, flagImg(c.cc, nm), h("span", { text: nm })), h("span", { class: "tt-v", text: fmtNum(c.ips) }), h("span", { class: "tt-bar" }, bar))));
-      });
-      var kv = clear($("lmap-kev"));
-      if (d.kev && d.kev.length) add(kv, [h("span", { class: "lm-kh", text: "Newly exploited (CISA KEV)" }), d.kev.map(function (k) {
-        return h("a", { href: "https://nvd.nist.gov/vuln/detail/" + k.cve, target: "_blank", rel: "noopener", class: "lm-kevrow" }, h("b", { text: k.cve }), h("span", { text: k.what }));
-      })]);
-      var srcs = clear($("lmap-src"));
-      add(srcs, ["Data: ", (d.sources || []).map(function (s, i) { return [i ? ", " : null, h("a", { href: s.url, target: "_blank", rel: "noopener", title: s.what + (s.licence ? " (" + s.licence + ")" : ""), text: s.name })]; }),
-        ". Countries are where the attacking IPs are hosted, not who is behind them. Refreshed about every 30 minutes."]);
-      // Ticker: one event at a time, the matching country pulses brighter
-      var tk = clear($("lmap-ticker")), items = (d.ticker || []).filter(function (e) { return pos[e.cc] || byCc[e.cc]; });
-      function line(e) {
-        var nm = countryName(e.cc), when = e.src === "blocklist" ? (e.age_min <= 5 ? "< 5 min ago" : "< " + e.age_min + " min ago") : e.src === "dshield" ? "today" : (e.day || "");
-        var what = e.src === "dshield" ? e.kind + (e.targets ? " (up to " + fmtNum(e.targets) + " sensors)" : "") : e.kind;
-        var srcN = e.src === "blocklist" ? "blocklist.de" : e.src === "dshield" ? "DShield" : "Feodo Tracker";
-        return h("div", { class: "lm-row" }, h("span", { class: "live-dot", "aria-hidden": "true" }), flagImg(e.cc, nm),
-          h("span", { class: "lm-what" }, h("b", { text: what }), " from " + nm + " \u00b7 " + fmtNum(e.n) + " " + e.unit),
-          h("span", { class: "lm-when" }, when, h("span", { class: "lm-srcn", text: " \u00b7 " + srcN })));
-      }
-      if (!items.length) { tk.appendChild(h("div", { class: "lm-row dim", text: "No live events in this snapshot." })); return; }
-      var keep = window.matchMedia && window.matchMedia("(max-width: 720px)").matches ? 3 : 4;
-      if (reduce) { items.slice(0, keep).forEach(function (e) { tk.appendChild(line(e)); }); return; }
-      var idx = 0;
-      function step() {
-        if (document.hidden) return;
-        var e = items[idx++ % items.length], row = line(e);
-        tk.insertBefore(row, tk.firstChild);
-        requestAnimationFrame(function () { requestAnimationFrame(function () { row.classList.add("in"); }); });
-        while (tk.children.length > keep) tk.removeChild(tk.lastChild);
-        Array.prototype.forEach.call(layer.querySelectorAll(".lm-pt.flash"), function (g) { g.classList.remove("flash"); });
-        var g = dots[e.cc]; if (g) { void g.getBoundingClientRect(); g.classList.add("flash"); }
-      }
-      for (var q = 0; q < keep - 1; q++) { var r0 = line(items[idx++ % items.length]); r0.classList.add("in"); tk.insertBefore(r0, tk.firstChild); }
-      step(); setInterval(step, 3200);
-    }).catch(function () {
-      var tl = $("tab-live"); if (tl) tl.hidden = true;
-      var to = $("tab-ours"); if (to) to.click();
     });
+  }
+  function lmVal(c, k) { return k === "scan" ? (c.scan || 0) + (c.dshield || 0) / 2000 + (c.scanlist || 0) / 40 : (c[k] || 0); }
+  function lmFlash(cc, k) {
+    if (!LM.layer) return;
+    Array.prototype.forEach.call(LM.layer.querySelectorAll(".lm-pt.flash"), function (g) { g.classList.remove("flash"); });
+    var set = LM.dots[cc]; if (!set) return;
+    var g = (k && set[k]) || set.scan || set[Object.keys(set)[0]];
+    if (g) { void g.getBoundingClientRect(); g.classList.add("flash"); }
+  }
+  function lmRow(e) {
+    var nm = e.cc ? countryName(e.cc) : "", body;
+    if (e.cat === "ransom") body = [h("b", { text: "Ransomware claim" }), " \u00b7 " + e.kind.replace(/^Ransomware claim by /, "") + (nm ? " \u00b7 victim in " + nm : "")];
+    else if (e.cat === "cve") body = [h("b", { text: e.kind }), e.what ? " \u00b7 " + e.what : ""];
+    else if (e.cat === "phish") body = [h("b", { text: "Phishing sites" }), " hosted in " + nm + " \u00b7 " + fmtNum(e.n)];
+    else if (e.cat === "c2") body = [h("b", { text: e.kind }), nm ? " in " + nm : ""];
+    else body = [h("b", { text: e.kind }), " from " + nm + " \u00b7 " + fmtNum(e.n) + " " + e.unit + (e.n === 1 ? "" : "s") + (e.targets ? " \u00b7 up to " + fmtNum(e.targets) + " sensors" : "")];
+    return h("li", { class: "lv-row k-" + e.cat }, h("i", { class: "lv-k", "aria-hidden": "true" }),
+      e.cc ? flagImg(e.cc, nm) : h("span", { class: "visits-flag lv-noflag", "aria-hidden": "true" }),
+      h("span", { class: "lv-what" }, body), h("span", { class: "lv-when" }, lmWhen(e), h("span", { class: "lv-srcn", text: e.src })));
+  }
+  function lmTicker(reduce) {
+    var tk = clear($("lv-ticker")), pool = LM.pool, keep = window.matchMedia && window.matchMedia("(max-width: 720px)").matches ? 5 : 9;
+    if (LM.tick) { clearInterval(LM.tick); LM.tick = null; }
+    if (!pool.length) { tk.appendChild(h("li", { class: "lv-row dim", text: "No live events in this snapshot." })); return; }
+    for (var i = 0; i < Math.min(keep, pool.length); i++) { var r0 = lmRow(pool[LM.idx++ % pool.length]); r0.classList.add("in"); tk.appendChild(r0); }
+    if (reduce || pool.length <= keep) return;
+    LM.tick = setInterval(function () {
+      if (document.hidden || VIEW !== "live") return;
+      var e = pool[LM.idx++ % pool.length], row = lmRow(e);
+      tk.insertBefore(row, tk.firstChild);
+      requestAnimationFrame(function () { requestAnimationFrame(function () { row.classList.add("in"); }); });
+      while (tk.children.length > keep) tk.removeChild(tk.lastChild);
+      if (e.cc) lmFlash(e.cc, e.cat);
+    }, 4000);
   }
   function initReveal() {
     var els = document.querySelectorAll(".reveal");
@@ -2097,8 +2187,6 @@
     renderStats();
     fillFilters();
     renderMap();
-    mapTabs();
-    renderLive();
     initReveal();
     fillNavCounts();
     renderFeed();

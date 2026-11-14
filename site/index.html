@@ -33,7 +33,7 @@
 <link rel="preload" href="/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/InterDisplay-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/feed.json" as="fetch" crossorigin>
-<link rel="stylesheet" href="/style.css?v=77999df5">
+<link rel="stylesheet" href="/style.css?v=67864484">
 </head>
 <body data-layout="d" class="brand-i">
 <a class="skip" href="#main">Skip to content</a>
@@ -42,6 +42,7 @@
     <a href="/" class="logo" aria-label="IOCWatch home"><svg class="logo-i" viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><defs><linearGradient id="lg-nav" x1="4" y1="6" x2="28" y2="26" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#a5f3fc"/><stop offset=".55" stop-color="#22d3ee"/><stop offset="1" stop-color="#2dd4bf"/></linearGradient><clipPath id="lg-eye-nav"><path d="M4.6 16c3.1-5.4 7-8.1 11.4-8.1s8.3 2.7 11.4 8.1c-3.1 5.4-7 8.1-11.4 8.1S7.7 21.4 4.6 16Z"/></clipPath></defs><rect class="lg-bg" x="1" y="1" width="30" height="30" rx="9"/><g clip-path="url(#lg-eye-nav)"><g class="lg-gaze"><path class="lg-sweep" d="M16 16V9.6a6.4 6.4 0 0 1 5.54 3.2Z"/><circle class="lg-iris" cx="16" cy="16" r="6.4" fill="none" stroke="url(#lg-nav)" stroke-width="1.5"/><circle class="lg-pupil" cx="16" cy="16" r="2.2" fill="#fff"/></g><g class="lg-lids"><rect class="lg-lid lg-lid-t" x="3" y="7" width="26" height="10"/><rect class="lg-lid lg-lid-b" x="3" y="15" width="26" height="10"/></g></g><path class="lg-rim" d="M4.6 16c3.1-5.4 7-8.1 11.4-8.1s8.3 2.7 11.4 8.1c-3.1 5.4-7 8.1-11.4 8.1S7.7 21.4 4.6 16Z" fill="none" stroke="url(#lg-nav)" stroke-width="2" stroke-linejoin="round"/></svg><span class="logo-w"><b>IOC</b>Watch</span></a>
     <nav class="app-nav" id="app-nav" aria-label="Main">
       <a href="#threats" data-view="threats">Threats</a>
+      <a href="#live" data-view="live" class="nav-lm"><span class="live-dot" aria-hidden="true"></span>Live map</a>
       <a href="#rumours" data-view="rumours">Rumours</a>
       <a href="#block" data-view="block">Block list</a>
       <a href="#hunts" data-view="hunts">Hunts</a>
@@ -125,43 +126,44 @@
         </div>
       </details>
     </div>
+    <div class="geo-mini" hidden><ol id="geo-list" class="geo-list"></ol><p id="geo-regions" class="geo-regions"></p></div>
+    <ol id="feed" class="tlist"></ol>
+    <nav class="pager" id="feed-pager" aria-label="Threat pages" hidden></nav>
     <section class="tmap" id="tmap" aria-labelledby="tmap-h">
       <div class="tmap-head">
-        <div><h2 id="tmap-h">Threat map</h2><p class="tmap-sub" id="tmap-sub">Attack sources seen in the last hour by public sensor networks.</p></div>
-        <div class="tmap-tabs" role="tablist" aria-label="Map view">
-          <button type="button" role="tab" id="tab-live" aria-selected="true" aria-controls="tmap-live"><span class="live-dot" aria-hidden="true"></span>Live attacks</button>
-          <button type="button" role="tab" id="tab-ours" aria-selected="false" aria-controls="tmap-ours">Our threats</button>
-        </div>
+        <div><h2 id="tmap-h">Countries named in our threats</h2><p class="tmap-sub">Where our sources say these threats are aimed. Click one to filter the list. For live attack activity, see the <a href="#live">Live map</a>.</p></div>
+        <div class="tmap-legend" aria-hidden="true"><span>Fewer</span><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><span>More</span></div>
       </div>
-      <div class="tmap-body" id="tmap-live" role="tabpanel" aria-labelledby="tab-live">
-        <div class="tmap-mapcol">
-          <div class="tmap-map lmap" id="lmap-map"><div class="tmap-tip" id="lmap-tip" hidden></div></div>
-          <div class="lmap-ticker" id="lmap-ticker" aria-live="off"></div>
-          <div class="lmap-kev" id="lmap-kev"></div>
-        </div>
-        <aside class="tmap-side">
-          <p class="lmap-stat" id="lmap-stat"></p>
-          <ol class="tmap-top" id="lmap-top"></ol>
-          <p class="lmap-src" id="lmap-src"></p>
-        </aside>
-      </div>
-      <div class="tmap-body" id="tmap-ours" role="tabpanel" aria-labelledby="tab-ours" hidden>
-        <div class="tmap-mapcol">
-          <div class="tmap-map" id="tmap-map"><div class="tmap-tip" id="tmap-tip" hidden></div></div>
-          <div class="tmap-legend" aria-hidden="true"><span>Fewer</span><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><span>More</span></div>
-        </div>
+      <div class="tmap-body">
+        <div class="tmap-map" id="tmap-map"><div class="tmap-tip" id="tmap-tip" hidden></div></div>
         <aside class="tmap-side">
           <ol class="tmap-top" id="tmap-top"></ol>
           <div class="tmap-ns" id="tmap-ns"></div>
         </aside>
       </div>
     </section>
-    <div class="geo-mini" hidden><ol id="geo-list" class="geo-list"></ol><p id="geo-regions" class="geo-regions"></p></div>
-    <ol id="feed" class="tlist"></ol>
-    <nav class="pager" id="feed-pager" aria-label="Threat pages" hidden></nav>
   </div>
 
   <div id="view-rumours" class="page-view" hidden></div>
+  <div id="view-live" class="page-view lv-page" hidden>
+    <div class="catalog-head"><h1 id="live-h">Live map</h1><p class="hint lv-upd" id="lv-upd">Loading live activity…</p></div>
+    <p class="lv-banner">Live activity from public sensor networks and feeds — not IOCWatch-verified indicators.</p>
+    <div class="lv-cats" id="lv-cats"></div>
+    <div class="lv-main">
+      <section class="lv-mapbox" aria-label="Map">
+        <div class="tmap-map lmap" id="lv-map"><div class="tmap-tip" id="lv-tip" hidden></div></div>
+        <p class="lv-legend"><span class="c-scan"><i></i>Scanning</span><span class="c-phish"><i></i>Phishing</span><span class="c-c2"><i></i>Malware C2</span><span class="c-ransom"><i></i>Ransomware</span><span class="lv-ic" id="lv-infocon"></span></p>
+      </section>
+      <section class="lv-feed" aria-labelledby="lv-feed-h"><h2 id="lv-feed-h"><span class="live-dot" aria-hidden="true"></span>Live feed</h2><ol class="lv-ticker" id="lv-ticker" aria-live="off"></ol></section>
+    </div>
+    <div class="lv-grid">
+      <section class="lv-card"><h2>Top source countries</h2><ol class="tmap-top lv-top" id="lv-top"></ol></section>
+      <section class="lv-card"><h2>Most attacked ports <span class="dim">today</span></h2><ol class="lv-ports" id="lv-ports"></ol></section>
+      <section class="lv-card"><h2>Ransomware claims <span class="dim">24h</span></h2><ol class="lv-list" id="lv-ransom"></ol></section>
+      <section class="lv-card"><h2>Critical and exploited CVEs</h2><ol class="lv-list" id="lv-cves"></ol></section>
+    </div>
+    <p class="lv-src" id="lv-src"></p>
+  </div>
   <div id="detail" class="page-view detail-page" hidden></div>
   <div id="view-block" class="page-view" hidden></div>
   <div id="view-hunts" class="page-view" hidden></div>
@@ -208,7 +210,7 @@
         <p class="foot-tag">AI threat intelligence for defenders. Verified indicators, block lists and hunts, free and open.</p>
         <p class="foot-status"><span class="live-dot" aria-hidden="true"></span><span>Feed updated <time id="foot-upd">recently</time></span></p>
       </div>
-      <nav class="foot-col" aria-label="Product"><h2>Product</h2><a href="#threats">Threats</a><a href="#rumours">Rumours</a><a href="#threats/map">Threat map</a><a href="#block">Block list</a><a href="#hunts">Hunts</a><a href="#sources">Sources</a></nav>
+      <nav class="foot-col" aria-label="Product"><h2>Product</h2><a href="#threats">Threats</a><a href="#rumours">Rumours</a><a href="#live">Live map</a><a href="#block">Block list</a><a href="#hunts">Hunts</a><a href="#sources">Sources</a></nav>
       <nav class="foot-col" aria-label="Resources"><h2>Resources</h2><a href="https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md">Docs</a><a href="/feed.json" data-dl="feed.json">feed.json</a><a href="https://github.com/daniyyell-dev/rapid-threat-intel">Repository</a><a href="/.well-known/security.txt">security.txt</a></nav>
       <nav class="foot-col" aria-label="Company"><h2>IOCWatch</h2><a href="#about">About</a><a href="https://www.linkedin.com/in/daniel-jeremiah">LinkedIn</a><a href="https://github.com/daniyyell-dev/rapid-threat-intel/issues/new/choose">Report an issue</a><a class="bmc-btn" href="https://buymeacoffee.com/daniyyell" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M2.5 6.75A1.75 1.75 0 0 1 4.25 5h11.5A1.75 1.75 0 0 1 17.5 6.75v1.5h.75A3.75 3.75 0 0 1 22 12a3.75 3.75 0 0 1-3.75 3.75H17.4a5.76 5.76 0 0 1-5.65 4.75H9A5.75 5.75 0 0 1 3.25 14.75V6.75ZM17.5 10v3.25h.75A1.25 1.25 0 0 0 19.5 12a1.25 1.25 0 0 0-1.25-1.25H17.5ZM7 3.25a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-1.5 0V4A.75.75 0 0 1 7 3.25Zm3.25.75a.75.75 0 0 0-1.5 0v.5a.75.75 0 0 0 1.5 0V4Zm1.5-.75a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-1.5 0V4a.75.75 0 0 1 .75-.75Z"/></svg>Buy me a coffee</a></nav>
     </div>
@@ -242,7 +244,7 @@
   </div>
 </footer>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script src="/app.js?v=c25665d5"></script>
+<script src="/app.js?v=4cc01efe"></script>
 <script data-goatcounter="https://daniyyell.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
