@@ -240,7 +240,7 @@ def main():
         new = []
         for f in ("phishing-links-NEW-today.txt", "phishing-links-NEW-last-hour.txt"):
             try:
-                new += lines(get("https://raw.githubusercontent.com/mitchellkrogza/Phishing.Database/master/" + f, 60))
+                new += lines(get("https://raw.githubusercontent.com/Phishing-Database/Phishing.Database/master/" + f, 60))
             except Exception:
                 pass
         hosts = {}
@@ -401,7 +401,7 @@ def main():
             {"name": "CINS Army", "url": "https://cinsscore.com/", "cat": "scan", "what": "IPs with poor reputation"},
             {"name": "Emerging Threats", "url": "https://rules.emergingthreats.net/", "cat": "scan", "what": "compromised IPs"},
             {"name": "OpenPhish", "url": "https://openphish.com/", "cat": "phish", "what": "community phishing feed", "licence": "non-commercial"},
-            {"name": "Phishing.Database", "url": "https://github.com/mitchellkrogza/Phishing.Database", "cat": "phish", "what": "new phishing links", "licence": "MIT"},
+            {"name": "Phishing.Database", "url": "https://github.com/Phishing-Database/Phishing.Database", "cat": "phish", "what": "new phishing links", "licence": "MIT"},
             {"name": "Feodo Tracker", "url": "https://feodotracker.abuse.ch/", "cat": "c2", "what": "botnet C2 servers", "licence": "CC0"},
 
             {"name": "ransomware.live", "url": "https://www.ransomware.live/", "cat": "ransom", "what": "leak-site claims (group, country, time)"},

@@ -22218,7 +22218,7 @@
     },
     {
      "url": "https://www.security.com/expert-perspectives/protecting-against-outlook-elevation-privilege-escalation",
-     "label": "Symantec – Detecting WebDAV fallback (davclnt.dll,DavSetCookie) in Outlook NTLM leaks",
+     "label": "Symantec – Protecting Against Outlook Elevation of Privilege Escalation (CVE-2023-23397 WebDAV detection background)",
      "name": "Symantec Threat Hunter Team"
     },
     {

@@ -2093,12 +2093,12 @@
     // CVEs
     var cl = clear($("lv-cves"));
     (d.cves || []).slice(0, 4).forEach(function (x) {
-      cl.appendChild(h("li", null, h("a", { href: "https://nvd.nist.gov/vuln/detail/" + x.id, target: "_blank", rel: "noopener" },
+      cl.appendChild(h("li", null, h("a", { href: "https://www.cve.org/CVERecord?id=" + x.id, target: "_blank", rel: "noopener" },
         h("span", { class: "lv-cve" }, h("b", { class: "c-crit", text: x.id }), x.score ? h("span", { class: "c-crit", text: " CVSS " + x.score }) : null, x.kev ? h("span", { class: "c-cve", text: " \u00b7 in KEV" }) : null, h("time", { datetime: x.ts, text: lmAgo(x.ts) })),
         h("span", { class: "lv-cve-d", text: x.what }))));
     });
     (d.kev || []).slice(0, 3).forEach(function (x) {
-      cl.appendChild(h("li", null, h("a", { href: "https://nvd.nist.gov/vuln/detail/" + x.id, target: "_blank", rel: "noopener" },
+      cl.appendChild(h("li", null, h("a", { href: "https://www.cve.org/CVERecord?id=" + x.id, target: "_blank", rel: "noopener" },
         h("span", { class: "lv-cve" }, h("b", { class: "c-cve", text: x.id }), h("span", { class: "c-cve", text: " \u00b7 added to CISA KEV" }), x.ransomware ? h("span", { class: "c-ransom", text: " \u00b7 used by ransomware" }) : null, h("time", { text: lmDay(x.day) })),
         h("span", { class: "lv-cve-d", text: x.what }))));
     });
