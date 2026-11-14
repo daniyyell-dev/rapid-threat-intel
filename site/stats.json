@@ -1,11 +1,11 @@
 {
- "updated": "2026-11-14T04:17:04Z",
- "last24h": 50,
+ "updated": "2026-11-14T09:13:58Z",
+ "last24h": 60,
  "top_countries": [
   {
    "code": "GB",
    "name": "United Kingdom",
-   "count": 77
+   "count": 87
   },
   {
    "code": "IN",
@@ -15,12 +15,17 @@
   {
    "code": "DE",
    "name": "Germany",
-   "count": 12
+   "count": 13
   },
   {
    "code": "US",
    "name": "United States",
-   "count": 6
+   "count": 9
+  },
+  {
+   "code": "CA",
+   "name": "Canada",
+   "count": 3
   },
   {
    "code": "NG",
@@ -30,6 +35,11 @@
   {
    "code": "AE",
    "name": "United Arab Emirates",
+   "count": 2
+  },
+  {
+   "code": "NL",
+   "name": "Netherlands",
    "count": 2
   },
   {
@@ -48,11 +58,6 @@
    "count": 1
   },
   {
-   "code": "CA",
-   "name": "Canada",
-   "count": 1
-  },
-  {
    "code": "ET",
    "name": "Ethiopia",
    "count": 1
@@ -68,6 +73,11 @@
    "count": 1
   },
   {
+   "code": "IS",
+   "name": "Iceland",
+   "count": 1
+  },
+  {
    "code": "MX",
    "name": "Mexico",
    "count": 1
@@ -79,9 +89,9 @@
   }
  ],
  "other_count": 0,
- "total": 143,
- "downloads": 24,
- "downloads24h": 17,
- "copies": 35,
- "copies24h": 19
+ "total": 162,
+ "downloads": 25,
+ "downloads24h": 18,
+ "copies": 36,
+ "copies24h": 17
 }

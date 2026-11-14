@@ -4,7 +4,7 @@
  "repository": "https://github.com/daniyyell-dev/rapid-threat-intel",
  "documentation": "https://github.com/daniyyell-dev/rapid-threat-intel/blob/main/docs/dashboard.md",
  "licence": "MIT",
- "last_updated": "2026-11-14 04:14",
+ "last_updated": "2026-11-14 09:20",
  "threat_count": 58,
  "indicator_count": 1596,
  "block_now_count": 719,
@@ -18664,10 +18664,10 @@
    "category": "Exploitation / MSP RMM",
    "published": "2026-11-09",
    "entry_date": "2026-11-12 09:55",
-   "last_updated": "2026-11-12 22:55",
+   "last_updated": "2026-11-14 09:20",
    "seq": 27,
    "headline": "4EverAble2Shell is installing XMRig on live N-central servers, including hosts already on HF2; block 157.20.241.16 and hunt xvd artefacts",
-   "summary": "An independent researcher published proof-of-concept code for 33 flaws in N-able N-central, the remote monitoring and management platform used by MSPs and IT teams, under the name Able2Shell. N-able took Hosted N-central offline on 9 November and shipped 2026.4 HF2 on 10 November, but late on 11 November the researcher released two more chains, 4EverAble2Shell (unauthenticated root RCE on the server) and Agent2Shell (commands as SYSTEM on managed Windows endpoints), which Huntress says work against HF2, so a fully patched server should be treated as vulnerable. On 12 November, about four and a half hours after 4EverAble2Shell was published, huntback Research saw 157.20.241.16 probe its decoys and then run the full chain, installing an XMRig miner via jup.sh. By 12:50 UTC that operator's public mining pool listed 21 production N-central servers as nc_ rigs, all submitting shares; 19 of them reported build 2026.4.1.26 (HF2). The servers were in the United States, South Africa, Canada, the United Kingdom, Germany, France and Sweden; huntback has not published the addresses. Applying HF2 is not enough: keep the Legacy API disabled and follow N-able's current guidance. Earlier N-central zero-days were exploited and are in CISA KEV, and Beazley notes past state-sponsored targeting. 5.231.45.175 remains a block candidate for earlier Able2Shell probing reported by Previdian and Lupovis; 157.20.241.16 is the live exploitation and payload host and is on the block list, along with its installer URLs and the nable-to-root script hash; the mining-pool addresses are alert only because they are public pool endpoints; the AWS address 3.74.48.121 is alert-only. Hunt N-central web logs for SOAP faults naming jline.internal.TerminalLineSettings, and the appliance for /tmp/.xvd, xvd.service and --rig-id nc_ miners, as well as N-able Agent child processes on managed endpoints.",
+   "summary": "An independent researcher published proof-of-concept code for 33 flaws in N-able N-central, the remote monitoring and management platform used by MSPs and IT teams, under the name Able2Shell. N-able took Hosted N-central offline on 9 November and shipped 2026.4 HF2 on 10 November, but late on 11 November the researcher released two more chains, 4EverAble2Shell (unauthenticated root RCE on the server) and Agent2Shell (commands as SYSTEM on managed Windows endpoints), which Huntress says work against HF2, so a fully patched server should be treated as vulnerable. On 12 November, about four and a half hours after 4EverAble2Shell was published, huntback Research saw 157.20.241.16 probe its decoys and then run the full chain, installing an XMRig miner via jup.sh. By 12:50 UTC that operator's public mining pool listed 21 production N-central servers as nc_ rigs, all submitting shares; 19 of them reported build 2026.4.1.26 (HF2). The servers were in the United States, South Africa, Canada, the United Kingdom, Germany, France and Sweden; huntback has not published the addresses. On 13 November N-able's own advisory update listed 157.20.241.16, its installer URLs and the two mining endpoints as indicators of compromise for servers with the Legacy API enabled. Applying HF2 is not enough: keep the Legacy API disabled and follow N-able's current guidance. Earlier N-central zero-days were exploited and are in CISA KEV, and Beazley notes past state-sponsored targeting. 5.231.45.175 remains a block candidate for earlier Able2Shell probing reported by Previdian and Lupovis; 157.20.241.16 is the live exploitation and payload host and is on the block list, along with its installer URLs and the nable-to-root script hash; the mining-pool addresses are alert only because they are public pool endpoints; the AWS address 3.74.48.121 is alert-only. Hunt N-central web logs for SOAP faults naming jline.internal.TerminalLineSettings, and the appliance for /tmp/.xvd, xvd.service and --rig-id nc_ miners, as well as N-able Agent child processes on managed endpoints.",
    "caveat": "huntback confirmed 21 live N-central servers mining on 12 November but did not publish their addresses, including one in the United Kingdom. 139.99.69.109 and 79.76.51.56 are mining-pool endpoints used by this operator; alert on them, do not block the whole addresses without reviewing impact. Huntress's Agent2Shell file and process indicators come from static analysis of the public code and may not match modified exploits. 3.74.48.121 is AWS: alert only.",
    "targets": {
     "countries": [],
@@ -18783,6 +18783,11 @@
      "url": "https://www.bleepingcomputer.com/news/security/new-n-able-4everable2shell-zero-day-exploited-hours-after-poc-released/",
      "label": "BleepingComputer – New N-able 4EverAble2Shell zero-day exploited hours after PoC released",
      "name": "BleepingComputer"
+    },
+    {
+     "url": "https://www.n-able.com/blog/new-security-update-on-n-central",
+     "label": "N-able – New security update on N-central (indicators of compromise)",
+     "name": "N-able (2)"
     }
    ],
    "indicator_count": 20,
@@ -19028,6 +19033,10 @@
       {
        "url": "https://www.bleepingcomputer.com/news/security/new-n-able-4everable2shell-zero-day-exploited-hours-after-poc-released/",
        "name": "BleepingComputer"
+      },
+      {
+       "url": "https://www.n-able.com/blog/new-security-update-on-n-central",
+       "name": "N-able"
       }
      ]
     },
@@ -19096,6 +19105,10 @@
       {
        "url": "https://www.bleepingcomputer.com/news/security/new-n-able-4everable2shell-zero-day-exploited-hours-after-poc-released/",
        "name": "BleepingComputer"
+      },
+      {
+       "url": "https://www.n-able.com/blog/new-security-update-on-n-central",
+       "name": "N-able"
       }
      ]
     },
@@ -19112,6 +19125,10 @@
       {
        "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
        "name": "huntback.io"
+      },
+      {
+       "url": "https://www.n-able.com/blog/new-security-update-on-n-central",
+       "name": "N-able"
       }
      ]
     },
@@ -19128,6 +19145,10 @@
       {
        "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
        "name": "huntback.io"
+      },
+      {
+       "url": "https://www.n-able.com/blog/new-security-update-on-n-central",
+       "name": "N-able"
       }
      ]
     },
@@ -19144,6 +19165,10 @@
       {
        "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
        "name": "huntback.io"
+      },
+      {
+       "url": "https://www.n-able.com/blog/new-security-update-on-n-central",
+       "name": "N-able"
       }
      ]
     },
@@ -19160,6 +19185,10 @@
       {
        "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
        "name": "huntback.io"
+      },
+      {
+       "url": "https://www.n-able.com/blog/new-security-update-on-n-central",
+       "name": "N-able"
       }
      ]
     },
@@ -19192,6 +19221,10 @@
       {
        "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
        "name": "huntback.io"
+      },
+      {
+       "url": "https://www.n-able.com/blog/new-security-update-on-n-central",
+       "name": "N-able"
       }
      ]
     },
@@ -19208,6 +19241,10 @@
       {
        "url": "https://huntback.io/blog/ncentral-4everable2shell-miners-on-live-servers",
        "name": "huntback.io"
+      },
+      {
+       "url": "https://www.n-able.com/blog/new-security-update-on-n-central",
+       "name": "N-able"
       }
      ]
     },

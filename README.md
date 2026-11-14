@@ -8,7 +8,7 @@
 **Agentic AI collects it. Analysts verify it. Community acts on it.**<br>
 <sub>AI threat intel from defenders, for defenders.</sub>
 
-[![live site](https://img.shields.io/badge/live_site-iocwatch.com-crimson)](https://iocwatch.com/) [![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-58-informational)](threats/) ![IOCs](https://img.shields.io/badge/IOCs-1596-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--14-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
+[![live site](https://img.shields.io/badge/live_site-iocwatch.com-crimson)](https://iocwatch.com/) [![licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE) [![threats](https://img.shields.io/badge/threats-58-informational)](threats/) ![IOCs](https://img.shields.io/badge/IOCs-1596-informational) ![last updated](https://img.shields.io/badge/last_updated-2026--11--14_09:20-success) [![PRs](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
 </div>
 
