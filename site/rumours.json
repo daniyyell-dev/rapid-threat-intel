@@ -51,6 +51,30 @@
       "headline": "Police seize Gootloader and StealC servers, recover 6.4 million credentials"
     },
     {
+      "id": "maersk-whitearmor-breach",
+      "short_title": "Maersk legacy breach",
+      "headline": "Maersk confirms data theft from acquired logistics system as WhiteArmor demands $5m",
+      "claim": "Maersk confirmed unauthorised access and data extraction from a legacy system inherited through an acquisition; WhiteArmor claims about 100GB from the former LF Logistics platform, and no public IOCs have been published.",
+      "sources": [
+        {
+          "name": "BleepingComputer",
+          "url": "https://www.bleepingcomputer.com/news/security/maersk-confirms-data-breach-as-whitearmor-ransomware-demands-5-million/"
+        },
+        {
+          "name": "SecurityWeek",
+          "url": "https://www.securityweek.com/maersk-confirms-data-theft-amid-5-million-extortion-attempt/"
+        },
+        {
+          "name": "Cybernews",
+          "url": "https://cybernews.com/security/maersk-confirms-cyberattack-ransomware/"
+        }
+      ],
+      "first_seen": "2026-11-11",
+      "category": "Ransomware",
+      "status": "Confirmed - IOCs pending",
+      "note": "Maersk says the incident is isolated to a local system with no sign of impact on other Maersk, customer or partner systems connected through APIs and EDI, and advises treating unexpected messages about the incident with caution. Maersk told Cybernews the plaintext-password claim is not accurate. Partners of the former LF Logistics platform should watch for phishing that references the incident."
+    },
+    {
       "id": "apache-cve-2026-119618",
       "short_title": "Apache HTTP/2 RCE",
       "claim": "Apache HTTP Server 2.4.71 patches a critical unauthenticated HTTP/2 flaw in mod_http2 (CVE-2026-119618); no public in-the-wild exploit indicators have been published.",
